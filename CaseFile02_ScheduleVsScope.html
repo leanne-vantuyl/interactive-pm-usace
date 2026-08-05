@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive PM in USACE</title>
+</head>
+<body>
+<!-- ==========================================
+     Interactive PM in USACE — SharePoint Snippet
+     Page: CaseFile02_ScheduleVsScope.aspx
+     Paste this entire block into a Script Editor web part
+     on a Classic SharePoint page.
+     ========================================== -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;--army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;--white:#F5F2EB;--white-dim:#C8C4B8;--accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;--border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;}
+html.font-l{font-size:18px;}
+html.font-s{font-size:14px;}
+body{background:var(--army-dark);color:var(--white);font-family:'Inter',sans-serif;font-weight:400;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(61,82,41,0.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(37,45,28,0.4) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* ===== ACCESSIBILITY LIGHT MODE (default) ===== */
+body.light-mode::before{display:none !important;}
+body.light-mode{background:#FFFFFF !important;color:#111111;}
+body.light-mode{--army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-dim:#222222;--gold:#5A4010;--gold-light:#3A2A08;--gold-dim:#5A4010;--border:rgba(90,64,16,0.4);--border-strong:rgba(90,64,16,0.7);--accent:#1A4A10;--warn:#8B3A00;--danger:#7A1A1A;}
+
+/* HEADER */
+header{border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;background:rgba(26,31,20,0.97);backdrop-filter:blur(12px);z-index:200;}
+body.light-mode header{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+.header-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.logo-block{display:flex;align-items:center;gap:12px;}
+.logo-seal{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.625rem;color:var(--gold);flex-shrink:0;}
+body.light-mode .logo-seal{border-color:#5A4010;color:#5A4010;}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:0.875rem;color:var(--white);}
+.logo-sub{font-size:0.5625rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+body.light-mode .logo-sub{color:#5A4010;}
+.case-badge{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);border:1px solid var(--border);padding:3px 8px;letter-spacing:.1em;}
+.case-quicknav{background:rgba(26,31,20,0.97);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:190;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+.case-quicknav-inner{display:flex;align-items:center;gap:4px;padding:7px 24px;max-width:1100px;margin:0 auto;}
+.cqn-link{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.05em;color:var(--white-dim);border:1px solid var(--border);padding:5px 9px;text-decoration:none;flex-shrink:0;transition:all .15s;}
+.cqn-link:hover{border-color:var(--gold-dim);color:var(--white);}
+.cqn-link.current{background:var(--gold);color:var(--army-dark);border-color:var(--gold);font-weight:700;}
+.cqn-sep{color:var(--border-strong);flex-shrink:0;margin:0 2px;}
+body.light-mode .case-quicknav{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+body.light-mode .cqn-link{color:#5A4010;border-color:#5A4010;}
+body.light-mode .cqn-link:hover{background:#E8E4D9;}
+body.light-mode .cqn-link.current{background:#5A4010;color:#FFFFFF;border-color:#5A4010;}
+body.light-mode .case-badge{color:#111111;border-color:#5A4010;background:#E8E4D9;font-weight:700;}
+.theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;}
+body.light-mode .theme-toggle{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+
+/* PROGRESS */
+.progress-bar-wrap{background:rgba(37,45,28,.8);border-bottom:1px solid var(--border);padding:8px 0;}
+body.light-mode .progress-bar-wrap{background:#E8E4D9;border-bottom:2px solid #5A4010;}
+.progress-bar-inner{max-width:860px;margin:0 auto;padding:0 24px;}
+.progress-track{height:3px;background:rgba(200,168,75,.15);border-radius:2px;margin-bottom:6px;}
+body.light-mode .progress-track{background:#C8C0A8;}
+.progress-fill{height:3px;background:var(--gold);border-radius:2px;transition:width .4s ease;}
+body.light-mode .progress-fill{background:#5A4010;}
+.progress-labels{display:flex;justify-content:space-between;}
+.progress-text{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.08em;}
+body.light-mode .progress-text{color:#111111;}
+.progress-pct{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);font-weight:700;}
+body.light-mode .progress-pct{color:#5A4010;}
+
+.main{max-width:860px;margin:0 auto;padding:36px 24px 80px;position:relative;z-index:1;}
+.screen{display:none;animation:fadeUp .3s ease both;}
+.screen.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* SECTION NAV */
+.section-nav{display:flex;gap:4px;margin-bottom:26px;flex-wrap:wrap;}
+.sec-btn{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.06em;text-transform:uppercase;padding:7px 12px;background:transparent;border:1px solid var(--border);color:var(--white-dim);cursor:pointer;display:flex;align-items:center;gap:5px;}
+body.light-mode .sec-btn{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:600;}
+.sec-btn.active{background:var(--gold);border-color:var(--gold);color:var(--army-dark);font-weight:700;}
+body.light-mode .sec-btn.active{background:#5A4010;color:#FFFFFF;}
+.sec-btn.complete{border-color:rgba(123,160,91,.5);color:var(--accent);}
+body.light-mode .sec-btn.complete{background:#E8F0E8;border-color:#1A4A10;color:#1A4A10;}
+.sec-btn.locked{opacity:.4;cursor:not-allowed;}
+
+/* TITLES */
+.eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .eyebrow{color:#5A4010;font-weight:700;}
+.title-main{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,4vw,2.375rem);line-height:1.18;color:var(--white);margin-bottom:14px;}
+body.light-mode .title-main{color:#111111;}
+.title-main em{color:var(--gold-light);font-style:italic;}
+body.light-mode .title-main em{color:#5A4010;}
+.lede{font-size:0.8125rem;line-height:1.8;color:var(--white-dim);max-width:620px;margin-bottom:22px;}
+body.light-mode .lede{color:#111111;font-size:0.875rem;}
+.lede strong{color:var(--white);font-weight:600;}
+body.light-mode .lede strong{color:#111111;}
+
+/* CARDS / CALLOUTS */
+.card{border:1px solid var(--border);background:rgba(37,45,28,.4);padding:16px 18px;margin-bottom:14px;}
+body.light-mode .card{background:#E8E4D9;border:2px solid #5A4010;}
+.card-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .card-label{color:#5A4010;font-weight:700;}
+.card p{font-size:0.75rem;line-height:1.7;color:var(--white-dim);margin-bottom:8px;}
+body.light-mode .card p{color:#111111;font-size:0.8125rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--white);}
+body.light-mode .card strong{color:#111111;}
+
+.people-card{border-left:4px solid var(--accent);}
+body.light-mode .people-card{border-left:6px solid #1A4A10;background:#E8F0E8;}
+body.light-mode .people-card .card-label{color:#1A4A10;}
+
+.proc-tag{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);border:1px solid var(--border-strong);padding:3px 8px;display:inline-block;margin:3px 3px 0 0;letter-spacing:.07em;}
+body.light-mode .proc-tag{color:#111111;border:2px solid #5A4010;background:#FFFFFF;font-weight:700;}
+
+/* REFLECTION INPUT */
+.reflect-block{margin-bottom:18px;}
+.reflect-q{font-size:0.75rem;color:var(--white);font-weight:600;margin-bottom:8px;line-height:1.6;}
+body.light-mode .reflect-q{color:#111111;font-size:0.8125rem;}
+.reflect-input{width:100%;background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.75rem;padding:11px 13px;outline:none;min-height:70px;resize:vertical;}
+body.light-mode .reflect-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;font-size:0.8125rem;}
+.reflect-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .reflect-input::placeholder{color:#888;opacity:1;}
+
+.strength-input{background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.8125rem;padding:11px 14px;outline:none;width:100%;max-width:320px;}
+body.light-mode .strength-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;}
+.strength-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .strength-input::placeholder{color:#888;opacity:1;}
+.theme-select-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px;}
+.theme-select-item label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:5px;display:block;}
+.theme-select{background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.8125rem;padding:10px 12px;outline:none;width:100%;}
+body.light-mode .theme-select-item label{color:#5A4010;font-weight:700;}
+body.light-mode .theme-select{background:#FFFFFF;border:2px solid #5A4010;color:#111111;}
+.na-checkbox-row{display:flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--white-dim);cursor:pointer;margin-bottom:14px;user-select:none;}
+.na-checkbox-row input{cursor:pointer;}
+body.light-mode .na-checkbox-row{color:#333333;}
+.profile-display{margin-bottom:18px;border:1px solid var(--border);padding:14px 16px;}
+.profile-row{margin-bottom:8px;}
+.profile-row:last-of-type{margin-bottom:0;}
+.profile-value{font-size:0.875rem;color:var(--white);font-family:'Inter',sans-serif;}
+.profile-clear{margin-top:10px;font-size:0.6875rem;}
+.profile-clear a{color:var(--gold-dim);text-decoration:underline;cursor:pointer;}
+body.light-mode .profile-value{color:#111111;}
+body.light-mode .profile-display{border:2px solid #5A4010;}
+.required-mark{color:var(--gold);}
+body.light-mode .required-mark{color:#5A4010;}
+.field-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:8px;display:block;}
+body.light-mode .field-label{color:#5A4010;font-weight:700;}
+.name-input{background:rgba(37,45,28,.6);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.875rem;padding:12px 15px;outline:none;width:100%;max-width:420px;}
+body.light-mode .name-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;font-size:1rem;}
+.name-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .name-input::placeholder{color:#888;opacity:1;}
+
+/* SCENARIO */
+.scenario-box{background:rgba(26,31,20,.5);border:1px solid var(--border-strong);border-left:4px solid var(--gold);padding:18px 20px;margin-bottom:18px;}
+body.light-mode .scenario-box{background:#FFFFF8;border:2px solid #8B6000;border-left:6px solid #5A4010;}
+.scenario-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+body.light-mode .scenario-label{color:#5A4010;font-weight:700;}
+.scenario-text{font-size:0.8125rem;line-height:1.8;color:var(--white);}
+body.light-mode .scenario-text{color:#111111;font-size:0.875rem;}
+.scenario-text strong{color:var(--gold-light);}
+body.light-mode .scenario-text strong{color:#5A4010;}
+
+.decision-prompt{font-family:'DM Serif Display',serif;font-size:1.125rem;color:var(--white);margin:18px 0 14px;}
+body.light-mode .decision-prompt{color:#111111;}
+
+.choice-option{display:block;width:100%;text-align:left;background:rgba(26,31,20,.4);border:1px solid var(--border);color:var(--white-dim);font-family:'Inter',sans-serif;font-size:0.75rem;line-height:1.6;padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.choice-option:hover{border-color:var(--gold-dim);color:var(--white);background:rgba(37,45,28,.6);}
+body.light-mode .choice-option{background:#FFFFFF;border:2px solid #C8C0A8;color:#111111;font-size:0.8125rem;}
+body.light-mode .choice-option:hover{border-color:#5A4010;background:#E8E4D9;}
+.choice-letter{font-family:'DM Mono',monospace;font-weight:700;color:var(--gold);margin-right:8px;}
+body.light-mode .choice-letter{color:#5A4010;}
+
+/* CONSEQUENCE */
+.consequence-box{background:rgba(123,160,91,.08);border:1px solid rgba(123,160,91,.3);border-left:4px solid var(--accent);padding:16px 18px;margin:16px 0;}
+body.light-mode .consequence-box{background:#E8F0E8;border:2px solid #1A4A10;border-left:6px solid #1A4A10;}
+.consequence-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .consequence-label{color:#1A4A10;font-weight:700;}
+.consequence-text{font-size:0.75rem;line-height:1.75;color:var(--white-dim);}
+body.light-mode .consequence-text{color:#111111;font-size:0.8125rem;}
+.consequence-text strong{color:var(--white);}
+body.light-mode .consequence-text strong{color:#111111;}
+
+.insight-box{background:rgba(200,168,75,.06);border:1px solid var(--border);border-left:4px solid var(--gold-dim);padding:14px 16px;margin-top:12px;}
+body.light-mode .insight-box{background:#FFF8E8;border:2px solid #8B6000;border-left:6px solid #5A4010;}
+.insight-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+body.light-mode .insight-label{color:#5A4010;font-weight:700;}
+.insight-text{font-size:0.6875rem;line-height:1.7;color:var(--white-dim);}
+body.light-mode .insight-text{color:#111111;font-size:0.75rem;}
+.insight-text strong{color:var(--white);}
+body.light-mode .insight-text strong{color:#111111;}
+
+/* KNOWLEDGE CHECK */
+.question-block{background:rgba(26,31,20,.5);border:1px solid var(--border);padding:18px;margin-bottom:12px;}
+body.light-mode .question-block{background:#F8F6F2;border:2px solid #C8C0A8;}
+.question-num{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.1em;margin-bottom:8px;}
+body.light-mode .question-num{color:#5A4010;font-weight:700;}
+.question-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.08em;padding:2px 7px;border:1px solid var(--border-strong);color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .question-tag{border-color:#5A4010;color:#5A4010;background:#E8E4D9;font-weight:700;}
+.question-text{font-size:0.8125rem;color:var(--white);line-height:1.55;margin-bottom:14px;font-weight:600;}
+body.light-mode .question-text{color:#111111;font-size:0.875rem;}
+.answer-option{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:all .15s;font-size:0.75rem;color:var(--white-dim);line-height:1.5;}
+.answer-option:hover{border-color:var(--gold-dim);color:var(--white);}
+body.light-mode .answer-option{background:#FFFFFF;border:2px solid #C8C0A8;color:#111111;font-size:0.8125rem;}
+body.light-mode .answer-option:hover{border-color:#5A4010;background:#E8E4D9;}
+.answer-option.selected{border-color:var(--gold);background:rgba(200,168,75,.08);color:var(--white);}
+body.light-mode .answer-option.selected{border:3px solid #5A4010;background:#E8E4D9;color:#111111;}
+.answer-option.correct{border-color:var(--accent);background:rgba(123,160,91,.1);color:var(--accent);}
+body.light-mode .answer-option.correct{background:#1A4A10;border:3px solid #1A4A10;color:#FFFFFF;font-weight:700;}
+.answer-option.incorrect{border-color:var(--danger);background:rgba(192,57,43,.08);color:#E07C73;}
+body.light-mode .answer-option.incorrect{background:#7A1A1A;border:3px solid #7A1A1A;color:#FFFFFF;font-weight:700;}
+.answer-radio{width:14px;height:14px;border:1.5px solid var(--border);border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
+.answer-option.selected .answer-radio{border-color:var(--gold);background:var(--gold);}
+body.light-mode .answer-option.selected .answer-radio{border-color:#5A4010;background:#5A4010;}
+.answer-option.correct .answer-radio{border-color:var(--accent);background:var(--accent);}
+body.light-mode .answer-option.correct .answer-radio{border-color:#FFFFFF;background:#FFFFFF;}
+.answer-option.incorrect .answer-radio{border-color:var(--danger);background:var(--danger);}
+body.light-mode .answer-option.incorrect .answer-radio{border-color:#FFFFFF;background:#FFFFFF;}
+.answer-radio-dot{width:6px;height:6px;border-radius:50%;background:var(--army-dark);display:none;}
+.answer-option.selected .answer-radio-dot,.answer-option.correct .answer-radio-dot,.answer-option.incorrect .answer-radio-dot{display:block;}
+body.light-mode .answer-option.correct .answer-radio-dot{background:#1A4A10;}
+body.light-mode .answer-option.incorrect .answer-radio-dot{background:#7A1A1A;}
+.kc-explain{font-size:0.6875rem;line-height:1.65;color:var(--white-dim);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:none;}
+body.light-mode .kc-explain{color:#111111;font-size:0.75rem;border-top-color:#5A4010;}
+.kc-explain.show{display:block;}
+.kc-explain strong{color:var(--gold-light);}
+body.light-mode .kc-explain strong{color:#5A4010;}
+
+.kc-feedback{padding:14px 16px;margin-top:14px;font-size:0.75rem;display:none;}
+.kc-feedback.show{display:block;}
+.kc-feedback.pass{background:rgba(123,160,91,.1);border:1px solid rgba(123,160,91,.3);color:var(--accent);}
+body.light-mode .kc-feedback.pass{background:#D8F0D8;border:2px solid #1A4A10;color:#0A3A0A;font-weight:600;font-size:0.875rem;}
+.kc-feedback.fail{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);color:#E07C73;}
+body.light-mode .kc-feedback.fail{background:#F8D8D8;border:2px solid #7A1A1A;color:#5A0A0A;font-weight:600;font-size:0.875rem;}
+.kc-score{font-family:'DM Mono',monospace;font-size:1.375rem;font-weight:700;margin-bottom:4px;}
+.kc-score.pass{color:var(--accent);}
+body.light-mode .kc-score.pass{color:#1A4A10;}
+.kc-score.fail{color:var(--danger);}
+body.light-mode .kc-score.fail{color:#7A1A1A;}
+
+/* COMPLETION */
+.complete-wrap{background:rgba(26,31,20,.3);border:2px solid var(--border-strong);padding:32px;text-align:center;margin-top:20px;}
+body.light-mode .complete-wrap{background:#FAF8F3;border:3px solid #5A4010;}
+.complete-seal{width:54px;height:54px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gold);margin:0 auto 14px;}
+body.light-mode .complete-seal{border-color:#5A4010;color:#1A4A10;}
+.complete-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--white);margin-bottom:8px;}
+body.light-mode .complete-title{color:#111111;}
+.complete-sub{font-size:0.75rem;color:var(--white-dim);margin-bottom:20px;}
+body.light-mode .complete-sub{color:#111111;font-size:0.8125rem;}
+
+/* BUTTONS */
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--army-dark);font-family:'Inter',sans-serif;font-weight:700;font-size:0.6875rem;letter-spacing:.1em;text-transform:uppercase;padding:12px 22px;border:none;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+body.light-mode .btn-primary{background:#5A4010;color:#FFFFFF;}
+body.light-mode .btn-primary:hover{background:#3A2808;}
+.btn-secondary{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--white-dim);font-family:'Inter',sans-serif;font-weight:600;font-size:0.6875rem;letter-spacing:.08em;text-transform:uppercase;padding:12px 18px;border:1px solid var(--border);cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--border-strong);color:var(--white);}
+body.light-mode .btn-secondary{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+body.light-mode .btn-secondary:hover{background:#D4CDB8;border-color:#111111;}
+.btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;}
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:18px;border-top:1px solid var(--border);}
+body.light-mode .nav-row{border-top:2px solid #5A4010;}
+
+footer{border-top:1px solid var(--border);padding:14px 0;margin-top:20px;}
+body.light-mode footer{border-top:2px solid #5A4010;}
+.footer-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.footer-attr{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold-dim);letter-spacing:.09em;}
+body.light-mode .footer-attr{color:#5A4010;font-weight:700;}
+.footer-doc{font-size:0.5625rem;color:var(--white-dim);opacity:.4;}
+body.light-mode .footer-doc{color:#444;opacity:1;}
+
+@media print{header,.progress-bar-wrap,.section-nav,.btn-row,footer,.choice-option{display:none!important;}}
+
+.font-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;margin-right:8px;}
+body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
+</style>
+<header>
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-seal">PM</div>
+      <div>
+        <div class="logo-primary">Interactive PM in USACE</div>
+        <div class="logo-sub">Case File 02 &middot; Initiation &rarr; Planning</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="case-badge">PROC2030/2040 &middot; Conflict Resolution</span>
+      <button class="font-toggle" id="font-toggle" onclick="toggleFontSize()">Text: M</button>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
+    </div>
+  </div>
+</header>
+
+<nav class="case-quicknav"><div class="case-quicknav-inner"><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" class="cqn-link">Home</a><span class="cqn-sep">&middot;</span><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/Module00_Orientation.html" class="cqn-link">M0</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile01_NewPM_UnclearRoles.html" class="cqn-link">CF01</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile02_ScheduleVsScope.html" class="cqn-link current">CF02</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile03_TheNewHome.html" class="cqn-link">CF03</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile04_BuiltToSlip.html" class="cqn-link">CF04</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile05_TheNumberDoesntFit.html" class="cqn-link">CF05</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile06_FeedbackConversation.html" class="cqn-link">CF06</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile07_PhantomSlip.html" class="cqn-link">CF07</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile08_RiskNobodyTracked.html" class="cqn-link">CF08</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile09_MeetingGotAway.html" class="cqn-link">CF09</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile10_WrongShadeOfGray.html" class="cqn-link">CF10</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile11_TwoFacesOfRisk.html" class="cqn-link">CF11</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile12_TheFavor.html" class="cqn-link">CF12</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile13_ClosingWell.html" class="cqn-link">CF13</a></div></nav>
+
+<div class="progress-bar-wrap" id="progress-bar-wrap" style="display:none;">
+  <div class="progress-bar-inner">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-labels">
+      <span class="progress-text" id="progress-label">Training</span>
+      <span class="progress-pct" id="progress-pct">0%</span>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="main-content"></div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-attr">Interactive PM in USACE &middot; PPM Community of Practice</span>
+    <span class="footer-doc">EM 5-1-11 &middot; PROC2030/2040 &middot; Case File 02 v1.0</span>
+  </div>
+</footer>
+
+<script>
+var CS={name:'',strength:'',section:'welcome',sectionsComplete:{training:false,discussion:false,casestudy:false,kc:false},kcScore:0,decisions:{},caseStep:0};
+var STORAGE_KEY='casefile02_v1';
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(CS));}catch(e){}}
+function loadState(){try{var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;var d=JSON.parse(raw);if(!d||!d.name)return false;CS=d;return true;}catch(e){return false;}}
+
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+
+var SECTIONS=['welcome','training','discussion','casestudy','kc','complete'];
+var SECTION_LABELS={welcome:'Welcome',training:'Training',discussion:'Discussion',casestudy:'Case Study',kc:'Knowledge Check',complete:'Complete'};
+
+function updateProgress(){
+  var idx=SECTIONS.indexOf(CS.section);
+  var pct=Math.round((idx/(SECTIONS.length-1))*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-label').textContent=SECTION_LABELS[CS.section]||'';
+}
+
+function renderNav(){
+  var order=['training','discussion','casestudy','kc'];
+  var html='<div class="section-nav">';
+  order.forEach(function(s){
+    var cls='sec-btn'+(CS.section===s?' active':'')+(CS.sectionsComplete[s]?' complete':'');
+    var locked=false;
+    var idx=order.indexOf(s);
+    if(idx>0 && !CS.sectionsComplete[order[idx-1]] && CS.section!==s) locked=true;
+    if(locked) cls+=' locked';
+    html+='<button class="'+cls+'" '+(locked?'disabled':'onclick="goSection(\''+s+'\')"')+'>'+(CS.sectionsComplete[s]?'&#10003; ':'')+SECTION_LABELS[s]+'</button>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function goSection(s){CS.section=s;saveState();render();}
+
+function render(){
+  var m=document.getElementById('main-content');
+  document.getElementById('progress-bar-wrap').style.display=(CS.section==='welcome')?'none':'block';
+  if(CS.section==='welcome') m.innerHTML=renderWelcome();
+  else if(CS.section==='training') m.innerHTML=renderTraining();
+  else if(CS.section==='discussion') m.innerHTML=renderDiscussion();
+  else if(CS.section==='casestudy') m.innerHTML=renderCaseStudy();
+  else if(CS.section==='kc') m.innerHTML=renderKC();
+  else if(CS.section==='complete') m.innerHTML=renderComplete();
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+var THEME_DOMAIN={'Analytical':'Strategic Thinking','Context':'Strategic Thinking','Futuristic':'Strategic Thinking','Ideation':'Strategic Thinking','Input':'Strategic Thinking','Intellection':'Strategic Thinking','Learner':'Strategic Thinking','Strategic':'Strategic Thinking','Adaptability':'Relationship Building','Connectedness':'Relationship Building','Developer':'Relationship Building','Empathy':'Relationship Building','Harmony':'Relationship Building','Includer':'Relationship Building','Individualization':'Relationship Building','Positivity':'Relationship Building','Relator':'Relationship Building','Activator':'Influencing','Command':'Influencing','Communication':'Influencing','Competition':'Influencing','Maximizer':'Influencing','Self-Assurance':'Influencing','Significance':'Influencing','Woo':'Influencing','Achiever':'Executing','Arranger':'Executing','Belief':'Executing','Consistency':'Executing','Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'};
+var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N/A">N/A / Not sure</option><optgroup label="Strategic Thinking"><option value="Analytical">Analytical</option><option value="Context">Context</option><option value="Futuristic">Futuristic</option><option value="Ideation">Ideation</option><option value="Input">Input</option><option value="Intellection">Intellection</option><option value="Learner">Learner</option><option value="Strategic">Strategic</option></optgroup><optgroup label="Relationship Building"><option value="Adaptability">Adaptability</option><option value="Connectedness">Connectedness</option><option value="Developer">Developer</option><option value="Empathy">Empathy</option><option value="Harmony">Harmony</option><option value="Includer">Includer</option><option value="Individualization">Individualization</option><option value="Positivity">Positivity</option><option value="Relator">Relator</option></optgroup><optgroup label="Influencing"><option value="Activator">Activator</option><option value="Command">Command</option><option value="Communication">Communication</option><option value="Competition">Competition</option><option value="Maximizer">Maximizer</option><option value="Self-Assurance">Self-Assurance</option><option value="Significance">Significance</option><option value="Woo">Woo</option></optgroup><optgroup label="Executing"><option value="Achiever">Achiever</option><option value="Arranger">Arranger</option><option value="Belief">Belief</option><option value="Consistency">Consistency</option><option value="Deliberative">Deliberative</option><option value="Discipline">Discipline</option><option value="Focus">Focus</option><option value="Responsibility">Responsibility</option><option value="Restorative">Restorative</option></optgroup>';
+
+function getProfile(){
+  try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
+}
+function saveProfile(name,themes){
+  try{localStorage.setItem('pm-learner-profile',JSON.stringify({name:name,themes:themes,savedAt:new Date().toISOString()}));}catch(e){}
+}
+function clearProfile(){
+  try{localStorage.removeItem('pm-learner-profile');}catch(e){}
+}
+function clearProfileAndReload(){
+  clearProfile();
+  render();
+  return false;
+}
+function toggleNAThemes(){
+  var cb=document.getElementById('na-checkbox');
+  var grid=document.getElementById('theme-select-grid');
+  if(grid)grid.style.display=cb.checked?'none':'';
+}
+
+function renderProfileFields(){
+  var p=getProfile();
+  if(p&&p.name){
+    var isNA=(p.themes||[]).length===1&&p.themes[0]==='N/A';
+    var themesDisplay=isNA?'N/A &mdash; not provided':(p.themes||[]).map(function(t){return t+' ('+THEME_DOMAIN[t]+')';}).join(', ');
+    return '<div class="profile-display">'
+      +'<div class="profile-row"><span class="field-label">Learner</span><div class="profile-value">'+p.name+'</div></div>'
+      +'<div class="profile-row"><span class="field-label">Top 5 CliftonStrengths</span><div class="profile-value">'+themesDisplay+'</div></div>'
+      +'<p class="profile-clear"><a onclick="return clearProfileAndReload()">Not '+p.name+'? Clear saved name &amp; strengths</a></p>'
+      +'</div>';
+  }
+  var grid='<div class="theme-select-grid" id="theme-select-grid">';
+  for(var i=1;i<=5;i++){
+    grid+='<div class="theme-select-item"><label>Theme '+i+' <span class="required-mark">*</span></label>'
+      +'<select class="theme-select" id="theme-select-'+i+'">'+THEME_OPTIONS_HTML+'</select></div>';
+  }
+  grid+='</div>';
+  return '<div style="margin-bottom:18px;">'
+    +'<label class="field-label">Your Name <span class="required-mark">*</span></label>'
+    +'<input class="name-input" id="name-input" type="text" placeholder="First Last"/>'
+    +'</div>'
+    +'<div style="margin-bottom:8px;">'
+    +'<label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>'
+    +'</div>'
+    +'<label class="na-checkbox-row" for="na-checkbox"><input type="checkbox" id="na-checkbox" onchange="toggleNAThemes()"/>I do not know my CliftonStrengths (select N/A)</label>'
+    +grid;
+}
+
+function renderWelcome(){
+  var saved=loadState();
+  var resumeBtn=(saved&&CS.name)?'<button class="btn-secondary" onclick="resumeCase()" style="margin-left:10px;">Resume as '+CS.name+' &rarr;</button>':'';
+  return '<div class="screen active">'
+  +'<p class="eyebrow">Interactive PM in USACE &middot; Case File 02</p>'
+  +'<h1 class="title-main">The Schedule<br><em>vs. The Scope.</em></h1>'
+  +'<p class="lede">Two members of your PDT are clashing in front of the team \u2014 one wants to move fast, the other wants more data. <strong>How you handle this moment shapes how this team resolves every future conflict.</strong></p>'
+  +'<div class="card"><div class="card-label">What This Case File Covers</div>'
+  +'<p><strong>PDBP Doctrine:</strong> PROC2030 (Schedule) and PROC2040 (Resource Estimate) \u2014 why these processes are interdependent, and what happens when they are treated as separate tracks.</p>'
+  +'<p><strong>People Skill:</strong> Conflict resolution styles, and using a StrengthsFinder lens to understand \u2014 not excuse \u2014 why certain personality combinations clash predictably.</p>'
+  +'</div>'
+  +'<div class="card"><div class="card-label">How This Works</div>'
+  +'<p>Training (5 min) &rarr; Reflection &rarr; Case Study (branching scenario) &rarr; Knowledge Check (5 questions, 60% to pass).</p>'
+  +'</div>'
+  +'<div class="card people-card"><div class="card-label">Continuing the Story</div>'
+  +'<p>You are still <strong>Maria Chen</strong>, PM on the Building 4521 Renovation. It is now Week 3. The PDT is deep into planning.</p></div>'
+  +renderProfileFields()
+  +'<div class="btn-row"><button class="btn-primary" onclick="startCase()">Begin Case File &rarr;</button>'+resumeBtn+'</div>'
+  +'</div>';
+}
+
+function startCase(){
+  var p=getProfile();
+  var name,themes;
+  if(p&&p.name){
+    name=p.name;themes=p.themes;
+  }else{
+    name=document.getElementById('name-input').value.trim();
+    if(!name){alert('Please enter your name to continue.');return;}
+    var naChecked=document.getElementById('na-checkbox').checked;
+    if(naChecked){
+      themes=['N/A'];
+    }else{
+      themes=[];
+      for(var i=1;i<=5;i++){
+        var v=document.getElementById('theme-select-'+i).value;
+        if(!v){alert('Please select all five CliftonStrengths themes, or check the box if you do not know them.');return;}
+        themes.push(v);
+      }
+    }
+    saveProfile(name,themes);
+  }
+  CS.name=name;
+  CS.themes=themes;
+  CS.section='training';
+  saveState();render();
+}
+function resumeCase(){render();}
+
+function renderTraining(){
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Training &middot; 5 Minutes</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Why Schedule &amp; Cost Conflicts Are Predictable</h2>'
+  +'<div class="card">'
+  +'<div class="card-label">PROC2030 &amp; PROC2040 \u2014 Interdependent, Not Sequential</div>'
+  +'<p>The <strong>Activity and Schedule</strong> (PROC2030) and the <strong>Resource Estimate</strong> (PROC2040) are developed <strong>in parallel</strong> \u2014 not one after the other. A schedule without cost-informed durations is fiction. A cost estimate without a realistic schedule has no basis for labor, equipment, or escalation timing.</p>'
+  +'<p>Because these processes run side by side, the people who own them \u2014 the <strong>Scheduler</strong> and the <strong>Cost Engineer</strong> \u2014 are structurally dependent on each other\u2019s unfinished work. A scheduler under pressure to lock dates and a cost engineer who needs more time to validate an estimate are not in conflict because one of them is wrong. <strong>They are in conflict because the process design makes this tension structural.</strong></p>'
+  +'<span class="proc-tag">PROC2030</span><span class="proc-tag">PROC2040</span><span class="proc-tag">Parallel Planning</span>'
+  +'</div>'
+  +'<div class="card people-card">'
+  +'<div class="card-label">People Skill \u2014 Conflict Styles &amp; the Strengths Lens</div>'
+  +'<p>Most workplace conflict falls into a few recurring <strong>styles</strong>: <strong>Competing</strong> (push for your position), <strong>Accommodating</strong> (give in to preserve the relationship), <strong>Avoiding</strong> (sidestep the issue), <strong>Compromising</strong> (split the difference), and <strong>Collaborating</strong> (find a solution that addresses both sets of concerns). As a PM, your job in the moment is rarely to pick a side \u2014 it is to move the conversation toward <strong>Collaborating</strong>.</p>'
+  +'<p><strong>The Strengths lens helps you understand \u2014 not excuse \u2014 the friction.</strong> Someone with a dominant <em>Achiever</em> or <em>Activator</em> theme experiences an unfinished task as a problem to be solved <em>now</em>. Someone with a dominant <em>Analytical</em> or <em>Deliberative</em> theme experiences a decision made without sufficient data as a risk being taken carelessly. <strong>Both reactions are legitimate</strong> \u2014 they are just optimizing for different things. Naming that out loud, without taking sides, is often the fastest way to defuse the room.</p>'
+  +'</div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'training\',\'discussion\')">Continue to Discussion &rarr;</button></div>'
+  +'</div>';
+}
+
+function completeSection(current,next){
+  CS.sectionsComplete[current]=true;
+  CS.section=next;
+  saveState();render();
+}
+
+function renderDiscussion(){
+  var strengthNote='';
+  var primaryDomain='Relationship Building';
+  var domainInsights={'Strategic Thinking':'Your {theme} sides with whoever wants more data before moving. That does not make you right — it makes you predictable. Notice when the need for more information is genuine, not just comfortable.','Relationship Building':'Your {theme} wants to smooth this over fast. Resist that. Let both people actually be heard before you move to calm anyone down.','Influencing':'Your {theme} wants to make the call and end the friction. That looks like leadership, but skipping the disagreement just delays the next round of it.','Executing':'Your {theme} sides with whoever wants to move fastest. Check yourself: is the other person actually slowing things down, or just slower than your default pace?'};
+  var themes=(CS.themes||[]).filter(function(t){return t&&t!=='N/A';});
+  var matchedTheme=null;
+  for(var ti=0;ti<themes.length;ti++){
+    if(THEME_DOMAIN[themes[ti]]===primaryDomain){matchedTheme=themes[ti];break;}
+  }
+  if(!matchedTheme&&themes.length>0){matchedTheme=themes[0];}
+  if(matchedTheme){
+    var domain=THEME_DOMAIN[matchedTheme];
+    var template=domainInsights[domain]||'';
+    strengthNote=template.replace('{theme}',matchedTheme);
+  }
+  if(!strengthNote){
+    strengthNote='Whatever your natural style, this conflict needs both speed and certainty heard, not just resolved. Notice which side you naturally favor, and make room for the other one too.';
+  }
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Discussion &amp; Reflection</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Before You See the Scenario</h2>'
+  +'<p class="lede">These reflections are not graded. Take a moment to think honestly \u2014 your answers are saved only on this device.</p>'
+  +'<div class="card"><div class="card-label">Your Strengths Lens</div><p>'+strengthNote+'</p></div>'
+  +'<div class="reflect-block"><div class="reflect-q">1. Think of a time you witnessed two colleagues disagree in front of a group. What did the person leading the meeting do \u2014 and did it help?</div>'
+  +'<textarea class="reflect-input" id="r1" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">2. When you are in conflict with someone, which conflict style do you default to \u2014 Competing, Accommodating, Avoiding, Compromising, or Collaborating? Is that the same style you use when mediating <em>others</em>\u2019 conflicts?</div>'
+  +'<textarea class="reflect-input" id="r2" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">3. Have you ever felt like a decision was made too fast \u2014 or too slow \u2014 because of someone else\u2019s working style? How did you handle it?</div>'
+  +'<textarea class="reflect-input" id="r3" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="saveReflectionsAndContinue()">Continue to Case Study &rarr;</button></div>'
+  +'</div>';
+}
+function saveReflectionsAndContinue(){
+  CS.reflections={r1:document.getElementById('r1').value,r2:document.getElementById('r2').value,r3:document.getElementById('r3').value};
+  completeSection('discussion','casestudy');
+}
+
+// ===== CASE STUDY =====
+var CASE_STEP=0;
+var CASE_STEPS=[
+  {
+    type:'scenario',
+    label:'The Meeting',
+    text:'It is Week 3. You are in a planning session for <strong>Building 4521</strong> with your full PDT. <strong>Dana (Cost Engineer)</strong> is explaining that the resource estimate is not ready \u2014 a key material cost has not been validated with the supplier yet, and Dana wants until Friday. <strong>Marcus (Scheduler)</strong> interrupts: "We agreed to lock the schedule baseline <em>today</em>. If we slip again, we miss the PROC2070 review window." The room goes quiet. Both are looking at you.'
+  },
+  {
+    type:'decision',
+    label:'Decision 1 of 3',
+    prompt:'The tension is visible to the whole PDT right now. What do you do?',
+    options:[
+      {letter:'A',text:'Step in immediately: "Let us pause here. I want to understand both sides before we decide anything \u2014 can we take 10 outside this meeting?"'},
+      {letter:'B',text:'Let them work it out \u2014 stay quiet for a moment and see if Dana and Marcus resolve it between themselves.'},
+      {letter:'C',text:'Make a call on the spot: "Marcus, we lock the schedule today. Dana, you will have to validate that cost figure by Friday and we adjust if needed."'}
+    ],
+    consequences:{
+      A:{text:'Pausing the meeting and stepping out with both of them lowers the temperature immediately. Away from the group, Dana explains the supplier delay is outside Dana\u2019s control \u2014 and Marcus explains the PROC2070 review date is fixed by the DPM, not negotiable. Both constraints are real.',
+         insight:'<strong>What this reveals:</strong> Stepping in \u2014 not to decide, but to create space for both perspectives \u2014 immediately surfaced that <strong>this is not actually a personality conflict</strong>. It is two real constraints (a supplier delay and a fixed review date) that appear to compete. That reframe changes everything about how you solve it.'},
+      B:{text:'The silence stretches. Marcus says, tightly, "Fine \u2014 we will just use a placeholder number," and Dana visibly tenses but says nothing further. The meeting moves on, but the underlying disagreement was not resolved \u2014 it was just dropped.',
+         insight:'<strong>What this reveals:</strong> Waiting it out can work when two people have a strong working relationship and just need space \u2014 but here it produced a false resolution. Dana did not agree to the placeholder; Dana stopped arguing. That difference matters, and it will resurface.'},
+      C:{text:'Marcus looks relieved; Dana looks like the ground just shifted. The schedule gets locked with Dana\u2019s unvalidated placeholder number. Dana does not push back in the meeting \u2014 but later that day, Dana quietly flags to you that the placeholder is likely 15% low, in writing, "for the record."',
+         insight:'<strong>What this reveals:</strong> A fast top-down decision resolved the moment but did not resolve the problem \u2014 and Dana\u2019s "for the record" email is a signal that Dana no longer trusts this process to surface concerns. You also now own a schedule baseline you know may be wrong.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 2 of 3',
+    prompt:'You now know: the supplier delay (Dana\u2019s issue) and the PROC2070 review date (Marcus\u2019s issue) are both real and both fixed. How do you bring Dana and Marcus back together?',
+    options:[
+      {letter:'A',text:'Tell them both your decision: the schedule locks today with a flagged placeholder, to be revised after Friday \u2014 framed as a joint plan, not an order.'},
+      {letter:'B',text:'Avoid bringing them back together at all \u2014 handle the schedule and the cost estimate separately through individual emails so they do not have to interact again today.'},
+      {letter:'C',text:'Bring them back together and reframe the problem out loud: "It sounds like we do not actually disagree on what needs to happen \u2014 we are both blocked by things outside this room. What if the schedule baseline locks today, but PROC2040 carries a flagged placeholder until Friday, visible to the DPM?"'}
+    ],
+    consequences:{
+      A:{text:'Both agree \u2014 it is functionally similar to Option C\u2019s outcome. But because you framed it as <strong>your</strong> decision rather than something the two of them arrived at, Dana and Marcus both treat it as something handed to them, not something they own. Next time a similar conflict arises, both wait for you to decide again.',
+         insight:'<strong>What this reveals:</strong> The <em>outcome</em> can be identical to Collaborating, but <em>how</em> it is reached matters. A solution the PM hands down \u2014 even a good one \u2014 does not build the team\u2019s own conflict-resolution capacity. That capacity is what you actually need for the next 12 months of this project.'},
+      B:{text:'Handling it separately avoids any further friction today \u2014 but Dana and Marcus never hear each other\u2019s actual constraints. Each privately believes the other was simply being difficult. The underlying tension does not resolve; it goes quiet, and resurfaces at the next planning conflict.',
+         insight:'<strong>What this reveals:</strong> Avoiding is sometimes the right call for low-stakes issues \u2014 but for a structural tension (PROC2030/2040 interdependency) that will recur throughout the project, avoidance just defers the same conversation to a future moment, usually under more time pressure.'},
+      C:{text:'Reframing the problem \u2014 from "Dana vs. Marcus" to "two real constraints colliding" \u2014 visibly changes the energy in the room. Marcus says, "Okay \u2014 if it is flagged and visible to the DPM, that protects us at the review." Dana adds, "And I can commit to Friday in writing." They built the solution together, in front of you.',
+         insight:'<strong>What this reveals:</strong> This is <strong>Collaborating</strong> in practice \u2014 not splitting the difference (Compromising), but finding a solution that fully addresses both real constraints. Naming the shared problem out loud, without assigning blame to either person, is often the single highest-leverage move a PM can make in a moment like this.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 3 of 3',
+    prompt:'The immediate issue is resolved. To prevent this same dynamic from recurring throughout planning, what do you do before the meeting ends?',
+    options:[
+      {letter:'A',text:'Quietly schedule Dana and Marcus\u2019s planning work so they rarely have to be in the same meeting going forward.'},
+      {letter:'B',text:'Propose a simple working agreement: when PROC2030 and PROC2040 conflict, flagged placeholders with a committed resolution date are the default \u2014 documented in the PDT working notes, not improvised live in meetings.'},
+      {letter:'C',text:'Nothing further \u2014 it was a one-time scheduling pressure issue and does not need a process change.'}
+    ],
+    consequences:{
+      A:{text:'Keeping Dana and Marcus apart avoids friction in the short term \u2014 but PROC2030 and PROC2040 genuinely depend on each other. Separating the people who own interdependent processes creates communication gaps that surface later, usually as a schedule or cost surprise neither saw coming.',
+         insight:'<strong>What this reveals:</strong> Avoiding the <em>people</em> does not resolve a conflict rooted in <em>process design</em>. Dana and Marcus need to coordinate \u2014 the goal is not less interaction, but a shared way of handling the friction that interaction sometimes produces.'},
+      B:{text:'You spend two minutes documenting the agreement Dana and Marcus just reached as a standing working norm. At the next planning conflict (a different pairing, three weeks later), one PDT member references the norm directly \u2014 "let us flag it and set a date, like we did with the cost estimate" \u2014 and the team resolves it themselves, without you.',
+         insight:'<strong>What this reveals:</strong> Turning a one-time resolution into a <strong>documented working norm</strong> is how a PDT builds its own conflict-resolution capacity. This connects directly to the PDT Charter (PROC2020) \u2014 charters that include explicit norms for handling planning conflicts give the team a shared reference point instead of relying on the PM as the permanent tiebreaker.'},
+      C:{text:'Three weeks later, a near-identical conflict happens again \u2014 this time between Marcus and the Contracting Officer over PROC2050 timing. The PDT looks to you to mediate live, again, because no shared approach exists.',
+         insight:'<strong>What this reveals:</strong> A one-time intervention solves a one-time problem. But PROC2030/2040 tension is <strong>structural</strong> \u2014 it will recur with different people in different combinations throughout planning. Without a documented norm, every instance becomes a live fire to manage.'}
+    }
+  },
+  {
+    type:'debrief',
+    label:'Case Debrief'
+  }
+];
+
+
+function renderCaseStudy(){
+  CASE_STEP=CS.caseStep||0;
+  var step=CASE_STEPS[CASE_STEP];
+  var html='<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Case Study &middot; Building 4521 Renovation</p>';
+
+  if(step.type==='scenario'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">'+step.label+'</h2>'
+    +'<div class="scenario-box"><div class="scenario-label">Scenario Setup</div><div class="scenario-text">'+step.text+'</div></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()">Begin Decision 1 &rarr;</button></div>';
+  } else if(step.type==='decision'){
+    html+='<div class="scenario-label" style="margin-bottom:6px;">'+step.label+'</div>'
+    +'<div class="decision-prompt">'+step.prompt+'</div>'
+    +'<div id="case-options">';
+    step.options.forEach(function(opt){
+      html+='<div class="choice-option" onclick="chooseOption(\''+opt.letter+'\')"><span class="choice-letter">'+opt.letter+'.</span>'+opt.text+'</div>';
+    });
+    html+='</div><div id="case-consequence"></div><div id="case-nav" class="nav-row" style="display:none;"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">Continue &rarr;</button></div>';
+  } else if(step.type==='debrief'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">Case Debrief</h2>'
+    +'<div class="card people-card"><div class="card-label">What This Meeting Showed</div>'
+    +'<p>Dana and Marcus were not in conflict because one of them was wrong \u2014 they were in conflict because PROC2030 and PROC2040 are <strong>interdependent processes with independent constraints</strong>. The fastest path through it was not picking a side, and not splitting the difference \u2014 it was <strong>naming the shared problem out loud</strong> so both people could solve it together.</p>'
+    +'<p>The most effective move was not the decision itself \u2014 it was <em>how</em> the decision got made. A solution the team builds together becomes something they can repeat without you next time. A solution you hand down becomes something they wait for you to hand down again.</p>'
+    +'</div>'
+    +'<div class="card"><div class="card-label">PROC2020 / PROC2030 / PROC2040 Tie-In</div>'
+    +'<p>Document the working norm Dana and Marcus arrived at \u2014 flagged placeholders with committed resolution dates \u2014 as part of the PDT\u2019s working agreements under PROC2020. The next time a PROC2030/PROC2040 (or PROC2050) conflict surfaces with a different pairing, the team has a shared reference point instead of needing live mediation.</p></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'casestudy\',\'kc\')">Continue to Knowledge Check &rarr;</button></div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function caseNext(){
+  CASE_STEP++;
+  CS.caseStep=CASE_STEP;
+  saveState();
+  document.getElementById('main-content').innerHTML=renderCaseStudy();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function chooseOption(letter){
+  var step=CASE_STEPS[CASE_STEP];
+  CS.decisions[CASE_STEP]=letter;
+  saveState();
+  document.querySelectorAll('.choice-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='.55';});
+  var chosen=Array.from(document.querySelectorAll('.choice-option')).find(function(el){return el.textContent.trim().indexOf(letter+'.')===0;});
+  if(chosen){chosen.style.opacity='1';chosen.style.borderColor='var(--gold)';}
+  var c=step.consequences[letter];
+  document.getElementById('case-consequence').innerHTML=
+    '<div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+    +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div>';
+  document.getElementById('case-nav').style.display='flex';
+  var nextBtn=document.getElementById('case-next-btn');
+  if(CASE_STEP===3){nextBtn.textContent='Continue to Debrief \u2192';}
+}
+
+// ===== KNOWLEDGE CHECK =====
+var KC_QUESTIONS=[
+  {tag:'Doctrine',text:'PROC2030 (Schedule) and PROC2040 (Resource Estimate) are best described as:',
+   options:['Sequential \u2014 PROC2040 must be fully complete before PROC2030 begins','Unrelated \u2014 each is owned independently with no coordination needed','Developed in parallel, with structural interdependency between schedule durations and cost data','Optional during early planning and only required before PROC2070'],
+   correct:2,
+   explain:'PROC2030 and PROC2040 run in parallel and are structurally interdependent \u2014 a schedule needs cost-informed durations, and a cost estimate needs a realistic schedule. This interdependency is why the people who own these processes are structurally prone to deadline tension.'},
+  {tag:'Judgment',text:'Two PDT members are visibly disagreeing in a meeting, each citing a real constraint. What should the project manager do first?',
+   options:['Decide immediately so the meeting can move on','Stay silent and let them resolve it themselves','Create space to understand both constraints before any decision is made','Side with whichever constraint affects the schedule baseline'],
+   correct:2,
+   explain:'Pausing to understand both real constraints \u2014 without deciding yet \u2014 often reveals that what looked like a personality conflict is actually two legitimate constraints colliding. That reframe changes what "resolving" the conflict actually means.'},
+  {tag:'People Skill',text:'Of the five conflict styles (Competing, Accommodating, Avoiding, Compromising, Collaborating), which one seeks a solution that fully addresses both parties\u2019 underlying concerns \u2014 rather than splitting the difference?',
+   options:['Compromising','Collaborating','Accommodating','Avoiding'],
+   correct:1,
+   explain:'Compromising splits the difference \u2014 both sides give something up. Collaborating finds a solution that addresses the real concerns of both parties, often by reframing the problem. In the case study, "flag it and set a resolution date" was a Collaborating outcome, not a 50/50 split.'},
+  {tag:'Judgment',text:'A PM resolves a live conflict by personally deciding the outcome, then announcing it to both parties as a joint plan. Compared to facilitating the two parties to reach that same outcome together, this approach:',
+   options:['Is identical in every meaningful way \u2014 the outcome is what matters','Produces the same outcome, but does not build the team\u2019s own capacity to resolve similar conflicts without the PM','Is always the better choice because it is faster','Violates PROC2020 regardless of the outcome'],
+   correct:1,
+   explain:'A PM-delivered solution can produce the same result \u2014 but the team did not build it together, so they are more likely to wait for the PM to decide again next time. Facilitating the parties to reach the solution themselves builds lasting team capacity, which matters over a multi-year project.'},
+  {tag:'Doctrine',text:'After resolving a PROC2030/PROC2040 conflict, documenting the resolution approach as a standing working norm most directly supports:',
+   options:['PROC4000 Closeout documentation requirements','PROC2020 \u2014 PDT Charter working agreements that guide future decisions','PROC1040 Receipt of Funds verification','PROC3020 After Action Review submission timing'],
+   correct:1,
+   explain:'PROC2020 (PDT Charter) is where team working agreements live \u2014 including how the team handles recurring planning conflicts. Documenting a norm here means the next PROC2030/2040 (or PROC2050) conflict, even between different people, has a shared reference point instead of requiring live PM mediation.'}
+];
+var kcAnswers={};
+var kcOrder={}; // kcOrder[qi] = array mapping displayed position -> original option index
+function shuffleArray(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=a[i];a[i]=a[j];a[j]=tmp;
+  }
+  return a;
+}
+function buildKCOrder(){
+  kcOrder={};
+  KC_QUESTIONS.forEach(function(q,qi){
+    var idxs=[];
+    for(var i=0;i<q.options.length;i++)idxs.push(i);
+    kcOrder[qi]=shuffleArray(idxs);
+  });
+}
+
+function renderKC(){
+  kcAnswers={};
+  buildKCOrder();
+  var qHTML=KC_QUESTIONS.map(function(q,qi){
+    var order=kcOrder[qi];
+    return '<div class="question-block" id="kc-q-'+qi+'">'
+    +'<div class="question-num">Question '+(qi+1)+' of '+KC_QUESTIONS.length+'</div>'
+    +'<span class="question-tag">'+q.tag+'</span>'
+    +'<div class="question-text">'+q.text+'</div>'
+    +order.map(function(origIdx,pos){
+      return '<div class="answer-option" id="kc-opt-'+qi+'-'+pos+'" onclick="selectKCAnswer('+qi+','+pos+')">'
+      +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+q.options[origIdx]+'</div>';
+    }).join('')
+    +'<div class="kc-explain" id="kc-explain-'+qi+'"><strong>Why:</strong> '+q.explain+'</div>'
+    +'</div>';
+  }).join('');
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Knowledge Check &middot; 5 Questions &middot; 60% to Pass</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Doctrine &amp; Judgment</h2>'
+  +'<p class="lede">Some questions have a single correct doctrinal answer. Others ask what the project manager should do \u2014 choose the best course of action and read the explanation after answering either way.</p>'
+  +qHTML
+  +'<div class="kc-feedback" id="kc-feedback"></div>'
+  +'<div class="btn-row" id="kc-btn-row"><button class="btn-primary" id="kc-submit-btn" onclick="submitKC()" disabled>Submit Answers</button></div>'
+  +'</div>';
+}
+
+function selectKCAnswer(qi,oi){
+  document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+  kcAnswers[qi]=oi;
+  document.getElementById('kc-opt-'+qi+'-'+oi).classList.add('selected');
+  if(Object.keys(kcAnswers).length===KC_QUESTIONS.length){
+    document.getElementById('kc-submit-btn').disabled=false;
+  }
+}
+
+function submitKC(){
+  var correct=0;
+  KC_QUESTIONS.forEach(function(q,qi){
+    var order=kcOrder[qi];
+    var selPos=kcAnswers[qi];
+    var selOrigIdx=order[selPos];
+    var correctPos=order.indexOf(q.correct);
+    var isCorrect=selOrigIdx===q.correct;
+    if(isCorrect)correct++;
+    document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+    document.getElementById('kc-opt-'+qi+'-'+selPos).classList.add(isCorrect?'correct':'incorrect');
+    if(!isCorrect)document.getElementById('kc-opt-'+qi+'-'+correctPos).classList.add('correct');
+    document.getElementById('kc-explain-'+qi).classList.add('show');
+  });
+  CS.kcScore=correct;
+  var pct=Math.round((correct/KC_QUESTIONS.length)*100);
+  var passed=pct>=60;
+  var fb=document.getElementById('kc-feedback');
+  fb.className='kc-feedback show '+(passed?'pass':'fail');
+  fb.innerHTML='<div class="kc-score '+(passed?'pass':'fail')+'">'+correct+'/'+KC_QUESTIONS.length+'</div>'
+  +(passed?'<strong>Well done.</strong> You have completed Case File 02.':'<strong>Review the explanations above.</strong> Score 60% or higher to complete this case file.');
+  var btnRow=document.getElementById('kc-btn-row');
+  if(passed){
+    CS.sectionsComplete.kc=true;saveState();
+    btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'complete\')">Finish Case File &rarr;</button>';
+  } else {
+    btnRow.innerHTML='<button class="btn-primary" onclick="retakeKC()">Retake Knowledge Check</button>';
+  }
+}
+function retakeKC(){kcAnswers={};goSection('kc');}
+
+function renderComplete(){
+  return '<div class="screen active">'
+  +'<div class="complete-wrap">'
+  +'<div class="complete-seal">&#10003;</div>'
+  +'<div class="complete-title">Case File 02 Complete</div>'
+  +'<div class="complete-sub">'+CS.name+' &middot; The Schedule vs. The Scope &middot; Score: '+CS.kcScore+'/5</div>'
+  +'<div style="text-align:left;max-width:480px;margin:0 auto 20px;">'
+  +'<label class="field-label">What is one thing you will do differently this week, based on this case?</label>'
+  +'<textarea class="reflect-input" id="commitment" placeholder="Type your commitment..."></textarea>'
+  +'</div>'
+  +'<div class="btn-row" style="justify-content:center;"><button class="btn-primary" onclick="saveCommitment()">Save &amp; Finish</button>'
+  +'<button class="btn-secondary" onclick="restartCase()">Restart Case File</button></div>'
+  +'<p style="font-size:0.625rem;color:var(--white-dim);margin-top:18px;">Interactive PM in USACE &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile03_TheNewHome.html" style="color:var(--gold);text-decoration:underline;">Continue to Case File 03 &rarr;</a> &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" style="color:var(--white-dim);text-decoration:underline;">Course Home</a></p>'
+  +'</div></div>';
+}
+function saveCommitment(){
+  CS.commitment=document.getElementById('commitment').value;
+  saveState();
+  alert('Saved. Thank you for completing Case File 02.');
+}
+function restartCase(){
+  if(confirm('This will clear your progress for this case file. Continue?')){
+    try{localStorage.removeItem(STORAGE_KEY);}catch(e){}location.reload();
+  }
+}
+
+// ===== INIT =====
+(function init(){render();})();
+</script>
+<script>
+var CS={name:'',strength:'',section:'welcome',sectionsComplete:{training:false,discussion:false,casestudy:false,kc:false},kcScore:0,decisions:{},caseStep:0};
+var STORAGE_KEY='casefile02_v1';
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(CS));}catch(e){}}
+function loadState(){try{var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;var d=JSON.parse(raw);if(!d||!d.name)return false;CS=d;return true;}catch(e){return false;}}
+
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+
+var SECTIONS=['welcome','training','discussion','casestudy','kc','complete'];
+var SECTION_LABELS={welcome:'Welcome',training:'Training',discussion:'Discussion',casestudy:'Case Study',kc:'Knowledge Check',complete:'Complete'};
+
+function updateProgress(){
+  var idx=SECTIONS.indexOf(CS.section);
+  var pct=Math.round((idx/(SECTIONS.length-1))*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-label').textContent=SECTION_LABELS[CS.section]||'';
+}
+
+function renderNav(){
+  var order=['training','discussion','casestudy','kc'];
+  var html='<div class="section-nav">';
+  order.forEach(function(s){
+    var cls='sec-btn'+(CS.section===s?' active':'')+(CS.sectionsComplete[s]?' complete':'');
+    var locked=false;
+    var idx=order.indexOf(s);
+    if(idx>0 && !CS.sectionsComplete[order[idx-1]] && CS.section!==s) locked=true;
+    if(locked) cls+=' locked';
+    html+='<button class="'+cls+'" '+(locked?'disabled':'onclick="goSection(\''+s+'\')"')+'>'+(CS.sectionsComplete[s]?'&#10003; ':'')+SECTION_LABELS[s]+'</button>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function goSection(s){CS.section=s;saveState();render();}
+
+function render(){
+  var m=document.getElementById('main-content');
+  document.getElementById('progress-bar-wrap').style.display=(CS.section==='welcome')?'none':'block';
+  if(CS.section==='welcome') m.innerHTML=renderWelcome();
+  else if(CS.section==='training') m.innerHTML=renderTraining();
+  else if(CS.section==='discussion') m.innerHTML=renderDiscussion();
+  else if(CS.section==='casestudy') m.innerHTML=renderCaseStudy();
+  else if(CS.section==='kc') m.innerHTML=renderKC();
+  else if(CS.section==='complete') m.innerHTML=renderComplete();
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+var THEME_DOMAIN={'Analytical':'Strategic Thinking','Context':'Strategic Thinking','Futuristic':'Strategic Thinking','Ideation':'Strategic Thinking','Input':'Strategic Thinking','Intellection':'Strategic Thinking','Learner':'Strategic Thinking','Strategic':'Strategic Thinking','Adaptability':'Relationship Building','Connectedness':'Relationship Building','Developer':'Relationship Building','Empathy':'Relationship Building','Harmony':'Relationship Building','Includer':'Relationship Building','Individualization':'Relationship Building','Positivity':'Relationship Building','Relator':'Relationship Building','Activator':'Influencing','Command':'Influencing','Communication':'Influencing','Competition':'Influencing','Maximizer':'Influencing','Self-Assurance':'Influencing','Significance':'Influencing','Woo':'Influencing','Achiever':'Executing','Arranger':'Executing','Belief':'Executing','Consistency':'Executing','Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'};
+var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N/A">N/A / Not sure</option><optgroup label="Strategic Thinking"><option value="Analytical">Analytical</option><option value="Context">Context</option><option value="Futuristic">Futuristic</option><option value="Ideation">Ideation</option><option value="Input">Input</option><option value="Intellection">Intellection</option><option value="Learner">Learner</option><option value="Strategic">Strategic</option></optgroup><optgroup label="Relationship Building"><option value="Adaptability">Adaptability</option><option value="Connectedness">Connectedness</option><option value="Developer">Developer</option><option value="Empathy">Empathy</option><option value="Harmony">Harmony</option><option value="Includer">Includer</option><option value="Individualization">Individualization</option><option value="Positivity">Positivity</option><option value="Relator">Relator</option></optgroup><optgroup label="Influencing"><option value="Activator">Activator</option><option value="Command">Command</option><option value="Communication">Communication</option><option value="Competition">Competition</option><option value="Maximizer">Maximizer</option><option value="Self-Assurance">Self-Assurance</option><option value="Significance">Significance</option><option value="Woo">Woo</option></optgroup><optgroup label="Executing"><option value="Achiever">Achiever</option><option value="Arranger">Arranger</option><option value="Belief">Belief</option><option value="Consistency">Consistency</option><option value="Deliberative">Deliberative</option><option value="Discipline">Discipline</option><option value="Focus">Focus</option><option value="Responsibility">Responsibility</option><option value="Restorative">Restorative</option></optgroup>';
+
+function getProfile(){
+  try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
+}
+function saveProfile(name,themes){
+  try{localStorage.setItem('pm-learner-profile',JSON.stringify({name:name,themes:themes,savedAt:new Date().toISOString()}));}catch(e){}
+}
+function clearProfile(){
+  try{localStorage.removeItem('pm-learner-profile');}catch(e){}
+}
+function clearProfileAndReload(){
+  clearProfile();
+  render();
+  return false;
+}
+function toggleNAThemes(){
+  var cb=document.getElementById('na-checkbox');
+  var grid=document.getElementById('theme-select-grid');
+  if(grid)grid.style.display=cb.checked?'none':'';
+}
+
+function renderProfileFields(){
+  var p=getProfile();
+  if(p&&p.name){
+    var isNA=(p.themes||[]).length===1&&p.themes[0]==='N/A';
+    var themesDisplay=isNA?'N/A &mdash; not provided':(p.themes||[]).map(function(t){return t+' ('+THEME_DOMAIN[t]+')';}).join(', ');
+    return '<div class="profile-display">'
+      +'<div class="profile-row"><span class="field-label">Learner</span><div class="profile-value">'+p.name+'</div></div>'
+      +'<div class="profile-row"><span class="field-label">Top 5 CliftonStrengths</span><div class="profile-value">'+themesDisplay+'</div></div>'
+      +'<p class="profile-clear"><a onclick="return clearProfileAndReload()">Not '+p.name+'? Clear saved name &amp; strengths</a></p>'
+      +'</div>';
+  }
+  var grid='<div class="theme-select-grid" id="theme-select-grid">';
+  for(var i=1;i<=5;i++){
+    grid+='<div class="theme-select-item"><label>Theme '+i+' <span class="required-mark">*</span></label>'
+      +'<select class="theme-select" id="theme-select-'+i+'">'+THEME_OPTIONS_HTML+'</select></div>';
+  }
+  grid+='</div>';
+  return '<div style="margin-bottom:18px;">'
+    +'<label class="field-label">Your Name <span class="required-mark">*</span></label>'
+    +'<input class="name-input" id="name-input" type="text" placeholder="First Last"/>'
+    +'</div>'
+    +'<div style="margin-bottom:8px;">'
+    +'<label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>'
+    +'</div>'
+    +'<label class="na-checkbox-row" for="na-checkbox"><input type="checkbox" id="na-checkbox" onchange="toggleNAThemes()"/>I do not know my CliftonStrengths (select N/A)</label>'
+    +grid;
+}
+
+function renderWelcome(){
+  var saved=loadState();
+  var resumeBtn=(saved&&CS.name)?'<button class="btn-secondary" onclick="resumeCase()" style="margin-left:10px;">Resume as '+CS.name+' &rarr;</button>':'';
+  return '<div class="screen active">'
+  +'<p class="eyebrow">Interactive PM in USACE &middot; Case File 02</p>'
+  +'<h1 class="title-main">The Schedule<br><em>vs. The Scope.</em></h1>'
+  +'<p class="lede">Two members of your PDT are clashing in front of the team \u2014 one wants to move fast, the other wants more data. <strong>How you handle this moment shapes how this team resolves every future conflict.</strong></p>'
+  +'<div class="card"><div class="card-label">What This Case File Covers</div>'
+  +'<p><strong>PDBP Doctrine:</strong> PROC2030 (Schedule) and PROC2040 (Resource Estimate) \u2014 why these processes are interdependent, and what happens when they are treated as separate tracks.</p>'
+  +'<p><strong>People Skill:</strong> Conflict resolution styles, and using a StrengthsFinder lens to understand \u2014 not excuse \u2014 why certain personality combinations clash predictably.</p>'
+  +'</div>'
+  +'<div class="card"><div class="card-label">How This Works</div>'
+  +'<p>Training (5 min) &rarr; Reflection &rarr; Case Study (branching scenario) &rarr; Knowledge Check (5 questions, 60% to pass).</p>'
+  +'</div>'
+  +'<div class="card people-card"><div class="card-label">Continuing the Story</div>'
+  +'<p>You are still <strong>Maria Chen</strong>, PM on the Building 4521 Renovation. It is now Week 3. The PDT is deep into planning.</p></div>'
+  +renderProfileFields()
+  +'<div class="btn-row"><button class="btn-primary" onclick="startCase()">Begin Case File &rarr;</button>'+resumeBtn+'</div>'
+  +'</div>';
+}
+
+function startCase(){
+  var p=getProfile();
+  var name,themes;
+  if(p&&p.name){
+    name=p.name;themes=p.themes;
+  }else{
+    name=document.getElementById('name-input').value.trim();
+    if(!name){alert('Please enter your name to continue.');return;}
+    var naChecked=document.getElementById('na-checkbox').checked;
+    if(naChecked){
+      themes=['N/A'];
+    }else{
+      themes=[];
+      for(var i=1;i<=5;i++){
+        var v=document.getElementById('theme-select-'+i).value;
+        if(!v){alert('Please select all five CliftonStrengths themes, or check the box if you do not know them.');return;}
+        themes.push(v);
+      }
+    }
+    saveProfile(name,themes);
+  }
+  CS.name=name;
+  CS.themes=themes;
+  CS.section='training';
+  saveState();render();
+}
+function resumeCase(){render();}
+
+function renderTraining(){
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Training &middot; 5 Minutes</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Why Schedule &amp; Cost Conflicts Are Predictable</h2>'
+  +'<div class="card">'
+  +'<div class="card-label">PROC2030 &amp; PROC2040 \u2014 Interdependent, Not Sequential</div>'
+  +'<p>The <strong>Activity and Schedule</strong> (PROC2030) and the <strong>Resource Estimate</strong> (PROC2040) are developed <strong>in parallel</strong> \u2014 not one after the other. A schedule without cost-informed durations is fiction. A cost estimate without a realistic schedule has no basis for labor, equipment, or escalation timing.</p>'
+  +'<p>Because these processes run side by side, the people who own them \u2014 the <strong>Scheduler</strong> and the <strong>Cost Engineer</strong> \u2014 are structurally dependent on each other\u2019s unfinished work. A scheduler under pressure to lock dates and a cost engineer who needs more time to validate an estimate are not in conflict because one of them is wrong. <strong>They are in conflict because the process design makes this tension structural.</strong></p>'
+  +'<span class="proc-tag">PROC2030</span><span class="proc-tag">PROC2040</span><span class="proc-tag">Parallel Planning</span>'
+  +'</div>'
+  +'<div class="card people-card">'
+  +'<div class="card-label">People Skill \u2014 Conflict Styles &amp; the Strengths Lens</div>'
+  +'<p>Most workplace conflict falls into a few recurring <strong>styles</strong>: <strong>Competing</strong> (push for your position), <strong>Accommodating</strong> (give in to preserve the relationship), <strong>Avoiding</strong> (sidestep the issue), <strong>Compromising</strong> (split the difference), and <strong>Collaborating</strong> (find a solution that addresses both sets of concerns). As a PM, your job in the moment is rarely to pick a side \u2014 it is to move the conversation toward <strong>Collaborating</strong>.</p>'
+  +'<p><strong>The Strengths lens helps you understand \u2014 not excuse \u2014 the friction.</strong> Someone with a dominant <em>Achiever</em> or <em>Activator</em> theme experiences an unfinished task as a problem to be solved <em>now</em>. Someone with a dominant <em>Analytical</em> or <em>Deliberative</em> theme experiences a decision made without sufficient data as a risk being taken carelessly. <strong>Both reactions are legitimate</strong> \u2014 they are just optimizing for different things. Naming that out loud, without taking sides, is often the fastest way to defuse the room.</p>'
+  +'</div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'training\',\'discussion\')">Continue to Discussion &rarr;</button></div>'
+  +'</div>';
+}
+
+function completeSection(current,next){
+  CS.sectionsComplete[current]=true;
+  CS.section=next;
+  saveState();render();
+}
+
+function renderDiscussion(){
+  var strengthNote='';
+  var primaryDomain='Relationship Building';
+  var domainInsights={'Strategic Thinking':'Your {theme} sides with whoever wants more data before moving. That does not make you right — it makes you predictable. Notice when the need for more information is genuine, not just comfortable.','Relationship Building':'Your {theme} wants to smooth this over fast. Resist that. Let both people actually be heard before you move to calm anyone down.','Influencing':'Your {theme} wants to make the call and end the friction. That looks like leadership, but skipping the disagreement just delays the next round of it.','Executing':'Your {theme} sides with whoever wants to move fastest. Check yourself: is the other person actually slowing things down, or just slower than your default pace?'};
+  var themes=(CS.themes||[]).filter(function(t){return t&&t!=='N/A';});
+  var matchedTheme=null;
+  for(var ti=0;ti<themes.length;ti++){
+    if(THEME_DOMAIN[themes[ti]]===primaryDomain){matchedTheme=themes[ti];break;}
+  }
+  if(!matchedTheme&&themes.length>0){matchedTheme=themes[0];}
+  if(matchedTheme){
+    var domain=THEME_DOMAIN[matchedTheme];
+    var template=domainInsights[domain]||'';
+    strengthNote=template.replace('{theme}',matchedTheme);
+  }
+  if(!strengthNote){
+    strengthNote='Whatever your natural style, this conflict needs both speed and certainty heard, not just resolved. Notice which side you naturally favor, and make room for the other one too.';
+  }
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Discussion &amp; Reflection</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Before You See the Scenario</h2>'
+  +'<p class="lede">These reflections are not graded. Take a moment to think honestly \u2014 your answers are saved only on this device.</p>'
+  +'<div class="card"><div class="card-label">Your Strengths Lens</div><p>'+strengthNote+'</p></div>'
+  +'<div class="reflect-block"><div class="reflect-q">1. Think of a time you witnessed two colleagues disagree in front of a group. What did the person leading the meeting do \u2014 and did it help?</div>'
+  +'<textarea class="reflect-input" id="r1" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">2. When you are in conflict with someone, which conflict style do you default to \u2014 Competing, Accommodating, Avoiding, Compromising, or Collaborating? Is that the same style you use when mediating <em>others</em>\u2019 conflicts?</div>'
+  +'<textarea class="reflect-input" id="r2" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">3. Have you ever felt like a decision was made too fast \u2014 or too slow \u2014 because of someone else\u2019s working style? How did you handle it?</div>'
+  +'<textarea class="reflect-input" id="r3" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="saveReflectionsAndContinue()">Continue to Case Study &rarr;</button></div>'
+  +'</div>';
+}
+function saveReflectionsAndContinue(){
+  CS.reflections={r1:document.getElementById('r1').value,r2:document.getElementById('r2').value,r3:document.getElementById('r3').value};
+  completeSection('discussion','casestudy');
+}
+
+// ===== CASE STUDY =====
+var CASE_STEP=0;
+var CASE_STEPS=[
+  {
+    type:'scenario',
+    label:'The Meeting',
+    text:'It is Week 3. You are in a planning session for <strong>Building 4521</strong> with your full PDT. <strong>Dana (Cost Engineer)</strong> is explaining that the resource estimate is not ready \u2014 a key material cost has not been validated with the supplier yet, and Dana wants until Friday. <strong>Marcus (Scheduler)</strong> interrupts: "We agreed to lock the schedule baseline <em>today</em>. If we slip again, we miss the PROC2070 review window." The room goes quiet. Both are looking at you.'
+  },
+  {
+    type:'decision',
+    label:'Decision 1 of 3',
+    prompt:'The tension is visible to the whole PDT right now. What do you do?',
+    options:[
+      {letter:'A',text:'Step in immediately: "Let us pause here. I want to understand both sides before we decide anything \u2014 can we take 10 outside this meeting?"'},
+      {letter:'B',text:'Let them work it out \u2014 stay quiet for a moment and see if Dana and Marcus resolve it between themselves.'},
+      {letter:'C',text:'Make a call on the spot: "Marcus, we lock the schedule today. Dana, you will have to validate that cost figure by Friday and we adjust if needed."'}
+    ],
+    consequences:{
+      A:{text:'Pausing the meeting and stepping out with both of them lowers the temperature immediately. Away from the group, Dana explains the supplier delay is outside Dana\u2019s control \u2014 and Marcus explains the PROC2070 review date is fixed by the DPM, not negotiable. Both constraints are real.',
+         insight:'<strong>What this reveals:</strong> Stepping in \u2014 not to decide, but to create space for both perspectives \u2014 immediately surfaced that <strong>this is not actually a personality conflict</strong>. It is two real constraints (a supplier delay and a fixed review date) that appear to compete. That reframe changes everything about how you solve it.'},
+      B:{text:'The silence stretches. Marcus says, tightly, "Fine \u2014 we will just use a placeholder number," and Dana visibly tenses but says nothing further. The meeting moves on, but the underlying disagreement was not resolved \u2014 it was just dropped.',
+         insight:'<strong>What this reveals:</strong> Waiting it out can work when two people have a strong working relationship and just need space \u2014 but here it produced a false resolution. Dana did not agree to the placeholder; Dana stopped arguing. That difference matters, and it will resurface.'},
+      C:{text:'Marcus looks relieved; Dana looks like the ground just shifted. The schedule gets locked with Dana\u2019s unvalidated placeholder number. Dana does not push back in the meeting \u2014 but later that day, Dana quietly flags to you that the placeholder is likely 15% low, in writing, "for the record."',
+         insight:'<strong>What this reveals:</strong> A fast top-down decision resolved the moment but did not resolve the problem \u2014 and Dana\u2019s "for the record" email is a signal that Dana no longer trusts this process to surface concerns. You also now own a schedule baseline you know may be wrong.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 2 of 3',
+    prompt:'You now know: the supplier delay (Dana\u2019s issue) and the PROC2070 review date (Marcus\u2019s issue) are both real and both fixed. How do you bring Dana and Marcus back together?',
+    options:[
+      {letter:'A',text:'Tell them both your decision: the schedule locks today with a flagged placeholder, to be revised after Friday \u2014 framed as a joint plan, not an order.'},
+      {letter:'B',text:'Avoid bringing them back together at all \u2014 handle the schedule and the cost estimate separately through individual emails so they do not have to interact again today.'},
+      {letter:'C',text:'Bring them back together and reframe the problem out loud: "It sounds like we do not actually disagree on what needs to happen \u2014 we are both blocked by things outside this room. What if the schedule baseline locks today, but PROC2040 carries a flagged placeholder until Friday, visible to the DPM?"'}
+    ],
+    consequences:{
+      A:{text:'Both agree \u2014 it is functionally similar to Option C\u2019s outcome. But because you framed it as <strong>your</strong> decision rather than something the two of them arrived at, Dana and Marcus both treat it as something handed to them, not something they own. Next time a similar conflict arises, both wait for you to decide again.',
+         insight:'<strong>What this reveals:</strong> The <em>outcome</em> can be identical to Collaborating, but <em>how</em> it is reached matters. A solution the PM hands down \u2014 even a good one \u2014 does not build the team\u2019s own conflict-resolution capacity. That capacity is what you actually need for the next 12 months of this project.'},
+      B:{text:'Handling it separately avoids any further friction today \u2014 but Dana and Marcus never hear each other\u2019s actual constraints. Each privately believes the other was simply being difficult. The underlying tension does not resolve; it goes quiet, and resurfaces at the next planning conflict.',
+         insight:'<strong>What this reveals:</strong> Avoiding is sometimes the right call for low-stakes issues \u2014 but for a structural tension (PROC2030/2040 interdependency) that will recur throughout the project, avoidance just defers the same conversation to a future moment, usually under more time pressure.'},
+      C:{text:'Reframing the problem \u2014 from "Dana vs. Marcus" to "two real constraints colliding" \u2014 visibly changes the energy in the room. Marcus says, "Okay \u2014 if it is flagged and visible to the DPM, that protects us at the review." Dana adds, "And I can commit to Friday in writing." They built the solution together, in front of you.',
+         insight:'<strong>What this reveals:</strong> This is <strong>Collaborating</strong> in practice \u2014 not splitting the difference (Compromising), but finding a solution that fully addresses both real constraints. Naming the shared problem out loud, without assigning blame to either person, is often the single highest-leverage move a PM can make in a moment like this.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 3 of 3',
+    prompt:'The immediate issue is resolved. To prevent this same dynamic from recurring throughout planning, what do you do before the meeting ends?',
+    options:[
+      {letter:'A',text:'Quietly schedule Dana and Marcus\u2019s planning work so they rarely have to be in the same meeting going forward.'},
+      {letter:'B',text:'Propose a simple working agreement: when PROC2030 and PROC2040 conflict, flagged placeholders with a committed resolution date are the default \u2014 documented in the PDT working notes, not improvised live in meetings.'},
+      {letter:'C',text:'Nothing further \u2014 it was a one-time scheduling pressure issue and does not need a process change.'}
+    ],
+    consequences:{
+      A:{text:'Keeping Dana and Marcus apart avoids friction in the short term \u2014 but PROC2030 and PROC2040 genuinely depend on each other. Separating the people who own interdependent processes creates communication gaps that surface later, usually as a schedule or cost surprise neither saw coming.',
+         insight:'<strong>What this reveals:</strong> Avoiding the <em>people</em> does not resolve a conflict rooted in <em>process design</em>. Dana and Marcus need to coordinate \u2014 the goal is not less interaction, but a shared way of handling the friction that interaction sometimes produces.'},
+      B:{text:'You spend two minutes documenting the agreement Dana and Marcus just reached as a standing working norm. At the next planning conflict (a different pairing, three weeks later), one PDT member references the norm directly \u2014 "let us flag it and set a date, like we did with the cost estimate" \u2014 and the team resolves it themselves, without you.',
+         insight:'<strong>What this reveals:</strong> Turning a one-time resolution into a <strong>documented working norm</strong> is how a PDT builds its own conflict-resolution capacity. This connects directly to the PDT Charter (PROC2020) \u2014 charters that include explicit norms for handling planning conflicts give the team a shared reference point instead of relying on the PM as the permanent tiebreaker.'},
+      C:{text:'Three weeks later, a near-identical conflict happens again \u2014 this time between Marcus and the Contracting Officer over PROC2050 timing. The PDT looks to you to mediate live, again, because no shared approach exists.',
+         insight:'<strong>What this reveals:</strong> A one-time intervention solves a one-time problem. But PROC2030/2040 tension is <strong>structural</strong> \u2014 it will recur with different people in different combinations throughout planning. Without a documented norm, every instance becomes a live fire to manage.'}
+    }
+  },
+  {
+    type:'debrief',
+    label:'Case Debrief'
+  }
+];
+
+
+function renderCaseStudy(){
+  CASE_STEP=CS.caseStep||0;
+  var step=CASE_STEPS[CASE_STEP];
+  var html='<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Case Study &middot; Building 4521 Renovation</p>';
+
+  if(step.type==='scenario'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">'+step.label+'</h2>'
+    +'<div class="scenario-box"><div class="scenario-label">Scenario Setup</div><div class="scenario-text">'+step.text+'</div></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()">Begin Decision 1 &rarr;</button></div>';
+  } else if(step.type==='decision'){
+    html+='<div class="scenario-label" style="margin-bottom:6px;">'+step.label+'</div>'
+    +'<div class="decision-prompt">'+step.prompt+'</div>'
+    +'<div id="case-options">';
+    step.options.forEach(function(opt){
+      html+='<div class="choice-option" onclick="chooseOption(\''+opt.letter+'\')"><span class="choice-letter">'+opt.letter+'.</span>'+opt.text+'</div>';
+    });
+    html+='</div><div id="case-consequence"></div><div id="case-nav" class="nav-row" style="display:none;"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">Continue &rarr;</button></div>';
+  } else if(step.type==='debrief'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">Case Debrief</h2>'
+    +'<div class="card people-card"><div class="card-label">What This Meeting Showed</div>'
+    +'<p>Dana and Marcus were not in conflict because one of them was wrong \u2014 they were in conflict because PROC2030 and PROC2040 are <strong>interdependent processes with independent constraints</strong>. The fastest path through it was not picking a side, and not splitting the difference \u2014 it was <strong>naming the shared problem out loud</strong> so both people could solve it together.</p>'
+    +'<p>The most effective move was not the decision itself \u2014 it was <em>how</em> the decision got made. A solution the team builds together becomes something they can repeat without you next time. A solution you hand down becomes something they wait for you to hand down again.</p>'
+    +'</div>'
+    +'<div class="card"><div class="card-label">PROC2020 / PROC2030 / PROC2040 Tie-In</div>'
+    +'<p>Document the working norm Dana and Marcus arrived at \u2014 flagged placeholders with committed resolution dates \u2014 as part of the PDT\u2019s working agreements under PROC2020. The next time a PROC2030/PROC2040 (or PROC2050) conflict surfaces with a different pairing, the team has a shared reference point instead of needing live mediation.</p></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'casestudy\',\'kc\')">Continue to Knowledge Check &rarr;</button></div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function caseNext(){
+  CASE_STEP++;
+  CS.caseStep=CASE_STEP;
+  saveState();
+  document.getElementById('main-content').innerHTML=renderCaseStudy();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function chooseOption(letter){
+  var step=CASE_STEPS[CASE_STEP];
+  CS.decisions[CASE_STEP]=letter;
+  saveState();
+  document.querySelectorAll('.choice-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='.55';});
+  var chosen=Array.from(document.querySelectorAll('.choice-option')).find(function(el){return el.textContent.trim().indexOf(letter+'.')===0;});
+  if(chosen){chosen.style.opacity='1';chosen.style.borderColor='var(--gold)';}
+  var c=step.consequences[letter];
+  document.getElementById('case-consequence').innerHTML=
+    '<div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+    +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div>';
+  document.getElementById('case-nav').style.display='flex';
+  var nextBtn=document.getElementById('case-next-btn');
+  if(CASE_STEP===3){nextBtn.textContent='Continue to Debrief \u2192';}
+}
+
+// ===== KNOWLEDGE CHECK =====
+var KC_QUESTIONS=[
+  {tag:'Doctrine',text:'PROC2030 (Schedule) and PROC2040 (Resource Estimate) are best described as:',
+   options:['Sequential \u2014 PROC2040 must be fully complete before PROC2030 begins','Unrelated \u2014 each is owned independently with no coordination needed','Developed in parallel, with structural interdependency between schedule durations and cost data','Optional during early planning and only required before PROC2070'],
+   correct:2,
+   explain:'PROC2030 and PROC2040 run in parallel and are structurally interdependent \u2014 a schedule needs cost-informed durations, and a cost estimate needs a realistic schedule. This interdependency is why the people who own these processes are structurally prone to deadline tension.'},
+  {tag:'Judgment',text:'Two PDT members are visibly disagreeing in a meeting, each citing a real constraint. What should the project manager do first?',
+   options:['Decide immediately so the meeting can move on','Stay silent and let them resolve it themselves','Create space to understand both constraints before any decision is made','Side with whichever constraint affects the schedule baseline'],
+   correct:2,
+   explain:'Pausing to understand both real constraints \u2014 without deciding yet \u2014 often reveals that what looked like a personality conflict is actually two legitimate constraints colliding. That reframe changes what "resolving" the conflict actually means.'},
+  {tag:'People Skill',text:'Of the five conflict styles (Competing, Accommodating, Avoiding, Compromising, Collaborating), which one seeks a solution that fully addresses both parties\u2019 underlying concerns \u2014 rather than splitting the difference?',
+   options:['Compromising','Collaborating','Accommodating','Avoiding'],
+   correct:1,
+   explain:'Compromising splits the difference \u2014 both sides give something up. Collaborating finds a solution that addresses the real concerns of both parties, often by reframing the problem. In the case study, "flag it and set a resolution date" was a Collaborating outcome, not a 50/50 split.'},
+  {tag:'Judgment',text:'A PM resolves a live conflict by personally deciding the outcome, then announcing it to both parties as a joint plan. Compared to facilitating the two parties to reach that same outcome together, this approach:',
+   options:['Is identical in every meaningful way \u2014 the outcome is what matters','Produces the same outcome, but does not build the team\u2019s own capacity to resolve similar conflicts without the PM','Is always the better choice because it is faster','Violates PROC2020 regardless of the outcome'],
+   correct:1,
+   explain:'A PM-delivered solution can produce the same result \u2014 but the team did not build it together, so they are more likely to wait for the PM to decide again next time. Facilitating the parties to reach the solution themselves builds lasting team capacity, which matters over a multi-year project.'},
+  {tag:'Doctrine',text:'After resolving a PROC2030/PROC2040 conflict, documenting the resolution approach as a standing working norm most directly supports:',
+   options:['PROC4000 Closeout documentation requirements','PROC2020 \u2014 PDT Charter working agreements that guide future decisions','PROC1040 Receipt of Funds verification','PROC3020 After Action Review submission timing'],
+   correct:1,
+   explain:'PROC2020 (PDT Charter) is where team working agreements live \u2014 including how the team handles recurring planning conflicts. Documenting a norm here means the next PROC2030/2040 (or PROC2050) conflict, even between different people, has a shared reference point instead of requiring live PM mediation.'}
+];
+var kcAnswers={};
+var kcOrder={}; // kcOrder[qi] = array mapping displayed position -> original option index
+function shuffleArray(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=a[i];a[i]=a[j];a[j]=tmp;
+  }
+  return a;
+}
+function buildKCOrder(){
+  kcOrder={};
+  KC_QUESTIONS.forEach(function(q,qi){
+    var idxs=[];
+    for(var i=0;i<q.options.length;i++)idxs.push(i);
+    kcOrder[qi]=shuffleArray(idxs);
+  });
+}
+
+function renderKC(){
+  kcAnswers={};
+  buildKCOrder();
+  var qHTML=KC_QUESTIONS.map(function(q,qi){
+    var order=kcOrder[qi];
+    return '<div class="question-block" id="kc-q-'+qi+'">'
+    +'<div class="question-num">Question '+(qi+1)+' of '+KC_QUESTIONS.length+'</div>'
+    +'<span class="question-tag">'+q.tag+'</span>'
+    +'<div class="question-text">'+q.text+'</div>'
+    +order.map(function(origIdx,pos){
+      return '<div class="answer-option" id="kc-opt-'+qi+'-'+pos+'" onclick="selectKCAnswer('+qi+','+pos+')">'
+      +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+q.options[origIdx]+'</div>';
+    }).join('')
+    +'<div class="kc-explain" id="kc-explain-'+qi+'"><strong>Why:</strong> '+q.explain+'</div>'
+    +'</div>';
+  }).join('');
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Knowledge Check &middot; 5 Questions &middot; 60% to Pass</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Doctrine &amp; Judgment</h2>'
+  +'<p class="lede">Some questions have a single correct doctrinal answer. Others ask what the project manager should do \u2014 choose the best course of action and read the explanation after answering either way.</p>'
+  +qHTML
+  +'<div class="kc-feedback" id="kc-feedback"></div>'
+  +'<div class="btn-row" id="kc-btn-row"><button class="btn-primary" id="kc-submit-btn" onclick="submitKC()" disabled>Submit Answers</button></div>'
+  +'</div>';
+}
+
+function selectKCAnswer(qi,oi){
+  document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+  kcAnswers[qi]=oi;
+  document.getElementById('kc-opt-'+qi+'-'+oi).classList.add('selected');
+  if(Object.keys(kcAnswers).length===KC_QUESTIONS.length){
+    document.getElementById('kc-submit-btn').disabled=false;
+  }
+}
+
+function submitKC(){
+  var correct=0;
+  KC_QUESTIONS.forEach(function(q,qi){
+    var order=kcOrder[qi];
+    var selPos=kcAnswers[qi];
+    var selOrigIdx=order[selPos];
+    var correctPos=order.indexOf(q.correct);
+    var isCorrect=selOrigIdx===q.correct;
+    if(isCorrect)correct++;
+    document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+    document.getElementById('kc-opt-'+qi+'-'+selPos).classList.add(isCorrect?'correct':'incorrect');
+    if(!isCorrect)document.getElementById('kc-opt-'+qi+'-'+correctPos).classList.add('correct');
+    document.getElementById('kc-explain-'+qi).classList.add('show');
+  });
+  CS.kcScore=correct;
+  var pct=Math.round((correct/KC_QUESTIONS.length)*100);
+  var passed=pct>=60;
+  var fb=document.getElementById('kc-feedback');
+  fb.className='kc-feedback show '+(passed?'pass':'fail');
+  fb.innerHTML='<div class="kc-score '+(passed?'pass':'fail')+'">'+correct+'/'+KC_QUESTIONS.length+'</div>'
+  +(passed?'<strong>Well done.</strong> You have completed Case File 02.':'<strong>Review the explanations above.</strong> Score 60% or higher to complete this case file.');
+  var btnRow=document.getElementById('kc-btn-row');
+  if(passed){
+    CS.sectionsComplete.kc=true;saveState();
+    btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'complete\')">Finish Case File &rarr;</button>';
+  } else {
+    btnRow.innerHTML='<button class="btn-primary" onclick="retakeKC()">Retake Knowledge Check</button>';
+  }
+}
+function retakeKC(){kcAnswers={};goSection('kc');}
+
+function renderComplete(){
+  return '<div class="screen active">'
+  +'<div class="complete-wrap">'
+  +'<div class="complete-seal">&#10003;</div>'
+  +'<div class="complete-title">Case File 02 Complete</div>'
+  +'<div class="complete-sub">'+CS.name+' &middot; The Schedule vs. The Scope &middot; Score: '+CS.kcScore+'/5</div>'
+  +'<div style="text-align:left;max-width:480px;margin:0 auto 20px;">'
+  +'<label class="field-label">What is one thing you will do differently this week, based on this case?</label>'
+  +'<textarea class="reflect-input" id="commitment" placeholder="Type your commitment..."></textarea>'
+  +'</div>'
+  +'<div class="btn-row" style="justify-content:center;"><button class="btn-primary" onclick="saveCommitment()">Save &amp; Finish</button>'
+  +'<button class="btn-secondary" onclick="restartCase()">Restart Case File</button></div>'
+  +'<p style="font-size:0.625rem;color:var(--white-dim);margin-top:18px;">Interactive PM in USACE &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile03_TheNewHome.html" style="color:var(--gold);text-decoration:underline;">Continue to Case File 03 &rarr;</a> &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" style="color:var(--white-dim);text-decoration:underline;">Course Home</a></p>'
+  +'</div></div>';
+}
+function saveCommitment(){
+  CS.commitment=document.getElementById('commitment').value;
+  saveState();
+  alert('Saved. Thank you for completing Case File 02.');
+}
+function restartCase(){
+  if(confirm('This will clear your progress for this case file. Continue?')){
+    try{localStorage.removeItem(STORAGE_KEY);}catch(e){}location.reload();
+  }
+}
+
+// ===== INIT =====
+(function init(){render();})();
+</script>
+</body>
+</html>

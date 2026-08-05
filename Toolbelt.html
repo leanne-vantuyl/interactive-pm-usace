@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive PM in USACE</title>
+</head>
+<body>
+<!-- ==========================================
+     Interactive PM in USACE — SharePoint Snippet
+     Page: Toolbelt.aspx
+     Paste this entire block into a Script Editor web part
+     on a Classic SharePoint page.
+     ========================================== -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root{--gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;--army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;--white:#F5F2EB;--white-dim:#C8C4B8;--accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;--border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;}
+html.font-l{font-size:18px;}
+html.font-s{font-size:14px;}
+body{background:var(--army-dark);color:var(--white);font-family:'Inter',sans-serif;font-weight:400;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(61,82,41,0.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(37,45,28,0.4) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* ===== ACCESSIBILITY LIGHT MODE (default) ===== */
+body.light-mode::before{display:none !important;}
+body.light-mode{background:#FFFFFF !important;color:#111111;}
+body.light-mode{--army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-dim:#222222;--gold:#5A4010;--gold-light:#3A2A08;--gold-dim:#5A4010;--border:rgba(90,64,16,0.4);--border-strong:rgba(90,64,16,0.7);--accent:#1A4A10;--warn:#8B3A00;--danger:#7A1A1A;}
+
+/* HEADER */
+header{border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;background:rgba(26,31,20,0.97);backdrop-filter:blur(12px);z-index:200;}
+body.light-mode header{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+.header-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.logo-block{display:flex;align-items:center;gap:12px;}
+.logo-seal{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.625rem;color:var(--gold);flex-shrink:0;}
+body.light-mode .logo-seal{border-color:#5A4010;color:#5A4010;}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:0.875rem;color:var(--white);}
+.logo-sub{font-size:0.5625rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+body.light-mode .logo-sub{color:#5A4010;}
+.case-badge{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);border:1px solid var(--border);padding:3px 8px;letter-spacing:.1em;}
+body.light-mode .case-badge{color:#111111;border-color:#5A4010;background:#E8E4D9;font-weight:700;}
+.theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;}
+body.light-mode .theme-toggle{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+
+/* PROGRESS */
+.progress-bar-wrap{background:rgba(37,45,28,.8);border-bottom:1px solid var(--border);padding:8px 0;}
+body.light-mode .progress-bar-wrap{background:#E8E4D9;border-bottom:2px solid #5A4010;}
+.progress-bar-inner{max-width:860px;margin:0 auto;padding:0 24px;}
+.progress-track{height:3px;background:rgba(200,168,75,.15);border-radius:2px;margin-bottom:6px;}
+body.light-mode .progress-track{background:#C8C0A8;}
+.progress-fill{height:3px;background:var(--gold);border-radius:2px;transition:width .4s ease;}
+body.light-mode .progress-fill{background:#5A4010;}
+.progress-labels{display:flex;justify-content:space-between;}
+.progress-text{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.08em;}
+body.light-mode .progress-text{color:#111111;}
+.progress-pct{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);font-weight:700;}
+body.light-mode .progress-pct{color:#5A4010;}
+
+.main{max-width:860px;margin:0 auto;padding:36px 24px 80px;position:relative;z-index:1;}
+.screen{display:none;animation:fadeUp .3s ease both;}
+.screen.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* SECTION NAV */
+.section-nav{display:flex;gap:4px;margin-bottom:26px;flex-wrap:wrap;}
+.sec-btn{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.06em;text-transform:uppercase;padding:7px 12px;background:transparent;border:1px solid var(--border);color:var(--white-dim);cursor:pointer;display:flex;align-items:center;gap:5px;}
+body.light-mode .sec-btn{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:600;}
+.sec-btn.active{background:var(--gold);border-color:var(--gold);color:var(--army-dark);font-weight:700;}
+body.light-mode .sec-btn.active{background:#5A4010;color:#FFFFFF;}
+.sec-btn.complete{border-color:rgba(123,160,91,.5);color:var(--accent);}
+body.light-mode .sec-btn.complete{background:#E8F0E8;border-color:#1A4A10;color:#1A4A10;}
+.sec-btn.locked{opacity:.4;cursor:not-allowed;}
+
+/* TITLES */
+.eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .eyebrow{color:#5A4010;font-weight:700;}
+.title-main{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,4vw,2.375rem);line-height:1.18;color:var(--white);margin-bottom:14px;}
+body.light-mode .title-main{color:#111111;}
+.title-main em{color:var(--gold-light);font-style:italic;}
+body.light-mode .title-main em{color:#5A4010;}
+.lede{font-size:0.8125rem;line-height:1.8;color:var(--white-dim);max-width:620px;margin-bottom:22px;}
+body.light-mode .lede{color:#111111;font-size:0.875rem;}
+.lede strong{color:var(--white);font-weight:600;}
+body.light-mode .lede strong{color:#111111;}
+
+/* CARDS / CALLOUTS */
+.card{border:1px solid var(--border);background:rgba(37,45,28,.4);padding:16px 18px;margin-bottom:14px;}
+body.light-mode .card{background:#E8E4D9;border:2px solid #5A4010;}
+.card-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .card-label{color:#5A4010;font-weight:700;}
+.card p{font-size:0.75rem;line-height:1.7;color:var(--white-dim);margin-bottom:8px;}
+body.light-mode .card p{color:#111111;font-size:0.8125rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--white);}
+body.light-mode .card strong{color:#111111;}
+
+.people-card{border-left:4px solid var(--accent);}
+body.light-mode .people-card{border-left:6px solid #1A4A10;background:#E8F0E8;}
+body.light-mode .people-card .card-label{color:#1A4A10;}
+
+.proc-tag{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);border:1px solid var(--border-strong);padding:3px 8px;display:inline-block;margin:3px 3px 0 0;letter-spacing:.07em;}
+body.light-mode .proc-tag{color:#111111;border:2px solid #5A4010;background:#FFFFFF;font-weight:700;}
+
+/* REFLECTION INPUT */
+.reflect-block{margin-bottom:18px;}
+.reflect-q{font-size:0.75rem;color:var(--white);font-weight:600;margin-bottom:8px;line-height:1.6;}
+body.light-mode .reflect-q{color:#111111;font-size:0.8125rem;}
+.reflect-input{width:100%;background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.75rem;padding:11px 13px;outline:none;min-height:70px;resize:vertical;}
+body.light-mode .reflect-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;font-size:0.8125rem;}
+.reflect-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .reflect-input::placeholder{color:#888;opacity:1;}
+
+.strength-input{background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.8125rem;padding:11px 14px;outline:none;width:100%;max-width:320px;}
+body.light-mode .strength-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;}
+.strength-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .strength-input::placeholder{color:#888;opacity:1;}
+.field-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:8px;display:block;}
+body.light-mode .field-label{color:#5A4010;font-weight:700;}
+.name-input{background:rgba(37,45,28,.6);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.875rem;padding:12px 15px;outline:none;width:100%;max-width:420px;}
+body.light-mode .name-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;font-size:1rem;}
+.name-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .name-input::placeholder{color:#888;opacity:1;}
+
+/* SCENARIO */
+.scenario-box{background:rgba(26,31,20,.5);border:1px solid var(--border-strong);border-left:4px solid var(--gold);padding:18px 20px;margin-bottom:18px;}
+body.light-mode .scenario-box{background:#FFFFF8;border:2px solid #8B6000;border-left:6px solid #5A4010;}
+.scenario-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+body.light-mode .scenario-label{color:#5A4010;font-weight:700;}
+.scenario-text{font-size:0.8125rem;line-height:1.8;color:var(--white);}
+body.light-mode .scenario-text{color:#111111;font-size:0.875rem;}
+.scenario-text strong{color:var(--gold-light);}
+body.light-mode .scenario-text strong{color:#5A4010;}
+
+.decision-prompt{font-family:'DM Serif Display',serif;font-size:1.125rem;color:var(--white);margin:18px 0 14px;}
+body.light-mode .decision-prompt{color:#111111;}
+
+.choice-option{display:block;width:100%;text-align:left;background:rgba(26,31,20,.4);border:1px solid var(--border);color:var(--white-dim);font-family:'Inter',sans-serif;font-size:0.75rem;line-height:1.6;padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.choice-option:hover{border-color:var(--gold-dim);color:var(--white);background:rgba(37,45,28,.6);}
+body.light-mode .choice-option{background:#FFFFFF;border:2px solid #C8C0A8;color:#111111;font-size:0.8125rem;}
+body.light-mode .choice-option:hover{border-color:#5A4010;background:#E8E4D9;}
+.choice-letter{font-family:'DM Mono',monospace;font-weight:700;color:var(--gold);margin-right:8px;}
+body.light-mode .choice-letter{color:#5A4010;}
+
+/* CONSEQUENCE */
+.consequence-box{background:rgba(123,160,91,.08);border:1px solid rgba(123,160,91,.3);border-left:4px solid var(--accent);padding:16px 18px;margin:16px 0;}
+body.light-mode .consequence-box{background:#E8F0E8;border:2px solid #1A4A10;border-left:6px solid #1A4A10;}
+.consequence-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .consequence-label{color:#1A4A10;font-weight:700;}
+.consequence-text{font-size:0.75rem;line-height:1.75;color:var(--white-dim);}
+body.light-mode .consequence-text{color:#111111;font-size:0.8125rem;}
+.consequence-text strong{color:var(--white);}
+body.light-mode .consequence-text strong{color:#111111;}
+
+.insight-box{background:rgba(200,168,75,.06);border:1px solid var(--border);border-left:4px solid var(--gold-dim);padding:14px 16px;margin-top:12px;}
+body.light-mode .insight-box{background:#FFF8E8;border:2px solid #8B6000;border-left:6px solid #5A4010;}
+.insight-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+body.light-mode .insight-label{color:#5A4010;font-weight:700;}
+.insight-text{font-size:0.6875rem;line-height:1.7;color:var(--white-dim);}
+body.light-mode .insight-text{color:#111111;font-size:0.75rem;}
+.insight-text strong{color:var(--white);}
+body.light-mode .insight-text strong{color:#111111;}
+
+/* KNOWLEDGE CHECK */
+.question-block{background:rgba(26,31,20,.5);border:1px solid var(--border);padding:18px;margin-bottom:12px;}
+body.light-mode .question-block{background:#F8F6F2;border:2px solid #C8C0A8;}
+.question-num{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.1em;margin-bottom:8px;}
+body.light-mode .question-num{color:#5A4010;font-weight:700;}
+.question-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.08em;padding:2px 7px;border:1px solid var(--border-strong);color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .question-tag{border-color:#5A4010;color:#5A4010;background:#E8E4D9;font-weight:700;}
+.question-text{font-size:0.8125rem;color:var(--white);line-height:1.55;margin-bottom:14px;font-weight:600;}
+body.light-mode .question-text{color:#111111;font-size:0.875rem;}
+.answer-option{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:all .15s;font-size:0.75rem;color:var(--white-dim);line-height:1.5;}
+.answer-option:hover{border-color:var(--gold-dim);color:var(--white);}
+body.light-mode .answer-option{background:#FFFFFF;border:2px solid #C8C0A8;color:#111111;font-size:0.8125rem;}
+body.light-mode .answer-option:hover{border-color:#5A4010;background:#E8E4D9;}
+.answer-option.selected{border-color:var(--gold);background:rgba(200,168,75,.08);color:var(--white);}
+body.light-mode .answer-option.selected{border:3px solid #5A4010;background:#E8E4D9;color:#111111;}
+.answer-option.correct{border-color:var(--accent);background:rgba(123,160,91,.1);color:var(--accent);}
+body.light-mode .answer-option.correct{background:#1A4A10;border:3px solid #1A4A10;color:#FFFFFF;font-weight:700;}
+.answer-option.incorrect{border-color:var(--danger);background:rgba(192,57,43,.08);color:#E07C73;}
+body.light-mode .answer-option.incorrect{background:#7A1A1A;border:3px solid #7A1A1A;color:#FFFFFF;font-weight:700;}
+.answer-radio{width:14px;height:14px;border:1.5px solid var(--border);border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
+.answer-option.selected .answer-radio{border-color:var(--gold);background:var(--gold);}
+body.light-mode .answer-option.selected .answer-radio{border-color:#5A4010;background:#5A4010;}
+.answer-option.correct .answer-radio{border-color:var(--accent);background:var(--accent);}
+body.light-mode .answer-option.correct .answer-radio{border-color:#FFFFFF;background:#FFFFFF;}
+.answer-option.incorrect .answer-radio{border-color:var(--danger);background:var(--danger);}
+body.light-mode .answer-option.incorrect .answer-radio{border-color:#FFFFFF;background:#FFFFFF;}
+.answer-radio-dot{width:6px;height:6px;border-radius:50%;background:var(--army-dark);display:none;}
+.answer-option.selected .answer-radio-dot,.answer-option.correct .answer-radio-dot,.answer-option.incorrect .answer-radio-dot{display:block;}
+body.light-mode .answer-option.correct .answer-radio-dot{background:#1A4A10;}
+body.light-mode .answer-option.incorrect .answer-radio-dot{background:#7A1A1A;}
+.kc-explain{font-size:0.6875rem;line-height:1.65;color:var(--white-dim);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:none;}
+body.light-mode .kc-explain{color:#111111;font-size:0.75rem;border-top-color:#5A4010;}
+.kc-explain.show{display:block;}
+.kc-explain strong{color:var(--gold-light);}
+body.light-mode .kc-explain strong{color:#5A4010;}
+
+.kc-feedback{padding:14px 16px;margin-top:14px;font-size:0.75rem;display:none;}
+.kc-feedback.show{display:block;}
+.kc-feedback.pass{background:rgba(123,160,91,.1);border:1px solid rgba(123,160,91,.3);color:var(--accent);}
+body.light-mode .kc-feedback.pass{background:#D8F0D8;border:2px solid #1A4A10;color:#0A3A0A;font-weight:600;font-size:0.875rem;}
+.kc-feedback.fail{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);color:#E07C73;}
+body.light-mode .kc-feedback.fail{background:#F8D8D8;border:2px solid #7A1A1A;color:#5A0A0A;font-weight:600;font-size:0.875rem;}
+.kc-score{font-family:'DM Mono',monospace;font-size:1.375rem;font-weight:700;margin-bottom:4px;}
+.kc-score.pass{color:var(--accent);}
+body.light-mode .kc-score.pass{color:#1A4A10;}
+.kc-score.fail{color:var(--danger);}
+body.light-mode .kc-score.fail{color:#7A1A1A;}
+
+/* COMPLETION */
+.complete-wrap{background:rgba(26,31,20,.3);border:2px solid var(--border-strong);padding:32px;text-align:center;margin-top:20px;}
+body.light-mode .complete-wrap{background:#FAF8F3;border:3px solid #5A4010;}
+.complete-seal{width:54px;height:54px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gold);margin:0 auto 14px;}
+body.light-mode .complete-seal{border-color:#5A4010;color:#1A4A10;}
+.complete-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--white);margin-bottom:8px;}
+body.light-mode .complete-title{color:#111111;}
+.complete-sub{font-size:0.75rem;color:var(--white-dim);margin-bottom:20px;}
+body.light-mode .complete-sub{color:#111111;font-size:0.8125rem;}
+
+/* BUTTONS */
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--army-dark);font-family:'Inter',sans-serif;font-weight:700;font-size:0.6875rem;letter-spacing:.1em;text-transform:uppercase;padding:12px 22px;border:none;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+body.light-mode .btn-primary{background:#5A4010;color:#FFFFFF;}
+body.light-mode .btn-primary:hover{background:#3A2808;}
+.btn-secondary{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--white-dim);font-family:'Inter',sans-serif;font-weight:600;font-size:0.6875rem;letter-spacing:.08em;text-transform:uppercase;padding:12px 18px;border:1px solid var(--border);cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--border-strong);color:var(--white);}
+body.light-mode .btn-secondary{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+body.light-mode .btn-secondary:hover{background:#D4CDB8;border-color:#111111;}
+.btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;}
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:18px;border-top:1px solid var(--border);}
+body.light-mode .nav-row{border-top:2px solid #5A4010;}
+
+footer{border-top:1px solid var(--border);padding:14px 0;margin-top:20px;}
+body.light-mode footer{border-top:2px solid #5A4010;}
+.footer-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.footer-attr{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold-dim);letter-spacing:.09em;}
+body.light-mode .footer-attr{color:#5A4010;font-weight:700;}
+.footer-doc{font-size:0.5625rem;color:var(--white-dim);opacity:.4;}
+body.light-mode .footer-doc{color:#444;opacity:1;}
+
+@media print{header,.progress-bar-wrap,.section-nav,.btn-row,footer,.choice-option{display:none!important;}}
+
+.font-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;margin-right:8px;}
+body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
+
+.ref-phase{margin:36px 0 18px;}
+.ref-phase-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.ref-phase-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+.ref-phase-title{font-family:'DM Mono',monospace;font-size:0.625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;}
+details.proc-card{border:1px solid var(--border);margin-bottom:10px;}
+details.proc-card[open]{border-color:var(--border-strong);}
+details.proc-card summary{list-style:none;cursor:pointer;padding:14px 18px;display:flex;align-items:center;gap:14px;}
+details.proc-card summary::-webkit-details-marker{display:none;}
+details.proc-card summary::after{content:'+';font-family:'DM Mono',monospace;font-size:1.125rem;color:var(--gold-dim);margin-left:auto;flex-shrink:0;}
+details.proc-card[open] summary::after{content:'\2212';}
+.proc-code-pill{font-family:'DM Mono',monospace;font-size:0.625rem;letter-spacing:.08em;color:var(--gold);border:1px solid var(--border-strong);padding:4px 9px;flex-shrink:0;white-space:nowrap;}
+body.light-mode .proc-code-pill{color:#5A4010;}
+.proc-card-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--white);}
+.proc-card-body{padding:0 18px 18px;}
+.proc-card-desc{font-size:0.875rem;color:var(--white-dim);line-height:1.7;margin-bottom:14px;}
+.proc-cf-links{display:flex;flex-direction:column;gap:6px;}
+.proc-cf-link{font-family:'DM Mono',monospace;font-size:0.6875rem;letter-spacing:.05em;color:var(--accent);text-decoration:none;border:1px solid var(--border);padding:8px 12px;display:block;}
+.proc-cf-link:hover{border-color:var(--border-strong);}
+.proc-cf-link .cf-num{color:var(--gold);margin-right:6px;}
+.proc-no-cf{font-family:'DM Mono',monospace;font-size:0.6875rem;color:var(--white-dim);letter-spacing:.05em;font-style:italic;}
+.ref-toplink{display:inline-block;font-family:'DM Mono',monospace;font-size:0.625rem;letter-spacing:.1em;color:var(--gold);text-decoration:none;text-transform:uppercase;margin-bottom:18px;border:1px solid var(--border);padding:8px 14px;}
+.ref-toplink:hover{border-color:var(--border-strong);}
+.ref-crosslink-row{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap;}
+
+</style>
+<header>
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-seal">PM</div>
+      <div>
+        <div class="logo-primary">Interactive PM in USACE</div>
+        <div class="logo-sub">Course Reference</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="case-badge">Real Systems &middot; Toolbelt</span>
+      <button class="font-toggle" id="font-toggle" onclick="toggleFontSize()">Text: M</button>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
+    </div>
+  </div>
+</header>
+<div class="main">
+<a class="ref-toplink" href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html">&larr; Course Home</a>
+<div class="ref-crosslink-row"><a class="ref-toplink" href="https://leanne-vantuyl.github.io/interactive-pm-usace/PROC_Map.html">&larr; The PDBP Lifecycle Map</a></div>
+<p class="eyebrow">Course Reference</p>
+<h1 class="title-main">The PM&#39;s Toolbelt</h1>
+<p class="lede">These are the real systems USACE PMs use day to day. Rather than a slide of acronyms, each tool here is linked to the moment in this course where a PM is actually shown using it &mdash; and why.</p>
+<div class="ref-phase">
+<div class="ref-phase-bar"><div class="ref-phase-swatch" style="background:var(--gold);"></div><div class="ref-phase-title">Used by every PM</div></div>
+<details class="proc-card" id="promis">
+<summary><span class="proc-card-title">PROMIS / Primavera P6</span></summary>
+<div class="proc-card-body">
+<p class="proc-card-desc">The PDT's scheduling engine — builds and maintains the resource-loaded baseline, calculates Schedule Variance and SPI automatically (the float/critical-path math behind PROC2030 and PROC3000).</p>
+<div class="proc-cf-links"><a class="proc-cf-link" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile04_BuiltToSlip.html"><span class="cf-num">CF04</span>Built to Slip &rarr;</a><a class="proc-cf-link" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile07_PhantomSlip.html"><span class="cf-num">CF07</span>The Phantom Slip &rarr;</a></div>
+</div>
+</details>
+<details class="proc-card" id="cefms">
+<summary><span class="proc-card-title">CEFMS / CEFMS II</span></summary>
+<div class="proc-card-body">
+<p class="proc-card-desc">Corps of Engineers Financial Management System — the system of record for project cost, obligations, and expenditures.</p>
+<div class="proc-cf-links"><a class="proc-cf-link" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile05_TheNumberDoesntFit.html"><span class="cf-num">CF05</span>The Number Doesn't Fit &rarr;</a></div>
+</div>
+</details>
+<details class="proc-card" id="ccir8">
+<summary><span class="proc-card-title">CCIR #8</span></summary>
+<div class="proc-card-body">
+<p class="proc-card-desc">Command Channel Information Requirement #8 — a recurring project status reporting requirement that rolls schedule and cost data up to leadership.</p>
+<div class="proc-cf-links"><a class="proc-cf-link" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile07_PhantomSlip.html"><span class="cf-num">CF07</span>The Phantom Slip &rarr;</a></div>
+</div>
+</details>
+<details class="proc-card" id="rms">
+<summary><span class="proc-card-title">RMS Reports</span></summary>
+<div class="proc-card-body">
+<p class="proc-card-desc">Resident Management System reports — construction-phase tracking of contractor progress, submittals, and quality data.</p>
+<p class="proc-no-cf">Not yet directly featured in a case file.</p>
+</div>
+</details>
+</div>
+<div class="ref-phase">
+<div class="ref-phase-bar"><div class="ref-phase-swatch" style="background:var(--gold);"></div><div class="ref-phase-title">Civil Works</div></div>
+<details class="proc-card" id="cwifd">
+<summary><span class="proc-card-title">CWIFD</span></summary>
+<div class="proc-card-body">
+<p class="proc-card-desc">Civil Works Integrated Funding Database — where a PM tracks funding by Authorization/Appropriation/Apportionment and identifies exactly where a funding gap sits in that chain.</p>
+<div class="proc-cf-links"><a class="proc-cf-link" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile05_TheNumberDoesntFit.html"><span class="cf-num">CF05</span>The Number Doesn't Fit &rarr;</a></div>
+</div>
+</details>
+<details class="proc-card" id="err">
+<summary><span class="proc-card-title">Enterprise Risk Register</span></summary>
+<div class="proc-card-body">
+<p class="proc-card-desc">The Civil Works-wide risk tracking system — where informal risk knowledge ("this vendor usually runs late") becomes a formal entry with an owner, trigger, and response plan. Covers both threats (Avoid/Transfer/Mitigate/Accept) and opportunities (Exploit/Share/Enhance/Accept).</p>
+<div class="proc-cf-links"><a class="proc-cf-link" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile08_RiskNobodyTracked.html"><span class="cf-num">CF08</span>The Risk Nobody Tracked &rarr;</a><a class="proc-cf-link" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile11_TwoFacesOfRisk.html"><span class="cf-num">CF11</span>Two Faces of Risk &rarr;</a></div>
+</div>
+</details>
+</div>
+<div class="ref-phase">
+<div class="ref-phase-bar"><div class="ref-phase-swatch" style="background:var(--gold);"></div><div class="ref-phase-title">Military Programs</div></div>
+<details class="proc-card" id="cmi">
+<summary><span class="proc-card-title">CMI</span></summary>
+<div class="proc-card-body">
+<p class="proc-card-desc">Construction Management Information system — Military Programs construction tracking and reporting.</p>
+<p class="proc-no-cf">Not yet directly featured in a case file.</p>
+</div>
+</details>
+<details class="proc-card" id="pax">
+<summary><span class="proc-card-title">PAX</span></summary>
+<div class="proc-card-body">
+<p class="proc-card-desc">Programming and execution tracking tool used in Military Programs for project status.</p>
+<p class="proc-no-cf">Not yet directly featured in a case file.</p>
+</div>
+</details>
+<details class="proc-card" id="projnet">
+<summary><span class="proc-card-title">ProjNet / DrChecks</span></summary>
+<div class="proc-card-body">
+<p class="proc-card-desc">Design review and comment-resolution platform — used to coordinate design submittals and track reviewer comments to closure.</p>
+<p class="proc-no-cf">Not yet directly featured in a case file.</p>
+</div>
+</details>
+</div>
+<div class="ref-phase">
+<div class="ref-phase-bar"><div class="ref-phase-swatch" style="background:var(--gold);"></div><div class="ref-phase-title">Planning Reference</div></div>
+<details class="proc-card" id="pmpbuilder">
+<summary><span class="proc-card-title">PMP Builder (Walla Walla District)</span></summary>
+<div class="proc-card-body">
+<p class="proc-card-desc">A template/reference tool for assembling the 14-component Project Management Plan — a good starting point for any new PDT building out their PMP.</p>
+<p class="proc-no-cf">Not yet directly featured in a case file.</p>
+</div>
+</details>
+</div>
+
+</div>
+<footer>
+<div class="footer-inner">
+  <span class="footer-doc">EM 5-1-11 &middot; PROSPECT 355 &middot; Toolbelt v1.0</span>
+  <span class="footer-attr">Interactive PM in USACE</span>
+</div>
+</footer>
+<script>
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+</script>
+<script>
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+</script>
+</body>
+</html>

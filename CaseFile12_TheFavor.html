@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive PM in USACE</title>
+</head>
+<body>
+<!-- ==========================================
+     Interactive PM in USACE — SharePoint Snippet
+     Page: CaseFile12_TheFavor.aspx
+     Paste this entire block into a Script Editor web part
+     on a Classic SharePoint page.
+     ========================================== -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;--army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;--white:#F5F2EB;--white-dim:#C8C4B8;--accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;--border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;}
+html.font-l{font-size:18px;}
+html.font-s{font-size:14px;}
+body{background:var(--army-dark);color:var(--white);font-family:'Inter',sans-serif;font-weight:400;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(61,82,41,0.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(37,45,28,0.4) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* ===== ACCESSIBILITY LIGHT MODE (default) ===== */
+body.light-mode::before{display:none !important;}
+body.light-mode{background:#FFFFFF !important;color:#111111;}
+body.light-mode{--army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-dim:#222222;--gold:#5A4010;--gold-light:#3A2A08;--gold-dim:#5A4010;--border:rgba(90,64,16,0.4);--border-strong:rgba(90,64,16,0.7);--accent:#1A4A10;--warn:#8B3A00;--danger:#7A1A1A;}
+
+/* HEADER */
+header{border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;background:rgba(26,31,20,0.97);backdrop-filter:blur(12px);z-index:200;}
+body.light-mode header{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+.header-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.logo-block{display:flex;align-items:center;gap:12px;}
+.logo-seal{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.625rem;color:var(--gold);flex-shrink:0;}
+body.light-mode .logo-seal{border-color:#5A4010;color:#5A4010;}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:0.875rem;color:var(--white);}
+.logo-sub{font-size:0.5625rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+body.light-mode .logo-sub{color:#5A4010;}
+.case-badge{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);border:1px solid var(--border);padding:3px 8px;letter-spacing:.1em;}
+.case-quicknav{background:rgba(26,31,20,0.97);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:190;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+.case-quicknav-inner{display:flex;align-items:center;gap:4px;padding:7px 24px;max-width:1100px;margin:0 auto;}
+.cqn-link{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.05em;color:var(--white-dim);border:1px solid var(--border);padding:5px 9px;text-decoration:none;flex-shrink:0;transition:all .15s;}
+.cqn-link:hover{border-color:var(--gold-dim);color:var(--white);}
+.cqn-link.current{background:var(--gold);color:var(--army-dark);border-color:var(--gold);font-weight:700;}
+.cqn-sep{color:var(--border-strong);flex-shrink:0;margin:0 2px;}
+body.light-mode .case-quicknav{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+body.light-mode .cqn-link{color:#5A4010;border-color:#5A4010;}
+body.light-mode .cqn-link:hover{background:#E8E4D9;}
+body.light-mode .cqn-link.current{background:#5A4010;color:#FFFFFF;border-color:#5A4010;}
+body.light-mode .case-badge{color:#111111;border-color:#5A4010;background:#E8E4D9;font-weight:700;}
+.theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;}
+body.light-mode .theme-toggle{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+
+/* PROGRESS */
+.progress-bar-wrap{background:rgba(37,45,28,.8);border-bottom:1px solid var(--border);padding:8px 0;}
+body.light-mode .progress-bar-wrap{background:#E8E4D9;border-bottom:2px solid #5A4010;}
+.progress-bar-inner{max-width:860px;margin:0 auto;padding:0 24px;}
+.progress-track{height:3px;background:rgba(200,168,75,.15);border-radius:2px;margin-bottom:6px;}
+body.light-mode .progress-track{background:#C8C0A8;}
+.progress-fill{height:3px;background:var(--gold);border-radius:2px;transition:width .4s ease;}
+body.light-mode .progress-fill{background:#5A4010;}
+.progress-labels{display:flex;justify-content:space-between;}
+.progress-text{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.08em;}
+body.light-mode .progress-text{color:#111111;}
+.progress-pct{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);font-weight:700;}
+body.light-mode .progress-pct{color:#5A4010;}
+
+.main{max-width:860px;margin:0 auto;padding:36px 24px 80px;position:relative;z-index:1;}
+.screen{display:none;animation:fadeUp .3s ease both;}
+.screen.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* SECTION NAV */
+.section-nav{display:flex;gap:4px;margin-bottom:26px;flex-wrap:wrap;}
+.sec-btn{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.06em;text-transform:uppercase;padding:7px 12px;background:transparent;border:1px solid var(--border);color:var(--white-dim);cursor:pointer;display:flex;align-items:center;gap:5px;}
+body.light-mode .sec-btn{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:600;}
+.sec-btn.active{background:var(--gold);border-color:var(--gold);color:var(--army-dark);font-weight:700;}
+body.light-mode .sec-btn.active{background:#5A4010;color:#FFFFFF;}
+.sec-btn.complete{border-color:rgba(123,160,91,.5);color:var(--accent);}
+body.light-mode .sec-btn.complete{background:#E8F0E8;border-color:#1A4A10;color:#1A4A10;}
+.sec-btn.locked{opacity:.4;cursor:not-allowed;}
+
+/* TITLES */
+.eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .eyebrow{color:#5A4010;font-weight:700;}
+.title-main{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,4vw,2.375rem);line-height:1.18;color:var(--white);margin-bottom:14px;}
+body.light-mode .title-main{color:#111111;}
+.title-main em{color:var(--gold-light);font-style:italic;}
+body.light-mode .title-main em{color:#5A4010;}
+.lede{font-size:0.8125rem;line-height:1.8;color:var(--white-dim);max-width:620px;margin-bottom:22px;}
+body.light-mode .lede{color:#111111;font-size:0.875rem;}
+.lede strong{color:var(--white);font-weight:600;}
+body.light-mode .lede strong{color:#111111;}
+
+/* CARDS / CALLOUTS */
+.card{border:1px solid var(--border);background:rgba(37,45,28,.4);padding:16px 18px;margin-bottom:14px;}
+body.light-mode .card{background:#E8E4D9;border:2px solid #5A4010;}
+.card-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .card-label{color:#5A4010;font-weight:700;}
+.card p{font-size:0.75rem;line-height:1.7;color:var(--white-dim);margin-bottom:8px;}
+body.light-mode .card p{color:#111111;font-size:0.8125rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--white);}
+body.light-mode .card strong{color:#111111;}
+
+.people-card{border-left:4px solid var(--accent);}
+body.light-mode .people-card{border-left:6px solid #1A4A10;background:#E8F0E8;}
+body.light-mode .people-card .card-label{color:#1A4A10;}
+
+.proc-tag{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);border:1px solid var(--border-strong);padding:3px 8px;display:inline-block;margin:3px 3px 0 0;letter-spacing:.07em;}
+body.light-mode .proc-tag{color:#111111;border:2px solid #5A4010;background:#FFFFFF;font-weight:700;}
+
+/* REFLECTION INPUT */
+.reflect-block{margin-bottom:18px;}
+.reflect-q{font-size:0.75rem;color:var(--white);font-weight:600;margin-bottom:8px;line-height:1.6;}
+body.light-mode .reflect-q{color:#111111;font-size:0.8125rem;}
+.reflect-input{width:100%;background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.75rem;padding:11px 13px;outline:none;min-height:70px;resize:vertical;}
+body.light-mode .reflect-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;font-size:0.8125rem;}
+.reflect-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .reflect-input::placeholder{color:#888;opacity:1;}
+
+.strength-input{background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.8125rem;padding:11px 14px;outline:none;width:100%;max-width:320px;}
+body.light-mode .strength-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;}
+.strength-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .strength-input::placeholder{color:#888;opacity:1;}
+.theme-select-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px;}
+.theme-select-item label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:5px;display:block;}
+.theme-select{background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.8125rem;padding:10px 12px;outline:none;width:100%;}
+body.light-mode .theme-select-item label{color:#5A4010;font-weight:700;}
+body.light-mode .theme-select{background:#FFFFFF;border:2px solid #5A4010;color:#111111;}
+.na-checkbox-row{display:flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--white-dim);cursor:pointer;margin-bottom:14px;user-select:none;}
+.na-checkbox-row input{cursor:pointer;}
+body.light-mode .na-checkbox-row{color:#333333;}
+.profile-display{margin-bottom:18px;border:1px solid var(--border);padding:14px 16px;}
+.profile-row{margin-bottom:8px;}
+.profile-row:last-of-type{margin-bottom:0;}
+.profile-value{font-size:0.875rem;color:var(--white);font-family:'Inter',sans-serif;}
+.profile-clear{margin-top:10px;font-size:0.6875rem;}
+.profile-clear a{color:var(--gold-dim);text-decoration:underline;cursor:pointer;}
+body.light-mode .profile-value{color:#111111;}
+body.light-mode .profile-display{border:2px solid #5A4010;}
+.required-mark{color:var(--gold);}
+body.light-mode .required-mark{color:#5A4010;}
+.field-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:8px;display:block;}
+body.light-mode .field-label{color:#5A4010;font-weight:700;}
+.name-input{background:rgba(37,45,28,.6);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.875rem;padding:12px 15px;outline:none;width:100%;max-width:420px;}
+body.light-mode .name-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;font-size:1rem;}
+.name-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .name-input::placeholder{color:#888;opacity:1;}
+
+/* SCENARIO */
+.scenario-box{background:rgba(26,31,20,.5);border:1px solid var(--border-strong);border-left:4px solid var(--gold);padding:18px 20px;margin-bottom:18px;}
+body.light-mode .scenario-box{background:#FFFFF8;border:2px solid #8B6000;border-left:6px solid #5A4010;}
+.scenario-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+body.light-mode .scenario-label{color:#5A4010;font-weight:700;}
+.scenario-text{font-size:0.8125rem;line-height:1.8;color:var(--white);}
+body.light-mode .scenario-text{color:#111111;font-size:0.875rem;}
+.scenario-text strong{color:var(--gold-light);}
+body.light-mode .scenario-text strong{color:#5A4010;}
+
+.decision-prompt{font-family:'DM Serif Display',serif;font-size:1.125rem;color:var(--white);margin:18px 0 14px;}
+body.light-mode .decision-prompt{color:#111111;}
+
+.choice-option{display:block;width:100%;text-align:left;background:rgba(26,31,20,.4);border:1px solid var(--border);color:var(--white-dim);font-family:'Inter',sans-serif;font-size:0.75rem;line-height:1.6;padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.choice-option:hover{border-color:var(--gold-dim);color:var(--white);background:rgba(37,45,28,.6);}
+body.light-mode .choice-option{background:#FFFFFF;border:2px solid #C8C0A8;color:#111111;font-size:0.8125rem;}
+body.light-mode .choice-option:hover{border-color:#5A4010;background:#E8E4D9;}
+.choice-letter{font-family:'DM Mono',monospace;font-weight:700;color:var(--gold);margin-right:8px;}
+body.light-mode .choice-letter{color:#5A4010;}
+
+/* CONSEQUENCE */
+.consequence-box{background:rgba(123,160,91,.08);border:1px solid rgba(123,160,91,.3);border-left:4px solid var(--accent);padding:16px 18px;margin:16px 0;}
+body.light-mode .consequence-box{background:#E8F0E8;border:2px solid #1A4A10;border-left:6px solid #1A4A10;}
+.consequence-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .consequence-label{color:#1A4A10;font-weight:700;}
+.consequence-text{font-size:0.75rem;line-height:1.75;color:var(--white-dim);}
+body.light-mode .consequence-text{color:#111111;font-size:0.8125rem;}
+.consequence-text strong{color:var(--white);}
+body.light-mode .consequence-text strong{color:#111111;}
+
+.insight-box{background:rgba(200,168,75,.06);border:1px solid var(--border);border-left:4px solid var(--gold-dim);padding:14px 16px;margin-top:12px;}
+body.light-mode .insight-box{background:#FFF8E8;border:2px solid #8B6000;border-left:6px solid #5A4010;}
+.insight-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+body.light-mode .insight-label{color:#5A4010;font-weight:700;}
+.insight-text{font-size:0.6875rem;line-height:1.7;color:var(--white-dim);}
+body.light-mode .insight-text{color:#111111;font-size:0.75rem;}
+.insight-text strong{color:var(--white);}
+body.light-mode .insight-text strong{color:#111111;}
+
+/* KNOWLEDGE CHECK */
+.question-block{background:rgba(26,31,20,.5);border:1px solid var(--border);padding:18px;margin-bottom:12px;}
+body.light-mode .question-block{background:#F8F6F2;border:2px solid #C8C0A8;}
+.question-num{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.1em;margin-bottom:8px;}
+body.light-mode .question-num{color:#5A4010;font-weight:700;}
+.question-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.08em;padding:2px 7px;border:1px solid var(--border-strong);color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .question-tag{border-color:#5A4010;color:#5A4010;background:#E8E4D9;font-weight:700;}
+.question-text{font-size:0.8125rem;color:var(--white);line-height:1.55;margin-bottom:14px;font-weight:600;}
+body.light-mode .question-text{color:#111111;font-size:0.875rem;}
+.answer-option{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:all .15s;font-size:0.75rem;color:var(--white-dim);line-height:1.5;}
+.answer-option:hover{border-color:var(--gold-dim);color:var(--white);}
+body.light-mode .answer-option{background:#FFFFFF;border:2px solid #C8C0A8;color:#111111;font-size:0.8125rem;}
+body.light-mode .answer-option:hover{border-color:#5A4010;background:#E8E4D9;}
+.answer-option.selected{border-color:var(--gold);background:rgba(200,168,75,.08);color:var(--white);}
+body.light-mode .answer-option.selected{border:3px solid #5A4010;background:#E8E4D9;color:#111111;}
+.answer-option.correct{border-color:var(--accent);background:rgba(123,160,91,.1);color:var(--accent);}
+body.light-mode .answer-option.correct{background:#1A4A10;border:3px solid #1A4A10;color:#FFFFFF;font-weight:700;}
+.answer-option.incorrect{border-color:var(--danger);background:rgba(192,57,43,.08);color:#E07C73;}
+body.light-mode .answer-option.incorrect{background:#7A1A1A;border:3px solid #7A1A1A;color:#FFFFFF;font-weight:700;}
+.answer-radio{width:14px;height:14px;border:1.5px solid var(--border);border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
+.answer-option.selected .answer-radio{border-color:var(--gold);background:var(--gold);}
+body.light-mode .answer-option.selected .answer-radio{border-color:#5A4010;background:#5A4010;}
+.answer-option.correct .answer-radio{border-color:var(--accent);background:var(--accent);}
+body.light-mode .answer-option.correct .answer-radio{border-color:#FFFFFF;background:#FFFFFF;}
+.answer-option.incorrect .answer-radio{border-color:var(--danger);background:var(--danger);}
+body.light-mode .answer-option.incorrect .answer-radio{border-color:#FFFFFF;background:#FFFFFF;}
+.answer-radio-dot{width:6px;height:6px;border-radius:50%;background:var(--army-dark);display:none;}
+.answer-option.selected .answer-radio-dot,.answer-option.correct .answer-radio-dot,.answer-option.incorrect .answer-radio-dot{display:block;}
+body.light-mode .answer-option.correct .answer-radio-dot{background:#1A4A10;}
+body.light-mode .answer-option.incorrect .answer-radio-dot{background:#7A1A1A;}
+.kc-explain{font-size:0.6875rem;line-height:1.65;color:var(--white-dim);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:none;}
+body.light-mode .kc-explain{color:#111111;font-size:0.75rem;border-top-color:#5A4010;}
+.kc-explain.show{display:block;}
+.kc-explain strong{color:var(--gold-light);}
+body.light-mode .kc-explain strong{color:#5A4010;}
+
+.kc-feedback{padding:14px 16px;margin-top:14px;font-size:0.75rem;display:none;}
+.kc-feedback.show{display:block;}
+.kc-feedback.pass{background:rgba(123,160,91,.1);border:1px solid rgba(123,160,91,.3);color:var(--accent);}
+body.light-mode .kc-feedback.pass{background:#D8F0D8;border:2px solid #1A4A10;color:#0A3A0A;font-weight:600;font-size:0.875rem;}
+.kc-feedback.fail{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);color:#E07C73;}
+body.light-mode .kc-feedback.fail{background:#F8D8D8;border:2px solid #7A1A1A;color:#5A0A0A;font-weight:600;font-size:0.875rem;}
+.kc-score{font-family:'DM Mono',monospace;font-size:1.375rem;font-weight:700;margin-bottom:4px;}
+.kc-score.pass{color:var(--accent);}
+body.light-mode .kc-score.pass{color:#1A4A10;}
+.kc-score.fail{color:var(--danger);}
+body.light-mode .kc-score.fail{color:#7A1A1A;}
+
+/* COMPLETION */
+.complete-wrap{background:rgba(26,31,20,.3);border:2px solid var(--border-strong);padding:32px;text-align:center;margin-top:20px;}
+body.light-mode .complete-wrap{background:#FAF8F3;border:3px solid #5A4010;}
+.complete-seal{width:54px;height:54px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gold);margin:0 auto 14px;}
+body.light-mode .complete-seal{border-color:#5A4010;color:#1A4A10;}
+.complete-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--white);margin-bottom:8px;}
+body.light-mode .complete-title{color:#111111;}
+.complete-sub{font-size:0.75rem;color:var(--white-dim);margin-bottom:20px;}
+body.light-mode .complete-sub{color:#111111;font-size:0.8125rem;}
+
+/* BUTTONS */
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--army-dark);font-family:'Inter',sans-serif;font-weight:700;font-size:0.6875rem;letter-spacing:.1em;text-transform:uppercase;padding:12px 22px;border:none;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+body.light-mode .btn-primary{background:#5A4010;color:#FFFFFF;}
+body.light-mode .btn-primary:hover{background:#3A2808;}
+.btn-secondary{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--white-dim);font-family:'Inter',sans-serif;font-weight:600;font-size:0.6875rem;letter-spacing:.08em;text-transform:uppercase;padding:12px 18px;border:1px solid var(--border);cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--border-strong);color:var(--white);}
+body.light-mode .btn-secondary{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+body.light-mode .btn-secondary:hover{background:#D4CDB8;border-color:#111111;}
+.btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;}
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:18px;border-top:1px solid var(--border);}
+body.light-mode .nav-row{border-top:2px solid #5A4010;}
+
+footer{border-top:1px solid var(--border);padding:14px 0;margin-top:20px;}
+body.light-mode footer{border-top:2px solid #5A4010;}
+.footer-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.footer-attr{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold-dim);letter-spacing:.09em;}
+body.light-mode .footer-attr{color:#5A4010;font-weight:700;}
+.footer-doc{font-size:0.5625rem;color:var(--white-dim);opacity:.4;}
+body.light-mode .footer-doc{color:#444;opacity:1;}
+
+@media print{header,.progress-bar-wrap,.section-nav,.btn-row,footer,.choice-option{display:none!important;}}
+
+.font-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;margin-right:8px;}
+body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
+</style>
+<header>
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-seal">PM</div>
+      <div>
+        <div class="logo-primary">Interactive PM in USACE</div>
+        <div class="logo-sub">Case File 12 &middot; Execution Phase</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="case-badge">Eisenhower Matrix &middot; Objectivity</span>
+      <button class="font-toggle" id="font-toggle" onclick="toggleFontSize()">Text: M</button>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
+    </div>
+  </div>
+</header>
+
+<nav class="case-quicknav"><div class="case-quicknav-inner"><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" class="cqn-link">Home</a><span class="cqn-sep">&middot;</span><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/Module00_Orientation.html" class="cqn-link">M0</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile01_NewPM_UnclearRoles.html" class="cqn-link">CF01</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile02_ScheduleVsScope.html" class="cqn-link">CF02</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile03_TheNewHome.html" class="cqn-link">CF03</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile04_BuiltToSlip.html" class="cqn-link">CF04</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile05_TheNumberDoesntFit.html" class="cqn-link">CF05</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile06_FeedbackConversation.html" class="cqn-link">CF06</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile07_PhantomSlip.html" class="cqn-link">CF07</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile08_RiskNobodyTracked.html" class="cqn-link">CF08</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile09_MeetingGotAway.html" class="cqn-link">CF09</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile10_WrongShadeOfGray.html" class="cqn-link">CF10</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile11_TwoFacesOfRisk.html" class="cqn-link">CF11</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile12_TheFavor.html" class="cqn-link current">CF12</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile13_ClosingWell.html" class="cqn-link">CF13</a></div></nav>
+
+<div class="progress-bar-wrap" id="progress-bar-wrap" style="display:none;">
+  <div class="progress-bar-inner">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-labels">
+      <span class="progress-text" id="progress-label">Training</span>
+      <span class="progress-pct" id="progress-pct">0%</span>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="main-content"></div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-attr">Interactive PM in USACE &middot; PPM Community of Practice</span>
+    <span class="footer-doc">EM 5-1-11 &middot; REF8006G &middot; Case File 12 v1.0</span>
+  </div>
+</footer>
+
+<script>
+var CS={name:'',strength:'',section:'welcome',sectionsComplete:{training:false,discussion:false,casestudy:false,kc:false},kcScore:0,decisions:{},caseStep:0};
+var STORAGE_KEY='casefile12_v1';
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(CS));}catch(e){}}
+function loadState(){try{var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;var d=JSON.parse(raw);if(!d||!d.name)return false;CS=d;return true;}catch(e){return false;}}
+
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+
+var SECTIONS=['welcome','training','discussion','casestudy','kc','complete'];
+var SECTION_LABELS={welcome:'Welcome',training:'Training',discussion:'Discussion',casestudy:'Case Study',kc:'Knowledge Check',complete:'Complete'};
+
+function updateProgress(){
+  var idx=SECTIONS.indexOf(CS.section);
+  var pct=Math.round((idx/(SECTIONS.length-1))*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-label').textContent=SECTION_LABELS[CS.section]||'';
+}
+
+function renderNav(){
+  var order=['training','discussion','casestudy','kc'];
+  var html='<div class="section-nav">';
+  order.forEach(function(s){
+    var cls='sec-btn'+(CS.section===s?' active':'')+(CS.sectionsComplete[s]?' complete':'');
+    var locked=false;
+    var idx=order.indexOf(s);
+    if(idx>0 && !CS.sectionsComplete[order[idx-1]] && CS.section!==s) locked=true;
+    if(locked) cls+=' locked';
+    html+='<button class="'+cls+'" '+(locked?'disabled':'onclick="goSection(\''+s+'\')"')+'>'+(CS.sectionsComplete[s]?'&#10003; ':'')+SECTION_LABELS[s]+'</button>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function goSection(s){CS.section=s;saveState();render();}
+
+function render(){
+  var m=document.getElementById('main-content');
+  document.getElementById('progress-bar-wrap').style.display=(CS.section==='welcome')?'none':'block';
+  if(CS.section==='welcome') m.innerHTML=renderWelcome();
+  else if(CS.section==='training') m.innerHTML=renderTraining();
+  else if(CS.section==='discussion') m.innerHTML=renderDiscussion();
+  else if(CS.section==='casestudy') m.innerHTML=renderCaseStudy();
+  else if(CS.section==='kc') m.innerHTML=renderKC();
+  else if(CS.section==='complete') m.innerHTML=renderComplete();
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+var THEME_DOMAIN={'Analytical':'Strategic Thinking','Context':'Strategic Thinking','Futuristic':'Strategic Thinking','Ideation':'Strategic Thinking','Input':'Strategic Thinking','Intellection':'Strategic Thinking','Learner':'Strategic Thinking','Strategic':'Strategic Thinking','Adaptability':'Relationship Building','Connectedness':'Relationship Building','Developer':'Relationship Building','Empathy':'Relationship Building','Harmony':'Relationship Building','Includer':'Relationship Building','Individualization':'Relationship Building','Positivity':'Relationship Building','Relator':'Relationship Building','Activator':'Influencing','Command':'Influencing','Communication':'Influencing','Competition':'Influencing','Maximizer':'Influencing','Self-Assurance':'Influencing','Significance':'Influencing','Woo':'Influencing','Achiever':'Executing','Arranger':'Executing','Belief':'Executing','Consistency':'Executing','Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'};
+var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N/A">N/A / Not sure</option><optgroup label="Strategic Thinking"><option value="Analytical">Analytical</option><option value="Context">Context</option><option value="Futuristic">Futuristic</option><option value="Ideation">Ideation</option><option value="Input">Input</option><option value="Intellection">Intellection</option><option value="Learner">Learner</option><option value="Strategic">Strategic</option></optgroup><optgroup label="Relationship Building"><option value="Adaptability">Adaptability</option><option value="Connectedness">Connectedness</option><option value="Developer">Developer</option><option value="Empathy">Empathy</option><option value="Harmony">Harmony</option><option value="Includer">Includer</option><option value="Individualization">Individualization</option><option value="Positivity">Positivity</option><option value="Relator">Relator</option></optgroup><optgroup label="Influencing"><option value="Activator">Activator</option><option value="Command">Command</option><option value="Communication">Communication</option><option value="Competition">Competition</option><option value="Maximizer">Maximizer</option><option value="Self-Assurance">Self-Assurance</option><option value="Significance">Significance</option><option value="Woo">Woo</option></optgroup><optgroup label="Executing"><option value="Achiever">Achiever</option><option value="Arranger">Arranger</option><option value="Belief">Belief</option><option value="Consistency">Consistency</option><option value="Deliberative">Deliberative</option><option value="Discipline">Discipline</option><option value="Focus">Focus</option><option value="Responsibility">Responsibility</option><option value="Restorative">Restorative</option></optgroup>';
+
+function getProfile(){
+  try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
+}
+function saveProfile(name,themes){
+  try{localStorage.setItem('pm-learner-profile',JSON.stringify({name:name,themes:themes,savedAt:new Date().toISOString()}));}catch(e){}
+}
+function clearProfile(){
+  try{localStorage.removeItem('pm-learner-profile');}catch(e){}
+}
+function clearProfileAndReload(){
+  clearProfile();
+  render();
+  return false;
+}
+function toggleNAThemes(){
+  var cb=document.getElementById('na-checkbox');
+  var grid=document.getElementById('theme-select-grid');
+  if(grid)grid.style.display=cb.checked?'none':'';
+}
+
+function renderProfileFields(){
+  var p=getProfile();
+  if(p&&p.name){
+    var isNA=(p.themes||[]).length===1&&p.themes[0]==='N/A';
+    var themesDisplay=isNA?'N/A &mdash; not provided':(p.themes||[]).map(function(t){return t+' ('+THEME_DOMAIN[t]+')';}).join(', ');
+    return '<div class="profile-display">'
+      +'<div class="profile-row"><span class="field-label">Learner</span><div class="profile-value">'+p.name+'</div></div>'
+      +'<div class="profile-row"><span class="field-label">Top 5 CliftonStrengths</span><div class="profile-value">'+themesDisplay+'</div></div>'
+      +'<p class="profile-clear"><a onclick="return clearProfileAndReload()">Not '+p.name+'? Clear saved name &amp; strengths</a></p>'
+      +'</div>';
+  }
+  var grid='<div class="theme-select-grid" id="theme-select-grid">';
+  for(var i=1;i<=5;i++){
+    grid+='<div class="theme-select-item"><label>Theme '+i+' <span class="required-mark">*</span></label>'
+      +'<select class="theme-select" id="theme-select-'+i+'">'+THEME_OPTIONS_HTML+'</select></div>';
+  }
+  grid+='</div>';
+  return '<div style="margin-bottom:18px;">'
+    +'<label class="field-label">Your Name <span class="required-mark">*</span></label>'
+    +'<input class="name-input" id="name-input" type="text" placeholder="First Last"/>'
+    +'</div>'
+    +'<div style="margin-bottom:8px;">'
+    +'<label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>'
+    +'</div>'
+    +'<label class="na-checkbox-row" for="na-checkbox"><input type="checkbox" id="na-checkbox" onchange="toggleNAThemes()"/>I do not know my CliftonStrengths (select N/A)</label>'
+    +grid;
+}
+
+function renderWelcome(){
+  var saved=loadState();
+  var resumeBtn=(saved&&CS.name)?'<button class="btn-secondary" onclick="resumeCase()" style="margin-left:10px;">Resume as '+CS.name+' &rarr;</button>':'';
+  return '<div class="screen active">'
+  +'<p class="eyebrow">Interactive PM in USACE &middot; Case File 12</p>'
+  +'<h1 class="title-main">The<br><em>Favor.</em></h1>'
+  +'<p class="lede">A message from an old friend, asking for a small favor about someone on your team. <strong>Nothing about it is improper. That is exactly what makes it worth thinking about.</strong></p>'
+  +'<div class="card"><div class="card-label">What This Case File Covers</div>'
+  +'<p><strong>PDBP Doctrine:</strong> PM input to Resource Providers on PDT member performance is legitimate and valuable (REF8006G, DPMAP appraisal input) — but how that input is given matters as much as whether it is given.</p>'
+  +'<p><strong>People Skill:</strong> The <strong>Eisenhower Matrix</strong> — sorting requests by urgent/important/whose-job-is-it — and what objectivity actually means when the request comes from a friend.</p>'
+  +'</div>'
+  +'<div class="card"><div class="card-label">How This Works</div>'
+  +'<p>Training (5 min) &rarr; Reflection &rarr; Case Study (branching scenario) &rarr; Knowledge Check (5 questions, 60% to pass).</p>'
+  +'</div>'
+  +'<div class="card people-card"><div class="card-label">Continuing the Story</div>'
+  +'<p>You are still <strong>Maria Chen</strong>, PM on the Building 4521 Renovation. You are deep in finalizing this week’s CCB package — a real deadline, today. A message arrives from <strong>Frank Liu</strong>, the Mechanical Engineering Branch Chief — an old friend from before you became a PM, and <strong>Priya’s</strong> supervisor. "Hey — Priya’s annual appraisal is due Friday. Between us, how has she been doing on 4521? Want to make sure I get this right for her."</p></div>'
+  +renderProfileFields()
+  +'<div class="btn-row"><button class="btn-primary" onclick="startCase()">Begin Case File &rarr;</button>'+resumeBtn+'</div>'
+  +'</div>';
+}
+function startCase(){
+  var p=getProfile();
+  var name,themes;
+  if(p&&p.name){
+    name=p.name;themes=p.themes;
+  }else{
+    name=document.getElementById('name-input').value.trim();
+    if(!name){alert('Please enter your name to continue.');return;}
+    var naChecked=document.getElementById('na-checkbox').checked;
+    if(naChecked){
+      themes=['N/A'];
+    }else{
+      themes=[];
+      for(var i=1;i<=5;i++){
+        var v=document.getElementById('theme-select-'+i).value;
+        if(!v){alert('Please select all five CliftonStrengths themes, or check the box if you do not know them.');return;}
+        themes.push(v);
+      }
+    }
+    saveProfile(name,themes);
+  }
+  CS.name=name;
+  CS.themes=themes;
+  CS.section='training';
+  saveState();render();
+}
+function resumeCase(){render();}
+
+function renderTraining(){
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Training &middot; 5 Minutes</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Urgent, Important, and Whose Job It Is</h2>'
+  +'<div class="card">'
+  +'<div class="card-label">The Eisenhower Matrix</div>'
+  +'<p>When a new request lands — especially one that interrupts something else — it helps to sort it along two questions: is it <strong>urgent</strong> (does it need to happen right now), and is it <strong>important</strong> (does it matter)? <strong>Urgent + Important</strong> means do it now. <strong>Important, not Urgent</strong> means schedule it deliberately — it still gets done, just not at the cost of whatever is actually urgent right now. <strong>Urgent, not Important</strong> often means someone else\u2019s priority became your interruption. <strong>Neither</strong> usually means decline.</p>'
+  +'<p>A third question matters just as much: <strong>is this actually mine to do?</strong> A request can be both important and appropriate for a PM to act on — and still not need to happen in the next five minutes, especially when something else genuinely does.</p>'
+  +'<span class="proc-tag">Eisenhower Matrix</span><span class="proc-tag">Prioritization</span>'
+  +'</div>'
+  +'<div class="card people-card">'
+  +'<div class="card-label">People Skill — Objectivity Is Not a Direction</div>'
+  +'<p>PM input on a PDT member\u2019s performance — to that person\u2019s supervisor, for an appraisal — is a normal, valuable part of how Resource Providers and PDTs stay connected (REF8006G). It is not a favor, and it is not improper. The question this case file asks is not "should Maria say anything" — it is "what does objective input actually look like, when the person asking is a friend?"</p>'
+  +'<p>It is tempting to think objectivity means leaning AWAY from generosity — being extra critical to prove you are not just doing a friend a favor. But that is still letting the relationship steer the input — just in the other direction. Objective input is the <strong>same input</strong> you would give if you had never met the person asking for it: complete, specific, and accurate, including both what went well and what did not.</p>'
+  +'</div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'training\',\'discussion\')">Continue to Discussion &rarr;</button></div>'
+  +'</div>';
+}
+
+function completeSection(current,next){
+  CS.sectionsComplete[current]=true;
+  CS.section=next;
+  saveState();render();
+}
+
+function renderDiscussion(){
+  var strengthNote='';
+  var primaryDomain='Executing';
+  var domainInsights={'Strategic Thinking':'Your {theme} will want to think through every angle of this request before responding. That is worth doing quickly, not slowly — a message from an old friend does not need a strategic review, just a clear-eyed answer.','Relationship Building':'Your {theme} will feel the pull of the friendship strongly here. That is exactly why this case file exists. Notice the pull, then decide based on what is actually being asked, not on how much you want to help.','Influencing':'Your {theme} may want to handle this quickly and move on. Quick is fine. Just make sure quick does not mean skipping the part where you actually think about what you are agreeing to.','Executing':'Your {theme} wants to sort this into a category and act. Good — that is exactly the Eisenhower Matrix instinct. Just be honest about which quadrant this request actually belongs in.'};
+  var themes=(CS.themes||[]).filter(function(t){return t&&t!=='N/A';});
+  var matchedTheme=null;
+  for(var ti=0;ti<themes.length;ti++){
+    if(THEME_DOMAIN[themes[ti]]===primaryDomain){matchedTheme=themes[ti];break;}
+  }
+  if(!matchedTheme&&themes.length>0){matchedTheme=themes[0];}
+  if(matchedTheme){
+    var domain=THEME_DOMAIN[matchedTheme];
+    var template=domainInsights[domain]||'';
+    strengthNote=template.replace('{theme}',matchedTheme);
+  }
+  if(!strengthNote){
+    strengthNote='Whatever your natural style, this request deserves a clear-eyed look, not a fast yes or a guilty no. Notice whether your instinct leans toward the friendship or the fairness, and weigh both honestly.';
+  }
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Discussion &amp; Reflection</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Before You See the Scenario</h2>'
+  +'<p class="lede">These reflections are not graded. Take a moment to think honestly \u2014 your answers are saved only on this device.</p>'
+  +'<div class="card"><div class="card-label">Your Strengths Lens</div><p>'+strengthNote+'</p></div>'
+  +'<div class="reflect-block"><div class="reflect-q">1. Has a friend or colleague ever asked you for an "off the record" opinion about someone you both work with? How did you decide what to say?</div>'
+  +'<textarea class="reflect-input" id="r1" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">2. When something interrupts your work and feels both important and friendly, how do you usually decide whether to handle it right then or later?</div>'
+  +'<textarea class="reflect-input" id="r2" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">3. If you knew a colleague had one real strength and one real growth area, and a friend asked for your honest take, would you be tempted to emphasize one over the other? Which way, and why?</div>'
+  +'<textarea class="reflect-input" id="r3" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="saveReflectionsAndContinue()">Continue to Case Study &rarr;</button></div>'
+  +'</div>';
+}
+function saveReflectionsAndContinue(){
+  CS.reflections={r1:document.getElementById('r1').value,r2:document.getElementById('r2').value,r3:document.getElementById('r3').value};
+  completeSection('discussion','casestudy');
+}
+
+// ===== CASE STUDY =====
+var CASE_STEP=0;
+var CASE_STEPS=[
+  {
+    type:'scenario',
+    label:'The Message',
+    text:'It is Wednesday. You are two hours from the deadline to submit this week\u2019s CCB package \u2014 a real, fixed deadline. A message arrives from <strong>Frank Liu</strong>, the Mechanical Engineering Branch Chief and an old friend: <strong>"Hey \u2014 Priya\u2019s annual appraisal is due Friday. Between us, how has she been doing on 4521? Want to make sure I get this right for her."</strong> It is a kind request, from a friend, about someone whose work you genuinely respect.'
+  },
+  {
+    type:'decision',
+    label:'Decision 1 of 3',
+    prompt:'How do you respond, right now, with the CCB package due in two hours?',
+    options:[
+      {letter:'A',text:'Set the CCB package aside and write up your thoughts on Priya now \u2014 it is for a friend, and Friday is close.'},
+      {letter:'B',text:'Send a quick, warm reply now \u2014 "happy to help, let me get back to you properly after I clear a deadline today" \u2014 and return to the CCB package.'},
+      {letter:'C',text:'Do not respond yet \u2014 it is not really PDT business, and the CCB package is what actually matters today. Deal with it later if there is time.'}
+    ],
+    consequences:{
+      A:{text:'The CCB package submission slips by an hour while you write up impressions of Priya\u2019s work. The write-up, done in a rush between two unrelated tasks, ends up being a few general impressions \u2014 "she\u2019s great, very sharp" \u2014 rather than anything specific Frank could actually use.',
+         insight:'<strong>What this reveals:</strong> This request is genuinely Important \u2014 but it is not Urgent for YOU today, and the CCB package is. Treating it as both meant the actually-urgent task slipped, AND the favor itself was rushed into something less useful than it could have been.'},
+      B:{text:'Frank replies "no rush, thanks!" The CCB package goes out on time. That evening, with the deadline behind you, you have time to actually think about what would be useful to tell Frank \u2014 not just react to the message.',
+         insight:'<strong>What this reveals:</strong> This is the Eisenhower Matrix doing its job: Important, not Urgent (for you) \u2014 acknowledge it so it does not become a dropped ball, and handle the actually-urgent thing first. Frank gets a better answer later BECAUSE it was not rushed now.'},
+      C:{text:'The CCB package goes out on time \u2014 but Frank does not hear back at all today. By Thursday evening, with no response, Frank is left wondering whether you got the message, whether you are upset about something, or whether he should just write the appraisal without PDT input.',
+         insight:'<strong>What this reveals:</strong> "Not urgent" and "not worth acknowledging" are different. A friendly request that goes completely unanswered \u2014 even if the underlying task can wait \u2014 can read as something it is not. A 10-second acknowledgment costs little and prevents that.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 2 of 3',
+    prompt:'That evening, you sit down to actually write up your thoughts for Frank. You think immediately of the HVAC duration from Case File 04 \u2014 Priya\u2019s original estimate needed correcting, but once it was raised, she dug into the basis herself and the corrected number held for the rest of the project. What do you tell Frank?',
+    options:[
+      {letter:'A',text:'"Priya has been great \u2014 the HVAC sequencing has gone smoothly the whole project. Really solid work." Keep it positive and simple.'},
+      {letter:'B',text:'Tell the full story: the original HVAC duration needed correcting early on, Priya took that well, dug into the basis herself, and the corrected estimate held for the rest of the project \u2014 both the growth moment and the strength, in context.'},
+      {letter:'C',text:'Lead with the HVAC estimate issue \u2014 "I want to be objective, so I should mention there WAS a problem with her original numbers" \u2014 and downplay how well she handled it, so it does not look like you are just being nice to a friend\u2019s employee.'}
+    ],
+    consequences:{
+      A:{text:'Frank thanks you \u2014 the appraisal gets a line about "smooth HVAC sequencing." It is true, but generic; it could describe almost anyone. If the HVAC estimate issue ever comes up in another context later, and Frank learns you knew about it and did not mention it, "I did not want to make her look bad to a friend" is exactly the impression any of this was supposed to avoid.',
+         insight:'<strong>What this reveals:</strong> Leaving out an accurate, relevant, and ultimately FLATTERING detail (because part of the story involves an early correction) does not make the input more positive \u2014 it makes it less complete, and creates exactly the appearance-of-bias risk that "just say nice things" was trying to avoid.'},
+      B:{text:'Frank writes a stronger appraisal than he would have otherwise \u2014 "demonstrated strong technical judgment and responsiveness to feedback, with [specific example]" is a real, citable strength. The early estimate correction, in context, reads as exactly the kind of growth a strong appraisal should capture.',
+         insight:'<strong>What this reveals:</strong> The full story \u2014 including the part that was not initially flattering \u2014 was MORE useful to Priya\u2019s appraisal, not less. Objective input is not a watered-down version of a positive one; it is the same input you would give to anyone, about anyone, regardless of who is asking.'},
+      C:{text:'Frank is a little surprised \u2014 "oh, I did not realize there was an issue with her numbers." The HVAC estimate correction, presented without the context of how well Priya responded, lands as a bigger deal than it was \u2014 and the appraisal now underweights a strength (responsiveness to feedback) in favor of overweighting a single early estimate.',
+         insight:'<strong>What this reveals:</strong> Overcorrecting \u2014 being extra critical to PROVE objectivity \u2014 is still letting the relationship steer the input. It just steers it the other direction. The actual goal is accuracy, not a particular tone in either direction.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 3 of 3',
+    prompt:'Frank is grateful for the detailed, balanced input \u2014 it is exactly what he needed. Looking at how this whole exchange happened \u2014 an informal "between us" message, on your personal time \u2014 what, if anything, do you do differently going forward?',
+    options:[
+      {letter:'A',text:'Suggest to Frank \u2014 and note for yourself \u2014 that PM input on PDT member performance could go through a brief, written note rather than an informal message. Not because anything went wrong this time, but so the same quality of input is available consistently, including for PDT members or Resource Providers you do not happen to be friends with.'},
+      {letter:'B',text:'Nothing \u2014 this exchange went well, Frank got what he needed, and Priya benefits. No need to change anything about how these requests get handled.'},
+      {letter:'C',text:'Decide that, going forward, you will decline ALL informal requests like this \u2014 to avoid any appearance of favoritism, regardless of who asks or what it is about.'}
+    ],
+    consequences:{
+      A:{text:'A few months later, a different Resource Provider \u2014 someone you do not know well \u2014 asks for input on a different PDT member\u2019s performance. Because there is now a lightweight, written format for this, the request gets the same quality of response Frank\u2019s did \u2014 not better because of friendship, not worse because of its absence.',
+         insight:'<strong>What this reveals:</strong> The exchange with Frank worked \u2014 but "it worked because Frank is a friend and I happened to think of good examples that evening" is not a repeatable process. A small, consistent format makes the GOOD version of this exchange available to everyone, not just to friends.'},
+      B:{text:'The next time a similar request comes in \u2014 from someone you do not know, about someone you have a more complicated relationship with \u2014 there is no established way to handle it. It might go well. It might not. Nothing about this exchange made that more likely either way.',
+         insight:'<strong>What this reveals:</strong> "It worked out" does not mean the PATTERN is solid \u2014 it means this particular instance, with this particular friendship and this particular evening of reflection, happened to go well. The next instance has none of those particular advantages.'},
+      C:{text:'Six months later, a PDT member who has been doing genuinely strong work has an appraisal that says almost nothing about their project contributions \u2014 because their supervisor never asks for PM input anymore, having learned that PMs do not provide it. The team member\u2019s actual work goes unrecognized, not because anyone judged it poorly, but because the input channel was closed entirely.',
+         insight:'<strong>What this reveals:</strong> Declining ALL informal input \u2014 even when appropriate and valuable \u2014 to avoid any appearance of bias is its own overcorrection, at the policy level. It does not protect objectivity; it just removes a source of genuinely useful information, for everyone, including people Maria has never met.'}
+    }
+  },
+  {
+    type:'debrief',
+    label:'Case Debrief'
+  }
+];
+
+
+function renderCaseStudy(){
+  CASE_STEP=CS.caseStep||0;
+  var step=CASE_STEPS[CASE_STEP];
+  var html='<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Case Study &middot; Building 4521 Renovation</p>';
+
+  if(step.type==='scenario'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">'+step.label+'</h2>'
+    +'<div class="scenario-box"><div class="scenario-label">Scenario Setup</div><div class="scenario-text">'+step.text+'</div></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()">Begin Decision 1 &rarr;</button></div>';
+  } else if(step.type==='decision'){
+    html+='<div class="scenario-label" style="margin-bottom:6px;">'+step.label+'</div>'
+    +'<div class="decision-prompt">'+step.prompt+'</div>'
+    +'<div id="case-options">';
+    step.options.forEach(function(opt){
+      html+='<div class="choice-option" onclick="chooseOption(\''+opt.letter+'\')"><span class="choice-letter">'+opt.letter+'.</span>'+opt.text+'</div>';
+    });
+    html+='</div><div id="case-consequence"></div><div id="case-nav" class="nav-row" style="display:none;"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">Continue &rarr;</button></div>';
+  } else if(step.type==='debrief'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">Case Debrief</h2>'
+    +'<div class="card people-card"><div class="card-label">What This Message Showed</div>'
+    +'<p>Nothing about Frank\u2019s request was improper \u2014 a Resource Provider asking a PM for performance input is exactly how REF8006G expects PDTs and Resource Providers to stay connected. The two things that mattered were timing (Eisenhower: important, not urgent for Maria, so acknowledge and defer rather than drop the CCB package or go silent) and content (objectivity as completeness, not as a direction to lean).</p>'
+    +'<p>The best version of Decision 2 was not the most positive, or the most cautious \u2014 it was the most COMPLETE. The early HVAC estimate correction from Case File 04, told in full, made Priya\u2019s appraisal stronger, not weaker. Leaving it out or overemphasizing it both distorted the same true story in opposite directions.</p>'
+    +'</div>'
+    +'<div class="card"><div class="card-label">DPMAP &amp; REF8006G Tie-In</div>'
+    +'<p>PM input into a PDT member\u2019s DPMAP appraisal is a legitimate, valuable communication \u2014 covered by the same communications expectations (REF8006G) as any other PDT-to-Resource-Provider exchange. A lightweight, consistent format for this input \u2014 available regardless of friendship \u2014 is what turns one good exchange into a practice the whole PDT system can rely on.</p></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'casestudy\',\'kc\')">Continue to Knowledge Check &rarr;</button></div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function caseNext(){
+  CASE_STEP++;
+  CS.caseStep=CASE_STEP;
+  saveState();
+  document.getElementById('main-content').innerHTML=renderCaseStudy();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function chooseOption(letter){
+  var step=CASE_STEPS[CASE_STEP];
+  CS.decisions[CASE_STEP]=letter;
+  saveState();
+  document.querySelectorAll('.choice-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='.55';});
+  var chosen=Array.from(document.querySelectorAll('.choice-option')).find(function(el){return el.textContent.trim().indexOf(letter+'.')===0;});
+  if(chosen){chosen.style.opacity='1';chosen.style.borderColor='var(--gold)';}
+  var c=step.consequences[letter];
+  document.getElementById('case-consequence').innerHTML=
+    '<div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+    +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div>';
+  document.getElementById('case-nav').style.display='flex';
+  var nextBtn=document.getElementById('case-next-btn');
+  if(CASE_STEP===3){nextBtn.textContent='Continue to Debrief \u2192';}
+}
+
+// ===== KNOWLEDGE CHECK =====
+var KC_QUESTIONS=[
+  {tag:'People Skill',text:'In the Eisenhower Matrix, a request that is genuinely important but not urgent for the person receiving it is best handled by:',
+   options:['Dropping the current task to handle it immediately','Acknowledging it and scheduling time to address it properly, without displacing what is actually urgent right now','Ignoring it, since it is not urgent','Declining it outright'],
+   correct:1,
+   explain:'Important-but-not-urgent items still deserve a response \u2014 just not at the cost of something that genuinely cannot wait. Acknowledging the request prevents it from being mistaken for "ignored," while deferring the substantive response protects the actually-urgent task.'},
+  {tag:'Doctrine',text:'A Resource Provider asking a PM for input on a PDT member\u2019s performance, for a DPMAP appraisal, is:',
+   options:['A violation of PDT communication boundaries','Outside the PM\u2019s role entirely','Only appropriate if the PM and Resource Provider are not personally acquainted','A legitimate and valuable exchange, consistent with REF8006G communications expectations between PDTs and Resource Providers'],
+   correct:3,
+   explain:'PM input on PDT member performance is a normal part of how Resource Providers and PDTs stay connected \u2014 not a special favor, and not something to avoid. The friendship in this case file does not make the request improper; it makes HOW the input is given worth thinking about.'},
+  {tag:'Judgment',text:'When giving performance input about someone to a friend who is also that person\u2019s supervisor, "objective" input means:',
+   options:['Input that is more critical than usual, to avoid appearing biased','Input that is more positive than usual, since the friend asked nicely','Declining to give any input, to avoid any appearance of bias','The same complete and accurate input you would give regardless of who was asking or how well you know the people involved'],
+   correct:3,
+   explain:'Objectivity is not a direction (more positive or more critical) \u2014 it is independence from the relationship. The test is whether the input would be the same if a stranger had asked about a stranger.'},
+  {tag:'Judgment',text:'A PM omits an accurate but initially-unflattering detail when describing a colleague\u2019s performance to that colleague\u2019s supervisor, who is also the PM\u2019s friend, in order to keep the input positive. The main risk with this approach is:',
+   options:['The supervisor will be upset that the input was too short','There is no risk, since the overall impression was still positive','If the omitted detail becomes known later, it can create the appearance that the friendship influenced what was shared \u2014 the exact concern objectivity is meant to address','It violates the Privacy Act'],
+   correct:2,
+   explain:'Even a well-intentioned omission, if later discovered, can look like the friendship shaped what information was shared \u2014 creating the appearance-of-bias problem that giving complete, objective input is meant to avoid in the first place.'},
+  {tag:'Judgment',text:'After one positive exchange of informal performance input between a PM and a Resource Provider, a PM decides to formalize a brief, written format for such input going forward. The main benefit of this change is:',
+   options:['It is required by REF8006G regardless of outcome','It ensures the same quality of input is available consistently, including for people the PM does not know well, rather than depending on friendship and a favorable moment','It makes future input less useful by adding process','It prevents Resource Providers from ever asking PMs for input again'],
+   correct:1,
+   explain:'A good outcome based on a particular friendship and a particular evening of reflection is not automatically repeatable. A small, consistent format makes that same quality of input available to anyone who asks \u2014 not just to friends, and not by chance.'}
+];
+var kcAnswers={};
+var kcOrder={}; // kcOrder[qi] = array mapping displayed position -> original option index
+function shuffleArray(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=a[i];a[i]=a[j];a[j]=tmp;
+  }
+  return a;
+}
+function buildKCOrder(){
+  kcOrder={};
+  KC_QUESTIONS.forEach(function(q,qi){
+    var idxs=[];
+    for(var i=0;i<q.options.length;i++)idxs.push(i);
+    kcOrder[qi]=shuffleArray(idxs);
+  });
+}
+
+function renderKC(){
+  kcAnswers={};
+  buildKCOrder();
+  var qHTML=KC_QUESTIONS.map(function(q,qi){
+    var order=kcOrder[qi];
+    return '<div class="question-block" id="kc-q-'+qi+'">'
+    +'<div class="question-num">Question '+(qi+1)+' of '+KC_QUESTIONS.length+'</div>'
+    +'<span class="question-tag">'+q.tag+'</span>'
+    +'<div class="question-text">'+q.text+'</div>'
+    +order.map(function(origIdx,pos){
+      return '<div class="answer-option" id="kc-opt-'+qi+'-'+pos+'" onclick="selectKCAnswer('+qi+','+pos+')">'
+      +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+q.options[origIdx]+'</div>';
+    }).join('')
+    +'<div class="kc-explain" id="kc-explain-'+qi+'"><strong>Why:</strong> '+q.explain+'</div>'
+    +'</div>';
+  }).join('');
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Knowledge Check &middot; 5 Questions &middot; 60% to Pass</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Doctrine &amp; Judgment</h2>'
+  +'<p class="lede">Some questions have a single correct doctrinal answer. Others ask what the project manager should do \u2014 choose the best course of action and read the explanation after answering either way.</p>'
+  +qHTML
+  +'<div class="kc-feedback" id="kc-feedback"></div>'
+  +'<div class="btn-row" id="kc-btn-row"><button class="btn-primary" id="kc-submit-btn" onclick="submitKC()" disabled>Submit Answers</button></div>'
+  +'</div>';
+}
+
+function selectKCAnswer(qi,oi){
+  document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+  kcAnswers[qi]=oi;
+  document.getElementById('kc-opt-'+qi+'-'+oi).classList.add('selected');
+  if(Object.keys(kcAnswers).length===KC_QUESTIONS.length){
+    document.getElementById('kc-submit-btn').disabled=false;
+  }
+}
+
+function submitKC(){
+  var correct=0;
+  KC_QUESTIONS.forEach(function(q,qi){
+    var order=kcOrder[qi];
+    var selPos=kcAnswers[qi];
+    var selOrigIdx=order[selPos];
+    var correctPos=order.indexOf(q.correct);
+    var isCorrect=selOrigIdx===q.correct;
+    if(isCorrect)correct++;
+    document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+    document.getElementById('kc-opt-'+qi+'-'+selPos).classList.add(isCorrect?'correct':'incorrect');
+    if(!isCorrect)document.getElementById('kc-opt-'+qi+'-'+correctPos).classList.add('correct');
+    document.getElementById('kc-explain-'+qi).classList.add('show');
+  });
+  CS.kcScore=correct;
+  var pct=Math.round((correct/KC_QUESTIONS.length)*100);
+  var passed=pct>=60;
+  var fb=document.getElementById('kc-feedback');
+  fb.className='kc-feedback show '+(passed?'pass':'fail');
+  fb.innerHTML='<div class="kc-score '+(passed?'pass':'fail')+'">'+correct+'/'+KC_QUESTIONS.length+'</div>'
+  +(passed?'<strong>Well done.</strong> You have completed Case File 12.':'<strong>Review the explanations above.</strong> Score 60% or higher to complete this case file.');
+  var btnRow=document.getElementById('kc-btn-row');
+  if(passed){
+    CS.sectionsComplete.kc=true;saveState();
+    btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'complete\')">Finish Case File &rarr;</button>';
+  } else {
+    btnRow.innerHTML='<button class="btn-primary" onclick="retakeKC()">Retake Knowledge Check</button>';
+  }
+}
+function retakeKC(){kcAnswers={};goSection('kc');}
+
+function renderComplete(){
+  return '<div class="screen active">'
+  +'<div class="complete-wrap">'
+  +'<div class="complete-seal">&#10003;</div>'
+  +'<div class="complete-title">Case File 12 Complete</div>'
+  +'<div class="complete-sub">'+CS.name+' &middot; The Favor &middot; Score: '+CS.kcScore+'/5</div>'
+  +'<div style="text-align:left;max-width:480px;margin:0 auto 20px;">'
+  +'<label class="field-label">What is one thing you will do differently this week, based on this case?</label>'
+  +'<textarea class="reflect-input" id="commitment" placeholder="Type your commitment..."></textarea>'
+  +'</div>'
+  +'<div class="btn-row" style="justify-content:center;"><button class="btn-primary" onclick="saveCommitment()">Save &amp; Finish</button>'
+  +'<button class="btn-secondary" onclick="restartCase()">Restart Case File</button></div>'
+  +'<p style="font-size:0.625rem;color:var(--white-dim);margin-top:18px;">Interactive PM in USACE &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile13_ClosingWell.html" style="color:var(--gold);text-decoration:underline;">Continue to Case File 13 &rarr;</a> &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" style="color:var(--white-dim);text-decoration:underline;">Course Home</a></p>'
+  +'</div></div>';
+}
+function saveCommitment(){
+  CS.commitment=document.getElementById('commitment').value;
+  saveState();
+  alert('Saved. Thank you for completing Case File 12.');
+}
+function restartCase(){
+  if(confirm('This will clear your progress for this case file. Continue?')){
+    try{localStorage.removeItem(STORAGE_KEY);}catch(e){}location.reload();
+  }
+}
+
+// ===== INIT =====
+(function init(){render();})();
+</script>
+<script>
+var CS={name:'',strength:'',section:'welcome',sectionsComplete:{training:false,discussion:false,casestudy:false,kc:false},kcScore:0,decisions:{},caseStep:0};
+var STORAGE_KEY='casefile12_v1';
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(CS));}catch(e){}}
+function loadState(){try{var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;var d=JSON.parse(raw);if(!d||!d.name)return false;CS=d;return true;}catch(e){return false;}}
+
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+
+var SECTIONS=['welcome','training','discussion','casestudy','kc','complete'];
+var SECTION_LABELS={welcome:'Welcome',training:'Training',discussion:'Discussion',casestudy:'Case Study',kc:'Knowledge Check',complete:'Complete'};
+
+function updateProgress(){
+  var idx=SECTIONS.indexOf(CS.section);
+  var pct=Math.round((idx/(SECTIONS.length-1))*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-label').textContent=SECTION_LABELS[CS.section]||'';
+}
+
+function renderNav(){
+  var order=['training','discussion','casestudy','kc'];
+  var html='<div class="section-nav">';
+  order.forEach(function(s){
+    var cls='sec-btn'+(CS.section===s?' active':'')+(CS.sectionsComplete[s]?' complete':'');
+    var locked=false;
+    var idx=order.indexOf(s);
+    if(idx>0 && !CS.sectionsComplete[order[idx-1]] && CS.section!==s) locked=true;
+    if(locked) cls+=' locked';
+    html+='<button class="'+cls+'" '+(locked?'disabled':'onclick="goSection(\''+s+'\')"')+'>'+(CS.sectionsComplete[s]?'&#10003; ':'')+SECTION_LABELS[s]+'</button>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function goSection(s){CS.section=s;saveState();render();}
+
+function render(){
+  var m=document.getElementById('main-content');
+  document.getElementById('progress-bar-wrap').style.display=(CS.section==='welcome')?'none':'block';
+  if(CS.section==='welcome') m.innerHTML=renderWelcome();
+  else if(CS.section==='training') m.innerHTML=renderTraining();
+  else if(CS.section==='discussion') m.innerHTML=renderDiscussion();
+  else if(CS.section==='casestudy') m.innerHTML=renderCaseStudy();
+  else if(CS.section==='kc') m.innerHTML=renderKC();
+  else if(CS.section==='complete') m.innerHTML=renderComplete();
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+var THEME_DOMAIN={'Analytical':'Strategic Thinking','Context':'Strategic Thinking','Futuristic':'Strategic Thinking','Ideation':'Strategic Thinking','Input':'Strategic Thinking','Intellection':'Strategic Thinking','Learner':'Strategic Thinking','Strategic':'Strategic Thinking','Adaptability':'Relationship Building','Connectedness':'Relationship Building','Developer':'Relationship Building','Empathy':'Relationship Building','Harmony':'Relationship Building','Includer':'Relationship Building','Individualization':'Relationship Building','Positivity':'Relationship Building','Relator':'Relationship Building','Activator':'Influencing','Command':'Influencing','Communication':'Influencing','Competition':'Influencing','Maximizer':'Influencing','Self-Assurance':'Influencing','Significance':'Influencing','Woo':'Influencing','Achiever':'Executing','Arranger':'Executing','Belief':'Executing','Consistency':'Executing','Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'};
+var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N/A">N/A / Not sure</option><optgroup label="Strategic Thinking"><option value="Analytical">Analytical</option><option value="Context">Context</option><option value="Futuristic">Futuristic</option><option value="Ideation">Ideation</option><option value="Input">Input</option><option value="Intellection">Intellection</option><option value="Learner">Learner</option><option value="Strategic">Strategic</option></optgroup><optgroup label="Relationship Building"><option value="Adaptability">Adaptability</option><option value="Connectedness">Connectedness</option><option value="Developer">Developer</option><option value="Empathy">Empathy</option><option value="Harmony">Harmony</option><option value="Includer">Includer</option><option value="Individualization">Individualization</option><option value="Positivity">Positivity</option><option value="Relator">Relator</option></optgroup><optgroup label="Influencing"><option value="Activator">Activator</option><option value="Command">Command</option><option value="Communication">Communication</option><option value="Competition">Competition</option><option value="Maximizer">Maximizer</option><option value="Self-Assurance">Self-Assurance</option><option value="Significance">Significance</option><option value="Woo">Woo</option></optgroup><optgroup label="Executing"><option value="Achiever">Achiever</option><option value="Arranger">Arranger</option><option value="Belief">Belief</option><option value="Consistency">Consistency</option><option value="Deliberative">Deliberative</option><option value="Discipline">Discipline</option><option value="Focus">Focus</option><option value="Responsibility">Responsibility</option><option value="Restorative">Restorative</option></optgroup>';
+
+function getProfile(){
+  try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
+}
+function saveProfile(name,themes){
+  try{localStorage.setItem('pm-learner-profile',JSON.stringify({name:name,themes:themes,savedAt:new Date().toISOString()}));}catch(e){}
+}
+function clearProfile(){
+  try{localStorage.removeItem('pm-learner-profile');}catch(e){}
+}
+function clearProfileAndReload(){
+  clearProfile();
+  render();
+  return false;
+}
+function toggleNAThemes(){
+  var cb=document.getElementById('na-checkbox');
+  var grid=document.getElementById('theme-select-grid');
+  if(grid)grid.style.display=cb.checked?'none':'';
+}
+
+function renderProfileFields(){
+  var p=getProfile();
+  if(p&&p.name){
+    var isNA=(p.themes||[]).length===1&&p.themes[0]==='N/A';
+    var themesDisplay=isNA?'N/A &mdash; not provided':(p.themes||[]).map(function(t){return t+' ('+THEME_DOMAIN[t]+')';}).join(', ');
+    return '<div class="profile-display">'
+      +'<div class="profile-row"><span class="field-label">Learner</span><div class="profile-value">'+p.name+'</div></div>'
+      +'<div class="profile-row"><span class="field-label">Top 5 CliftonStrengths</span><div class="profile-value">'+themesDisplay+'</div></div>'
+      +'<p class="profile-clear"><a onclick="return clearProfileAndReload()">Not '+p.name+'? Clear saved name &amp; strengths</a></p>'
+      +'</div>';
+  }
+  var grid='<div class="theme-select-grid" id="theme-select-grid">';
+  for(var i=1;i<=5;i++){
+    grid+='<div class="theme-select-item"><label>Theme '+i+' <span class="required-mark">*</span></label>'
+      +'<select class="theme-select" id="theme-select-'+i+'">'+THEME_OPTIONS_HTML+'</select></div>';
+  }
+  grid+='</div>';
+  return '<div style="margin-bottom:18px;">'
+    +'<label class="field-label">Your Name <span class="required-mark">*</span></label>'
+    +'<input class="name-input" id="name-input" type="text" placeholder="First Last"/>'
+    +'</div>'
+    +'<div style="margin-bottom:8px;">'
+    +'<label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>'
+    +'</div>'
+    +'<label class="na-checkbox-row" for="na-checkbox"><input type="checkbox" id="na-checkbox" onchange="toggleNAThemes()"/>I do not know my CliftonStrengths (select N/A)</label>'
+    +grid;
+}
+
+function renderWelcome(){
+  var saved=loadState();
+  var resumeBtn=(saved&&CS.name)?'<button class="btn-secondary" onclick="resumeCase()" style="margin-left:10px;">Resume as '+CS.name+' &rarr;</button>':'';
+  return '<div class="screen active">'
+  +'<p class="eyebrow">Interactive PM in USACE &middot; Case File 12</p>'
+  +'<h1 class="title-main">The<br><em>Favor.</em></h1>'
+  +'<p class="lede">A message from an old friend, asking for a small favor about someone on your team. <strong>Nothing about it is improper. That is exactly what makes it worth thinking about.</strong></p>'
+  +'<div class="card"><div class="card-label">What This Case File Covers</div>'
+  +'<p><strong>PDBP Doctrine:</strong> PM input to Resource Providers on PDT member performance is legitimate and valuable (REF8006G, DPMAP appraisal input) — but how that input is given matters as much as whether it is given.</p>'
+  +'<p><strong>People Skill:</strong> The <strong>Eisenhower Matrix</strong> — sorting requests by urgent/important/whose-job-is-it — and what objectivity actually means when the request comes from a friend.</p>'
+  +'</div>'
+  +'<div class="card"><div class="card-label">How This Works</div>'
+  +'<p>Training (5 min) &rarr; Reflection &rarr; Case Study (branching scenario) &rarr; Knowledge Check (5 questions, 60% to pass).</p>'
+  +'</div>'
+  +'<div class="card people-card"><div class="card-label">Continuing the Story</div>'
+  +'<p>You are still <strong>Maria Chen</strong>, PM on the Building 4521 Renovation. You are deep in finalizing this week’s CCB package — a real deadline, today. A message arrives from <strong>Frank Liu</strong>, the Mechanical Engineering Branch Chief — an old friend from before you became a PM, and <strong>Priya’s</strong> supervisor. "Hey — Priya’s annual appraisal is due Friday. Between us, how has she been doing on 4521? Want to make sure I get this right for her."</p></div>'
+  +renderProfileFields()
+  +'<div class="btn-row"><button class="btn-primary" onclick="startCase()">Begin Case File &rarr;</button>'+resumeBtn+'</div>'
+  +'</div>';
+}
+function startCase(){
+  var p=getProfile();
+  var name,themes;
+  if(p&&p.name){
+    name=p.name;themes=p.themes;
+  }else{
+    name=document.getElementById('name-input').value.trim();
+    if(!name){alert('Please enter your name to continue.');return;}
+    var naChecked=document.getElementById('na-checkbox').checked;
+    if(naChecked){
+      themes=['N/A'];
+    }else{
+      themes=[];
+      for(var i=1;i<=5;i++){
+        var v=document.getElementById('theme-select-'+i).value;
+        if(!v){alert('Please select all five CliftonStrengths themes, or check the box if you do not know them.');return;}
+        themes.push(v);
+      }
+    }
+    saveProfile(name,themes);
+  }
+  CS.name=name;
+  CS.themes=themes;
+  CS.section='training';
+  saveState();render();
+}
+function resumeCase(){render();}
+
+function renderTraining(){
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Training &middot; 5 Minutes</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Urgent, Important, and Whose Job It Is</h2>'
+  +'<div class="card">'
+  +'<div class="card-label">The Eisenhower Matrix</div>'
+  +'<p>When a new request lands — especially one that interrupts something else — it helps to sort it along two questions: is it <strong>urgent</strong> (does it need to happen right now), and is it <strong>important</strong> (does it matter)? <strong>Urgent + Important</strong> means do it now. <strong>Important, not Urgent</strong> means schedule it deliberately — it still gets done, just not at the cost of whatever is actually urgent right now. <strong>Urgent, not Important</strong> often means someone else\u2019s priority became your interruption. <strong>Neither</strong> usually means decline.</p>'
+  +'<p>A third question matters just as much: <strong>is this actually mine to do?</strong> A request can be both important and appropriate for a PM to act on — and still not need to happen in the next five minutes, especially when something else genuinely does.</p>'
+  +'<span class="proc-tag">Eisenhower Matrix</span><span class="proc-tag">Prioritization</span>'
+  +'</div>'
+  +'<div class="card people-card">'
+  +'<div class="card-label">People Skill — Objectivity Is Not a Direction</div>'
+  +'<p>PM input on a PDT member\u2019s performance — to that person\u2019s supervisor, for an appraisal — is a normal, valuable part of how Resource Providers and PDTs stay connected (REF8006G). It is not a favor, and it is not improper. The question this case file asks is not "should Maria say anything" — it is "what does objective input actually look like, when the person asking is a friend?"</p>'
+  +'<p>It is tempting to think objectivity means leaning AWAY from generosity — being extra critical to prove you are not just doing a friend a favor. But that is still letting the relationship steer the input — just in the other direction. Objective input is the <strong>same input</strong> you would give if you had never met the person asking for it: complete, specific, and accurate, including both what went well and what did not.</p>'
+  +'</div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'training\',\'discussion\')">Continue to Discussion &rarr;</button></div>'
+  +'</div>';
+}
+
+function completeSection(current,next){
+  CS.sectionsComplete[current]=true;
+  CS.section=next;
+  saveState();render();
+}
+
+function renderDiscussion(){
+  var strengthNote='';
+  var primaryDomain='Executing';
+  var domainInsights={'Strategic Thinking':'Your {theme} will want to think through every angle of this request before responding. That is worth doing quickly, not slowly — a message from an old friend does not need a strategic review, just a clear-eyed answer.','Relationship Building':'Your {theme} will feel the pull of the friendship strongly here. That is exactly why this case file exists. Notice the pull, then decide based on what is actually being asked, not on how much you want to help.','Influencing':'Your {theme} may want to handle this quickly and move on. Quick is fine. Just make sure quick does not mean skipping the part where you actually think about what you are agreeing to.','Executing':'Your {theme} wants to sort this into a category and act. Good — that is exactly the Eisenhower Matrix instinct. Just be honest about which quadrant this request actually belongs in.'};
+  var themes=(CS.themes||[]).filter(function(t){return t&&t!=='N/A';});
+  var matchedTheme=null;
+  for(var ti=0;ti<themes.length;ti++){
+    if(THEME_DOMAIN[themes[ti]]===primaryDomain){matchedTheme=themes[ti];break;}
+  }
+  if(!matchedTheme&&themes.length>0){matchedTheme=themes[0];}
+  if(matchedTheme){
+    var domain=THEME_DOMAIN[matchedTheme];
+    var template=domainInsights[domain]||'';
+    strengthNote=template.replace('{theme}',matchedTheme);
+  }
+  if(!strengthNote){
+    strengthNote='Whatever your natural style, this request deserves a clear-eyed look, not a fast yes or a guilty no. Notice whether your instinct leans toward the friendship or the fairness, and weigh both honestly.';
+  }
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Discussion &amp; Reflection</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Before You See the Scenario</h2>'
+  +'<p class="lede">These reflections are not graded. Take a moment to think honestly \u2014 your answers are saved only on this device.</p>'
+  +'<div class="card"><div class="card-label">Your Strengths Lens</div><p>'+strengthNote+'</p></div>'
+  +'<div class="reflect-block"><div class="reflect-q">1. Has a friend or colleague ever asked you for an "off the record" opinion about someone you both work with? How did you decide what to say?</div>'
+  +'<textarea class="reflect-input" id="r1" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">2. When something interrupts your work and feels both important and friendly, how do you usually decide whether to handle it right then or later?</div>'
+  +'<textarea class="reflect-input" id="r2" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">3. If you knew a colleague had one real strength and one real growth area, and a friend asked for your honest take, would you be tempted to emphasize one over the other? Which way, and why?</div>'
+  +'<textarea class="reflect-input" id="r3" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="saveReflectionsAndContinue()">Continue to Case Study &rarr;</button></div>'
+  +'</div>';
+}
+function saveReflectionsAndContinue(){
+  CS.reflections={r1:document.getElementById('r1').value,r2:document.getElementById('r2').value,r3:document.getElementById('r3').value};
+  completeSection('discussion','casestudy');
+}
+
+// ===== CASE STUDY =====
+var CASE_STEP=0;
+var CASE_STEPS=[
+  {
+    type:'scenario',
+    label:'The Message',
+    text:'It is Wednesday. You are two hours from the deadline to submit this week\u2019s CCB package \u2014 a real, fixed deadline. A message arrives from <strong>Frank Liu</strong>, the Mechanical Engineering Branch Chief and an old friend: <strong>"Hey \u2014 Priya\u2019s annual appraisal is due Friday. Between us, how has she been doing on 4521? Want to make sure I get this right for her."</strong> It is a kind request, from a friend, about someone whose work you genuinely respect.'
+  },
+  {
+    type:'decision',
+    label:'Decision 1 of 3',
+    prompt:'How do you respond, right now, with the CCB package due in two hours?',
+    options:[
+      {letter:'A',text:'Set the CCB package aside and write up your thoughts on Priya now \u2014 it is for a friend, and Friday is close.'},
+      {letter:'B',text:'Send a quick, warm reply now \u2014 "happy to help, let me get back to you properly after I clear a deadline today" \u2014 and return to the CCB package.'},
+      {letter:'C',text:'Do not respond yet \u2014 it is not really PDT business, and the CCB package is what actually matters today. Deal with it later if there is time.'}
+    ],
+    consequences:{
+      A:{text:'The CCB package submission slips by an hour while you write up impressions of Priya\u2019s work. The write-up, done in a rush between two unrelated tasks, ends up being a few general impressions \u2014 "she\u2019s great, very sharp" \u2014 rather than anything specific Frank could actually use.',
+         insight:'<strong>What this reveals:</strong> This request is genuinely Important \u2014 but it is not Urgent for YOU today, and the CCB package is. Treating it as both meant the actually-urgent task slipped, AND the favor itself was rushed into something less useful than it could have been.'},
+      B:{text:'Frank replies "no rush, thanks!" The CCB package goes out on time. That evening, with the deadline behind you, you have time to actually think about what would be useful to tell Frank \u2014 not just react to the message.',
+         insight:'<strong>What this reveals:</strong> This is the Eisenhower Matrix doing its job: Important, not Urgent (for you) \u2014 acknowledge it so it does not become a dropped ball, and handle the actually-urgent thing first. Frank gets a better answer later BECAUSE it was not rushed now.'},
+      C:{text:'The CCB package goes out on time \u2014 but Frank does not hear back at all today. By Thursday evening, with no response, Frank is left wondering whether you got the message, whether you are upset about something, or whether he should just write the appraisal without PDT input.',
+         insight:'<strong>What this reveals:</strong> "Not urgent" and "not worth acknowledging" are different. A friendly request that goes completely unanswered \u2014 even if the underlying task can wait \u2014 can read as something it is not. A 10-second acknowledgment costs little and prevents that.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 2 of 3',
+    prompt:'That evening, you sit down to actually write up your thoughts for Frank. You think immediately of the HVAC duration from Case File 04 \u2014 Priya\u2019s original estimate needed correcting, but once it was raised, she dug into the basis herself and the corrected number held for the rest of the project. What do you tell Frank?',
+    options:[
+      {letter:'A',text:'"Priya has been great \u2014 the HVAC sequencing has gone smoothly the whole project. Really solid work." Keep it positive and simple.'},
+      {letter:'B',text:'Tell the full story: the original HVAC duration needed correcting early on, Priya took that well, dug into the basis herself, and the corrected estimate held for the rest of the project \u2014 both the growth moment and the strength, in context.'},
+      {letter:'C',text:'Lead with the HVAC estimate issue \u2014 "I want to be objective, so I should mention there WAS a problem with her original numbers" \u2014 and downplay how well she handled it, so it does not look like you are just being nice to a friend\u2019s employee.'}
+    ],
+    consequences:{
+      A:{text:'Frank thanks you \u2014 the appraisal gets a line about "smooth HVAC sequencing." It is true, but generic; it could describe almost anyone. If the HVAC estimate issue ever comes up in another context later, and Frank learns you knew about it and did not mention it, "I did not want to make her look bad to a friend" is exactly the impression any of this was supposed to avoid.',
+         insight:'<strong>What this reveals:</strong> Leaving out an accurate, relevant, and ultimately FLATTERING detail (because part of the story involves an early correction) does not make the input more positive \u2014 it makes it less complete, and creates exactly the appearance-of-bias risk that "just say nice things" was trying to avoid.'},
+      B:{text:'Frank writes a stronger appraisal than he would have otherwise \u2014 "demonstrated strong technical judgment and responsiveness to feedback, with [specific example]" is a real, citable strength. The early estimate correction, in context, reads as exactly the kind of growth a strong appraisal should capture.',
+         insight:'<strong>What this reveals:</strong> The full story \u2014 including the part that was not initially flattering \u2014 was MORE useful to Priya\u2019s appraisal, not less. Objective input is not a watered-down version of a positive one; it is the same input you would give to anyone, about anyone, regardless of who is asking.'},
+      C:{text:'Frank is a little surprised \u2014 "oh, I did not realize there was an issue with her numbers." The HVAC estimate correction, presented without the context of how well Priya responded, lands as a bigger deal than it was \u2014 and the appraisal now underweights a strength (responsiveness to feedback) in favor of overweighting a single early estimate.',
+         insight:'<strong>What this reveals:</strong> Overcorrecting \u2014 being extra critical to PROVE objectivity \u2014 is still letting the relationship steer the input. It just steers it the other direction. The actual goal is accuracy, not a particular tone in either direction.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 3 of 3',
+    prompt:'Frank is grateful for the detailed, balanced input \u2014 it is exactly what he needed. Looking at how this whole exchange happened \u2014 an informal "between us" message, on your personal time \u2014 what, if anything, do you do differently going forward?',
+    options:[
+      {letter:'A',text:'Suggest to Frank \u2014 and note for yourself \u2014 that PM input on PDT member performance could go through a brief, written note rather than an informal message. Not because anything went wrong this time, but so the same quality of input is available consistently, including for PDT members or Resource Providers you do not happen to be friends with.'},
+      {letter:'B',text:'Nothing \u2014 this exchange went well, Frank got what he needed, and Priya benefits. No need to change anything about how these requests get handled.'},
+      {letter:'C',text:'Decide that, going forward, you will decline ALL informal requests like this \u2014 to avoid any appearance of favoritism, regardless of who asks or what it is about.'}
+    ],
+    consequences:{
+      A:{text:'A few months later, a different Resource Provider \u2014 someone you do not know well \u2014 asks for input on a different PDT member\u2019s performance. Because there is now a lightweight, written format for this, the request gets the same quality of response Frank\u2019s did \u2014 not better because of friendship, not worse because of its absence.',
+         insight:'<strong>What this reveals:</strong> The exchange with Frank worked \u2014 but "it worked because Frank is a friend and I happened to think of good examples that evening" is not a repeatable process. A small, consistent format makes the GOOD version of this exchange available to everyone, not just to friends.'},
+      B:{text:'The next time a similar request comes in \u2014 from someone you do not know, about someone you have a more complicated relationship with \u2014 there is no established way to handle it. It might go well. It might not. Nothing about this exchange made that more likely either way.',
+         insight:'<strong>What this reveals:</strong> "It worked out" does not mean the PATTERN is solid \u2014 it means this particular instance, with this particular friendship and this particular evening of reflection, happened to go well. The next instance has none of those particular advantages.'},
+      C:{text:'Six months later, a PDT member who has been doing genuinely strong work has an appraisal that says almost nothing about their project contributions \u2014 because their supervisor never asks for PM input anymore, having learned that PMs do not provide it. The team member\u2019s actual work goes unrecognized, not because anyone judged it poorly, but because the input channel was closed entirely.',
+         insight:'<strong>What this reveals:</strong> Declining ALL informal input \u2014 even when appropriate and valuable \u2014 to avoid any appearance of bias is its own overcorrection, at the policy level. It does not protect objectivity; it just removes a source of genuinely useful information, for everyone, including people Maria has never met.'}
+    }
+  },
+  {
+    type:'debrief',
+    label:'Case Debrief'
+  }
+];
+
+
+function renderCaseStudy(){
+  CASE_STEP=CS.caseStep||0;
+  var step=CASE_STEPS[CASE_STEP];
+  var html='<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Case Study &middot; Building 4521 Renovation</p>';
+
+  if(step.type==='scenario'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">'+step.label+'</h2>'
+    +'<div class="scenario-box"><div class="scenario-label">Scenario Setup</div><div class="scenario-text">'+step.text+'</div></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()">Begin Decision 1 &rarr;</button></div>';
+  } else if(step.type==='decision'){
+    html+='<div class="scenario-label" style="margin-bottom:6px;">'+step.label+'</div>'
+    +'<div class="decision-prompt">'+step.prompt+'</div>'
+    +'<div id="case-options">';
+    step.options.forEach(function(opt){
+      html+='<div class="choice-option" onclick="chooseOption(\''+opt.letter+'\')"><span class="choice-letter">'+opt.letter+'.</span>'+opt.text+'</div>';
+    });
+    html+='</div><div id="case-consequence"></div><div id="case-nav" class="nav-row" style="display:none;"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">Continue &rarr;</button></div>';
+  } else if(step.type==='debrief'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">Case Debrief</h2>'
+    +'<div class="card people-card"><div class="card-label">What This Message Showed</div>'
+    +'<p>Nothing about Frank\u2019s request was improper \u2014 a Resource Provider asking a PM for performance input is exactly how REF8006G expects PDTs and Resource Providers to stay connected. The two things that mattered were timing (Eisenhower: important, not urgent for Maria, so acknowledge and defer rather than drop the CCB package or go silent) and content (objectivity as completeness, not as a direction to lean).</p>'
+    +'<p>The best version of Decision 2 was not the most positive, or the most cautious \u2014 it was the most COMPLETE. The early HVAC estimate correction from Case File 04, told in full, made Priya\u2019s appraisal stronger, not weaker. Leaving it out or overemphasizing it both distorted the same true story in opposite directions.</p>'
+    +'</div>'
+    +'<div class="card"><div class="card-label">DPMAP &amp; REF8006G Tie-In</div>'
+    +'<p>PM input into a PDT member\u2019s DPMAP appraisal is a legitimate, valuable communication \u2014 covered by the same communications expectations (REF8006G) as any other PDT-to-Resource-Provider exchange. A lightweight, consistent format for this input \u2014 available regardless of friendship \u2014 is what turns one good exchange into a practice the whole PDT system can rely on.</p></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'casestudy\',\'kc\')">Continue to Knowledge Check &rarr;</button></div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function caseNext(){
+  CASE_STEP++;
+  CS.caseStep=CASE_STEP;
+  saveState();
+  document.getElementById('main-content').innerHTML=renderCaseStudy();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function chooseOption(letter){
+  var step=CASE_STEPS[CASE_STEP];
+  CS.decisions[CASE_STEP]=letter;
+  saveState();
+  document.querySelectorAll('.choice-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='.55';});
+  var chosen=Array.from(document.querySelectorAll('.choice-option')).find(function(el){return el.textContent.trim().indexOf(letter+'.')===0;});
+  if(chosen){chosen.style.opacity='1';chosen.style.borderColor='var(--gold)';}
+  var c=step.consequences[letter];
+  document.getElementById('case-consequence').innerHTML=
+    '<div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+    +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div>';
+  document.getElementById('case-nav').style.display='flex';
+  var nextBtn=document.getElementById('case-next-btn');
+  if(CASE_STEP===3){nextBtn.textContent='Continue to Debrief \u2192';}
+}
+
+// ===== KNOWLEDGE CHECK =====
+var KC_QUESTIONS=[
+  {tag:'People Skill',text:'In the Eisenhower Matrix, a request that is genuinely important but not urgent for the person receiving it is best handled by:',
+   options:['Dropping the current task to handle it immediately','Acknowledging it and scheduling time to address it properly, without displacing what is actually urgent right now','Ignoring it, since it is not urgent','Declining it outright'],
+   correct:1,
+   explain:'Important-but-not-urgent items still deserve a response \u2014 just not at the cost of something that genuinely cannot wait. Acknowledging the request prevents it from being mistaken for "ignored," while deferring the substantive response protects the actually-urgent task.'},
+  {tag:'Doctrine',text:'A Resource Provider asking a PM for input on a PDT member\u2019s performance, for a DPMAP appraisal, is:',
+   options:['A violation of PDT communication boundaries','Outside the PM\u2019s role entirely','Only appropriate if the PM and Resource Provider are not personally acquainted','A legitimate and valuable exchange, consistent with REF8006G communications expectations between PDTs and Resource Providers'],
+   correct:3,
+   explain:'PM input on PDT member performance is a normal part of how Resource Providers and PDTs stay connected \u2014 not a special favor, and not something to avoid. The friendship in this case file does not make the request improper; it makes HOW the input is given worth thinking about.'},
+  {tag:'Judgment',text:'When giving performance input about someone to a friend who is also that person\u2019s supervisor, "objective" input means:',
+   options:['Input that is more critical than usual, to avoid appearing biased','Input that is more positive than usual, since the friend asked nicely','Declining to give any input, to avoid any appearance of bias','The same complete and accurate input you would give regardless of who was asking or how well you know the people involved'],
+   correct:3,
+   explain:'Objectivity is not a direction (more positive or more critical) \u2014 it is independence from the relationship. The test is whether the input would be the same if a stranger had asked about a stranger.'},
+  {tag:'Judgment',text:'A PM omits an accurate but initially-unflattering detail when describing a colleague\u2019s performance to that colleague\u2019s supervisor, who is also the PM\u2019s friend, in order to keep the input positive. The main risk with this approach is:',
+   options:['The supervisor will be upset that the input was too short','There is no risk, since the overall impression was still positive','If the omitted detail becomes known later, it can create the appearance that the friendship influenced what was shared \u2014 the exact concern objectivity is meant to address','It violates the Privacy Act'],
+   correct:2,
+   explain:'Even a well-intentioned omission, if later discovered, can look like the friendship shaped what information was shared \u2014 creating the appearance-of-bias problem that giving complete, objective input is meant to avoid in the first place.'},
+  {tag:'Judgment',text:'After one positive exchange of informal performance input between a PM and a Resource Provider, a PM decides to formalize a brief, written format for such input going forward. The main benefit of this change is:',
+   options:['It is required by REF8006G regardless of outcome','It ensures the same quality of input is available consistently, including for people the PM does not know well, rather than depending on friendship and a favorable moment','It makes future input less useful by adding process','It prevents Resource Providers from ever asking PMs for input again'],
+   correct:1,
+   explain:'A good outcome based on a particular friendship and a particular evening of reflection is not automatically repeatable. A small, consistent format makes that same quality of input available to anyone who asks \u2014 not just to friends, and not by chance.'}
+];
+var kcAnswers={};
+var kcOrder={}; // kcOrder[qi] = array mapping displayed position -> original option index
+function shuffleArray(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=a[i];a[i]=a[j];a[j]=tmp;
+  }
+  return a;
+}
+function buildKCOrder(){
+  kcOrder={};
+  KC_QUESTIONS.forEach(function(q,qi){
+    var idxs=[];
+    for(var i=0;i<q.options.length;i++)idxs.push(i);
+    kcOrder[qi]=shuffleArray(idxs);
+  });
+}
+
+function renderKC(){
+  kcAnswers={};
+  buildKCOrder();
+  var qHTML=KC_QUESTIONS.map(function(q,qi){
+    var order=kcOrder[qi];
+    return '<div class="question-block" id="kc-q-'+qi+'">'
+    +'<div class="question-num">Question '+(qi+1)+' of '+KC_QUESTIONS.length+'</div>'
+    +'<span class="question-tag">'+q.tag+'</span>'
+    +'<div class="question-text">'+q.text+'</div>'
+    +order.map(function(origIdx,pos){
+      return '<div class="answer-option" id="kc-opt-'+qi+'-'+pos+'" onclick="selectKCAnswer('+qi+','+pos+')">'
+      +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+q.options[origIdx]+'</div>';
+    }).join('')
+    +'<div class="kc-explain" id="kc-explain-'+qi+'"><strong>Why:</strong> '+q.explain+'</div>'
+    +'</div>';
+  }).join('');
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Knowledge Check &middot; 5 Questions &middot; 60% to Pass</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Doctrine &amp; Judgment</h2>'
+  +'<p class="lede">Some questions have a single correct doctrinal answer. Others ask what the project manager should do \u2014 choose the best course of action and read the explanation after answering either way.</p>'
+  +qHTML
+  +'<div class="kc-feedback" id="kc-feedback"></div>'
+  +'<div class="btn-row" id="kc-btn-row"><button class="btn-primary" id="kc-submit-btn" onclick="submitKC()" disabled>Submit Answers</button></div>'
+  +'</div>';
+}
+
+function selectKCAnswer(qi,oi){
+  document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+  kcAnswers[qi]=oi;
+  document.getElementById('kc-opt-'+qi+'-'+oi).classList.add('selected');
+  if(Object.keys(kcAnswers).length===KC_QUESTIONS.length){
+    document.getElementById('kc-submit-btn').disabled=false;
+  }
+}
+
+function submitKC(){
+  var correct=0;
+  KC_QUESTIONS.forEach(function(q,qi){
+    var order=kcOrder[qi];
+    var selPos=kcAnswers[qi];
+    var selOrigIdx=order[selPos];
+    var correctPos=order.indexOf(q.correct);
+    var isCorrect=selOrigIdx===q.correct;
+    if(isCorrect)correct++;
+    document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+    document.getElementById('kc-opt-'+qi+'-'+selPos).classList.add(isCorrect?'correct':'incorrect');
+    if(!isCorrect)document.getElementById('kc-opt-'+qi+'-'+correctPos).classList.add('correct');
+    document.getElementById('kc-explain-'+qi).classList.add('show');
+  });
+  CS.kcScore=correct;
+  var pct=Math.round((correct/KC_QUESTIONS.length)*100);
+  var passed=pct>=60;
+  var fb=document.getElementById('kc-feedback');
+  fb.className='kc-feedback show '+(passed?'pass':'fail');
+  fb.innerHTML='<div class="kc-score '+(passed?'pass':'fail')+'">'+correct+'/'+KC_QUESTIONS.length+'</div>'
+  +(passed?'<strong>Well done.</strong> You have completed Case File 12.':'<strong>Review the explanations above.</strong> Score 60% or higher to complete this case file.');
+  var btnRow=document.getElementById('kc-btn-row');
+  if(passed){
+    CS.sectionsComplete.kc=true;saveState();
+    btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'complete\')">Finish Case File &rarr;</button>';
+  } else {
+    btnRow.innerHTML='<button class="btn-primary" onclick="retakeKC()">Retake Knowledge Check</button>';
+  }
+}
+function retakeKC(){kcAnswers={};goSection('kc');}
+
+function renderComplete(){
+  return '<div class="screen active">'
+  +'<div class="complete-wrap">'
+  +'<div class="complete-seal">&#10003;</div>'
+  +'<div class="complete-title">Case File 12 Complete</div>'
+  +'<div class="complete-sub">'+CS.name+' &middot; The Favor &middot; Score: '+CS.kcScore+'/5</div>'
+  +'<div style="text-align:left;max-width:480px;margin:0 auto 20px;">'
+  +'<label class="field-label">What is one thing you will do differently this week, based on this case?</label>'
+  +'<textarea class="reflect-input" id="commitment" placeholder="Type your commitment..."></textarea>'
+  +'</div>'
+  +'<div class="btn-row" style="justify-content:center;"><button class="btn-primary" onclick="saveCommitment()">Save &amp; Finish</button>'
+  +'<button class="btn-secondary" onclick="restartCase()">Restart Case File</button></div>'
+  +'<p style="font-size:0.625rem;color:var(--white-dim);margin-top:18px;">Interactive PM in USACE &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile13_ClosingWell.html" style="color:var(--gold);text-decoration:underline;">Continue to Case File 13 &rarr;</a> &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" style="color:var(--white-dim);text-decoration:underline;">Course Home</a></p>'
+  +'</div></div>';
+}
+function saveCommitment(){
+  CS.commitment=document.getElementById('commitment').value;
+  saveState();
+  alert('Saved. Thank you for completing Case File 12.');
+}
+function restartCase(){
+  if(confirm('This will clear your progress for this case file. Continue?')){
+    try{localStorage.removeItem(STORAGE_KEY);}catch(e){}location.reload();
+  }
+}
+
+// ===== INIT =====
+(function init(){render();})();
+</script>
+</body>
+</html>

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive PM in USACE</title>
+</head>
+<body>
+<!-- ==========================================
+     Interactive PM in USACE — SharePoint Snippet
+     Page: Module00_Orientation.aspx
+     Paste this entire block into a Script Editor web part
+     on a Classic SharePoint page.
+     ========================================== -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root{--gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;--army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;--white:#F5F2EB;--white-dim:#C8C4B8;--accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;--border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;}
+html.font-l{font-size:18px;}
+html.font-s{font-size:14px;}
+body{background:var(--army-dark);color:var(--white);font-family:'Inter',sans-serif;font-weight:400;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(61,82,41,0.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(37,45,28,0.4) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* ===== ACCESSIBILITY LIGHT MODE (default) ===== */
+body.light-mode::before{display:none !important;}
+body.light-mode{background:#FFFFFF !important;color:#111111;}
+body.light-mode{--army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-dim:#222222;--gold:#5A4010;--gold-light:#3A2A08;--gold-dim:#5A4010;--border:rgba(90,64,16,0.4);--border-strong:rgba(90,64,16,0.7);--accent:#1A4A10;--warn:#8B3A00;--danger:#7A1A1A;}
+
+/* HEADER */
+header{border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;background:rgba(26,31,20,0.97);backdrop-filter:blur(12px);z-index:200;}
+body.light-mode header{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+.header-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.logo-block{display:flex;align-items:center;gap:12px;}
+.logo-seal{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.625rem;color:var(--gold);flex-shrink:0;}
+body.light-mode .logo-seal{border-color:#5A4010;color:#5A4010;}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:0.875rem;color:var(--white);}
+.logo-sub{font-size:0.5625rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+body.light-mode .logo-sub{color:#5A4010;}
+.case-badge{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);border:1px solid var(--border);padding:3px 8px;letter-spacing:.1em;}
+.case-quicknav{background:rgba(26,31,20,0.97);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:190;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+.case-quicknav-inner{display:flex;align-items:center;gap:4px;padding:7px 24px;max-width:1100px;margin:0 auto;}
+.cqn-link{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.05em;color:var(--white-dim);border:1px solid var(--border);padding:5px 9px;text-decoration:none;flex-shrink:0;transition:all .15s;}
+.cqn-link:hover{border-color:var(--gold-dim);color:var(--white);}
+.cqn-link.current{background:var(--gold);color:var(--army-dark);border-color:var(--gold);font-weight:700;}
+.cqn-sep{color:var(--border-strong);flex-shrink:0;margin:0 2px;}
+body.light-mode .case-quicknav{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+body.light-mode .cqn-link{color:#5A4010;border-color:#5A4010;}
+body.light-mode .cqn-link:hover{background:#E8E4D9;}
+body.light-mode .cqn-link.current{background:#5A4010;color:#FFFFFF;border-color:#5A4010;}
+body.light-mode .case-badge{color:#111111;border-color:#5A4010;background:#E8E4D9;font-weight:700;}
+.theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;}
+body.light-mode .theme-toggle{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+
+/* PROGRESS */
+.progress-bar-wrap{background:rgba(37,45,28,.8);border-bottom:1px solid var(--border);padding:8px 0;}
+body.light-mode .progress-bar-wrap{background:#E8E4D9;border-bottom:2px solid #5A4010;}
+.progress-bar-inner{max-width:860px;margin:0 auto;padding:0 24px;}
+.progress-track{height:3px;background:rgba(200,168,75,.15);border-radius:2px;margin-bottom:6px;}
+body.light-mode .progress-track{background:#C8C0A8;}
+.progress-fill{height:3px;background:var(--gold);border-radius:2px;transition:width .4s ease;}
+body.light-mode .progress-fill{background:#5A4010;}
+.progress-labels{display:flex;justify-content:space-between;}
+.progress-text{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.08em;}
+body.light-mode .progress-text{color:#111111;}
+.progress-pct{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);font-weight:700;}
+body.light-mode .progress-pct{color:#5A4010;}
+
+.main{max-width:860px;margin:0 auto;padding:36px 24px 80px;position:relative;z-index:1;}
+.screen{display:none;animation:fadeUp .3s ease both;}
+.screen.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* SECTION NAV */
+.section-nav{display:flex;gap:4px;margin-bottom:26px;flex-wrap:wrap;}
+.sec-btn{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.06em;text-transform:uppercase;padding:7px 12px;background:transparent;border:1px solid var(--border);color:var(--white-dim);cursor:pointer;display:flex;align-items:center;gap:5px;}
+body.light-mode .sec-btn{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:600;}
+.sec-btn.active{background:var(--gold);border-color:var(--gold);color:var(--army-dark);font-weight:700;}
+body.light-mode .sec-btn.active{background:#5A4010;color:#FFFFFF;}
+.sec-btn.complete{border-color:rgba(123,160,91,.5);color:var(--accent);}
+body.light-mode .sec-btn.complete{background:#E8F0E8;border-color:#1A4A10;color:#1A4A10;}
+.sec-btn.locked{opacity:.4;cursor:not-allowed;}
+
+/* TITLES */
+.eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .eyebrow{color:#5A4010;font-weight:700;}
+.title-main{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,4vw,2.375rem);line-height:1.18;color:var(--white);margin-bottom:14px;}
+body.light-mode .title-main{color:#111111;}
+.title-main em{color:var(--gold-light);font-style:italic;}
+body.light-mode .title-main em{color:#5A4010;}
+.lede{font-size:0.8125rem;line-height:1.8;color:var(--white-dim);max-width:620px;margin-bottom:22px;}
+body.light-mode .lede{color:#111111;font-size:0.875rem;}
+.lede strong{color:var(--white);font-weight:600;}
+body.light-mode .lede strong{color:#111111;}
+
+/* CARDS / CALLOUTS */
+.card{border:1px solid var(--border);background:rgba(37,45,28,.4);padding:16px 18px;margin-bottom:14px;}
+body.light-mode .card{background:#E8E4D9;border:2px solid #5A4010;}
+.card-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .card-label{color:#5A4010;font-weight:700;}
+.card p{font-size:0.75rem;line-height:1.7;color:var(--white-dim);margin-bottom:8px;}
+body.light-mode .card p{color:#111111;font-size:0.8125rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--white);}
+body.light-mode .card strong{color:#111111;}
+
+.people-card{border-left:4px solid var(--accent);}
+body.light-mode .people-card{border-left:6px solid #1A4A10;background:#E8F0E8;}
+body.light-mode .people-card .card-label{color:#1A4A10;}
+
+.proc-tag{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);border:1px solid var(--border-strong);padding:3px 8px;display:inline-block;margin:3px 3px 0 0;letter-spacing:.07em;}
+body.light-mode .proc-tag{color:#111111;border:2px solid #5A4010;background:#FFFFFF;font-weight:700;}
+
+/* REFLECTION INPUT */
+.reflect-block{margin-bottom:18px;}
+.reflect-q{font-size:0.75rem;color:var(--white);font-weight:600;margin-bottom:8px;line-height:1.6;}
+body.light-mode .reflect-q{color:#111111;font-size:0.8125rem;}
+.reflect-input{width:100%;background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.75rem;padding:11px 13px;outline:none;min-height:70px;resize:vertical;}
+body.light-mode .reflect-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;font-size:0.8125rem;}
+.reflect-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .reflect-input::placeholder{color:#888;opacity:1;}
+
+.strength-input{background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.8125rem;padding:11px 14px;outline:none;width:100%;max-width:320px;}
+body.light-mode .strength-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;}
+.strength-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .strength-input::placeholder{color:#888;opacity:1;}
+.profile-display{margin-bottom:18px;border:1px solid var(--border);padding:14px 16px;}
+.profile-row{margin-bottom:8px;}
+.profile-row:last-of-type{margin-bottom:0;}
+.profile-value{font-size:0.875rem;color:var(--white);font-family:'Inter',sans-serif;}
+.profile-clear{margin-top:10px;font-size:0.6875rem;}
+.profile-clear a{color:var(--gold-dim);text-decoration:underline;cursor:pointer;}
+body.light-mode .profile-value{color:#111111;}
+body.light-mode .profile-display{border:2px solid #5A4010;}
+.required-mark{color:var(--gold);}
+body.light-mode .required-mark{color:#5A4010;}
+.field-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:8px;display:block;}
+body.light-mode .field-label{color:#5A4010;font-weight:700;}
+.name-input{background:rgba(37,45,28,.6);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.875rem;padding:12px 15px;outline:none;width:100%;max-width:420px;}
+body.light-mode .name-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;font-size:1rem;}
+.name-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .name-input::placeholder{color:#888;opacity:1;}
+
+/* SCENARIO */
+.scenario-box{background:rgba(26,31,20,.5);border:1px solid var(--border-strong);border-left:4px solid var(--gold);padding:18px 20px;margin-bottom:18px;}
+body.light-mode .scenario-box{background:#FFFFF8;border:2px solid #8B6000;border-left:6px solid #5A4010;}
+.scenario-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+body.light-mode .scenario-label{color:#5A4010;font-weight:700;}
+.scenario-text{font-size:0.8125rem;line-height:1.8;color:var(--white);}
+body.light-mode .scenario-text{color:#111111;font-size:0.875rem;}
+.scenario-text strong{color:var(--gold-light);}
+body.light-mode .scenario-text strong{color:#5A4010;}
+
+.decision-prompt{font-family:'DM Serif Display',serif;font-size:1.125rem;color:var(--white);margin:18px 0 14px;}
+body.light-mode .decision-prompt{color:#111111;}
+
+.choice-option{display:block;width:100%;text-align:left;background:rgba(26,31,20,.4);border:1px solid var(--border);color:var(--white-dim);font-family:'Inter',sans-serif;font-size:0.75rem;line-height:1.6;padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.choice-option:hover{border-color:var(--gold-dim);color:var(--white);background:rgba(37,45,28,.6);}
+body.light-mode .choice-option{background:#FFFFFF;border:2px solid #C8C0A8;color:#111111;font-size:0.8125rem;}
+body.light-mode .choice-option:hover{border-color:#5A4010;background:#E8E4D9;}
+.choice-letter{font-family:'DM Mono',monospace;font-weight:700;color:var(--gold);margin-right:8px;}
+body.light-mode .choice-letter{color:#5A4010;}
+
+/* CONSEQUENCE */
+.consequence-box{background:rgba(123,160,91,.08);border:1px solid rgba(123,160,91,.3);border-left:4px solid var(--accent);padding:16px 18px;margin:16px 0;}
+body.light-mode .consequence-box{background:#E8F0E8;border:2px solid #1A4A10;border-left:6px solid #1A4A10;}
+.consequence-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .consequence-label{color:#1A4A10;font-weight:700;}
+.consequence-text{font-size:0.75rem;line-height:1.75;color:var(--white-dim);}
+body.light-mode .consequence-text{color:#111111;font-size:0.8125rem;}
+.consequence-text strong{color:var(--white);}
+body.light-mode .consequence-text strong{color:#111111;}
+
+.insight-box{background:rgba(200,168,75,.06);border:1px solid var(--border);border-left:4px solid var(--gold-dim);padding:14px 16px;margin-top:12px;}
+body.light-mode .insight-box{background:#FFF8E8;border:2px solid #8B6000;border-left:6px solid #5A4010;}
+.insight-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+body.light-mode .insight-label{color:#5A4010;font-weight:700;}
+.insight-text{font-size:0.6875rem;line-height:1.7;color:var(--white-dim);}
+body.light-mode .insight-text{color:#111111;font-size:0.75rem;}
+.insight-text strong{color:var(--white);}
+body.light-mode .insight-text strong{color:#111111;}
+
+/* KNOWLEDGE CHECK */
+.question-block{background:rgba(26,31,20,.5);border:1px solid var(--border);padding:18px;margin-bottom:12px;}
+body.light-mode .question-block{background:#F8F6F2;border:2px solid #C8C0A8;}
+.question-num{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.1em;margin-bottom:8px;}
+body.light-mode .question-num{color:#5A4010;font-weight:700;}
+.question-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.08em;padding:2px 7px;border:1px solid var(--border-strong);color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .question-tag{border-color:#5A4010;color:#5A4010;background:#E8E4D9;font-weight:700;}
+.question-text{font-size:0.8125rem;color:var(--white);line-height:1.55;margin-bottom:14px;font-weight:600;}
+body.light-mode .question-text{color:#111111;font-size:0.875rem;}
+.answer-option{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:all .15s;font-size:0.75rem;color:var(--white-dim);line-height:1.5;}
+.answer-option:hover{border-color:var(--gold-dim);color:var(--white);}
+body.light-mode .answer-option{background:#FFFFFF;border:2px solid #C8C0A8;color:#111111;font-size:0.8125rem;}
+body.light-mode .answer-option:hover{border-color:#5A4010;background:#E8E4D9;}
+.answer-option.selected{border-color:var(--gold);background:rgba(200,168,75,.08);color:var(--white);}
+body.light-mode .answer-option.selected{border:3px solid #5A4010;background:#E8E4D9;color:#111111;}
+.answer-option.correct{border-color:var(--accent);background:rgba(123,160,91,.1);color:var(--accent);}
+body.light-mode .answer-option.correct{background:#1A4A10;border:3px solid #1A4A10;color:#FFFFFF;font-weight:700;}
+.answer-option.incorrect{border-color:var(--danger);background:rgba(192,57,43,.08);color:#E07C73;}
+body.light-mode .answer-option.incorrect{background:#7A1A1A;border:3px solid #7A1A1A;color:#FFFFFF;font-weight:700;}
+.answer-radio{width:14px;height:14px;border:1.5px solid var(--border);border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
+.answer-option.selected .answer-radio{border-color:var(--gold);background:var(--gold);}
+body.light-mode .answer-option.selected .answer-radio{border-color:#5A4010;background:#5A4010;}
+.answer-option.correct .answer-radio{border-color:var(--accent);background:var(--accent);}
+body.light-mode .answer-option.correct .answer-radio{border-color:#FFFFFF;background:#FFFFFF;}
+.answer-option.incorrect .answer-radio{border-color:var(--danger);background:var(--danger);}
+body.light-mode .answer-option.incorrect .answer-radio{border-color:#FFFFFF;background:#FFFFFF;}
+.answer-radio-dot{width:6px;height:6px;border-radius:50%;background:var(--army-dark);display:none;}
+.answer-option.selected .answer-radio-dot,.answer-option.correct .answer-radio-dot,.answer-option.incorrect .answer-radio-dot{display:block;}
+body.light-mode .answer-option.correct .answer-radio-dot{background:#1A4A10;}
+body.light-mode .answer-option.incorrect .answer-radio-dot{background:#7A1A1A;}
+.kc-explain{font-size:0.6875rem;line-height:1.65;color:var(--white-dim);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:none;}
+body.light-mode .kc-explain{color:#111111;font-size:0.75rem;border-top-color:#5A4010;}
+.kc-explain.show{display:block;}
+.kc-explain strong{color:var(--gold-light);}
+body.light-mode .kc-explain strong{color:#5A4010;}
+
+.kc-feedback{padding:14px 16px;margin-top:14px;font-size:0.75rem;display:none;}
+.kc-feedback.show{display:block;}
+.kc-feedback.pass{background:rgba(123,160,91,.1);border:1px solid rgba(123,160,91,.3);color:var(--accent);}
+body.light-mode .kc-feedback.pass{background:#D8F0D8;border:2px solid #1A4A10;color:#0A3A0A;font-weight:600;font-size:0.875rem;}
+.kc-feedback.fail{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);color:#E07C73;}
+body.light-mode .kc-feedback.fail{background:#F8D8D8;border:2px solid #7A1A1A;color:#5A0A0A;font-weight:600;font-size:0.875rem;}
+.kc-score{font-family:'DM Mono',monospace;font-size:1.375rem;font-weight:700;margin-bottom:4px;}
+.kc-score.pass{color:var(--accent);}
+body.light-mode .kc-score.pass{color:#1A4A10;}
+.kc-score.fail{color:var(--danger);}
+body.light-mode .kc-score.fail{color:#7A1A1A;}
+
+/* COMPLETION */
+.complete-wrap{background:rgba(26,31,20,.3);border:2px solid var(--border-strong);padding:32px;text-align:center;margin-top:20px;}
+body.light-mode .complete-wrap{background:#FAF8F3;border:3px solid #5A4010;}
+.complete-seal{width:54px;height:54px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gold);margin:0 auto 14px;}
+body.light-mode .complete-seal{border-color:#5A4010;color:#1A4A10;}
+.complete-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--white);margin-bottom:8px;}
+body.light-mode .complete-title{color:#111111;}
+.complete-sub{font-size:0.75rem;color:var(--white-dim);margin-bottom:20px;}
+body.light-mode .complete-sub{color:#111111;font-size:0.8125rem;}
+
+/* BUTTONS */
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--army-dark);font-family:'Inter',sans-serif;font-weight:700;font-size:0.6875rem;letter-spacing:.1em;text-transform:uppercase;padding:12px 22px;border:none;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+body.light-mode .btn-primary{background:#5A4010;color:#FFFFFF;}
+body.light-mode .btn-primary:hover{background:#3A2808;}
+.btn-secondary{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--white-dim);font-family:'Inter',sans-serif;font-weight:600;font-size:0.6875rem;letter-spacing:.08em;text-transform:uppercase;padding:12px 18px;border:1px solid var(--border);cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--border-strong);color:var(--white);}
+body.light-mode .btn-secondary{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+body.light-mode .btn-secondary:hover{background:#D4CDB8;border-color:#111111;}
+.btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;}
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:18px;border-top:1px solid var(--border);}
+body.light-mode .nav-row{border-top:2px solid #5A4010;}
+
+footer{border-top:1px solid var(--border);padding:14px 0;margin-top:20px;}
+body.light-mode footer{border-top:2px solid #5A4010;}
+.footer-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.footer-attr{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold-dim);letter-spacing:.09em;}
+body.light-mode .footer-attr{color:#5A4010;font-weight:700;}
+.footer-doc{font-size:0.5625rem;color:var(--white-dim);opacity:.4;}
+body.light-mode .footer-doc{color:#444;opacity:1;}
+
+@media print{header,.progress-bar-wrap,.section-nav,.btn-row,footer,.choice-option{display:none!important;}}
+
+.font-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;margin-right:8px;}
+body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
+
+.ref-phase{margin:36px 0 18px;}
+.ref-phase-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.ref-phase-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+.ref-phase-title{font-family:'DM Mono',monospace;font-size:0.625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;}
+details.proc-card{border:1px solid var(--border);margin-bottom:10px;}
+details.proc-card[open]{border-color:var(--border-strong);}
+details.proc-card summary{list-style:none;cursor:pointer;padding:14px 18px;display:flex;align-items:center;gap:14px;}
+details.proc-card summary::-webkit-details-marker{display:none;}
+details.proc-card summary::after{content:'+';font-family:'DM Mono',monospace;font-size:1.125rem;color:var(--gold-dim);margin-left:auto;flex-shrink:0;}
+details.proc-card[open] summary::after{content:'\2212';}
+.proc-code-pill{font-family:'DM Mono',monospace;font-size:0.625rem;letter-spacing:.08em;color:var(--gold);border:1px solid var(--border-strong);padding:4px 9px;flex-shrink:0;white-space:nowrap;}
+body.light-mode .proc-code-pill{color:#5A4010;}
+.proc-card-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--white);}
+.proc-card-body{padding:0 18px 18px;}
+.proc-card-desc{font-size:0.875rem;color:var(--white-dim);line-height:1.7;margin-bottom:14px;}
+.proc-cf-links{display:flex;flex-direction:column;gap:6px;}
+.proc-cf-link{font-family:'DM Mono',monospace;font-size:0.6875rem;letter-spacing:.05em;color:var(--accent);text-decoration:none;border:1px solid var(--border);padding:8px 12px;display:block;}
+.proc-cf-link:hover{border-color:var(--border-strong);}
+.proc-cf-link .cf-num{color:var(--gold);margin-right:6px;}
+.proc-no-cf{font-family:'DM Mono',monospace;font-size:0.6875rem;color:var(--white-dim);letter-spacing:.05em;font-style:italic;}
+.ref-toplink{display:inline-block;font-family:'DM Mono',monospace;font-size:0.625rem;letter-spacing:.1em;color:var(--gold);text-decoration:none;text-transform:uppercase;margin-bottom:18px;border:1px solid var(--border);padding:8px 14px;}
+.ref-toplink:hover{border-color:var(--border-strong);}
+.ref-crosslink-row{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap;}
+
+.compare-row{display:flex;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+.compare-col{flex:1;min-width:140px;border:1px solid var(--border);padding:10px 12px;font-size:0.75rem;color:var(--white-dim);}
+.compare-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:4px;display:block;}
+.compare-same{border-color:var(--border-strong);}
+body.light-mode .selected{border:3px solid #5A4010;background:#E8E4D9;color:#111111;}
+body.light-mode .selected .answer-radio{border-color:#5A4010;background:#5A4010;}
+.selected .answer-radio-dot{display:block;}
+</style>
+<header>
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-seal">PM</div>
+      <div>
+        <div class="logo-primary">Interactive PM in USACE</div>
+        <div class="logo-sub">Module 0 &middot; Orientation</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="case-badge">Start Here</span>
+      <button class="font-toggle" id="font-toggle" onclick="toggleFontSize()">Text: M</button>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
+    </div>
+  </div>
+</header>
+
+<nav class="case-quicknav"><div class="case-quicknav-inner"><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" class="cqn-link">Home</a><span class="cqn-sep">&middot;</span><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/Module00_Orientation.html" class="cqn-link current">M0</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile01_NewPM_UnclearRoles.html" class="cqn-link">CF01</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile02_ScheduleVsScope.html" class="cqn-link">CF02</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile03_TheNewHome.html" class="cqn-link">CF03</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile04_BuiltToSlip.html" class="cqn-link">CF04</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile05_TheNumberDoesntFit.html" class="cqn-link">CF05</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile06_FeedbackConversation.html" class="cqn-link">CF06</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile07_PhantomSlip.html" class="cqn-link">CF07</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile08_RiskNobodyTracked.html" class="cqn-link">CF08</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile09_MeetingGotAway.html" class="cqn-link">CF09</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile10_WrongShadeOfGray.html" class="cqn-link">CF10</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile11_TwoFacesOfRisk.html" class="cqn-link">CF11</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile12_TheFavor.html" class="cqn-link">CF12</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile13_ClosingWell.html" class="cqn-link">CF13</a></div></nav>
+<div class="main">
+<a class="ref-toplink" href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html">&larr; Course Home</a>
+<p class="eyebrow">Module 0 &middot; Before Case File 01</p>
+<h1 class="title-main">Know Yourself,<br><em>Know the Map.</em></h1>
+<p class="lede">A few minutes here will make the next thirteen case files make more sense &mdash; and give you a way to look back on your own thinking once you've finished.</p>
+
+<div class="card people-card"><div class="card-label">One Project, Thirteen Decisions</div>
+<p style="font-size:0.8125rem;color:var(--white-dim);line-height:1.7;">Every case file in this course follows the same person, the same project, in order: <strong>Maria Chen</strong>, a Project Manager at USACE, leading the <strong>Building 4521 Renovation</strong> from her first uncertain week through closeout. The same colleagues &mdash; Dana, Marcus, Pat, Priya, and others &mdash; reappear throughout, and decisions made in early case files have consequences that surface later. It is one story, told in thirteen decisions.</p>
+</div>
+
+<div class="card"><div class="card-label">How Each Case File Works</div>
+<p style="font-size:0.8125rem;color:var(--white-dim);line-height:1.7;">Each case file follows the same four-part structure: <strong>Training</strong> (a few minutes of doctrine, grounded in PDBP/PROC references), <strong>Discussion</strong> (a short personal reflection &mdash; not graded, saved only on your device), <strong>Case Study</strong> (a branching scenario with three decisions, each with realistic consequences), and a <strong>Knowledge Check</strong> (5 questions, 60% to pass, with explanations either way).</p>
+</div>
+
+<div class="card"><div class="card-label">The Eight Lenses in This Course</div>
+<p style="font-size:0.8125rem;color:var(--white-dim);line-height:1.7;margin-bottom:10px;">A <strong>talent</strong> is a natural pattern of thinking, feeling, or behaving. Invested in through practice and self-awareness, a talent becomes a <strong>strength</strong> &mdash; something you do well and can apply deliberately. Throughout this course, each case file includes a short reflection written through the lens of YOUR top CliftonStrengths theme &mdash; the same scenario, seen through eight different natural approaches, two from each of the four domains below.</p>
+
+<p style="font-size:0.75rem;color:var(--gold-dim);text-transform:uppercase;letter-spacing:.08em;margin-top:14px;margin-bottom:6px;font-weight:700;">Strategic Thinking &mdash; how you absorb information and think through possibilities</p>
+<p style="font-size:0.75rem;line-height:2;color:var(--white-dim);">
+<strong style="color:var(--white);">Analytical</strong> &mdash; wants to understand the &quot;why&quot; before acting<br>
+<strong style="color:var(--white);">Strategic</strong> &mdash; quick to see alternative paths and what they lead to</p>
+
+<p style="font-size:0.75rem;color:var(--gold-dim);text-transform:uppercase;letter-spacing:.08em;margin-top:14px;margin-bottom:6px;font-weight:700;">Relationship Building &mdash; how you build and strengthen connections with others</p>
+<p style="font-size:0.75rem;line-height:2;color:var(--white-dim);">
+<strong style="color:var(--white);">Empathy</strong> &mdash; senses what others are feeling, often before they say it<br>
+<strong style="color:var(--white);">Relator</strong> &mdash; builds trust through close, genuine relationships</p>
+
+<p style="font-size:0.75rem;color:var(--gold-dim);text-transform:uppercase;letter-spacing:.08em;margin-top:14px;margin-bottom:6px;font-weight:700;">Influencing &mdash; how you reach a wider audience and move people to act</p>
+<p style="font-size:0.75rem;line-height:2;color:var(--white-dim);">
+<strong style="color:var(--white);">Command</strong> &mdash; comfortable taking charge and making a decision<br>
+<strong style="color:var(--white);">Woo</strong> &mdash; wins people over, finds connection easily</p>
+
+<p style="font-size:0.75rem;color:var(--gold-dim);text-transform:uppercase;letter-spacing:.08em;margin-top:14px;margin-bottom:6px;font-weight:700;">Executing &mdash; how you make things happen and get the job done</p>
+<p style="font-size:0.75rem;line-height:2;color:var(--white-dim);">
+<strong style="color:var(--white);">Achiever</strong> &mdash; driven by visible progress and getting things done<br>
+<strong style="color:var(--white);">Responsibility</strong> &mdash; feels ownership for commitments, large and small</p>
+
+<p style="font-size:0.8125rem;color:var(--white-dim);line-height:1.7;margin-top:14px;">None of these are better or worse &mdash; and you do not need to know your CliftonStrengths results to take this course. If you do, each case file will ask for your top five themes and tailor a short reflection to whichever of the eight above is highest on your list. If you do not, enter N/A and the course works just as well without one.</p>
+</div>
+<div class="card"><div class="card-label">The Four Domains of CliftonStrengths</div>
+<p style="font-size:0.8125rem;color:var(--white-dim);line-height:1.7;margin-bottom:10px;">CliftonStrengths groups all 34 themes into <strong>four broad domains</strong> &mdash; four different ways people tend to contribute on a team. Most people have strengths spread across more than one domain, and no mix is "better" than another. The full picture, beyond just the eight used in this course:</p>
+<p style="font-size:0.75rem;line-height:2;color:var(--white-dim);">
+<strong style="color:var(--white);">Strategic Thinking</strong> &mdash; Analytical, Context, Futuristic, Ideation, Input, Intellection, Learner, Strategic<br>
+<strong style="color:var(--white);">Relationship Building</strong> &mdash; Adaptability, Connectedness, Developer, Empathy, Harmony, Includer, Individualization, Positivity, Relator<br>
+<strong style="color:var(--white);">Influencing</strong> &mdash; Activator, Command, Communication, Competition, Maximizer, Self-Assurance, Significance, Woo<br>
+<strong style="color:var(--white);">Executing</strong> &mdash; Achiever, Arranger, Belief, Consistency, Deliberative, Discipline, Focus, Responsibility, Restorative</p>
+<p style="font-size:0.8125rem;color:var(--white-dim);line-height:1.7;margin-top:10px;">Wherever your own top five themes fall, at least one of the eight lenses used in this course is likely to feel familiar. Enter your top five below if you know them, or <strong>N/A</strong> if you do not &mdash; the course works the same either way.</p>
+</div>
+<div class="card people-card"><div class="card-label">A Strength Overused</div>
+<p style="font-size:0.8125rem;color:var(--white-dim);line-height:1.7;">Every strength has a shadow side &mdash; sometimes called a <strong>barrier</strong>. An Achiever pushing for closure can miss a detail that needed more time. An Analytical mind seeking certainty can delay a decision past the point it was needed. A few case files in this course show exactly this &mdash; not because any strength is a flaw, but because <em>any</em> strength, used without awareness of the moment, can become the wrong tool for it. Part of what this course asks is not &quot;what is your strength&quot; but &quot;when might your strength need a partner?&quot;</p>
+</div>
+
+<div class="card"><div class="card-label">BLUF &mdash; How This Course Talks to You</div>
+<p style="font-size:0.8125rem;color:var(--white-dim);line-height:1.7;"><strong>BLUF</strong> &mdash; Bottom Line Up Front &mdash; is the standard USACE communication norm, and it is also how this course is written. Consequences come before explanations. Explanations lead with what matters most. You will see this pattern in how strong responses are written throughout the case studies &mdash; once you notice it here, you will notice it everywhere else in the course too.</p>
+</div>
+
+<div class="card"><div class="card-label">Finding Your Way Around</div>
+<p style="font-size:0.8125rem;color:var(--white-dim);line-height:1.7;margin-bottom:8px;">A few things worth knowing before you start:</p>
+<p style="font-size:0.8125rem;color:var(--white-dim);line-height:1.9;">
+&bull; The <strong>Text: S/M/L</strong> button adjusts text size across every page in this course &mdash; your preference is remembered.<br>
+&bull; The <strong>theme toggle</strong> switches between light and dark mode.<br>
+&bull; Progress is tracked <strong>per-browser, on your device</strong> &mdash; there is no login and no central record.<br>
+&bull; The <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/PROC_Map.html" style="color:var(--gold);text-decoration:underline;">PDBP Lifecycle Map</a> and <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/Toolbelt.html" style="color:var(--gold);text-decoration:underline;">PM's Toolbelt</a> are reference pages you can return to any time &mdash; every PROC/REF citation and real-world tool mentioned in a case file links back to one of these.</p>
+</div>
+
+<div class="card people-card"><div class="card-label">Before You Begin: A Quick Check-In</div>
+<p style="font-size:0.8125rem;color:var(--white-dim);line-height:1.7;">Five short scenarios, no right answers &mdash; just what you would genuinely do <em>right now</em>, before any of this course's frameworks. Your answers are saved on this device only. After Case File 13, you'll see these same five scenarios again, with your answers from today alongside your answers then &mdash; a chance to notice what, if anything, changed.</p>
+</div>
+
+<div id="vignette-container"></div>
+
+<div id="profile-fields-container"></div>
+
+<div class="btn-row">
+<button class="btn-primary" id="submit-btn" onclick="submitPre()" disabled>Save &amp; Begin Case File 01 &rarr;</button>
+<a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile01_NewPM_UnclearRoles.html" style="align-self:center;font-size:0.6875rem;color:var(--white-dim);text-decoration:underline;">Skip this check-in</a>
+</div>
+<div id="saved-msg" style="display:none;margin-top:14px;font-size:0.75rem;color:var(--gold);">Saved. Redirecting to Case File 01&hellip;</div>
+
+</div>
+<footer>
+<div class="footer-inner">
+  <span class="footer-doc">EM 5-1-11 &middot; PROSPECT 355 &middot; Module 0 &middot; Orientation v1.0</span>
+  <span class="footer-attr">Interactive PM in USACE</span>
+</div>
+</footer>
+<script>
+var VIGNETTES=[
+  {id:'v1',prompt:'Five minutes before your PDT meeting starts, the Chief of Engineering &amp; Construction stops by and asks for a quick update on a contract-award deadline — something that isn\'t on today\'s agenda.',options:['Give the Chief a few minutes now, even if the PDT meeting starts late.','Briefly acknowledge the Chief, say you\'ll follow up right after the meeting, and start the PDT meeting on time.','Ask someone else on the team to brief the Chief while you start the meeting.','Send a quick message to the PDT that the meeting will start a few minutes late, and give the Chief your attention.']},
+  {id:'v2',prompt:'A friend who manages a different team asks you, informally, how one of their employees — currently on your project team — has been doing, ahead of that employee\'s upcoming performance appraisal.',options:['Share your honest impressions right away, since it\'s a quick favor for a friend.','Let your friend know you\'re happy to help, and follow up with specific, complete input once you have a moment to think it through.','Tell your friend you\'d rather not comment, to avoid any appearance of bias.','Suggest your friend ask someone else on the team instead.']},
+  {id:'v3',prompt:'The design team made an error that will require rework. The customer wants to discuss who will cover the additional cost.',options:['Have the discussion as soon as the customer raises it, even before you\'ve confirmed the cost impact internally.','Acknowledge the issue with the customer right away, and set up a follow-up conversation once you have the cost details.','Let the design team lead handle the conversation with the customer directly, since it was their error.','Wait until the cost impact is fully resolved before saying anything to the customer.']},
+  {id:'v4',prompt:'Your technical lead wants to schedule a brainstorming session about a potential deficiency in a levee floodwall — nothing urgent yet, but worth exploring.',options:['Schedule it this week, ahead of other planned work.','Add it to the calendar a few weeks out, once the team has more capacity.','Ask the technical lead to gather a bit more information first, then revisit scheduling.','Suggest it wait until the next regularly scheduled PDT meeting.']},
+  {id:'v5',prompt:'Your calendar is fully booked today with back-to-back meetings. Midway through the morning, you get a call: your child is sick at school and needs to be picked up.',options:['Step out to handle it, and have someone else cover or reschedule your meetings.','Finish your current meeting, then immediately rearrange the rest of the day.','Ask a family member or backup contact to help if possible, and continue your day as planned.','Wait until a natural break in your schedule before responding.']},
+];
+
+function getProfile(){
+  try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
+}
+function saveProfile(name,strengths){
+  try{localStorage.setItem('pm-learner-profile',JSON.stringify({name:name,strengths:strengths,savedAt:new Date().toISOString()}));}catch(e){}
+}
+function clearProfile(){
+  try{localStorage.removeItem('pm-learner-profile');}catch(e){}
+}
+function clearProfileAndReload(){
+  clearProfile();
+  renderProfileSection();
+  return false;
+}
+function renderProfileSection(){
+  var p=getProfile();
+  var html;
+  if(p&&p.name){
+    html='<div class="profile-display">'
+      +'<div class="profile-row"><span class="field-label">Learner</span><div class="profile-value">'+p.name+'</div></div>'
+      +'<div class="profile-row"><span class="field-label">Top 5 CliftonStrengths (or N/A)</span><div class="profile-value">'+p.strengths+'</div></div>'
+      +'<p class="profile-clear"><a onclick="return clearProfileAndReload()">Not '+p.name+'? Clear saved name &amp; strengths</a></p>'
+      +'</div>';
+  }else{
+    html='<div style="margin-bottom:18px;">'
+      +'<label class="field-label">Your Name <span class="required-mark">*</span></label>'
+      +'<input class="name-input" id="name-input" type="text" placeholder="First Last"/>'
+      +'</div>'
+      +'<div style="margin-bottom:18px;">'
+      +'<label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>'
+      +'<input class="strength-input" id="strength-input" type="text" placeholder="e.g. Achiever, Strategic, Relator, Responsibility, Analytical \u2014 or N/A if not available"/>'
+      +'</div>';
+  }
+  document.getElementById('profile-fields-container').innerHTML=html;
+}
+
+var answers={};
+function renderVignettes(){
+  var html='';
+  VIGNETTES.forEach(function(v,vi){
+    html+='<div class="question-block" id="vq-'+vi+'">';
+    html+='<div class="question-num">Scenario '+(vi+1)+' of '+VIGNETTES.length+'</div>';
+    html+='<div class="question-text">'+v.prompt+'</div>';
+    v.options.forEach(function(opt,oi){
+      html+='<div class="answer-option" id="vopt-'+vi+'-'+oi+'" onclick="selectAnswer('+vi+','+oi+')">'
+        +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+opt+'</div>';
+    });
+    html+='</div>';
+  });
+  document.getElementById('vignette-container').innerHTML=html;
+}
+function selectAnswer(vi,oi){
+  answers[vi]=oi;
+  for(var i=0;i<4;i++){
+    var el=document.getElementById('vopt-'+vi+'-'+i);
+    if(el)el.classList.remove('selected');
+  }
+  document.getElementById('vopt-'+vi+'-'+oi).classList.add('selected');
+  if(Object.keys(answers).length===VIGNETTES.length){
+    document.getElementById('submit-btn').disabled=false;
+  }
+}
+function submitPre(){
+  var p=getProfile();
+  if(!(p&&p.name)){
+    var name=document.getElementById('name-input').value.trim();
+    var strengths=document.getElementById('strength-input').value.trim();
+    if(!name){alert('Please enter your name to continue.');return;}
+    if(!strengths){alert('Please enter your top 5 CliftonStrengths, or N/A if not available.');return;}
+    saveProfile(name,strengths);
+  }
+  var record={};
+  VIGNETTES.forEach(function(v,vi){record[v.id]=answers[vi];});
+  var data={pre:record, preDate:new Date().toISOString()};
+  try{
+    var existing=localStorage.getItem('pm-prepost-v1');
+    if(existing){
+      var parsed=JSON.parse(existing);
+      data.post=parsed.post; data.postDate=parsed.postDate;
+    }
+    localStorage.setItem('pm-prepost-v1', JSON.stringify(data));
+  }catch(e){}
+  document.getElementById('saved-msg').style.display='block';
+  document.getElementById('submit-btn').disabled=true;
+  setTimeout(function(){window.location.href='https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile01_NewPM_UnclearRoles.html';}, 1200);
+}
+renderVignettes();
+renderProfileSection();
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+</script>
+<script>
+var VIGNETTES=[
+  {id:'v1',prompt:'Five minutes before your PDT meeting starts, the Chief of Engineering &amp; Construction stops by and asks for a quick update on a contract-award deadline — something that isn\'t on today\'s agenda.',options:['Give the Chief a few minutes now, even if the PDT meeting starts late.','Briefly acknowledge the Chief, say you\'ll follow up right after the meeting, and start the PDT meeting on time.','Ask someone else on the team to brief the Chief while you start the meeting.','Send a quick message to the PDT that the meeting will start a few minutes late, and give the Chief your attention.']},
+  {id:'v2',prompt:'A friend who manages a different team asks you, informally, how one of their employees — currently on your project team — has been doing, ahead of that employee\'s upcoming performance appraisal.',options:['Share your honest impressions right away, since it\'s a quick favor for a friend.','Let your friend know you\'re happy to help, and follow up with specific, complete input once you have a moment to think it through.','Tell your friend you\'d rather not comment, to avoid any appearance of bias.','Suggest your friend ask someone else on the team instead.']},
+  {id:'v3',prompt:'The design team made an error that will require rework. The customer wants to discuss who will cover the additional cost.',options:['Have the discussion as soon as the customer raises it, even before you\'ve confirmed the cost impact internally.','Acknowledge the issue with the customer right away, and set up a follow-up conversation once you have the cost details.','Let the design team lead handle the conversation with the customer directly, since it was their error.','Wait until the cost impact is fully resolved before saying anything to the customer.']},
+  {id:'v4',prompt:'Your technical lead wants to schedule a brainstorming session about a potential deficiency in a levee floodwall — nothing urgent yet, but worth exploring.',options:['Schedule it this week, ahead of other planned work.','Add it to the calendar a few weeks out, once the team has more capacity.','Ask the technical lead to gather a bit more information first, then revisit scheduling.','Suggest it wait until the next regularly scheduled PDT meeting.']},
+  {id:'v5',prompt:'Your calendar is fully booked today with back-to-back meetings. Midway through the morning, you get a call: your child is sick at school and needs to be picked up.',options:['Step out to handle it, and have someone else cover or reschedule your meetings.','Finish your current meeting, then immediately rearrange the rest of the day.','Ask a family member or backup contact to help if possible, and continue your day as planned.','Wait until a natural break in your schedule before responding.']},
+];
+
+function getProfile(){
+  try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
+}
+function saveProfile(name,strengths){
+  try{localStorage.setItem('pm-learner-profile',JSON.stringify({name:name,strengths:strengths,savedAt:new Date().toISOString()}));}catch(e){}
+}
+function clearProfile(){
+  try{localStorage.removeItem('pm-learner-profile');}catch(e){}
+}
+function clearProfileAndReload(){
+  clearProfile();
+  renderProfileSection();
+  return false;
+}
+function renderProfileSection(){
+  var p=getProfile();
+  var html;
+  if(p&&p.name){
+    html='<div class="profile-display">'
+      +'<div class="profile-row"><span class="field-label">Learner</span><div class="profile-value">'+p.name+'</div></div>'
+      +'<div class="profile-row"><span class="field-label">Top 5 CliftonStrengths (or N/A)</span><div class="profile-value">'+p.strengths+'</div></div>'
+      +'<p class="profile-clear"><a onclick="return clearProfileAndReload()">Not '+p.name+'? Clear saved name &amp; strengths</a></p>'
+      +'</div>';
+  }else{
+    html='<div style="margin-bottom:18px;">'
+      +'<label class="field-label">Your Name <span class="required-mark">*</span></label>'
+      +'<input class="name-input" id="name-input" type="text" placeholder="First Last"/>'
+      +'</div>'
+      +'<div style="margin-bottom:18px;">'
+      +'<label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>'
+      +'<input class="strength-input" id="strength-input" type="text" placeholder="e.g. Achiever, Strategic, Relator, Responsibility, Analytical \u2014 or N/A if not available"/>'
+      +'</div>';
+  }
+  document.getElementById('profile-fields-container').innerHTML=html;
+}
+
+var answers={};
+function renderVignettes(){
+  var html='';
+  VIGNETTES.forEach(function(v,vi){
+    html+='<div class="question-block" id="vq-'+vi+'">';
+    html+='<div class="question-num">Scenario '+(vi+1)+' of '+VIGNETTES.length+'</div>';
+    html+='<div class="question-text">'+v.prompt+'</div>';
+    v.options.forEach(function(opt,oi){
+      html+='<div class="answer-option" id="vopt-'+vi+'-'+oi+'" onclick="selectAnswer('+vi+','+oi+')">'
+        +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+opt+'</div>';
+    });
+    html+='</div>';
+  });
+  document.getElementById('vignette-container').innerHTML=html;
+}
+function selectAnswer(vi,oi){
+  answers[vi]=oi;
+  for(var i=0;i<4;i++){
+    var el=document.getElementById('vopt-'+vi+'-'+i);
+    if(el)el.classList.remove('selected');
+  }
+  document.getElementById('vopt-'+vi+'-'+oi).classList.add('selected');
+  if(Object.keys(answers).length===VIGNETTES.length){
+    document.getElementById('submit-btn').disabled=false;
+  }
+}
+function submitPre(){
+  var p=getProfile();
+  if(!(p&&p.name)){
+    var name=document.getElementById('name-input').value.trim();
+    var strengths=document.getElementById('strength-input').value.trim();
+    if(!name){alert('Please enter your name to continue.');return;}
+    if(!strengths){alert('Please enter your top 5 CliftonStrengths, or N/A if not available.');return;}
+    saveProfile(name,strengths);
+  }
+  var record={};
+  VIGNETTES.forEach(function(v,vi){record[v.id]=answers[vi];});
+  var data={pre:record, preDate:new Date().toISOString()};
+  try{
+    var existing=localStorage.getItem('pm-prepost-v1');
+    if(existing){
+      var parsed=JSON.parse(existing);
+      data.post=parsed.post; data.postDate=parsed.postDate;
+    }
+    localStorage.setItem('pm-prepost-v1', JSON.stringify(data));
+  }catch(e){}
+  document.getElementById('saved-msg').style.display='block';
+  document.getElementById('submit-btn').disabled=true;
+  setTimeout(function(){window.location.href='https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile01_NewPM_UnclearRoles.html';}, 1200);
+}
+renderVignettes();
+renderProfileSection();
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+</script>
+</body>
+</html>

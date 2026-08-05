@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive PM in USACE</title>
+</head>
+<body>
+<!-- ==========================================
+     Interactive PM in USACE — SharePoint Snippet
+     Page: CaseFile01_NewPM_UnclearRoles.aspx
+     Paste this entire block into a Script Editor web part
+     on a Classic SharePoint page.
+     ========================================== -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;--army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;--white:#F5F2EB;--white-dim:#C8C4B8;--accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;--border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;}
+html.font-l{font-size:18px;}
+html.font-s{font-size:14px;}
+body{background:var(--army-dark);color:var(--white);font-family:'Inter',sans-serif;font-weight:400;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(61,82,41,0.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(37,45,28,0.4) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* ===== ACCESSIBILITY LIGHT MODE (default) ===== */
+body.light-mode::before{display:none !important;}
+body.light-mode{background:#FFFFFF !important;color:#111111;}
+body.light-mode{--army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-dim:#222222;--gold:#5A4010;--gold-light:#3A2A08;--gold-dim:#5A4010;--border:rgba(90,64,16,0.4);--border-strong:rgba(90,64,16,0.7);--accent:#1A4A10;--warn:#8B3A00;--danger:#7A1A1A;}
+
+/* HEADER */
+header{border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;background:rgba(26,31,20,0.97);backdrop-filter:blur(12px);z-index:200;}
+body.light-mode header{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+.header-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.logo-block{display:flex;align-items:center;gap:12px;}
+.logo-seal{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.625rem;color:var(--gold);flex-shrink:0;}
+body.light-mode .logo-seal{border-color:#5A4010;color:#5A4010;}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:0.875rem;color:var(--white);}
+.logo-sub{font-size:0.5625rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+body.light-mode .logo-sub{color:#5A4010;}
+.case-badge{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);border:1px solid var(--border);padding:3px 8px;letter-spacing:.1em;}
+.case-quicknav{background:rgba(26,31,20,0.97);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:190;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+.case-quicknav-inner{display:flex;align-items:center;gap:4px;padding:7px 24px;max-width:1100px;margin:0 auto;}
+.cqn-link{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.05em;color:var(--white-dim);border:1px solid var(--border);padding:5px 9px;text-decoration:none;flex-shrink:0;transition:all .15s;}
+.cqn-link:hover{border-color:var(--gold-dim);color:var(--white);}
+.cqn-link.current{background:var(--gold);color:var(--army-dark);border-color:var(--gold);font-weight:700;}
+.cqn-sep{color:var(--border-strong);flex-shrink:0;margin:0 2px;}
+body.light-mode .case-quicknav{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+body.light-mode .cqn-link{color:#5A4010;border-color:#5A4010;}
+body.light-mode .cqn-link:hover{background:#E8E4D9;}
+body.light-mode .cqn-link.current{background:#5A4010;color:#FFFFFF;border-color:#5A4010;}
+body.light-mode .case-badge{color:#111111;border-color:#5A4010;background:#E8E4D9;font-weight:700;}
+.theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;}
+body.light-mode .theme-toggle{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+
+/* PROGRESS */
+.progress-bar-wrap{background:rgba(37,45,28,.8);border-bottom:1px solid var(--border);padding:8px 0;}
+body.light-mode .progress-bar-wrap{background:#E8E4D9;border-bottom:2px solid #5A4010;}
+.progress-bar-inner{max-width:860px;margin:0 auto;padding:0 24px;}
+.progress-track{height:3px;background:rgba(200,168,75,.15);border-radius:2px;margin-bottom:6px;}
+body.light-mode .progress-track{background:#C8C0A8;}
+.progress-fill{height:3px;background:var(--gold);border-radius:2px;transition:width .4s ease;}
+body.light-mode .progress-fill{background:#5A4010;}
+.progress-labels{display:flex;justify-content:space-between;}
+.progress-text{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.08em;}
+body.light-mode .progress-text{color:#111111;}
+.progress-pct{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);font-weight:700;}
+body.light-mode .progress-pct{color:#5A4010;}
+
+.main{max-width:860px;margin:0 auto;padding:36px 24px 80px;position:relative;z-index:1;}
+.screen{display:none;animation:fadeUp .3s ease both;}
+.screen.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* SECTION NAV */
+.section-nav{display:flex;gap:4px;margin-bottom:26px;flex-wrap:wrap;}
+.sec-btn{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.06em;text-transform:uppercase;padding:7px 12px;background:transparent;border:1px solid var(--border);color:var(--white-dim);cursor:pointer;display:flex;align-items:center;gap:5px;}
+body.light-mode .sec-btn{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:600;}
+.sec-btn.active{background:var(--gold);border-color:var(--gold);color:var(--army-dark);font-weight:700;}
+body.light-mode .sec-btn.active{background:#5A4010;color:#FFFFFF;}
+.sec-btn.complete{border-color:rgba(123,160,91,.5);color:var(--accent);}
+body.light-mode .sec-btn.complete{background:#E8F0E8;border-color:#1A4A10;color:#1A4A10;}
+.sec-btn.locked{opacity:.4;cursor:not-allowed;}
+
+/* TITLES */
+.eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .eyebrow{color:#5A4010;font-weight:700;}
+.title-main{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,4vw,2.375rem);line-height:1.18;color:var(--white);margin-bottom:14px;}
+body.light-mode .title-main{color:#111111;}
+.title-main em{color:var(--gold-light);font-style:italic;}
+body.light-mode .title-main em{color:#5A4010;}
+.lede{font-size:0.8125rem;line-height:1.8;color:var(--white-dim);max-width:620px;margin-bottom:22px;}
+body.light-mode .lede{color:#111111;font-size:0.875rem;}
+.lede strong{color:var(--white);font-weight:600;}
+body.light-mode .lede strong{color:#111111;}
+
+/* CARDS / CALLOUTS */
+.card{border:1px solid var(--border);background:rgba(37,45,28,.4);padding:16px 18px;margin-bottom:14px;}
+body.light-mode .card{background:#E8E4D9;border:2px solid #5A4010;}
+.card-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .card-label{color:#5A4010;font-weight:700;}
+.card p{font-size:0.75rem;line-height:1.7;color:var(--white-dim);margin-bottom:8px;}
+body.light-mode .card p{color:#111111;font-size:0.8125rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--white);}
+body.light-mode .card strong{color:#111111;}
+
+.people-card{border-left:4px solid var(--accent);}
+body.light-mode .people-card{border-left:6px solid #1A4A10;background:#E8F0E8;}
+body.light-mode .people-card .card-label{color:#1A4A10;}
+
+.proc-tag{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);border:1px solid var(--border-strong);padding:3px 8px;display:inline-block;margin:3px 3px 0 0;letter-spacing:.07em;}
+body.light-mode .proc-tag{color:#111111;border:2px solid #5A4010;background:#FFFFFF;font-weight:700;}
+
+/* REFLECTION INPUT */
+.reflect-block{margin-bottom:18px;}
+.reflect-q{font-size:0.75rem;color:var(--white);font-weight:600;margin-bottom:8px;line-height:1.6;}
+body.light-mode .reflect-q{color:#111111;font-size:0.8125rem;}
+.reflect-input{width:100%;background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.75rem;padding:11px 13px;outline:none;min-height:70px;resize:vertical;}
+body.light-mode .reflect-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;font-size:0.8125rem;}
+.reflect-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .reflect-input::placeholder{color:#888;opacity:1;}
+
+.strength-input{background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.8125rem;padding:11px 14px;outline:none;width:100%;max-width:320px;}
+body.light-mode .strength-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;}
+.strength-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .strength-input::placeholder{color:#888;opacity:1;}
+.theme-select-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px;}
+.theme-select-item label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:5px;display:block;}
+.theme-select{background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.8125rem;padding:10px 12px;outline:none;width:100%;}
+body.light-mode .theme-select-item label{color:#5A4010;font-weight:700;}
+body.light-mode .theme-select{background:#FFFFFF;border:2px solid #5A4010;color:#111111;}
+.na-checkbox-row{display:flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--white-dim);cursor:pointer;margin-bottom:14px;user-select:none;}
+.na-checkbox-row input{cursor:pointer;}
+body.light-mode .na-checkbox-row{color:#333333;}
+.profile-display{margin-bottom:18px;border:1px solid var(--border);padding:14px 16px;}
+.profile-row{margin-bottom:8px;}
+.profile-row:last-of-type{margin-bottom:0;}
+.profile-value{font-size:0.875rem;color:var(--white);font-family:'Inter',sans-serif;}
+.profile-clear{margin-top:10px;font-size:0.6875rem;}
+.profile-clear a{color:var(--gold-dim);text-decoration:underline;cursor:pointer;}
+body.light-mode .profile-value{color:#111111;}
+body.light-mode .profile-display{border:2px solid #5A4010;}
+.required-mark{color:var(--gold);}
+body.light-mode .required-mark{color:#5A4010;}
+.field-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:8px;display:block;}
+body.light-mode .field-label{color:#5A4010;font-weight:700;}
+.name-input{background:rgba(37,45,28,.6);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.875rem;padding:12px 15px;outline:none;width:100%;max-width:420px;}
+body.light-mode .name-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;font-size:1rem;}
+.name-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .name-input::placeholder{color:#888;opacity:1;}
+
+/* SCENARIO */
+.scenario-box{background:rgba(26,31,20,.5);border:1px solid var(--border-strong);border-left:4px solid var(--gold);padding:18px 20px;margin-bottom:18px;}
+body.light-mode .scenario-box{background:#FFFFF8;border:2px solid #8B6000;border-left:6px solid #5A4010;}
+.scenario-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+body.light-mode .scenario-label{color:#5A4010;font-weight:700;}
+.scenario-text{font-size:0.8125rem;line-height:1.8;color:var(--white);}
+body.light-mode .scenario-text{color:#111111;font-size:0.875rem;}
+.scenario-text strong{color:var(--gold-light);}
+body.light-mode .scenario-text strong{color:#5A4010;}
+
+.decision-prompt{font-family:'DM Serif Display',serif;font-size:1.125rem;color:var(--white);margin:18px 0 14px;}
+body.light-mode .decision-prompt{color:#111111;}
+
+.choice-option{display:block;width:100%;text-align:left;background:rgba(26,31,20,.4);border:1px solid var(--border);color:var(--white-dim);font-family:'Inter',sans-serif;font-size:0.75rem;line-height:1.6;padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.choice-option:hover{border-color:var(--gold-dim);color:var(--white);background:rgba(37,45,28,.6);}
+body.light-mode .choice-option{background:#FFFFFF;border:2px solid #C8C0A8;color:#111111;font-size:0.8125rem;}
+body.light-mode .choice-option:hover{border-color:#5A4010;background:#E8E4D9;}
+.choice-letter{font-family:'DM Mono',monospace;font-weight:700;color:var(--gold);margin-right:8px;}
+body.light-mode .choice-letter{color:#5A4010;}
+
+/* CONSEQUENCE */
+.consequence-box{background:rgba(123,160,91,.08);border:1px solid rgba(123,160,91,.3);border-left:4px solid var(--accent);padding:16px 18px;margin:16px 0;}
+body.light-mode .consequence-box{background:#E8F0E8;border:2px solid #1A4A10;border-left:6px solid #1A4A10;}
+.consequence-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .consequence-label{color:#1A4A10;font-weight:700;}
+.consequence-text{font-size:0.75rem;line-height:1.75;color:var(--white-dim);}
+body.light-mode .consequence-text{color:#111111;font-size:0.8125rem;}
+.consequence-text strong{color:var(--white);}
+body.light-mode .consequence-text strong{color:#111111;}
+
+.insight-box{background:rgba(200,168,75,.06);border:1px solid var(--border);border-left:4px solid var(--gold-dim);padding:14px 16px;margin-top:12px;}
+body.light-mode .insight-box{background:#FFF8E8;border:2px solid #8B6000;border-left:6px solid #5A4010;}
+.insight-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+body.light-mode .insight-label{color:#5A4010;font-weight:700;}
+.insight-text{font-size:0.6875rem;line-height:1.7;color:var(--white-dim);}
+body.light-mode .insight-text{color:#111111;font-size:0.75rem;}
+.insight-text strong{color:var(--white);}
+body.light-mode .insight-text strong{color:#111111;}
+
+/* KNOWLEDGE CHECK */
+.question-block{background:rgba(26,31,20,.5);border:1px solid var(--border);padding:18px;margin-bottom:12px;}
+body.light-mode .question-block{background:#F8F6F2;border:2px solid #C8C0A8;}
+.question-num{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.1em;margin-bottom:8px;}
+body.light-mode .question-num{color:#5A4010;font-weight:700;}
+.question-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.08em;padding:2px 7px;border:1px solid var(--border-strong);color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .question-tag{border-color:#5A4010;color:#5A4010;background:#E8E4D9;font-weight:700;}
+.question-text{font-size:0.8125rem;color:var(--white);line-height:1.55;margin-bottom:14px;font-weight:600;}
+body.light-mode .question-text{color:#111111;font-size:0.875rem;}
+.answer-option{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:all .15s;font-size:0.75rem;color:var(--white-dim);line-height:1.5;}
+.answer-option:hover{border-color:var(--gold-dim);color:var(--white);}
+body.light-mode .answer-option{background:#FFFFFF;border:2px solid #C8C0A8;color:#111111;font-size:0.8125rem;}
+body.light-mode .answer-option:hover{border-color:#5A4010;background:#E8E4D9;}
+.answer-option.selected{border-color:var(--gold);background:rgba(200,168,75,.08);color:var(--white);}
+body.light-mode .answer-option.selected{border:3px solid #5A4010;background:#E8E4D9;color:#111111;}
+.answer-option.correct{border-color:var(--accent);background:rgba(123,160,91,.1);color:var(--accent);}
+body.light-mode .answer-option.correct{background:#1A4A10;border:3px solid #1A4A10;color:#FFFFFF;font-weight:700;}
+.answer-option.incorrect{border-color:var(--danger);background:rgba(192,57,43,.08);color:#E07C73;}
+body.light-mode .answer-option.incorrect{background:#7A1A1A;border:3px solid #7A1A1A;color:#FFFFFF;font-weight:700;}
+.answer-radio{width:14px;height:14px;border:1.5px solid var(--border);border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
+.answer-option.selected .answer-radio{border-color:var(--gold);background:var(--gold);}
+body.light-mode .answer-option.selected .answer-radio{border-color:#5A4010;background:#5A4010;}
+.answer-option.correct .answer-radio{border-color:var(--accent);background:var(--accent);}
+body.light-mode .answer-option.correct .answer-radio{border-color:#FFFFFF;background:#FFFFFF;}
+.answer-option.incorrect .answer-radio{border-color:var(--danger);background:var(--danger);}
+body.light-mode .answer-option.incorrect .answer-radio{border-color:#FFFFFF;background:#FFFFFF;}
+.answer-radio-dot{width:6px;height:6px;border-radius:50%;background:var(--army-dark);display:none;}
+.answer-option.selected .answer-radio-dot,.answer-option.correct .answer-radio-dot,.answer-option.incorrect .answer-radio-dot{display:block;}
+body.light-mode .answer-option.correct .answer-radio-dot{background:#1A4A10;}
+body.light-mode .answer-option.incorrect .answer-radio-dot{background:#7A1A1A;}
+.kc-explain{font-size:0.6875rem;line-height:1.65;color:var(--white-dim);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:none;}
+body.light-mode .kc-explain{color:#111111;font-size:0.75rem;border-top-color:#5A4010;}
+.kc-explain.show{display:block;}
+.kc-explain strong{color:var(--gold-light);}
+body.light-mode .kc-explain strong{color:#5A4010;}
+
+.kc-feedback{padding:14px 16px;margin-top:14px;font-size:0.75rem;display:none;}
+.kc-feedback.show{display:block;}
+.kc-feedback.pass{background:rgba(123,160,91,.1);border:1px solid rgba(123,160,91,.3);color:var(--accent);}
+body.light-mode .kc-feedback.pass{background:#D8F0D8;border:2px solid #1A4A10;color:#0A3A0A;font-weight:600;font-size:0.875rem;}
+.kc-feedback.fail{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);color:#E07C73;}
+body.light-mode .kc-feedback.fail{background:#F8D8D8;border:2px solid #7A1A1A;color:#5A0A0A;font-weight:600;font-size:0.875rem;}
+.kc-score{font-family:'DM Mono',monospace;font-size:1.375rem;font-weight:700;margin-bottom:4px;}
+.kc-score.pass{color:var(--accent);}
+body.light-mode .kc-score.pass{color:#1A4A10;}
+.kc-score.fail{color:var(--danger);}
+body.light-mode .kc-score.fail{color:#7A1A1A;}
+
+/* COMPLETION */
+.complete-wrap{background:rgba(26,31,20,.3);border:2px solid var(--border-strong);padding:32px;text-align:center;margin-top:20px;}
+body.light-mode .complete-wrap{background:#FAF8F3;border:3px solid #5A4010;}
+.complete-seal{width:54px;height:54px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gold);margin:0 auto 14px;}
+body.light-mode .complete-seal{border-color:#5A4010;color:#1A4A10;}
+.complete-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--white);margin-bottom:8px;}
+body.light-mode .complete-title{color:#111111;}
+.complete-sub{font-size:0.75rem;color:var(--white-dim);margin-bottom:20px;}
+body.light-mode .complete-sub{color:#111111;font-size:0.8125rem;}
+
+/* BUTTONS */
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--army-dark);font-family:'Inter',sans-serif;font-weight:700;font-size:0.6875rem;letter-spacing:.1em;text-transform:uppercase;padding:12px 22px;border:none;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+body.light-mode .btn-primary{background:#5A4010;color:#FFFFFF;}
+body.light-mode .btn-primary:hover{background:#3A2808;}
+.btn-secondary{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--white-dim);font-family:'Inter',sans-serif;font-weight:600;font-size:0.6875rem;letter-spacing:.08em;text-transform:uppercase;padding:12px 18px;border:1px solid var(--border);cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--border-strong);color:var(--white);}
+body.light-mode .btn-secondary{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+body.light-mode .btn-secondary:hover{background:#D4CDB8;border-color:#111111;}
+.btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;}
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:18px;border-top:1px solid var(--border);}
+body.light-mode .nav-row{border-top:2px solid #5A4010;}
+
+footer{border-top:1px solid var(--border);padding:14px 0;margin-top:20px;}
+body.light-mode footer{border-top:2px solid #5A4010;}
+.footer-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.footer-attr{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold-dim);letter-spacing:.09em;}
+body.light-mode .footer-attr{color:#5A4010;font-weight:700;}
+.footer-doc{font-size:0.5625rem;color:var(--white-dim);opacity:.4;}
+body.light-mode .footer-doc{color:#444;opacity:1;}
+
+@media print{header,.progress-bar-wrap,.section-nav,.btn-row,footer,.choice-option{display:none!important;}}
+
+.font-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;margin-right:8px;}
+body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
+</style>
+<header>
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-seal">PM</div>
+      <div>
+        <div class="logo-primary">Interactive PM in USACE</div>
+        <div class="logo-sub">Case File 01 &middot; Initiation Phase</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="case-badge">PROC2020 &middot; PDT Charter</span>
+      <button class="font-toggle" id="font-toggle" onclick="toggleFontSize()">Text: M</button>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
+    </div>
+  </div>
+</header>
+
+<nav class="case-quicknav"><div class="case-quicknav-inner"><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" class="cqn-link">Home</a><span class="cqn-sep">&middot;</span><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/Module00_Orientation.html" class="cqn-link">M0</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile01_NewPM_UnclearRoles.html" class="cqn-link current">CF01</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile02_ScheduleVsScope.html" class="cqn-link">CF02</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile03_TheNewHome.html" class="cqn-link">CF03</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile04_BuiltToSlip.html" class="cqn-link">CF04</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile05_TheNumberDoesntFit.html" class="cqn-link">CF05</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile06_FeedbackConversation.html" class="cqn-link">CF06</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile07_PhantomSlip.html" class="cqn-link">CF07</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile08_RiskNobodyTracked.html" class="cqn-link">CF08</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile09_MeetingGotAway.html" class="cqn-link">CF09</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile10_WrongShadeOfGray.html" class="cqn-link">CF10</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile11_TwoFacesOfRisk.html" class="cqn-link">CF11</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile12_TheFavor.html" class="cqn-link">CF12</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile13_ClosingWell.html" class="cqn-link">CF13</a></div></nav>
+
+<div class="progress-bar-wrap" id="progress-bar-wrap" style="display:none;">
+  <div class="progress-bar-inner">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-labels">
+      <span class="progress-text" id="progress-label">Training</span>
+      <span class="progress-pct" id="progress-pct">0%</span>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="main-content"></div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-attr">Interactive PM in USACE &middot; PPM Community of Practice</span>
+    <span class="footer-doc">EM 5-1-11 &middot; PROC2020 &middot; Case File 01 v1.0</span>
+  </div>
+</footer>
+
+<script>
+var CS={name:'',strength:'',section:'welcome',sectionsComplete:{training:false,discussion:false,casestudy:false,kc:false},kcScore:0,decisions:{},caseStep:0};
+var STORAGE_KEY='casefile01_v1';
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(CS));}catch(e){}}
+function loadState(){try{var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;var d=JSON.parse(raw);if(!d||!d.name)return false;CS=d;return true;}catch(e){return false;}}
+
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+
+var SECTIONS=['welcome','training','discussion','casestudy','kc','complete'];
+var SECTION_LABELS={welcome:'Welcome',training:'Training',discussion:'Discussion',casestudy:'Case Study',kc:'Knowledge Check',complete:'Complete'};
+
+function updateProgress(){
+  var idx=SECTIONS.indexOf(CS.section);
+  var pct=Math.round((idx/(SECTIONS.length-1))*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-label').textContent=SECTION_LABELS[CS.section]||'';
+}
+
+function renderNav(){
+  var order=['training','discussion','casestudy','kc'];
+  var html='<div class="section-nav">';
+  order.forEach(function(s){
+    var cls='sec-btn'+(CS.section===s?' active':'')+(CS.sectionsComplete[s]?' complete':'');
+    var locked=false;
+    var idx=order.indexOf(s);
+    if(idx>0 && !CS.sectionsComplete[order[idx-1]] && CS.section!==s) locked=true;
+    if(locked) cls+=' locked';
+    html+='<button class="'+cls+'" '+(locked?'disabled':'onclick="goSection(\''+s+'\')"')+'>'+(CS.sectionsComplete[s]?'&#10003; ':'')+SECTION_LABELS[s]+'</button>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function goSection(s){CS.section=s;saveState();render();}
+
+function render(){
+  var m=document.getElementById('main-content');
+  document.getElementById('progress-bar-wrap').style.display=(CS.section==='welcome')?'none':'block';
+  if(CS.section==='welcome') m.innerHTML=renderWelcome();
+  else if(CS.section==='training') m.innerHTML=renderTraining();
+  else if(CS.section==='discussion') m.innerHTML=renderDiscussion();
+  else if(CS.section==='casestudy') m.innerHTML=renderCaseStudy();
+  else if(CS.section==='kc') m.innerHTML=renderKC();
+  else if(CS.section==='complete') m.innerHTML=renderComplete();
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+var THEME_DOMAIN={'Analytical':'Strategic Thinking','Context':'Strategic Thinking','Futuristic':'Strategic Thinking','Ideation':'Strategic Thinking','Input':'Strategic Thinking','Intellection':'Strategic Thinking','Learner':'Strategic Thinking','Strategic':'Strategic Thinking','Adaptability':'Relationship Building','Connectedness':'Relationship Building','Developer':'Relationship Building','Empathy':'Relationship Building','Harmony':'Relationship Building','Includer':'Relationship Building','Individualization':'Relationship Building','Positivity':'Relationship Building','Relator':'Relationship Building','Activator':'Influencing','Command':'Influencing','Communication':'Influencing','Competition':'Influencing','Maximizer':'Influencing','Self-Assurance':'Influencing','Significance':'Influencing','Woo':'Influencing','Achiever':'Executing','Arranger':'Executing','Belief':'Executing','Consistency':'Executing','Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'};
+var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N/A">N/A / Not sure</option><optgroup label="Strategic Thinking"><option value="Analytical">Analytical</option><option value="Context">Context</option><option value="Futuristic">Futuristic</option><option value="Ideation">Ideation</option><option value="Input">Input</option><option value="Intellection">Intellection</option><option value="Learner">Learner</option><option value="Strategic">Strategic</option></optgroup><optgroup label="Relationship Building"><option value="Adaptability">Adaptability</option><option value="Connectedness">Connectedness</option><option value="Developer">Developer</option><option value="Empathy">Empathy</option><option value="Harmony">Harmony</option><option value="Includer">Includer</option><option value="Individualization">Individualization</option><option value="Positivity">Positivity</option><option value="Relator">Relator</option></optgroup><optgroup label="Influencing"><option value="Activator">Activator</option><option value="Command">Command</option><option value="Communication">Communication</option><option value="Competition">Competition</option><option value="Maximizer">Maximizer</option><option value="Self-Assurance">Self-Assurance</option><option value="Significance">Significance</option><option value="Woo">Woo</option></optgroup><optgroup label="Executing"><option value="Achiever">Achiever</option><option value="Arranger">Arranger</option><option value="Belief">Belief</option><option value="Consistency">Consistency</option><option value="Deliberative">Deliberative</option><option value="Discipline">Discipline</option><option value="Focus">Focus</option><option value="Responsibility">Responsibility</option><option value="Restorative">Restorative</option></optgroup>';
+
+function getProfile(){
+  try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
+}
+function saveProfile(name,themes){
+  try{localStorage.setItem('pm-learner-profile',JSON.stringify({name:name,themes:themes,savedAt:new Date().toISOString()}));}catch(e){}
+}
+function clearProfile(){
+  try{localStorage.removeItem('pm-learner-profile');}catch(e){}
+}
+function clearProfileAndReload(){
+  clearProfile();
+  render();
+  return false;
+}
+function toggleNAThemes(){
+  var cb=document.getElementById('na-checkbox');
+  var grid=document.getElementById('theme-select-grid');
+  if(grid)grid.style.display=cb.checked?'none':'';
+}
+
+function renderProfileFields(){
+  var p=getProfile();
+  if(p&&p.name){
+    var isNA=(p.themes||[]).length===1&&p.themes[0]==='N/A';
+    var themesDisplay=isNA?'N/A &mdash; not provided':(p.themes||[]).map(function(t){return t+' ('+THEME_DOMAIN[t]+')';}).join(', ');
+    return '<div class="profile-display">'
+      +'<div class="profile-row"><span class="field-label">Learner</span><div class="profile-value">'+p.name+'</div></div>'
+      +'<div class="profile-row"><span class="field-label">Top 5 CliftonStrengths</span><div class="profile-value">'+themesDisplay+'</div></div>'
+      +'<p class="profile-clear"><a onclick="return clearProfileAndReload()">Not '+p.name+'? Clear saved name &amp; strengths</a></p>'
+      +'</div>';
+  }
+  var grid='<div class="theme-select-grid" id="theme-select-grid">';
+  for(var i=1;i<=5;i++){
+    grid+='<div class="theme-select-item"><label>Theme '+i+' <span class="required-mark">*</span></label>'
+      +'<select class="theme-select" id="theme-select-'+i+'">'+THEME_OPTIONS_HTML+'</select></div>';
+  }
+  grid+='</div>';
+  return '<div style="margin-bottom:18px;">'
+    +'<label class="field-label">Your Name <span class="required-mark">*</span></label>'
+    +'<input class="name-input" id="name-input" type="text" placeholder="First Last"/>'
+    +'</div>'
+    +'<div style="margin-bottom:8px;">'
+    +'<label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>'
+    +'</div>'
+    +'<label class="na-checkbox-row" for="na-checkbox"><input type="checkbox" id="na-checkbox" onchange="toggleNAThemes()"/>I do not know my CliftonStrengths (select N/A)</label>'
+    +grid;
+}
+
+function renderWelcome(){
+  var saved=loadState();
+  var resumeBtn=(saved&&CS.name)?'<button class="btn-secondary" onclick="resumeCase()" style="margin-left:10px;">Resume as '+CS.name+' &rarr;</button>':'';
+  return '<div class="screen active">'
+  +'<p class="eyebrow">Interactive PM in USACE &middot; Case File 01</p>'
+  +'<h1 class="title-main">New PM,<br><em>Unclear Roles.</em></h1>'
+  +'<p class="lede">You have just been assigned to a project that is already underway. The Project Delivery Team was assembled before you arrived. <strong>What do you do in your first week?</strong></p>'
+  +'<div class="card"><div class="card-label">What This Case File Covers</div>'
+  +'<p><strong>PDBP Doctrine:</strong> PROC2020 \u2014 the PDT Charter, named-individual assignments, and decision authority.</p>'
+  +'<p><strong>People Skill:</strong> Building trust quickly with a team you did not hire \u2014 active listening, asking before assuming, and earning credibility in week one.</p>'
+  +'</div>'
+  +'<div class="card"><div class="card-label">How This Works</div>'
+  +'<p>Training (5 min) &rarr; Reflection &rarr; Case Study (branching scenario) &rarr; Knowledge Check (5 questions, 60% to pass).</p>'
+  +'</div>'
+  +renderProfileFields()
+  +'<div class="btn-row"><button class="btn-primary" onclick="startCase()">Begin Case File &rarr;</button>'+resumeBtn+'</div>'
+  +'</div>';
+}
+
+function startCase(){
+  var p=getProfile();
+  var name,themes;
+  if(p&&p.name){
+    name=p.name;themes=p.themes;
+  }else{
+    name=document.getElementById('name-input').value.trim();
+    if(!name){alert('Please enter your name to continue.');return;}
+    var naChecked=document.getElementById('na-checkbox').checked;
+    if(naChecked){
+      themes=['N/A'];
+    }else{
+      themes=[];
+      for(var i=1;i<=5;i++){
+        var v=document.getElementById('theme-select-'+i).value;
+        if(!v){alert('Please select all five CliftonStrengths themes, or check the box if you do not know them.');return;}
+        themes.push(v);
+      }
+    }
+    saveProfile(name,themes);
+  }
+  CS.name=name;
+  CS.themes=themes;
+  CS.section='training';
+  saveState();render();
+}
+function resumeCase(){render();}
+
+function renderTraining(){
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Training &middot; 5 Minutes</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">PDT Roles &amp; Building Trust Fast</h2>'
+  +'<div class="card">'
+  +'<div class="card-label">PROC2020 &mdash; The PDT Charter</div>'
+  +'<p>Every Project Delivery Team should be governed by a <strong>PDT Charter</strong> &mdash; a document naming each team member, their role, and their decision authority. <strong>Placeholder names are not acceptable</strong> at any stage. If you inherit a project and the Charter has gaps, vague titles, or outdated names, that is your first signal.</p>'
+  +'<p>The Charter tells you <strong>who owns what</strong>: the Cost Engineer (PROC2040), the Scheduler (PROC2030), the Contracting Officer (PROC2050), Real Estate, Environmental, and the RMO (PROC1040). Before you can lead this team, you need to know who is actually doing each job &mdash; not just who is listed.</p>'
+  +'<p><strong>When roles are unclear, RACI is the tool.</strong> For any decision or deliverable, RACI assigns one person as <strong>R</strong>esponsible (does the work), one as <strong>A</strong>ccountable (owns the outcome, often the PM), and others as <strong>C</strong>onsulted (input sought beforehand) or <strong>I</strong>nformed (kept in the loop after). A quick RACI table does not replace the PDT Charter \\u2014 it makes the Charter\\u2019s roles concrete for a specific decision, which is often exactly where ambiguity hides.</p>'
+  +'<span class="proc-tag">PROC2020</span><span class="proc-tag">PDT Charter</span><span class="proc-tag">Decision Authority</span><span class="proc-tag">RACI</span>'
+  +'</div>'
+  +'<div class="card people-card">'
+  +'<div class="card-label">People Skill &mdash; Your First 30 Days</div>'
+  +'<p>When you join a team that already exists, <strong>you are the newcomer \u2014 not the team</strong>. The fastest way to lose credibility is to walk in and immediately start changing things before you understand why they are the way they are.</p>'
+  +'<p><strong>Ask before you assume.</strong> A process that looks broken from the outside may be a workaround for a constraint you do not know about yet. Asking "help me understand how this works" builds trust. Announcing "this is wrong, here is how we will fix it" on day one does not \u2014 even if you are right.</p>'
+  +'<p><strong>Listen for what is not said.</strong> In your first team meeting, notice who speaks freely, who waits to be asked, and who says nothing at all. That silence is information \u2014 it might mean disengagement, or it might mean they have learned that speaking up does not change anything.</p>'
+  +'</div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'training\',\'discussion\')">Continue to Discussion &rarr;</button></div>'
+  +'</div>';
+}
+
+function completeSection(current,next){
+  CS.sectionsComplete[current]=true;
+  CS.section=next;
+  saveState();render();
+}
+
+function renderDiscussion(){
+  var strengthNote='';
+  var primaryDomain='Relationship Building';
+  var domainInsights={'Strategic Thinking':'Your {theme} wants the full picture before acting. Useful here — just do not let it become an excuse to delay talking to people.','Relationship Building':'Your {theme} is the right tool for week one. Building trust is the job. Just do not let the first relationships you build become the only ones that count.','Influencing':'Your {theme} will push you to take charge fast. That can read as confidence — or as moving before you have earned the standing to lead change. Pace it.','Executing':'Your {theme} wants visible progress now. Good drive, wrong week. Understand the landscape before you start fixing it.'};
+  var themes=(CS.themes||[]).filter(function(t){return t&&t!=='N/A';});
+  var matchedTheme=null;
+  for(var ti=0;ti<themes.length;ti++){
+    if(THEME_DOMAIN[themes[ti]]===primaryDomain){matchedTheme=themes[ti];break;}
+  }
+  if(!matchedTheme&&themes.length>0){matchedTheme=themes[0];}
+  if(matchedTheme){
+    var domain=THEME_DOMAIN[matchedTheme];
+    var template=domainInsights[domain]||'';
+    strengthNote=template.replace('{theme}',matchedTheme);
+  }
+  if(!strengthNote){
+    strengthNote='Whatever your natural style, week one is a balance between moving forward and understanding what you have inherited. Notice which side you default to, and consider deliberately practicing the other.';
+  }
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Discussion &amp; Reflection</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Before You See the Scenario</h2>'
+  +'<p class="lede">These reflections are not graded. Take a moment to think honestly \u2014 your answers are saved only on this device.</p>'
+  +'<div class="card"><div class="card-label">Your Strengths Lens</div><p>'+strengthNote+'</p></div>'
+  +'<div class="reflect-block"><div class="reflect-q">1. Think of a time you joined an existing team. What helped you build trust quickly \u2014 and what slowed it down?</div>'
+  +'<textarea class="reflect-input" id="r1" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">2. When you walk into a new PDT, what is your instinct \u2014 to start by reviewing documentation, or by talking to people? Why?</div>'
+  +'<textarea class="reflect-input" id="r2" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">3. Have you ever noticed a team member go quiet in a meeting? What did you do \u2014 or wish you had done?</div>'
+  +'<textarea class="reflect-input" id="r3" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="saveReflectionsAndContinue()">Continue to Case Study &rarr;</button></div>'
+  +'</div>';
+}
+
+function saveReflectionsAndContinue(){
+  CS.reflections={r1:document.getElementById('r1').value,r2:document.getElementById('r2').value,r3:document.getElementById('r3').value};
+  completeSection('discussion','casestudy');
+}
+
+// ===== CASE STUDY =====
+var CASE_STEP=0;
+var CASE_STEPS=[
+  {
+    type:'scenario',
+    label:'The Assignment',
+    text:'You are <strong>Maria Chen</strong>, recently assigned as Project Manager for the <strong>Building 4521 Renovation</strong>. The PDT was assembled two months ago, before you arrived \u2014 you are replacing a PM who transferred suddenly. A cost estimate review with the sponsor is due in <strong>three weeks</strong>. You have a roster with five names and titles, but you have never met any of them.'
+  },
+  {
+    type:'decision',
+    label:'Decision 1 of 3',
+    prompt:'It is Monday morning, your first day on this project. What do you do first?',
+    options:[
+      {letter:'A',text:'Send a calendar invite for a full PDT meeting this afternoon \u2014 introduce yourself and ask everyone to walk through their role and current status.'},
+      {letter:'B',text:'Spend the morning reviewing the PMP, PDT Charter, and PROMIS data, then reach out to each team member individually to introduce yourself and ask for 15 minutes this week.'},
+      {letter:'C',text:'Email your DPM first and ask for a briefing on the team and project history before reaching out to anyone on the PDT.'}
+    ],
+    consequences:{
+      A:{text:'The meeting happens \u2014 but you are introducing yourself cold, with no context, in front of the whole team at once. Two people give brief updates; three say "everything is on track" without detail. You leave with names attached to faces, but not much more.',
+         insight:'<strong>What this reveals:</strong> A full-group meeting on day one can work \u2014 but without preparation, people tend to give surface-level answers in front of the group. The PROC2020 Charter review you have not yet done would have told you who to listen to most carefully.'},
+      B:{text:'By midday, you know the Charter lists a Cost Engineer (Raj Patel) and Scheduler (Pat Nguyen) \u2014 but the Charter still shows the previous PM\u2019s name in two places. Your one-on-ones over the next two days are candid: Pat mentions the schedule has not been updated in six weeks. Raj seems guarded but professional.',
+         insight:'<strong>What this reveals:</strong> Reviewing the Charter first gave you a map \u2014 including a compliance gap (outdated names, a PROC2020 issue you can now correct). One-on-ones surfaced an honest signal (the stale schedule) that might not have come up in a group setting.'},
+      C:{text:'Your DPM gives you helpful context \u2014 the previous PM left abruptly due to a family emergency, and the team has been "running on autopilot" for three weeks. Your DPM does not know the day-to-day details, though, and you still have not met your PDT by end of day.',
+         insight:'<strong>What this reveals:</strong> Briefing from your DPM is valuable context \u2014 especially the "running on autopilot" signal, which connects to PDT health (continuity, institutional knowledge retention). But it does not replace direct engagement with your team, and the clock on your three-week deadline is running.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 2 of 3',
+    prompt:'It is now Wednesday. You need updated cost data from Raj (Cost Engineer) for the sponsor review. You emailed him Monday with no response. The review is in 12 days.',
+    options:[
+      {letter:'A',text:'Email your DPM and ask them to direct Raj to respond \u2014 you do not want this to slip further.'},
+      {letter:'B',text:'Call or walk over to Raj directly. Give him context on the deadline, ask what he needs from you, and agree on a specific date for the data.'},
+      {letter:'C',text:'Proceed with the cost figures from the last PMP update and flag the estimate as preliminary in your prep materials.'}
+    ],
+    consequences:{
+      A:{text:'Your DPM follows up, and Raj responds within the hour \u2014 but the exchange felt like an escalation to Raj, and he is noticeably more formal with you afterward. You get the data, but the relationship started on uneven footing.',
+         insight:'<strong>What this reveals:</strong> Escalating on day three, before attempting direct contact, can read as a lack of trust \u2014 especially to a team member who does not yet know you. Escalation has its place (and PROC1020/PROC3010 define formal escalation paths) \u2014 but it is usually a later step, not a first one.'},
+      B:{text:'Raj explains he has been pulled onto two other projects and your email got buried. He appreciates that you reached out directly rather than going around him. He commits to Friday \u2014 and delivers.',
+         insight:'<strong>What this reveals:</strong> A direct, low-pressure conversation surfaced the real issue (he is overloaded \u2014 a PROC1020 workload signal) and got a committed date. This is the fastest path to both the data <em>and</em> a working relationship.'},
+      C:{text:'You use the old figures. During the sponsor review, the sponsor asks a detailed cost question your figures cannot answer \u2014 because Raj had identified a material cost increase that was never communicated to you. You are caught flat-footed in front of the sponsor.',
+         insight:'<strong>What this reveals:</strong> Proceeding without current data is a real risk \u2014 PROC2040 exists precisely because cost estimates change and PDTs need current information before key decisions and reviews. "Preliminary" framing does not protect you if the gap is material.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 3 of 3',
+    prompt:'In your first full PDT meeting (Thursday), you notice Pat (Scheduler) has not said a word in 30 minutes \u2014 even when you asked the group a direct question about the schedule.',
+    options:[
+      {letter:'A',text:'Ask Pat directly, in front of the group: "Pat, what is your take on the schedule status?"'},
+      {letter:'B',text:'Continue the meeting, but follow up with Pat one-on-one afterward to ask how things are going and whether anything is on their mind.'},
+      {letter:'C',text:'Say nothing \u2014 not everyone needs to speak in every meeting, and you do not want to put anyone on the spot in your first week.'}
+    ],
+    consequences:{
+      A:{text:'Put on the spot, Pat gives a brief, vague answer: "It is mostly fine." The moment passes, but Pat seems slightly more withdrawn for the rest of the meeting.',
+         insight:'<strong>What this reveals:</strong> Calling on someone directly in a group \u2014 especially someone who has gone quiet \u2014 can backfire if you do not yet know <em>why</em> they are quiet. It may get an answer, but rarely the real one.'},
+      B:{text:'After the meeting, Pat opens up: the schedule has not been updated because Pat raised a resourcing conflict to the previous PM weeks ago and never heard back. Pat assumed raising it again would not help. You now have a real PROC1020 escalation issue \u2014 and Pat\u2019s trust that you listened.',
+         insight:'<strong>What this reveals:</strong> A private follow-up created the safety for Pat to share what was actually going on \u2014 something Empathy-dominant or Relator-dominant learners often sense intuitively. This surfaced both a process gap (an unresolved PROC1020 escalation) and a trust opportunity.'},
+      C:{text:'The meeting ends. You make a mental note about Pat\u2019s silence but take no action. Two weeks later, the schedule issue Pat could have flagged becomes a real problem \u2014 one that is now harder to fix and closer to your sponsor deadline.',
+         insight:'<strong>What this reveals:</strong> Noticing a signal without acting on it has a cost \u2014 often a delayed one. Silence in a meeting is rarely "nothing." PDT health (one of the AIS health-check dimensions) depends on team members feeling that raising issues leads somewhere.'}
+    }
+  },
+  {
+    type:'debrief',
+    label:'Case Debrief'
+  }
+];
+
+function renderCaseStudy(){
+  CASE_STEP=CS.caseStep||0;
+  var step=CASE_STEPS[CASE_STEP];
+  var html='<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Case Study &middot; Building 4521 Renovation</p>';
+
+  if(step.type==='scenario'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">'+step.label+'</h2>'
+    +'<div class="scenario-box"><div class="scenario-label">Scenario Setup</div><div class="scenario-text">'+step.text+'</div></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()">Begin Decision 1 &rarr;</button></div>';
+  } else if(step.type==='decision'){
+    html+='<div class="scenario-label" style="margin-bottom:6px;">'+step.label+'</div>'
+    +'<div class="decision-prompt">'+step.prompt+'</div>'
+    +'<div id="case-options">';
+    step.options.forEach(function(opt){
+      html+='<div class="choice-option" onclick="chooseOption(\''+opt.letter+'\')"><span class="choice-letter">'+opt.letter+'.</span>'+opt.text+'</div>';
+    });
+    html+='</div><div id="case-consequence"></div><div id="case-nav" class="nav-row" style="display:none;"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">Continue &rarr;</button></div>';
+  } else if(step.type==='debrief'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">Case Debrief</h2>'
+    +'<div class="card people-card"><div class="card-label">What Maria\u2019s Week Showed</div>'
+    +'<p>There is rarely one \u201ccorrect\u201d path through a new team \u2014 but some approaches build trust and surface information faster than others. Direct, low-pressure conversations (Decision 2, Option B) and private follow-up on quiet signals (Decision 3, Option B) tend to surface real issues before they become deadline problems. The other paths still move things forward \u2014 they just leave more gaps.</p>'
+    +'<p><strong>Whichever path you took on Decision 3:</strong> Pat has a real, unresolved resourcing conflict that was raised to the previous PM and never answered. If Pat\u2019s silence surfaced it this week, you now have an early opportunity to act. If it did not surface yet \u2014 it will. This kind of issue tends to appear later as a schedule problem rather than a people problem, which makes it harder to diagnose and fix.</p>'
+    +'<p>Notice that <strong>none of these decisions were purely \u201cprocess\u201d or purely \u201cpeople.\u201d</strong> The PROC2020 Charter gap and Raj\u2019s overload were both found through direct engagement \u2014 not reports. Pat\u2019s situation, if it did not surface this week, is the same kind of signal waiting to be found.</p>'
+    +'</div>'
+    +'<div class="card"><div class="card-label">PROC2020 Tie-In</div>'
+    +'<p>Before your first week ends, update the PDT Charter: correct the outdated PM name and confirm Raj and Pat\u2019s roles and decision authority are accurately reflected. If Pat\u2019s resourcing concern surfaced this week, document it now so it does not get lost again. For the cost-review deadline, a quick RACI \u2014 Maria Accountable, Raj Responsible for the figures, the DPM Informed \u2014 turns \u201cwho owns this\u201d from a guess into something written down.</p></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'casestudy\',\'kc\')">Continue to Knowledge Check &rarr;</button></div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function caseNext(){
+  CASE_STEP++;
+  CS.caseStep=CASE_STEP;
+  saveState();
+  document.getElementById('main-content').innerHTML=renderCaseStudy();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function chooseOption(letter){
+  var step=CASE_STEPS[CASE_STEP];
+  CS.decisions[CASE_STEP]=letter;
+  saveState();
+  document.querySelectorAll('.choice-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='.55';});
+  var chosen=Array.from(document.querySelectorAll('.choice-option')).find(function(el){return el.textContent.trim().indexOf(letter+'.')===0;});
+  if(chosen){chosen.style.opacity='1';chosen.style.borderColor='var(--gold)';}
+  var c=step.consequences[letter];
+  document.getElementById('case-consequence').innerHTML=
+    '<div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+    +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div>';
+  document.getElementById('case-nav').style.display='flex';
+  var nextBtn=document.getElementById('case-next-btn');
+  if(CASE_STEP===3){nextBtn.textContent='Continue to Debrief \u2192';}
+}
+
+// ===== KNOWLEDGE CHECK =====
+var KC_QUESTIONS=[
+  {tag:'Doctrine',text:'Per PROC2020, the PDT Charter must reflect:',
+   options:['General role titles, to be filled in later','Only the PM and DPM by name','Named individuals confirmed by their functional chief, with decision authority documented','Whatever roster PROMIS auto-generates'],
+   correct:2,
+   explain:'The PDT Charter must contain named individuals with documented decision authority \u2014 not placeholders or general titles. An outdated name (like the previous PM still listed) is exactly the kind of gap PROC2020 exists to catch.'},
+  {tag:'Judgment',text:'You have just inherited an active project mid-stream. What should the project manager do first?',
+   options:['Review available documentation, then engage individually before changing anything','Immediately reorganize the team to match your preferred working style','Wait for the team to come to you with issues','Assume the previous PM\u2019s approach was wrong and start fresh'],
+   correct:0,
+   explain:'Reviewing documentation first (PMP, Charter, PROMIS) gives you context \u2014 then individual engagement builds trust and surfaces honest information. Acting before understanding (or assuming the prior approach was wrong) tends to damage credibility on a team you did not build.'},
+  {tag:'Doctrine',text:'A team member has not responded to your email for two days. Per PDBP escalation principles, your first step should typically be:',
+   options:['Escalate immediately to your DPM','Wait one more week before doing anything','CC the District Commander to add urgency','Direct outreach to understand the situation before escalating'],
+   correct:3,
+   explain:'Formal escalation paths (PROC1020, PROC3010) exist for genuine conflicts \u2014 but direct, low-pressure outreach is the appropriate first step. Escalating before attempting direct contact can damage a new working relationship and often is not necessary once the real issue (e.g., workload) is understood.'},
+  {tag:'Judgment',text:'A team member goes quiet in a meeting after the PM asks a direct question. What is the best course of action?',
+   options:['Call on them again, more directly, until they answer','Move on, and follow up with them privately afterward','Assume they have nothing to contribute and stop including them in discussions','Address it publicly in the next meeting'],
+   correct:1,
+   explain:'Private follow-up creates psychological safety for someone to share what is really going on \u2014 often a real issue (like an unresolved escalation) that they did not feel comfortable raising in the group. Public pressure tends to produce a vague answer and can deepen disengagement.'},
+  {tag:'Doctrine',text:'Maria discovers Pat raised a resourcing conflict to the previous PM weeks ago with no resolution. This is most directly a signal related to:',
+   options:['PROC4000 Closeout Documentation','PROC2050 Acquisition Strategy','PROC1020 Workload Analysis and Escalation','PROC3020 After Action Review Timing'],
+   correct:2,
+   explain:'PROC1020 governs workload analysis and defines the escalation hierarchy for resource conflicts (Resource Provider \u2192 Branch Function Chief \u2192 Local Division \u2192 Regional Function Chief \u2192 MSC Commander). An unresolved resourcing conflict that went nowhere is exactly the kind of gap PROC1020 is designed to prevent.'}
+];
+var kcAnswers={};
+var kcOrder={}; // kcOrder[qi] = array mapping displayed position -> original option index
+function shuffleArray(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=a[i];a[i]=a[j];a[j]=tmp;
+  }
+  return a;
+}
+function buildKCOrder(){
+  kcOrder={};
+  KC_QUESTIONS.forEach(function(q,qi){
+    var idxs=[];
+    for(var i=0;i<q.options.length;i++)idxs.push(i);
+    kcOrder[qi]=shuffleArray(idxs);
+  });
+}
+
+function renderKC(){
+  kcAnswers={};
+  buildKCOrder();
+  var qHTML=KC_QUESTIONS.map(function(q,qi){
+    var order=kcOrder[qi];
+    return '<div class="question-block" id="kc-q-'+qi+'">'
+    +'<div class="question-num">Question '+(qi+1)+' of '+KC_QUESTIONS.length+'</div>'
+    +'<span class="question-tag">'+q.tag+'</span>'
+    +'<div class="question-text">'+q.text+'</div>'
+    +order.map(function(origIdx,pos){
+      return '<div class="answer-option" id="kc-opt-'+qi+'-'+pos+'" onclick="selectKCAnswer('+qi+','+pos+')">'
+      +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+q.options[origIdx]+'</div>';
+    }).join('')
+    +'<div class="kc-explain" id="kc-explain-'+qi+'"><strong>Why:</strong> '+q.explain+'</div>'
+    +'</div>';
+  }).join('');
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Knowledge Check &middot; 5 Questions &middot; 60% to Pass</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Doctrine &amp; Judgment</h2>'
+  +'<p class="lede">Some questions have a single correct doctrinal answer. Others ask what the project manager should do \u2014 choose the best course of action and read the explanation after answering either way.</p>'
+  +qHTML
+  +'<div class="kc-feedback" id="kc-feedback"></div>'
+  +'<div class="btn-row" id="kc-btn-row"><button class="btn-primary" id="kc-submit-btn" onclick="submitKC()" disabled>Submit Answers</button></div>'
+  +'</div>';
+}
+
+function selectKCAnswer(qi,oi){
+  document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+  kcAnswers[qi]=oi;
+  document.getElementById('kc-opt-'+qi+'-'+oi).classList.add('selected');
+  if(Object.keys(kcAnswers).length===KC_QUESTIONS.length){
+    document.getElementById('kc-submit-btn').disabled=false;
+  }
+}
+
+function submitKC(){
+  var correct=0;
+  KC_QUESTIONS.forEach(function(q,qi){
+    var order=kcOrder[qi];
+    var selPos=kcAnswers[qi];
+    var selOrigIdx=order[selPos];
+    var correctPos=order.indexOf(q.correct);
+    var isCorrect=selOrigIdx===q.correct;
+    if(isCorrect)correct++;
+    document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+    document.getElementById('kc-opt-'+qi+'-'+selPos).classList.add(isCorrect?'correct':'incorrect');
+    if(!isCorrect)document.getElementById('kc-opt-'+qi+'-'+correctPos).classList.add('correct');
+    document.getElementById('kc-explain-'+qi).classList.add('show');
+  });
+  CS.kcScore=correct;
+  var pct=Math.round((correct/KC_QUESTIONS.length)*100);
+  var passed=pct>=60;
+  var fb=document.getElementById('kc-feedback');
+  fb.className='kc-feedback show '+(passed?'pass':'fail');
+  fb.innerHTML='<div class="kc-score '+(passed?'pass':'fail')+'">'+correct+'/'+KC_QUESTIONS.length+'</div>'
+  +(passed?'<strong>Well done.</strong> You have completed Case File 01.':'<strong>Review the explanations above.</strong> Score 60% or higher to complete this case file.');
+  var btnRow=document.getElementById('kc-btn-row');
+  if(passed){
+    CS.sectionsComplete.kc=true;saveState();
+    btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'complete\')">Finish Case File &rarr;</button>';
+  } else {
+    btnRow.innerHTML='<button class="btn-primary" onclick="retakeKC()">Retake Knowledge Check</button>';
+  }
+}
+function retakeKC(){kcAnswers={};goSection('kc');}
+
+function renderComplete(){
+  return '<div class="screen active">'
+  +'<div class="complete-wrap">'
+  +'<div class="complete-seal">&#10003;</div>'
+  +'<div class="complete-title">Case File 01 Complete</div>'
+  +'<div class="complete-sub">'+CS.name+' &middot; New PM, Unclear Roles &middot; Score: '+CS.kcScore+'/5</div>'
+  +'<div style="text-align:left;max-width:480px;margin:0 auto 20px;">'
+  +'<label class="field-label">What is one thing you will do differently this week, based on this case?</label>'
+  +'<textarea class="reflect-input" id="commitment" placeholder="Type your commitment..."></textarea>'
+  +'</div>'
+  +'<div class="btn-row" style="justify-content:center;"><button class="btn-primary" onclick="saveCommitment()">Save &amp; Finish</button>'
+  +'<button class="btn-secondary" onclick="restartCase()">Restart Case File</button></div>'
+  +'<p style="font-size:0.625rem;color:var(--white-dim);margin-top:18px;">Interactive PM in USACE &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile02_ScheduleVsScope.html" style="color:var(--gold);text-decoration:underline;">Continue to Case File 02 &rarr;</a> &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" style="color:var(--white-dim);text-decoration:underline;">Course Home</a></p>'
+  +'</div></div>';
+}
+function saveCommitment(){
+  CS.commitment=document.getElementById('commitment').value;
+  saveState();
+  alert('Saved. Thank you for completing Case File 01.');
+}
+function restartCase(){
+  if(confirm('This will clear your progress for this case file. Continue?')){
+    try{localStorage.removeItem(STORAGE_KEY);}catch(e){}location.reload();
+  }
+}
+
+// ===== INIT =====
+(function init(){render();})();
+</script>
+<script>
+var CS={name:'',strength:'',section:'welcome',sectionsComplete:{training:false,discussion:false,casestudy:false,kc:false},kcScore:0,decisions:{},caseStep:0};
+var STORAGE_KEY='casefile01_v1';
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(CS));}catch(e){}}
+function loadState(){try{var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;var d=JSON.parse(raw);if(!d||!d.name)return false;CS=d;return true;}catch(e){return false;}}
+
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+
+var SECTIONS=['welcome','training','discussion','casestudy','kc','complete'];
+var SECTION_LABELS={welcome:'Welcome',training:'Training',discussion:'Discussion',casestudy:'Case Study',kc:'Knowledge Check',complete:'Complete'};
+
+function updateProgress(){
+  var idx=SECTIONS.indexOf(CS.section);
+  var pct=Math.round((idx/(SECTIONS.length-1))*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-label').textContent=SECTION_LABELS[CS.section]||'';
+}
+
+function renderNav(){
+  var order=['training','discussion','casestudy','kc'];
+  var html='<div class="section-nav">';
+  order.forEach(function(s){
+    var cls='sec-btn'+(CS.section===s?' active':'')+(CS.sectionsComplete[s]?' complete':'');
+    var locked=false;
+    var idx=order.indexOf(s);
+    if(idx>0 && !CS.sectionsComplete[order[idx-1]] && CS.section!==s) locked=true;
+    if(locked) cls+=' locked';
+    html+='<button class="'+cls+'" '+(locked?'disabled':'onclick="goSection(\''+s+'\')"')+'>'+(CS.sectionsComplete[s]?'&#10003; ':'')+SECTION_LABELS[s]+'</button>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function goSection(s){CS.section=s;saveState();render();}
+
+function render(){
+  var m=document.getElementById('main-content');
+  document.getElementById('progress-bar-wrap').style.display=(CS.section==='welcome')?'none':'block';
+  if(CS.section==='welcome') m.innerHTML=renderWelcome();
+  else if(CS.section==='training') m.innerHTML=renderTraining();
+  else if(CS.section==='discussion') m.innerHTML=renderDiscussion();
+  else if(CS.section==='casestudy') m.innerHTML=renderCaseStudy();
+  else if(CS.section==='kc') m.innerHTML=renderKC();
+  else if(CS.section==='complete') m.innerHTML=renderComplete();
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+var THEME_DOMAIN={'Analytical':'Strategic Thinking','Context':'Strategic Thinking','Futuristic':'Strategic Thinking','Ideation':'Strategic Thinking','Input':'Strategic Thinking','Intellection':'Strategic Thinking','Learner':'Strategic Thinking','Strategic':'Strategic Thinking','Adaptability':'Relationship Building','Connectedness':'Relationship Building','Developer':'Relationship Building','Empathy':'Relationship Building','Harmony':'Relationship Building','Includer':'Relationship Building','Individualization':'Relationship Building','Positivity':'Relationship Building','Relator':'Relationship Building','Activator':'Influencing','Command':'Influencing','Communication':'Influencing','Competition':'Influencing','Maximizer':'Influencing','Self-Assurance':'Influencing','Significance':'Influencing','Woo':'Influencing','Achiever':'Executing','Arranger':'Executing','Belief':'Executing','Consistency':'Executing','Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'};
+var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N/A">N/A / Not sure</option><optgroup label="Strategic Thinking"><option value="Analytical">Analytical</option><option value="Context">Context</option><option value="Futuristic">Futuristic</option><option value="Ideation">Ideation</option><option value="Input">Input</option><option value="Intellection">Intellection</option><option value="Learner">Learner</option><option value="Strategic">Strategic</option></optgroup><optgroup label="Relationship Building"><option value="Adaptability">Adaptability</option><option value="Connectedness">Connectedness</option><option value="Developer">Developer</option><option value="Empathy">Empathy</option><option value="Harmony">Harmony</option><option value="Includer">Includer</option><option value="Individualization">Individualization</option><option value="Positivity">Positivity</option><option value="Relator">Relator</option></optgroup><optgroup label="Influencing"><option value="Activator">Activator</option><option value="Command">Command</option><option value="Communication">Communication</option><option value="Competition">Competition</option><option value="Maximizer">Maximizer</option><option value="Self-Assurance">Self-Assurance</option><option value="Significance">Significance</option><option value="Woo">Woo</option></optgroup><optgroup label="Executing"><option value="Achiever">Achiever</option><option value="Arranger">Arranger</option><option value="Belief">Belief</option><option value="Consistency">Consistency</option><option value="Deliberative">Deliberative</option><option value="Discipline">Discipline</option><option value="Focus">Focus</option><option value="Responsibility">Responsibility</option><option value="Restorative">Restorative</option></optgroup>';
+
+function getProfile(){
+  try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
+}
+function saveProfile(name,themes){
+  try{localStorage.setItem('pm-learner-profile',JSON.stringify({name:name,themes:themes,savedAt:new Date().toISOString()}));}catch(e){}
+}
+function clearProfile(){
+  try{localStorage.removeItem('pm-learner-profile');}catch(e){}
+}
+function clearProfileAndReload(){
+  clearProfile();
+  render();
+  return false;
+}
+function toggleNAThemes(){
+  var cb=document.getElementById('na-checkbox');
+  var grid=document.getElementById('theme-select-grid');
+  if(grid)grid.style.display=cb.checked?'none':'';
+}
+
+function renderProfileFields(){
+  var p=getProfile();
+  if(p&&p.name){
+    var isNA=(p.themes||[]).length===1&&p.themes[0]==='N/A';
+    var themesDisplay=isNA?'N/A &mdash; not provided':(p.themes||[]).map(function(t){return t+' ('+THEME_DOMAIN[t]+')';}).join(', ');
+    return '<div class="profile-display">'
+      +'<div class="profile-row"><span class="field-label">Learner</span><div class="profile-value">'+p.name+'</div></div>'
+      +'<div class="profile-row"><span class="field-label">Top 5 CliftonStrengths</span><div class="profile-value">'+themesDisplay+'</div></div>'
+      +'<p class="profile-clear"><a onclick="return clearProfileAndReload()">Not '+p.name+'? Clear saved name &amp; strengths</a></p>'
+      +'</div>';
+  }
+  var grid='<div class="theme-select-grid" id="theme-select-grid">';
+  for(var i=1;i<=5;i++){
+    grid+='<div class="theme-select-item"><label>Theme '+i+' <span class="required-mark">*</span></label>'
+      +'<select class="theme-select" id="theme-select-'+i+'">'+THEME_OPTIONS_HTML+'</select></div>';
+  }
+  grid+='</div>';
+  return '<div style="margin-bottom:18px;">'
+    +'<label class="field-label">Your Name <span class="required-mark">*</span></label>'
+    +'<input class="name-input" id="name-input" type="text" placeholder="First Last"/>'
+    +'</div>'
+    +'<div style="margin-bottom:8px;">'
+    +'<label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>'
+    +'</div>'
+    +'<label class="na-checkbox-row" for="na-checkbox"><input type="checkbox" id="na-checkbox" onchange="toggleNAThemes()"/>I do not know my CliftonStrengths (select N/A)</label>'
+    +grid;
+}
+
+function renderWelcome(){
+  var saved=loadState();
+  var resumeBtn=(saved&&CS.name)?'<button class="btn-secondary" onclick="resumeCase()" style="margin-left:10px;">Resume as '+CS.name+' &rarr;</button>':'';
+  return '<div class="screen active">'
+  +'<p class="eyebrow">Interactive PM in USACE &middot; Case File 01</p>'
+  +'<h1 class="title-main">New PM,<br><em>Unclear Roles.</em></h1>'
+  +'<p class="lede">You have just been assigned to a project that is already underway. The Project Delivery Team was assembled before you arrived. <strong>What do you do in your first week?</strong></p>'
+  +'<div class="card"><div class="card-label">What This Case File Covers</div>'
+  +'<p><strong>PDBP Doctrine:</strong> PROC2020 \u2014 the PDT Charter, named-individual assignments, and decision authority.</p>'
+  +'<p><strong>People Skill:</strong> Building trust quickly with a team you did not hire \u2014 active listening, asking before assuming, and earning credibility in week one.</p>'
+  +'</div>'
+  +'<div class="card"><div class="card-label">How This Works</div>'
+  +'<p>Training (5 min) &rarr; Reflection &rarr; Case Study (branching scenario) &rarr; Knowledge Check (5 questions, 60% to pass).</p>'
+  +'</div>'
+  +renderProfileFields()
+  +'<div class="btn-row"><button class="btn-primary" onclick="startCase()">Begin Case File &rarr;</button>'+resumeBtn+'</div>'
+  +'</div>';
+}
+
+function startCase(){
+  var p=getProfile();
+  var name,themes;
+  if(p&&p.name){
+    name=p.name;themes=p.themes;
+  }else{
+    name=document.getElementById('name-input').value.trim();
+    if(!name){alert('Please enter your name to continue.');return;}
+    var naChecked=document.getElementById('na-checkbox').checked;
+    if(naChecked){
+      themes=['N/A'];
+    }else{
+      themes=[];
+      for(var i=1;i<=5;i++){
+        var v=document.getElementById('theme-select-'+i).value;
+        if(!v){alert('Please select all five CliftonStrengths themes, or check the box if you do not know them.');return;}
+        themes.push(v);
+      }
+    }
+    saveProfile(name,themes);
+  }
+  CS.name=name;
+  CS.themes=themes;
+  CS.section='training';
+  saveState();render();
+}
+function resumeCase(){render();}
+
+function renderTraining(){
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Training &middot; 5 Minutes</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">PDT Roles &amp; Building Trust Fast</h2>'
+  +'<div class="card">'
+  +'<div class="card-label">PROC2020 &mdash; The PDT Charter</div>'
+  +'<p>Every Project Delivery Team should be governed by a <strong>PDT Charter</strong> &mdash; a document naming each team member, their role, and their decision authority. <strong>Placeholder names are not acceptable</strong> at any stage. If you inherit a project and the Charter has gaps, vague titles, or outdated names, that is your first signal.</p>'
+  +'<p>The Charter tells you <strong>who owns what</strong>: the Cost Engineer (PROC2040), the Scheduler (PROC2030), the Contracting Officer (PROC2050), Real Estate, Environmental, and the RMO (PROC1040). Before you can lead this team, you need to know who is actually doing each job &mdash; not just who is listed.</p>'
+  +'<p><strong>When roles are unclear, RACI is the tool.</strong> For any decision or deliverable, RACI assigns one person as <strong>R</strong>esponsible (does the work), one as <strong>A</strong>ccountable (owns the outcome, often the PM), and others as <strong>C</strong>onsulted (input sought beforehand) or <strong>I</strong>nformed (kept in the loop after). A quick RACI table does not replace the PDT Charter \\u2014 it makes the Charter\\u2019s roles concrete for a specific decision, which is often exactly where ambiguity hides.</p>'
+  +'<span class="proc-tag">PROC2020</span><span class="proc-tag">PDT Charter</span><span class="proc-tag">Decision Authority</span><span class="proc-tag">RACI</span>'
+  +'</div>'
+  +'<div class="card people-card">'
+  +'<div class="card-label">People Skill &mdash; Your First 30 Days</div>'
+  +'<p>When you join a team that already exists, <strong>you are the newcomer \u2014 not the team</strong>. The fastest way to lose credibility is to walk in and immediately start changing things before you understand why they are the way they are.</p>'
+  +'<p><strong>Ask before you assume.</strong> A process that looks broken from the outside may be a workaround for a constraint you do not know about yet. Asking "help me understand how this works" builds trust. Announcing "this is wrong, here is how we will fix it" on day one does not \u2014 even if you are right.</p>'
+  +'<p><strong>Listen for what is not said.</strong> In your first team meeting, notice who speaks freely, who waits to be asked, and who says nothing at all. That silence is information \u2014 it might mean disengagement, or it might mean they have learned that speaking up does not change anything.</p>'
+  +'</div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'training\',\'discussion\')">Continue to Discussion &rarr;</button></div>'
+  +'</div>';
+}
+
+function completeSection(current,next){
+  CS.sectionsComplete[current]=true;
+  CS.section=next;
+  saveState();render();
+}
+
+function renderDiscussion(){
+  var strengthNote='';
+  var primaryDomain='Relationship Building';
+  var domainInsights={'Strategic Thinking':'Your {theme} wants the full picture before acting. Useful here — just do not let it become an excuse to delay talking to people.','Relationship Building':'Your {theme} is the right tool for week one. Building trust is the job. Just do not let the first relationships you build become the only ones that count.','Influencing':'Your {theme} will push you to take charge fast. That can read as confidence — or as moving before you have earned the standing to lead change. Pace it.','Executing':'Your {theme} wants visible progress now. Good drive, wrong week. Understand the landscape before you start fixing it.'};
+  var themes=(CS.themes||[]).filter(function(t){return t&&t!=='N/A';});
+  var matchedTheme=null;
+  for(var ti=0;ti<themes.length;ti++){
+    if(THEME_DOMAIN[themes[ti]]===primaryDomain){matchedTheme=themes[ti];break;}
+  }
+  if(!matchedTheme&&themes.length>0){matchedTheme=themes[0];}
+  if(matchedTheme){
+    var domain=THEME_DOMAIN[matchedTheme];
+    var template=domainInsights[domain]||'';
+    strengthNote=template.replace('{theme}',matchedTheme);
+  }
+  if(!strengthNote){
+    strengthNote='Whatever your natural style, week one is a balance between moving forward and understanding what you have inherited. Notice which side you default to, and consider deliberately practicing the other.';
+  }
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Discussion &amp; Reflection</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Before You See the Scenario</h2>'
+  +'<p class="lede">These reflections are not graded. Take a moment to think honestly \u2014 your answers are saved only on this device.</p>'
+  +'<div class="card"><div class="card-label">Your Strengths Lens</div><p>'+strengthNote+'</p></div>'
+  +'<div class="reflect-block"><div class="reflect-q">1. Think of a time you joined an existing team. What helped you build trust quickly \u2014 and what slowed it down?</div>'
+  +'<textarea class="reflect-input" id="r1" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">2. When you walk into a new PDT, what is your instinct \u2014 to start by reviewing documentation, or by talking to people? Why?</div>'
+  +'<textarea class="reflect-input" id="r2" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">3. Have you ever noticed a team member go quiet in a meeting? What did you do \u2014 or wish you had done?</div>'
+  +'<textarea class="reflect-input" id="r3" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="saveReflectionsAndContinue()">Continue to Case Study &rarr;</button></div>'
+  +'</div>';
+}
+
+function saveReflectionsAndContinue(){
+  CS.reflections={r1:document.getElementById('r1').value,r2:document.getElementById('r2').value,r3:document.getElementById('r3').value};
+  completeSection('discussion','casestudy');
+}
+
+// ===== CASE STUDY =====
+var CASE_STEP=0;
+var CASE_STEPS=[
+  {
+    type:'scenario',
+    label:'The Assignment',
+    text:'You are <strong>Maria Chen</strong>, recently assigned as Project Manager for the <strong>Building 4521 Renovation</strong>. The PDT was assembled two months ago, before you arrived \u2014 you are replacing a PM who transferred suddenly. A cost estimate review with the sponsor is due in <strong>three weeks</strong>. You have a roster with five names and titles, but you have never met any of them.'
+  },
+  {
+    type:'decision',
+    label:'Decision 1 of 3',
+    prompt:'It is Monday morning, your first day on this project. What do you do first?',
+    options:[
+      {letter:'A',text:'Send a calendar invite for a full PDT meeting this afternoon \u2014 introduce yourself and ask everyone to walk through their role and current status.'},
+      {letter:'B',text:'Spend the morning reviewing the PMP, PDT Charter, and PROMIS data, then reach out to each team member individually to introduce yourself and ask for 15 minutes this week.'},
+      {letter:'C',text:'Email your DPM first and ask for a briefing on the team and project history before reaching out to anyone on the PDT.'}
+    ],
+    consequences:{
+      A:{text:'The meeting happens \u2014 but you are introducing yourself cold, with no context, in front of the whole team at once. Two people give brief updates; three say "everything is on track" without detail. You leave with names attached to faces, but not much more.',
+         insight:'<strong>What this reveals:</strong> A full-group meeting on day one can work \u2014 but without preparation, people tend to give surface-level answers in front of the group. The PROC2020 Charter review you have not yet done would have told you who to listen to most carefully.'},
+      B:{text:'By midday, you know the Charter lists a Cost Engineer (Raj Patel) and Scheduler (Pat Nguyen) \u2014 but the Charter still shows the previous PM\u2019s name in two places. Your one-on-ones over the next two days are candid: Pat mentions the schedule has not been updated in six weeks. Raj seems guarded but professional.',
+         insight:'<strong>What this reveals:</strong> Reviewing the Charter first gave you a map \u2014 including a compliance gap (outdated names, a PROC2020 issue you can now correct). One-on-ones surfaced an honest signal (the stale schedule) that might not have come up in a group setting.'},
+      C:{text:'Your DPM gives you helpful context \u2014 the previous PM left abruptly due to a family emergency, and the team has been "running on autopilot" for three weeks. Your DPM does not know the day-to-day details, though, and you still have not met your PDT by end of day.',
+         insight:'<strong>What this reveals:</strong> Briefing from your DPM is valuable context \u2014 especially the "running on autopilot" signal, which connects to PDT health (continuity, institutional knowledge retention). But it does not replace direct engagement with your team, and the clock on your three-week deadline is running.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 2 of 3',
+    prompt:'It is now Wednesday. You need updated cost data from Raj (Cost Engineer) for the sponsor review. You emailed him Monday with no response. The review is in 12 days.',
+    options:[
+      {letter:'A',text:'Email your DPM and ask them to direct Raj to respond \u2014 you do not want this to slip further.'},
+      {letter:'B',text:'Call or walk over to Raj directly. Give him context on the deadline, ask what he needs from you, and agree on a specific date for the data.'},
+      {letter:'C',text:'Proceed with the cost figures from the last PMP update and flag the estimate as preliminary in your prep materials.'}
+    ],
+    consequences:{
+      A:{text:'Your DPM follows up, and Raj responds within the hour \u2014 but the exchange felt like an escalation to Raj, and he is noticeably more formal with you afterward. You get the data, but the relationship started on uneven footing.',
+         insight:'<strong>What this reveals:</strong> Escalating on day three, before attempting direct contact, can read as a lack of trust \u2014 especially to a team member who does not yet know you. Escalation has its place (and PROC1020/PROC3010 define formal escalation paths) \u2014 but it is usually a later step, not a first one.'},
+      B:{text:'Raj explains he has been pulled onto two other projects and your email got buried. He appreciates that you reached out directly rather than going around him. He commits to Friday \u2014 and delivers.',
+         insight:'<strong>What this reveals:</strong> A direct, low-pressure conversation surfaced the real issue (he is overloaded \u2014 a PROC1020 workload signal) and got a committed date. This is the fastest path to both the data <em>and</em> a working relationship.'},
+      C:{text:'You use the old figures. During the sponsor review, the sponsor asks a detailed cost question your figures cannot answer \u2014 because Raj had identified a material cost increase that was never communicated to you. You are caught flat-footed in front of the sponsor.',
+         insight:'<strong>What this reveals:</strong> Proceeding without current data is a real risk \u2014 PROC2040 exists precisely because cost estimates change and PDTs need current information before key decisions and reviews. "Preliminary" framing does not protect you if the gap is material.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 3 of 3',
+    prompt:'In your first full PDT meeting (Thursday), you notice Pat (Scheduler) has not said a word in 30 minutes \u2014 even when you asked the group a direct question about the schedule.',
+    options:[
+      {letter:'A',text:'Ask Pat directly, in front of the group: "Pat, what is your take on the schedule status?"'},
+      {letter:'B',text:'Continue the meeting, but follow up with Pat one-on-one afterward to ask how things are going and whether anything is on their mind.'},
+      {letter:'C',text:'Say nothing \u2014 not everyone needs to speak in every meeting, and you do not want to put anyone on the spot in your first week.'}
+    ],
+    consequences:{
+      A:{text:'Put on the spot, Pat gives a brief, vague answer: "It is mostly fine." The moment passes, but Pat seems slightly more withdrawn for the rest of the meeting.',
+         insight:'<strong>What this reveals:</strong> Calling on someone directly in a group \u2014 especially someone who has gone quiet \u2014 can backfire if you do not yet know <em>why</em> they are quiet. It may get an answer, but rarely the real one.'},
+      B:{text:'After the meeting, Pat opens up: the schedule has not been updated because Pat raised a resourcing conflict to the previous PM weeks ago and never heard back. Pat assumed raising it again would not help. You now have a real PROC1020 escalation issue \u2014 and Pat\u2019s trust that you listened.',
+         insight:'<strong>What this reveals:</strong> A private follow-up created the safety for Pat to share what was actually going on \u2014 something Empathy-dominant or Relator-dominant learners often sense intuitively. This surfaced both a process gap (an unresolved PROC1020 escalation) and a trust opportunity.'},
+      C:{text:'The meeting ends. You make a mental note about Pat\u2019s silence but take no action. Two weeks later, the schedule issue Pat could have flagged becomes a real problem \u2014 one that is now harder to fix and closer to your sponsor deadline.',
+         insight:'<strong>What this reveals:</strong> Noticing a signal without acting on it has a cost \u2014 often a delayed one. Silence in a meeting is rarely "nothing." PDT health (one of the AIS health-check dimensions) depends on team members feeling that raising issues leads somewhere.'}
+    }
+  },
+  {
+    type:'debrief',
+    label:'Case Debrief'
+  }
+];
+
+function renderCaseStudy(){
+  CASE_STEP=CS.caseStep||0;
+  var step=CASE_STEPS[CASE_STEP];
+  var html='<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Case Study &middot; Building 4521 Renovation</p>';
+
+  if(step.type==='scenario'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">'+step.label+'</h2>'
+    +'<div class="scenario-box"><div class="scenario-label">Scenario Setup</div><div class="scenario-text">'+step.text+'</div></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()">Begin Decision 1 &rarr;</button></div>';
+  } else if(step.type==='decision'){
+    html+='<div class="scenario-label" style="margin-bottom:6px;">'+step.label+'</div>'
+    +'<div class="decision-prompt">'+step.prompt+'</div>'
+    +'<div id="case-options">';
+    step.options.forEach(function(opt){
+      html+='<div class="choice-option" onclick="chooseOption(\''+opt.letter+'\')"><span class="choice-letter">'+opt.letter+'.</span>'+opt.text+'</div>';
+    });
+    html+='</div><div id="case-consequence"></div><div id="case-nav" class="nav-row" style="display:none;"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">Continue &rarr;</button></div>';
+  } else if(step.type==='debrief'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">Case Debrief</h2>'
+    +'<div class="card people-card"><div class="card-label">What Maria\u2019s Week Showed</div>'
+    +'<p>There is rarely one \u201ccorrect\u201d path through a new team \u2014 but some approaches build trust and surface information faster than others. Direct, low-pressure conversations (Decision 2, Option B) and private follow-up on quiet signals (Decision 3, Option B) tend to surface real issues before they become deadline problems. The other paths still move things forward \u2014 they just leave more gaps.</p>'
+    +'<p><strong>Whichever path you took on Decision 3:</strong> Pat has a real, unresolved resourcing conflict that was raised to the previous PM and never answered. If Pat\u2019s silence surfaced it this week, you now have an early opportunity to act. If it did not surface yet \u2014 it will. This kind of issue tends to appear later as a schedule problem rather than a people problem, which makes it harder to diagnose and fix.</p>'
+    +'<p>Notice that <strong>none of these decisions were purely \u201cprocess\u201d or purely \u201cpeople.\u201d</strong> The PROC2020 Charter gap and Raj\u2019s overload were both found through direct engagement \u2014 not reports. Pat\u2019s situation, if it did not surface this week, is the same kind of signal waiting to be found.</p>'
+    +'</div>'
+    +'<div class="card"><div class="card-label">PROC2020 Tie-In</div>'
+    +'<p>Before your first week ends, update the PDT Charter: correct the outdated PM name and confirm Raj and Pat\u2019s roles and decision authority are accurately reflected. If Pat\u2019s resourcing concern surfaced this week, document it now so it does not get lost again. For the cost-review deadline, a quick RACI \u2014 Maria Accountable, Raj Responsible for the figures, the DPM Informed \u2014 turns \u201cwho owns this\u201d from a guess into something written down.</p></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'casestudy\',\'kc\')">Continue to Knowledge Check &rarr;</button></div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function caseNext(){
+  CASE_STEP++;
+  CS.caseStep=CASE_STEP;
+  saveState();
+  document.getElementById('main-content').innerHTML=renderCaseStudy();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function chooseOption(letter){
+  var step=CASE_STEPS[CASE_STEP];
+  CS.decisions[CASE_STEP]=letter;
+  saveState();
+  document.querySelectorAll('.choice-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='.55';});
+  var chosen=Array.from(document.querySelectorAll('.choice-option')).find(function(el){return el.textContent.trim().indexOf(letter+'.')===0;});
+  if(chosen){chosen.style.opacity='1';chosen.style.borderColor='var(--gold)';}
+  var c=step.consequences[letter];
+  document.getElementById('case-consequence').innerHTML=
+    '<div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+    +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div>';
+  document.getElementById('case-nav').style.display='flex';
+  var nextBtn=document.getElementById('case-next-btn');
+  if(CASE_STEP===3){nextBtn.textContent='Continue to Debrief \u2192';}
+}
+
+// ===== KNOWLEDGE CHECK =====
+var KC_QUESTIONS=[
+  {tag:'Doctrine',text:'Per PROC2020, the PDT Charter must reflect:',
+   options:['General role titles, to be filled in later','Only the PM and DPM by name','Named individuals confirmed by their functional chief, with decision authority documented','Whatever roster PROMIS auto-generates'],
+   correct:2,
+   explain:'The PDT Charter must contain named individuals with documented decision authority \u2014 not placeholders or general titles. An outdated name (like the previous PM still listed) is exactly the kind of gap PROC2020 exists to catch.'},
+  {tag:'Judgment',text:'You have just inherited an active project mid-stream. What should the project manager do first?',
+   options:['Review available documentation, then engage individually before changing anything','Immediately reorganize the team to match your preferred working style','Wait for the team to come to you with issues','Assume the previous PM\u2019s approach was wrong and start fresh'],
+   correct:0,
+   explain:'Reviewing documentation first (PMP, Charter, PROMIS) gives you context \u2014 then individual engagement builds trust and surfaces honest information. Acting before understanding (or assuming the prior approach was wrong) tends to damage credibility on a team you did not build.'},
+  {tag:'Doctrine',text:'A team member has not responded to your email for two days. Per PDBP escalation principles, your first step should typically be:',
+   options:['Escalate immediately to your DPM','Wait one more week before doing anything','CC the District Commander to add urgency','Direct outreach to understand the situation before escalating'],
+   correct:3,
+   explain:'Formal escalation paths (PROC1020, PROC3010) exist for genuine conflicts \u2014 but direct, low-pressure outreach is the appropriate first step. Escalating before attempting direct contact can damage a new working relationship and often is not necessary once the real issue (e.g., workload) is understood.'},
+  {tag:'Judgment',text:'A team member goes quiet in a meeting after the PM asks a direct question. What is the best course of action?',
+   options:['Call on them again, more directly, until they answer','Move on, and follow up with them privately afterward','Assume they have nothing to contribute and stop including them in discussions','Address it publicly in the next meeting'],
+   correct:1,
+   explain:'Private follow-up creates psychological safety for someone to share what is really going on \u2014 often a real issue (like an unresolved escalation) that they did not feel comfortable raising in the group. Public pressure tends to produce a vague answer and can deepen disengagement.'},
+  {tag:'Doctrine',text:'Maria discovers Pat raised a resourcing conflict to the previous PM weeks ago with no resolution. This is most directly a signal related to:',
+   options:['PROC4000 Closeout Documentation','PROC2050 Acquisition Strategy','PROC1020 Workload Analysis and Escalation','PROC3020 After Action Review Timing'],
+   correct:2,
+   explain:'PROC1020 governs workload analysis and defines the escalation hierarchy for resource conflicts (Resource Provider \u2192 Branch Function Chief \u2192 Local Division \u2192 Regional Function Chief \u2192 MSC Commander). An unresolved resourcing conflict that went nowhere is exactly the kind of gap PROC1020 is designed to prevent.'}
+];
+var kcAnswers={};
+var kcOrder={}; // kcOrder[qi] = array mapping displayed position -> original option index
+function shuffleArray(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=a[i];a[i]=a[j];a[j]=tmp;
+  }
+  return a;
+}
+function buildKCOrder(){
+  kcOrder={};
+  KC_QUESTIONS.forEach(function(q,qi){
+    var idxs=[];
+    for(var i=0;i<q.options.length;i++)idxs.push(i);
+    kcOrder[qi]=shuffleArray(idxs);
+  });
+}
+
+function renderKC(){
+  kcAnswers={};
+  buildKCOrder();
+  var qHTML=KC_QUESTIONS.map(function(q,qi){
+    var order=kcOrder[qi];
+    return '<div class="question-block" id="kc-q-'+qi+'">'
+    +'<div class="question-num">Question '+(qi+1)+' of '+KC_QUESTIONS.length+'</div>'
+    +'<span class="question-tag">'+q.tag+'</span>'
+    +'<div class="question-text">'+q.text+'</div>'
+    +order.map(function(origIdx,pos){
+      return '<div class="answer-option" id="kc-opt-'+qi+'-'+pos+'" onclick="selectKCAnswer('+qi+','+pos+')">'
+      +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+q.options[origIdx]+'</div>';
+    }).join('')
+    +'<div class="kc-explain" id="kc-explain-'+qi+'"><strong>Why:</strong> '+q.explain+'</div>'
+    +'</div>';
+  }).join('');
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Knowledge Check &middot; 5 Questions &middot; 60% to Pass</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Doctrine &amp; Judgment</h2>'
+  +'<p class="lede">Some questions have a single correct doctrinal answer. Others ask what the project manager should do \u2014 choose the best course of action and read the explanation after answering either way.</p>'
+  +qHTML
+  +'<div class="kc-feedback" id="kc-feedback"></div>'
+  +'<div class="btn-row" id="kc-btn-row"><button class="btn-primary" id="kc-submit-btn" onclick="submitKC()" disabled>Submit Answers</button></div>'
+  +'</div>';
+}
+
+function selectKCAnswer(qi,oi){
+  document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+  kcAnswers[qi]=oi;
+  document.getElementById('kc-opt-'+qi+'-'+oi).classList.add('selected');
+  if(Object.keys(kcAnswers).length===KC_QUESTIONS.length){
+    document.getElementById('kc-submit-btn').disabled=false;
+  }
+}
+
+function submitKC(){
+  var correct=0;
+  KC_QUESTIONS.forEach(function(q,qi){
+    var order=kcOrder[qi];
+    var selPos=kcAnswers[qi];
+    var selOrigIdx=order[selPos];
+    var correctPos=order.indexOf(q.correct);
+    var isCorrect=selOrigIdx===q.correct;
+    if(isCorrect)correct++;
+    document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+    document.getElementById('kc-opt-'+qi+'-'+selPos).classList.add(isCorrect?'correct':'incorrect');
+    if(!isCorrect)document.getElementById('kc-opt-'+qi+'-'+correctPos).classList.add('correct');
+    document.getElementById('kc-explain-'+qi).classList.add('show');
+  });
+  CS.kcScore=correct;
+  var pct=Math.round((correct/KC_QUESTIONS.length)*100);
+  var passed=pct>=60;
+  var fb=document.getElementById('kc-feedback');
+  fb.className='kc-feedback show '+(passed?'pass':'fail');
+  fb.innerHTML='<div class="kc-score '+(passed?'pass':'fail')+'">'+correct+'/'+KC_QUESTIONS.length+'</div>'
+  +(passed?'<strong>Well done.</strong> You have completed Case File 01.':'<strong>Review the explanations above.</strong> Score 60% or higher to complete this case file.');
+  var btnRow=document.getElementById('kc-btn-row');
+  if(passed){
+    CS.sectionsComplete.kc=true;saveState();
+    btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'complete\')">Finish Case File &rarr;</button>';
+  } else {
+    btnRow.innerHTML='<button class="btn-primary" onclick="retakeKC()">Retake Knowledge Check</button>';
+  }
+}
+function retakeKC(){kcAnswers={};goSection('kc');}
+
+function renderComplete(){
+  return '<div class="screen active">'
+  +'<div class="complete-wrap">'
+  +'<div class="complete-seal">&#10003;</div>'
+  +'<div class="complete-title">Case File 01 Complete</div>'
+  +'<div class="complete-sub">'+CS.name+' &middot; New PM, Unclear Roles &middot; Score: '+CS.kcScore+'/5</div>'
+  +'<div style="text-align:left;max-width:480px;margin:0 auto 20px;">'
+  +'<label class="field-label">What is one thing you will do differently this week, based on this case?</label>'
+  +'<textarea class="reflect-input" id="commitment" placeholder="Type your commitment..."></textarea>'
+  +'</div>'
+  +'<div class="btn-row" style="justify-content:center;"><button class="btn-primary" onclick="saveCommitment()">Save &amp; Finish</button>'
+  +'<button class="btn-secondary" onclick="restartCase()">Restart Case File</button></div>'
+  +'<p style="font-size:0.625rem;color:var(--white-dim);margin-top:18px;">Interactive PM in USACE &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile02_ScheduleVsScope.html" style="color:var(--gold);text-decoration:underline;">Continue to Case File 02 &rarr;</a> &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" style="color:var(--white-dim);text-decoration:underline;">Course Home</a></p>'
+  +'</div></div>';
+}
+function saveCommitment(){
+  CS.commitment=document.getElementById('commitment').value;
+  saveState();
+  alert('Saved. Thank you for completing Case File 01.');
+}
+function restartCase(){
+  if(confirm('This will clear your progress for this case file. Continue?')){
+    try{localStorage.removeItem(STORAGE_KEY);}catch(e){}location.reload();
+  }
+}
+
+// ===== INIT =====
+(function init(){render();})();
+</script>
+</body>
+</html>

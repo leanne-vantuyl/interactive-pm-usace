@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive PM in USACE</title>
+</head>
+<body>
+<!-- ==========================================
+     Interactive PM in USACE — SharePoint Snippet
+     Page: CaseFile05_TheNumberDoesntFit.aspx
+     Paste this entire block into a Script Editor web part
+     on a Classic SharePoint page.
+     ========================================== -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;--army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;--white:#F5F2EB;--white-dim:#C8C4B8;--accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;--border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;}
+html.font-l{font-size:18px;}
+html.font-s{font-size:14px;}
+body{background:var(--army-dark);color:var(--white);font-family:'Inter',sans-serif;font-weight:400;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(61,82,41,0.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(37,45,28,0.4) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* ===== ACCESSIBILITY LIGHT MODE (default) ===== */
+body.light-mode::before{display:none !important;}
+body.light-mode{background:#FFFFFF !important;color:#111111;}
+body.light-mode{--army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-dim:#222222;--gold:#5A4010;--gold-light:#3A2A08;--gold-dim:#5A4010;--border:rgba(90,64,16,0.4);--border-strong:rgba(90,64,16,0.7);--accent:#1A4A10;--warn:#8B3A00;--danger:#7A1A1A;}
+
+/* HEADER */
+header{border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;background:rgba(26,31,20,0.97);backdrop-filter:blur(12px);z-index:200;}
+body.light-mode header{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+.header-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.logo-block{display:flex;align-items:center;gap:12px;}
+.logo-seal{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.625rem;color:var(--gold);flex-shrink:0;}
+body.light-mode .logo-seal{border-color:#5A4010;color:#5A4010;}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:0.875rem;color:var(--white);}
+.logo-sub{font-size:0.5625rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+body.light-mode .logo-sub{color:#5A4010;}
+.case-badge{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);border:1px solid var(--border);padding:3px 8px;letter-spacing:.1em;}
+.case-quicknav{background:rgba(26,31,20,0.97);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:190;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+.case-quicknav-inner{display:flex;align-items:center;gap:4px;padding:7px 24px;max-width:1100px;margin:0 auto;}
+.cqn-link{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.05em;color:var(--white-dim);border:1px solid var(--border);padding:5px 9px;text-decoration:none;flex-shrink:0;transition:all .15s;}
+.cqn-link:hover{border-color:var(--gold-dim);color:var(--white);}
+.cqn-link.current{background:var(--gold);color:var(--army-dark);border-color:var(--gold);font-weight:700;}
+.cqn-sep{color:var(--border-strong);flex-shrink:0;margin:0 2px;}
+body.light-mode .case-quicknav{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+body.light-mode .cqn-link{color:#5A4010;border-color:#5A4010;}
+body.light-mode .cqn-link:hover{background:#E8E4D9;}
+body.light-mode .cqn-link.current{background:#5A4010;color:#FFFFFF;border-color:#5A4010;}
+body.light-mode .case-badge{color:#111111;border-color:#5A4010;background:#E8E4D9;font-weight:700;}
+.theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;}
+body.light-mode .theme-toggle{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+
+/* PROGRESS */
+.progress-bar-wrap{background:rgba(37,45,28,.8);border-bottom:1px solid var(--border);padding:8px 0;}
+body.light-mode .progress-bar-wrap{background:#E8E4D9;border-bottom:2px solid #5A4010;}
+.progress-bar-inner{max-width:860px;margin:0 auto;padding:0 24px;}
+.progress-track{height:3px;background:rgba(200,168,75,.15);border-radius:2px;margin-bottom:6px;}
+body.light-mode .progress-track{background:#C8C0A8;}
+.progress-fill{height:3px;background:var(--gold);border-radius:2px;transition:width .4s ease;}
+body.light-mode .progress-fill{background:#5A4010;}
+.progress-labels{display:flex;justify-content:space-between;}
+.progress-text{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.08em;}
+body.light-mode .progress-text{color:#111111;}
+.progress-pct{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);font-weight:700;}
+body.light-mode .progress-pct{color:#5A4010;}
+
+.main{max-width:860px;margin:0 auto;padding:36px 24px 80px;position:relative;z-index:1;}
+.screen{display:none;animation:fadeUp .3s ease both;}
+.screen.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* SECTION NAV */
+.section-nav{display:flex;gap:4px;margin-bottom:26px;flex-wrap:wrap;}
+.sec-btn{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.06em;text-transform:uppercase;padding:7px 12px;background:transparent;border:1px solid var(--border);color:var(--white-dim);cursor:pointer;display:flex;align-items:center;gap:5px;}
+body.light-mode .sec-btn{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:600;}
+.sec-btn.active{background:var(--gold);border-color:var(--gold);color:var(--army-dark);font-weight:700;}
+body.light-mode .sec-btn.active{background:#5A4010;color:#FFFFFF;}
+.sec-btn.complete{border-color:rgba(123,160,91,.5);color:var(--accent);}
+body.light-mode .sec-btn.complete{background:#E8F0E8;border-color:#1A4A10;color:#1A4A10;}
+.sec-btn.locked{opacity:.4;cursor:not-allowed;}
+
+/* TITLES */
+.eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .eyebrow{color:#5A4010;font-weight:700;}
+.title-main{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,4vw,2.375rem);line-height:1.18;color:var(--white);margin-bottom:14px;}
+body.light-mode .title-main{color:#111111;}
+.title-main em{color:var(--gold-light);font-style:italic;}
+body.light-mode .title-main em{color:#5A4010;}
+.lede{font-size:0.8125rem;line-height:1.8;color:var(--white-dim);max-width:620px;margin-bottom:22px;}
+body.light-mode .lede{color:#111111;font-size:0.875rem;}
+.lede strong{color:var(--white);font-weight:600;}
+body.light-mode .lede strong{color:#111111;}
+
+/* CARDS / CALLOUTS */
+.card{border:1px solid var(--border);background:rgba(37,45,28,.4);padding:16px 18px;margin-bottom:14px;}
+body.light-mode .card{background:#E8E4D9;border:2px solid #5A4010;}
+.card-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .card-label{color:#5A4010;font-weight:700;}
+.card p{font-size:0.75rem;line-height:1.7;color:var(--white-dim);margin-bottom:8px;}
+body.light-mode .card p{color:#111111;font-size:0.8125rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--white);}
+body.light-mode .card strong{color:#111111;}
+
+.people-card{border-left:4px solid var(--accent);}
+body.light-mode .people-card{border-left:6px solid #1A4A10;background:#E8F0E8;}
+body.light-mode .people-card .card-label{color:#1A4A10;}
+
+.proc-tag{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);border:1px solid var(--border-strong);padding:3px 8px;display:inline-block;margin:3px 3px 0 0;letter-spacing:.07em;}
+body.light-mode .proc-tag{color:#111111;border:2px solid #5A4010;background:#FFFFFF;font-weight:700;}
+
+/* REFLECTION INPUT */
+.reflect-block{margin-bottom:18px;}
+.reflect-q{font-size:0.75rem;color:var(--white);font-weight:600;margin-bottom:8px;line-height:1.6;}
+body.light-mode .reflect-q{color:#111111;font-size:0.8125rem;}
+.reflect-input{width:100%;background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.75rem;padding:11px 13px;outline:none;min-height:70px;resize:vertical;}
+body.light-mode .reflect-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;font-size:0.8125rem;}
+.reflect-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .reflect-input::placeholder{color:#888;opacity:1;}
+
+.strength-input{background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.8125rem;padding:11px 14px;outline:none;width:100%;max-width:320px;}
+body.light-mode .strength-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;}
+.strength-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .strength-input::placeholder{color:#888;opacity:1;}
+.theme-select-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px;}
+.theme-select-item label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:5px;display:block;}
+.theme-select{background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.8125rem;padding:10px 12px;outline:none;width:100%;}
+body.light-mode .theme-select-item label{color:#5A4010;font-weight:700;}
+body.light-mode .theme-select{background:#FFFFFF;border:2px solid #5A4010;color:#111111;}
+.na-checkbox-row{display:flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--white-dim);cursor:pointer;margin-bottom:14px;user-select:none;}
+.na-checkbox-row input{cursor:pointer;}
+body.light-mode .na-checkbox-row{color:#333333;}
+.profile-display{margin-bottom:18px;border:1px solid var(--border);padding:14px 16px;}
+.profile-row{margin-bottom:8px;}
+.profile-row:last-of-type{margin-bottom:0;}
+.profile-value{font-size:0.875rem;color:var(--white);font-family:'Inter',sans-serif;}
+.profile-clear{margin-top:10px;font-size:0.6875rem;}
+.profile-clear a{color:var(--gold-dim);text-decoration:underline;cursor:pointer;}
+body.light-mode .profile-value{color:#111111;}
+body.light-mode .profile-display{border:2px solid #5A4010;}
+.required-mark{color:var(--gold);}
+body.light-mode .required-mark{color:#5A4010;}
+.field-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:8px;display:block;}
+body.light-mode .field-label{color:#5A4010;font-weight:700;}
+.name-input{background:rgba(37,45,28,.6);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.875rem;padding:12px 15px;outline:none;width:100%;max-width:420px;}
+body.light-mode .name-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;font-size:1rem;}
+.name-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .name-input::placeholder{color:#888;opacity:1;}
+
+/* SCENARIO */
+.scenario-box{background:rgba(26,31,20,.5);border:1px solid var(--border-strong);border-left:4px solid var(--gold);padding:18px 20px;margin-bottom:18px;}
+body.light-mode .scenario-box{background:#FFFFF8;border:2px solid #8B6000;border-left:6px solid #5A4010;}
+.scenario-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+body.light-mode .scenario-label{color:#5A4010;font-weight:700;}
+.scenario-text{font-size:0.8125rem;line-height:1.8;color:var(--white);}
+body.light-mode .scenario-text{color:#111111;font-size:0.875rem;}
+.scenario-text strong{color:var(--gold-light);}
+body.light-mode .scenario-text strong{color:#5A4010;}
+
+.decision-prompt{font-family:'DM Serif Display',serif;font-size:1.125rem;color:var(--white);margin:18px 0 14px;}
+body.light-mode .decision-prompt{color:#111111;}
+
+.choice-option{display:block;width:100%;text-align:left;background:rgba(26,31,20,.4);border:1px solid var(--border);color:var(--white-dim);font-family:'Inter',sans-serif;font-size:0.75rem;line-height:1.6;padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.choice-option:hover{border-color:var(--gold-dim);color:var(--white);background:rgba(37,45,28,.6);}
+body.light-mode .choice-option{background:#FFFFFF;border:2px solid #C8C0A8;color:#111111;font-size:0.8125rem;}
+body.light-mode .choice-option:hover{border-color:#5A4010;background:#E8E4D9;}
+.choice-letter{font-family:'DM Mono',monospace;font-weight:700;color:var(--gold);margin-right:8px;}
+body.light-mode .choice-letter{color:#5A4010;}
+
+/* CONSEQUENCE */
+.consequence-box{background:rgba(123,160,91,.08);border:1px solid rgba(123,160,91,.3);border-left:4px solid var(--accent);padding:16px 18px;margin:16px 0;}
+body.light-mode .consequence-box{background:#E8F0E8;border:2px solid #1A4A10;border-left:6px solid #1A4A10;}
+.consequence-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .consequence-label{color:#1A4A10;font-weight:700;}
+.consequence-text{font-size:0.75rem;line-height:1.75;color:var(--white-dim);}
+body.light-mode .consequence-text{color:#111111;font-size:0.8125rem;}
+.consequence-text strong{color:var(--white);}
+body.light-mode .consequence-text strong{color:#111111;}
+
+.insight-box{background:rgba(200,168,75,.06);border:1px solid var(--border);border-left:4px solid var(--gold-dim);padding:14px 16px;margin-top:12px;}
+body.light-mode .insight-box{background:#FFF8E8;border:2px solid #8B6000;border-left:6px solid #5A4010;}
+.insight-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+body.light-mode .insight-label{color:#5A4010;font-weight:700;}
+.insight-text{font-size:0.6875rem;line-height:1.7;color:var(--white-dim);}
+body.light-mode .insight-text{color:#111111;font-size:0.75rem;}
+.insight-text strong{color:var(--white);}
+body.light-mode .insight-text strong{color:#111111;}
+
+/* KNOWLEDGE CHECK */
+.question-block{background:rgba(26,31,20,.5);border:1px solid var(--border);padding:18px;margin-bottom:12px;}
+body.light-mode .question-block{background:#F8F6F2;border:2px solid #C8C0A8;}
+.question-num{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.1em;margin-bottom:8px;}
+body.light-mode .question-num{color:#5A4010;font-weight:700;}
+.question-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.08em;padding:2px 7px;border:1px solid var(--border-strong);color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .question-tag{border-color:#5A4010;color:#5A4010;background:#E8E4D9;font-weight:700;}
+.question-text{font-size:0.8125rem;color:var(--white);line-height:1.55;margin-bottom:14px;font-weight:600;}
+body.light-mode .question-text{color:#111111;font-size:0.875rem;}
+.answer-option{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:all .15s;font-size:0.75rem;color:var(--white-dim);line-height:1.5;}
+.answer-option:hover{border-color:var(--gold-dim);color:var(--white);}
+body.light-mode .answer-option{background:#FFFFFF;border:2px solid #C8C0A8;color:#111111;font-size:0.8125rem;}
+body.light-mode .answer-option:hover{border-color:#5A4010;background:#E8E4D9;}
+.answer-option.selected{border-color:var(--gold);background:rgba(200,168,75,.08);color:var(--white);}
+body.light-mode .answer-option.selected{border:3px solid #5A4010;background:#E8E4D9;color:#111111;}
+.answer-option.correct{border-color:var(--accent);background:rgba(123,160,91,.1);color:var(--accent);}
+body.light-mode .answer-option.correct{background:#1A4A10;border:3px solid #1A4A10;color:#FFFFFF;font-weight:700;}
+.answer-option.incorrect{border-color:var(--danger);background:rgba(192,57,43,.08);color:#E07C73;}
+body.light-mode .answer-option.incorrect{background:#7A1A1A;border:3px solid #7A1A1A;color:#FFFFFF;font-weight:700;}
+.answer-radio{width:14px;height:14px;border:1.5px solid var(--border);border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
+.answer-option.selected .answer-radio{border-color:var(--gold);background:var(--gold);}
+body.light-mode .answer-option.selected .answer-radio{border-color:#5A4010;background:#5A4010;}
+.answer-option.correct .answer-radio{border-color:var(--accent);background:var(--accent);}
+body.light-mode .answer-option.correct .answer-radio{border-color:#FFFFFF;background:#FFFFFF;}
+.answer-option.incorrect .answer-radio{border-color:var(--danger);background:var(--danger);}
+body.light-mode .answer-option.incorrect .answer-radio{border-color:#FFFFFF;background:#FFFFFF;}
+.answer-radio-dot{width:6px;height:6px;border-radius:50%;background:var(--army-dark);display:none;}
+.answer-option.selected .answer-radio-dot,.answer-option.correct .answer-radio-dot,.answer-option.incorrect .answer-radio-dot{display:block;}
+body.light-mode .answer-option.correct .answer-radio-dot{background:#1A4A10;}
+body.light-mode .answer-option.incorrect .answer-radio-dot{background:#7A1A1A;}
+.kc-explain{font-size:0.6875rem;line-height:1.65;color:var(--white-dim);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:none;}
+body.light-mode .kc-explain{color:#111111;font-size:0.75rem;border-top-color:#5A4010;}
+.kc-explain.show{display:block;}
+.kc-explain strong{color:var(--gold-light);}
+body.light-mode .kc-explain strong{color:#5A4010;}
+
+.kc-feedback{padding:14px 16px;margin-top:14px;font-size:0.75rem;display:none;}
+.kc-feedback.show{display:block;}
+.kc-feedback.pass{background:rgba(123,160,91,.1);border:1px solid rgba(123,160,91,.3);color:var(--accent);}
+body.light-mode .kc-feedback.pass{background:#D8F0D8;border:2px solid #1A4A10;color:#0A3A0A;font-weight:600;font-size:0.875rem;}
+.kc-feedback.fail{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);color:#E07C73;}
+body.light-mode .kc-feedback.fail{background:#F8D8D8;border:2px solid #7A1A1A;color:#5A0A0A;font-weight:600;font-size:0.875rem;}
+.kc-score{font-family:'DM Mono',monospace;font-size:1.375rem;font-weight:700;margin-bottom:4px;}
+.kc-score.pass{color:var(--accent);}
+body.light-mode .kc-score.pass{color:#1A4A10;}
+.kc-score.fail{color:var(--danger);}
+body.light-mode .kc-score.fail{color:#7A1A1A;}
+
+/* COMPLETION */
+.complete-wrap{background:rgba(26,31,20,.3);border:2px solid var(--border-strong);padding:32px;text-align:center;margin-top:20px;}
+body.light-mode .complete-wrap{background:#FAF8F3;border:3px solid #5A4010;}
+.complete-seal{width:54px;height:54px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gold);margin:0 auto 14px;}
+body.light-mode .complete-seal{border-color:#5A4010;color:#1A4A10;}
+.complete-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--white);margin-bottom:8px;}
+body.light-mode .complete-title{color:#111111;}
+.complete-sub{font-size:0.75rem;color:var(--white-dim);margin-bottom:20px;}
+body.light-mode .complete-sub{color:#111111;font-size:0.8125rem;}
+
+/* BUTTONS */
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--army-dark);font-family:'Inter',sans-serif;font-weight:700;font-size:0.6875rem;letter-spacing:.1em;text-transform:uppercase;padding:12px 22px;border:none;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+body.light-mode .btn-primary{background:#5A4010;color:#FFFFFF;}
+body.light-mode .btn-primary:hover{background:#3A2808;}
+.btn-secondary{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--white-dim);font-family:'Inter',sans-serif;font-weight:600;font-size:0.6875rem;letter-spacing:.08em;text-transform:uppercase;padding:12px 18px;border:1px solid var(--border);cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--border-strong);color:var(--white);}
+body.light-mode .btn-secondary{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+body.light-mode .btn-secondary:hover{background:#D4CDB8;border-color:#111111;}
+.btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;}
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:18px;border-top:1px solid var(--border);}
+body.light-mode .nav-row{border-top:2px solid #5A4010;}
+
+footer{border-top:1px solid var(--border);padding:14px 0;margin-top:20px;}
+body.light-mode footer{border-top:2px solid #5A4010;}
+.footer-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.footer-attr{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold-dim);letter-spacing:.09em;}
+body.light-mode .footer-attr{color:#5A4010;font-weight:700;}
+.footer-doc{font-size:0.5625rem;color:var(--white-dim);opacity:.4;}
+body.light-mode .footer-doc{color:#444;opacity:1;}
+
+@media print{header,.progress-bar-wrap,.section-nav,.btn-row,footer,.choice-option{display:none!important;}}
+
+.font-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;margin-right:8px;}
+body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
+</style>
+<header>
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-seal">PM</div>
+      <div>
+        <div class="logo-primary">Interactive PM in USACE</div>
+        <div class="logo-sub">Case File 05 &middot; Planning Phase</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="case-badge">PROC2040 &middot; Resource Estimate</span>
+      <button class="font-toggle" id="font-toggle" onclick="toggleFontSize()">Text: M</button>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
+    </div>
+  </div>
+</header>
+
+<nav class="case-quicknav"><div class="case-quicknav-inner"><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" class="cqn-link">Home</a><span class="cqn-sep">&middot;</span><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/Module00_Orientation.html" class="cqn-link">M0</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile01_NewPM_UnclearRoles.html" class="cqn-link">CF01</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile02_ScheduleVsScope.html" class="cqn-link">CF02</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile03_TheNewHome.html" class="cqn-link">CF03</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile04_BuiltToSlip.html" class="cqn-link">CF04</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile05_TheNumberDoesntFit.html" class="cqn-link current">CF05</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile06_FeedbackConversation.html" class="cqn-link">CF06</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile07_PhantomSlip.html" class="cqn-link">CF07</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile08_RiskNobodyTracked.html" class="cqn-link">CF08</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile09_MeetingGotAway.html" class="cqn-link">CF09</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile10_WrongShadeOfGray.html" class="cqn-link">CF10</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile11_TwoFacesOfRisk.html" class="cqn-link">CF11</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile12_TheFavor.html" class="cqn-link">CF12</a><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile13_ClosingWell.html" class="cqn-link">CF13</a></div></nav>
+
+<div class="progress-bar-wrap" id="progress-bar-wrap" style="display:none;">
+  <div class="progress-bar-inner">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-labels">
+      <span class="progress-text" id="progress-label">Training</span>
+      <span class="progress-pct" id="progress-pct">0%</span>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="main-content"></div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-attr">Interactive PM in USACE &middot; PPM Community of Practice</span>
+    <span class="footer-doc">EM 5-1-11 &middot; PROC2040 &middot; Case File 05 v1.0</span>
+  </div>
+</footer>
+
+<script>
+var CS={name:'',strength:'',section:'welcome',sectionsComplete:{training:false,discussion:false,casestudy:false,kc:false},kcScore:0,decisions:{},caseStep:0};
+var STORAGE_KEY='casefile05_v1';
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(CS));}catch(e){}}
+function loadState(){try{var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;var d=JSON.parse(raw);if(!d||!d.name)return false;CS=d;return true;}catch(e){return false;}}
+
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+
+var SECTIONS=['welcome','training','discussion','casestudy','kc','complete'];
+var SECTION_LABELS={welcome:'Welcome',training:'Training',discussion:'Discussion',casestudy:'Case Study',kc:'Knowledge Check',complete:'Complete'};
+
+function updateProgress(){
+  var idx=SECTIONS.indexOf(CS.section);
+  var pct=Math.round((idx/(SECTIONS.length-1))*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-label').textContent=SECTION_LABELS[CS.section]||'';
+}
+
+function renderNav(){
+  var order=['training','discussion','casestudy','kc'];
+  var html='<div class="section-nav">';
+  order.forEach(function(s){
+    var cls='sec-btn'+(CS.section===s?' active':'')+(CS.sectionsComplete[s]?' complete':'');
+    var locked=false;
+    var idx=order.indexOf(s);
+    if(idx>0 && !CS.sectionsComplete[order[idx-1]] && CS.section!==s) locked=true;
+    if(locked) cls+=' locked';
+    html+='<button class="'+cls+'" '+(locked?'disabled':'onclick="goSection(\''+s+'\')"')+'>'+(CS.sectionsComplete[s]?'&#10003; ':'')+SECTION_LABELS[s]+'</button>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function goSection(s){CS.section=s;saveState();render();}
+
+function render(){
+  var m=document.getElementById('main-content');
+  document.getElementById('progress-bar-wrap').style.display=(CS.section==='welcome')?'none':'block';
+  if(CS.section==='welcome') m.innerHTML=renderWelcome();
+  else if(CS.section==='training') m.innerHTML=renderTraining();
+  else if(CS.section==='discussion') m.innerHTML=renderDiscussion();
+  else if(CS.section==='casestudy') m.innerHTML=renderCaseStudy();
+  else if(CS.section==='kc') m.innerHTML=renderKC();
+  else if(CS.section==='complete') m.innerHTML=renderComplete();
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+var THEME_DOMAIN={'Analytical':'Strategic Thinking','Context':'Strategic Thinking','Futuristic':'Strategic Thinking','Ideation':'Strategic Thinking','Input':'Strategic Thinking','Intellection':'Strategic Thinking','Learner':'Strategic Thinking','Strategic':'Strategic Thinking','Adaptability':'Relationship Building','Connectedness':'Relationship Building','Developer':'Relationship Building','Empathy':'Relationship Building','Harmony':'Relationship Building','Includer':'Relationship Building','Individualization':'Relationship Building','Positivity':'Relationship Building','Relator':'Relationship Building','Activator':'Influencing','Command':'Influencing','Communication':'Influencing','Competition':'Influencing','Maximizer':'Influencing','Self-Assurance':'Influencing','Significance':'Influencing','Woo':'Influencing','Achiever':'Executing','Arranger':'Executing','Belief':'Executing','Consistency':'Executing','Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'};
+var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N/A">N/A / Not sure</option><optgroup label="Strategic Thinking"><option value="Analytical">Analytical</option><option value="Context">Context</option><option value="Futuristic">Futuristic</option><option value="Ideation">Ideation</option><option value="Input">Input</option><option value="Intellection">Intellection</option><option value="Learner">Learner</option><option value="Strategic">Strategic</option></optgroup><optgroup label="Relationship Building"><option value="Adaptability">Adaptability</option><option value="Connectedness">Connectedness</option><option value="Developer">Developer</option><option value="Empathy">Empathy</option><option value="Harmony">Harmony</option><option value="Includer">Includer</option><option value="Individualization">Individualization</option><option value="Positivity">Positivity</option><option value="Relator">Relator</option></optgroup><optgroup label="Influencing"><option value="Activator">Activator</option><option value="Command">Command</option><option value="Communication">Communication</option><option value="Competition">Competition</option><option value="Maximizer">Maximizer</option><option value="Self-Assurance">Self-Assurance</option><option value="Significance">Significance</option><option value="Woo">Woo</option></optgroup><optgroup label="Executing"><option value="Achiever">Achiever</option><option value="Arranger">Arranger</option><option value="Belief">Belief</option><option value="Consistency">Consistency</option><option value="Deliberative">Deliberative</option><option value="Discipline">Discipline</option><option value="Focus">Focus</option><option value="Responsibility">Responsibility</option><option value="Restorative">Restorative</option></optgroup>';
+
+function getProfile(){
+  try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
+}
+function saveProfile(name,themes){
+  try{localStorage.setItem('pm-learner-profile',JSON.stringify({name:name,themes:themes,savedAt:new Date().toISOString()}));}catch(e){}
+}
+function clearProfile(){
+  try{localStorage.removeItem('pm-learner-profile');}catch(e){}
+}
+function clearProfileAndReload(){
+  clearProfile();
+  render();
+  return false;
+}
+function toggleNAThemes(){
+  var cb=document.getElementById('na-checkbox');
+  var grid=document.getElementById('theme-select-grid');
+  if(grid)grid.style.display=cb.checked?'none':'';
+}
+
+function renderProfileFields(){
+  var p=getProfile();
+  if(p&&p.name){
+    var isNA=(p.themes||[]).length===1&&p.themes[0]==='N/A';
+    var themesDisplay=isNA?'N/A &mdash; not provided':(p.themes||[]).map(function(t){return t+' ('+THEME_DOMAIN[t]+')';}).join(', ');
+    return '<div class="profile-display">'
+      +'<div class="profile-row"><span class="field-label">Learner</span><div class="profile-value">'+p.name+'</div></div>'
+      +'<div class="profile-row"><span class="field-label">Top 5 CliftonStrengths</span><div class="profile-value">'+themesDisplay+'</div></div>'
+      +'<p class="profile-clear"><a onclick="return clearProfileAndReload()">Not '+p.name+'? Clear saved name &amp; strengths</a></p>'
+      +'</div>';
+  }
+  var grid='<div class="theme-select-grid" id="theme-select-grid">';
+  for(var i=1;i<=5;i++){
+    grid+='<div class="theme-select-item"><label>Theme '+i+' <span class="required-mark">*</span></label>'
+      +'<select class="theme-select" id="theme-select-'+i+'">'+THEME_OPTIONS_HTML+'</select></div>';
+  }
+  grid+='</div>';
+  return '<div style="margin-bottom:18px;">'
+    +'<label class="field-label">Your Name <span class="required-mark">*</span></label>'
+    +'<input class="name-input" id="name-input" type="text" placeholder="First Last"/>'
+    +'</div>'
+    +'<div style="margin-bottom:8px;">'
+    +'<label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>'
+    +'</div>'
+    +'<label class="na-checkbox-row" for="na-checkbox"><input type="checkbox" id="na-checkbox" onchange="toggleNAThemes()"/>I do not know my CliftonStrengths (select N/A)</label>'
+    +grid;
+}
+
+function renderWelcome(){
+  var saved=loadState();
+  var resumeBtn=(saved&&CS.name)?'<button class="btn-secondary" onclick="resumeCase()" style="margin-left:10px;">Resume as '+CS.name+' &rarr;</button>':'';
+  return '<div class="screen active">'
+  +'<p class="eyebrow">Interactive PM in USACE &middot; Case File 05</p>'
+  +'<h1 class="title-main">The Number<br><em>Does Not Fit.</em></h1>'
+  +'<p class="lede">The corrected schedule has a cost. Your revised resource estimate is higher than the funding ceiling you were given. <strong>How you bring this forward determines whether it becomes a problem \u2014 or a plan.</strong></p>'
+  +'<div class="card"><div class="card-label">What This Case File Covers</div>'
+  +'<p><strong>PDBP Doctrine:</strong> PROC2040 \u2014 the Resource Estimate, its Basis of Estimate, and risk-based contingency (REF8007G) \u2014 and how a funding gap relates to the ceiling set under PROC1040.</p>'
+  +'<p><strong>People Skill:</strong> "Managing up" \u2014 bringing difficult news to leadership in a way that leads with understanding and options, not just the problem.</p>'
+  +'</div>'
+  +'<div class="card"><div class="card-label">How This Works</div>'
+  +'<p>Training (5 min) &rarr; Reflection &rarr; Case Study (branching scenario) &rarr; Knowledge Check (5 questions, 60% to pass).</p>'
+  +'</div>'
+  +'<div class="card people-card"><div class="card-label">Continuing the Story</div>'
+  +'<p>You are still <strong>Maria Chen</strong>, PM on the Building 4521 Renovation. The PROC2030 schedule baselined on time \u2014 but the corrected HVAC duration (and a few related adjustments) has a cost. <strong>Dana (Cost Engineer)</strong> has just sent you the revised PROC2040 estimate.</p></div>'
+  +renderProfileFields()
+  +'<div class="btn-row"><button class="btn-primary" onclick="startCase()">Begin Case File &rarr;</button>'+resumeBtn+'</div>'
+  +'</div>';
+}
+function startCase(){
+  var p=getProfile();
+  var name,themes;
+  if(p&&p.name){
+    name=p.name;themes=p.themes;
+  }else{
+    name=document.getElementById('name-input').value.trim();
+    if(!name){alert('Please enter your name to continue.');return;}
+    var naChecked=document.getElementById('na-checkbox').checked;
+    if(naChecked){
+      themes=['N/A'];
+    }else{
+      themes=[];
+      for(var i=1;i<=5;i++){
+        var v=document.getElementById('theme-select-'+i).value;
+        if(!v){alert('Please select all five CliftonStrengths themes, or check the box if you do not know them.');return;}
+        themes.push(v);
+      }
+    }
+    saveProfile(name,themes);
+  }
+  CS.name=name;
+  CS.themes=themes;
+  CS.section='training';
+  saveState();render();
+}
+function resumeCase(){render();}
+
+function renderTraining(){
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Training &middot; 5 Minutes</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">When the Estimate Exceeds the Ceiling</h2>'
+  +'<div class="card">'
+  +'<div class="card-label">PROC2040 \u2014 Resource Estimate, Basis of Estimate &amp; Contingency</div>'
+  +'<p>The PROC2040 Resource Estimate is built on a <strong>Basis of Estimate</strong> \u2014 documented assumptions, quantities, and unit costs \u2014 plus a <strong>risk-based contingency</strong> developed from the Risk Register (REF8007G). The funding <strong>ceiling</strong> was set earlier, under PROC1040, often before design was complete. It is not unusual for a refined estimate, built on better information, to land above that ceiling.</p>'
+  +'<p>A gap between the estimate and the ceiling is not automatically a crisis \u2014 it is <strong>information</strong>. The PDT\u2019s job is to understand where the gap comes from (scope, market conditions, corrected assumptions) and what realistic options exist \u2014 value engineering, phasing, contingency adjustment, or a funding action \u2014 before anyone outside the PDT needs to react to it.</p>'
+  +'<p>It helps to be precise about what an estimate <em>is</em>: a forecast based on stated assumptions, including a calculated allowance for risk and uncertainty. It is <strong>not</strong> the final cost, a measure of anyone\u2019s performance, or a guarantee. How much of a gap counts as "expected" can also depend on <em>how</em> the original estimate was built \u2014 a <strong>parametric</strong> estimate (cost per unit, e.g., $/sq ft, typically accurate to roughly +25%/-10%) is rougher by design than a <strong>detailed</strong> estimate built up from WBS deliverables (roughly +10%/-5%). An 8% gap against a parametric baseline tells a different story than the same gap against a detailed one.</p>'
+  +'<span class="proc-tag">PROC2040</span><span class="proc-tag">Basis of Estimate</span><span class="proc-tag">REF8007G Contingency</span><span class="proc-tag">Parametric vs. Detailed</span>'
+  +'</div>'
+  +'<div class="card people-card">'
+  +'<div class="card-label">People Skill \u2014 Managing Up With Options, Not Just Problems</div>'
+  +'<p>Bringing bad news to leadership is uncomfortable \u2014 and the instinct is often to either delay it (hoping it resolves itself) or deliver it as a flat statement of the problem ("we are over budget"). Both leave leadership with nothing to do except react.</p>'
+  +'<p>The more effective approach: <strong>bring the problem already framed with options.</strong> "Our estimate is X% over the ceiling, driven primarily by Y. We have identified three paths: A, B, and C \u2014 each with these tradeoffs." This does not mean you have already decided \u2014 it means leadership\u2019s first experience of the problem is also their first experience of a path through it. That changes the entire tone of the conversation.</p>'
+  +'<p><strong>This only works if the options are real.</strong> Manufactured "options" that all secretly mean the same thing erode trust fast. The goal is genuine analysis, not the appearance of having done it.</p>'
+  +'</div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'training\',\'discussion\')">Continue to Discussion &rarr;</button></div>'
+  +'</div>';
+}
+
+function completeSection(current,next){
+  CS.sectionsComplete[current]=true;
+  CS.section=next;
+  saveState();render();
+}
+
+function renderDiscussion(){
+  var strengthNote='';
+  var primaryDomain='Influencing';
+  var domainInsights={'Strategic Thinking':'Your {theme} will want to build the full case — every option, every tradeoff — before saying anything. Leadership needs that thinking, but eventually. Lead with the headline, then bring the analysis.','Relationship Building':'Your {theme} will want to soften this so it lands easy. The number does not get smaller because you are gentle with it. Say it plainly, then use your strength on what comes next.','Influencing':'Your {theme} is built for this moment — leading with options, not just the problem. Use it. Walk in with a clear ask, not just a clear gap.','Executing':'Your {theme} wants to skip straight to the fix. Good instinct, wrong order here. Name the gap first, or the fix looks like it is covering something up.'};
+  var themes=(CS.themes||[]).filter(function(t){return t&&t!=='N/A';});
+  var matchedTheme=null;
+  for(var ti=0;ti<themes.length;ti++){
+    if(THEME_DOMAIN[themes[ti]]===primaryDomain){matchedTheme=themes[ti];break;}
+  }
+  if(!matchedTheme&&themes.length>0){matchedTheme=themes[0];}
+  if(matchedTheme){
+    var domain=THEME_DOMAIN[matchedTheme];
+    var template=domainInsights[domain]||'';
+    strengthNote=template.replace('{theme}',matchedTheme);
+  }
+  if(!strengthNote){
+    strengthNote='Whatever your natural style, bad news upward lands better with options attached. Notice whether your instinct leads with the problem or the path forward, and aim for both.';
+  }
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Discussion &amp; Reflection</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Before You See the Scenario</h2>'
+  +'<p class="lede">These reflections are not graded. Take a moment to think honestly \u2014 your answers are saved only on this device.</p>'
+  +'<div class="card"><div class="card-label">Your Strengths Lens</div><p>'+strengthNote+'</p></div>'
+  +'<div class="reflect-block"><div class="reflect-q">1. Have you ever had to tell someone above you that a number did not work out the way everyone hoped? How did you approach it \u2014 and how did it go?</div>'
+  +'<textarea class="reflect-input" id="r1" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">2. When you receive bad news from someone on your team, does it land differently depending on whether they also bring options? Why do you think that is?</div>'
+  +'<textarea class="reflect-input" id="r2" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">3. Have you ever felt pressure to "just make the numbers work" when you knew the underlying problem had not actually changed? What did you do?</div>'
+  +'<textarea class="reflect-input" id="r3" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="saveReflectionsAndContinue()">Continue to Case Study &rarr;</button></div>'
+  +'</div>';
+}
+function saveReflectionsAndContinue(){
+  CS.reflections={r1:document.getElementById('r1').value,r2:document.getElementById('r2').value,r3:document.getElementById('r3').value};
+  completeSection('discussion','casestudy');
+}
+
+// ===== CASE STUDY =====
+var CASE_STEP=0;
+var CASE_STEPS=[
+  {
+    type:'scenario',
+    label:'The Email',
+    text:'Dana emails the revised PROC2040 estimate: <strong>the total is 8% over the funding ceiling</strong> set under PROC1040. The email notes the increase is driven mainly by the HVAC duration review from Case File 04 and a related update to material escalation assumptions \u2014 the estimate reflects the most current schedule data available. Dana adds: "Wanted you to see this first before it goes anywhere else."'
+  },
+  {
+    type:'decision',
+    label:'Decision 1 of 3',
+    prompt:'You have this information before anyone else does. What is your next step?',
+    options:[
+      {letter:'A',text:'Email your DPM right away: "We have a problem \u2014 our revised estimate is 8% over the funding ceiling."'},
+      {letter:'B',text:'Hold off mentioning it for now \u2014 maybe it will resolve itself as design finalizes, or contingency will absorb it without anyone needing to know.'},
+      {letter:'C',text:'Set up time with Dana to walk through where the 8% comes from and what realistic options exist \u2014 value engineering, phasing, contingency, or a funding action \u2014 before bringing it to your DPM.'}
+    ],
+    consequences:{
+      A:{text:'Your DPM responds quickly \u2014 with questions you do not yet have answers to: "Where is the increase coming from? Have you looked at value engineering? What is your contingency status?" The conversation stalls while you go find Dana to get the answers you could have had before sending the email.',
+         insight:'<strong>What this reveals:</strong> Escalating the moment you have the headline number \u2014 before understanding it \u2014 means leadership\u2019s first questions become your homework, in real time, often in a less controlled setting than a planned conversation.'},
+      B:{text:'Two weeks pass. The gap does not resolve itself \u2014 contingency was already allocated to known risks per the Risk Register, and using it for this would leave other identified risks uncovered. Your DPM asks about overall project funding status at a routine review, and you have to explain the gap then, without having prepared anything \u2014 and explain why it was not raised two weeks ago.',
+         insight:'<strong>What this reveals:</strong> A funding gap grounded in corrected information does not go away by waiting \u2014 and the longer it sits unaddressed, the more "why did we not know about this sooner" becomes part of the conversation, on top of the gap itself.'},
+      C:{text:'Working through it with Dana, you find: the HVAC correction accounts for about 5% of the gap, and a material escalation update accounts for the other 3%. Two realistic paths emerge \u2014 a modest value-engineering opportunity in a non-critical finish (covers about 3%), and the remainder would need either a funding action or a documented contingency adjustment with Risk Register justification.',
+         insight:'<strong>What this reveals:</strong> Understanding the gap\u2019s composition \u2014 not just its size \u2014 turns "we are 8% over" into "here is exactly where it comes from and here is what we can realistically do about each piece." That is the difference between a problem and a problem with a plan attached.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 2 of 3',
+    prompt:'You meet with your DPM. How do you open the conversation?',
+    options:[
+      {letter:'A',text:'"Our revised PROC2040 estimate is 8% over the funding ceiling, driven mainly by the corrected HVAC schedule and a material cost update. We have identified a value-engineering option that covers about 3% \u2014 for the remaining 5%, the realistic paths are a funding action or a documented contingency adjustment. I would like to walk through both."'},
+      {letter:'B',text:'"We are 8% over the funding ceiling. What do you want to do?"'},
+      {letter:'C',text:'"There is a small gap in the estimate \u2014 probably nothing, but wanted to flag it just in case."'}
+    ],
+    consequences:{
+      A:{text:'Your DPM listens, then asks a few clarifying questions about the value-engineering option and the Risk Register basis for a contingency adjustment \u2014 questions you can answer, because you and Dana already worked through them. The conversation moves quickly to deciding between the two real paths for the remaining 5%.',
+         insight:'<strong>What this reveals:</strong> Leading with the framed problem AND the analysis means your DPM\u2019s first experience of this issue is also their first experience of a path through it. The conversation starts at "which option" rather than "what even is this."'},
+      B:{text:'Your DPM, fairly, asks: "What are our options?" \u2014 and now you are doing the analysis live, in the meeting, that could have been done beforehand. The DPM may also reasonably wonder whether you have looked into this much before bringing it forward.',
+         insight:'<strong>What this reveals:</strong> Stating the problem without framing is honest \u2014 but it puts the burden of the next step entirely on the DPM, in real time. If the analysis was available (as it was here), not bringing it means the DPM has to ask for the thing you already have.'},
+      C:{text:'Your DPM, reasonably, does not register this as urgent \u2014 "probably nothing" suggests it is not. Two weeks later, when the 8% gap becomes relevant to a funding decision, your DPM is caught off guard: "I thought you said this was probably nothing?"',
+         insight:'<strong>What this reveals:</strong> Downplaying a real gap to soften the conversation creates a different problem \u2014 when the real size becomes apparent later, it looks like either the original framing was wrong, or something was being hidden. Neither is true here, but both become harder to dispel after the fact.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 3 of 3',
+    prompt:'Your DPM says: "Going back for additional funds right now is not realistic \u2014 I need you to find a way to make this work within the existing ceiling." How do you respond?',
+    options:[
+      {letter:'A',text:'"Understood \u2014 we will make it work within the ceiling. I will let you know once it is handled."'},
+      {letter:'B',text:'"Understood. The value-engineering option gets us part of the way \u2014 about 3%. For the remaining 5%, the only way to stay within the ceiling without a funding action is to draw down contingency below what the Risk Register supports. I want to be clear that is a real risk tradeoff, not a free option \u2014 but if that is the direction, I will document it accordingly."'},
+      {letter:'C',text:'"We cannot just make the numbers fit \u2014 if the ceiling does not cover the estimate, the estimate is what it is. I cannot recommend reducing contingency below what the risk register supports."'}
+    ],
+    consequences:{
+      A:{text:'You quietly reduce contingency to close the gap, without flagging the risk tradeoff. Three months later, a risk that the original contingency was sized to cover materializes \u2014 and there is no funding cushion left. The conversation about "why was contingency reduced without anyone knowing the risk basis changed" happens then, under worse conditions.',
+         insight:'<strong>What this reveals:</strong> "Making it work" without naming what is being traded away does not make the tradeoff disappear \u2014 it just moves the conversation about it to a worse moment, usually when the traded-away protection was actually needed.'},
+      B:{text:'Your DPM pauses: "I did not realize that is what \u2018within the ceiling\u2019 would actually mean here. Let me take that back up the chain \u2014 maybe there is more flexibility than I thought, or maybe we accept that risk consciously. Either way, document it clearly." The conversation shifts from "make it fit" to an informed decision, made by the person with authority to make it.',
+         insight:'<strong>What this reveals:</strong> Acknowledging the constraint while being precise about what meeting it actually requires \u2014 without refusing, and without hiding the tradeoff \u2014 gives the DPM real information to take into their own conversations. This is the PROC2040/REF8007G connection: contingency is sized to risk for a reason, and changing one without examining the other is a decision, not a formality.'},
+      C:{text:'Your DPM hears this as a flat refusal: "I am not asking you whether you recommend it \u2014 I am telling you what we need to do." The relationship becomes adversarial, and your DPM may now route around you for a solution \u2014 possibly arriving at the same contingency reduction as Option A, but without your input on how to document the risk.',
+         insight:'<strong>What this reveals:</strong> A firm "no" \u2014 even when technically correct \u2014 can read as refusing to help solve the DPM\u2019s problem. The DPM has their own constraints too. The goal is not to refuse the constraint, but to make sure everyone understands what meeting it actually costs.'}
+    }
+  },
+  {
+    type:'debrief',
+    label:'Case Debrief'
+  }
+];
+
+
+function renderCaseStudy(){
+  CASE_STEP=CS.caseStep||0;
+  var step=CASE_STEPS[CASE_STEP];
+  var html='<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Case Study &middot; Building 4521 Renovation</p>';
+
+  if(step.type==='scenario'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">'+step.label+'</h2>'
+    +'<div class="scenario-box"><div class="scenario-label">Scenario Setup</div><div class="scenario-text">'+step.text+'</div></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()">Begin Decision 1 &rarr;</button></div>';
+  } else if(step.type==='decision'){
+    html+='<div class="scenario-label" style="margin-bottom:6px;">'+step.label+'</div>'
+    +'<div class="decision-prompt">'+step.prompt+'</div>'
+    +'<div id="case-options">';
+    step.options.forEach(function(opt){
+      html+='<div class="choice-option" onclick="chooseOption(\''+opt.letter+'\')"><span class="choice-letter">'+opt.letter+'.</span>'+opt.text+'</div>';
+    });
+    html+='</div><div id="case-consequence"></div><div id="case-nav" class="nav-row" style="display:none;"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">Continue &rarr;</button></div>';
+  } else if(step.type==='debrief'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">Case Debrief</h2>'
+    +'<div class="card people-card"><div class="card-label">What This Conversation Showed</div>'
+    +'<p>An 8% gap between the estimate and the ceiling was never going to disappear on its own \u2014 it was grounded in corrected information from the schedule review. What changed the conversation was not the number itself, but the <strong>sequence</strong>: understanding the gap\u2019s composition first, then bringing it forward already framed with real options.</p>'
+    +'<p>When the DPM pushed for "make it fit," the most useful response was neither blanket compliance nor blanket refusal \u2014 it was being <strong>precise about what "fitting" would actually require</strong>, so the DPM could make an informed call rather than an uninformed one.</p>'
+    +'</div>'
+    +'<div class="card"><div class="card-label">PROC2040 / REF8007G Tie-In</div>'
+    +'<p>Contingency is not a buffer to be quietly resized whenever a gap appears \u2014 it is sized to specific risks documented in the Risk Register. Reducing it changes the project\u2019s risk exposure, whether or not anyone names that explicitly. Documenting the basis for any contingency adjustment \u2014 just like documenting the basis for a revised schedule duration in Case File 04 \u2014 is what makes the decision defensible, and makes the risk visible to whoever has to live with it later.</p>'
+    +'<p>If a funding action becomes one of the real options, it helps to know <em>where</em> in the funding chain the conversation needs to happen: Congress <strong>Authorizes</strong> a project, Congress <strong>Appropriates</strong> funds, and OMB <strong>Apportions</strong> those funds for release. A PM tracks all of this \u2014 ceiling, current funding status, and where a request would sit in that chain \u2014 in <a href="Toolbelt.html#cwifd" style="color:inherit;text-decoration:underline;">CWIFD</a>. Knowing which link of Authorization \u2192 Appropriation \u2192 Apportionment a gap actually sits in changes what "asking for more" would even mean.</p></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'casestudy\',\'kc\')">Continue to Knowledge Check &rarr;</button></div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function caseNext(){
+  CASE_STEP++;
+  CS.caseStep=CASE_STEP;
+  saveState();
+  document.getElementById('main-content').innerHTML=renderCaseStudy();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function chooseOption(letter){
+  var step=CASE_STEPS[CASE_STEP];
+  CS.decisions[CASE_STEP]=letter;
+  saveState();
+  document.querySelectorAll('.choice-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='.55';});
+  var chosen=Array.from(document.querySelectorAll('.choice-option')).find(function(el){return el.textContent.trim().indexOf(letter+'.')===0;});
+  if(chosen){chosen.style.opacity='1';chosen.style.borderColor='var(--gold)';}
+  var c=step.consequences[letter];
+  document.getElementById('case-consequence').innerHTML=
+    '<div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+    +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div>';
+  document.getElementById('case-nav').style.display='flex';
+  var nextBtn=document.getElementById('case-next-btn');
+  if(CASE_STEP===3){nextBtn.textContent='Continue to Debrief \u2192';}
+}
+
+// ===== KNOWLEDGE CHECK =====
+var KC_QUESTIONS=[
+  {tag:'Doctrine',text:'A PROC2040 Resource Estimate that comes in above the funding ceiling set under PROC1040 most accurately indicates:',
+   options:['The PDT made an error that must be corrected before proceeding','The project must be cancelled','New information that needs to be understood and addressed \u2014 not automatically a crisis','The ceiling was set incorrectly and should be ignored'],
+   correct:2,
+   explain:'Ceilings are often set before design is complete. A refined estimate landing above the ceiling is information \u2014 about scope, market conditions, or corrected assumptions \u2014 that the PDT needs to understand and address, not evidence of an error or a reason to ignore the ceiling.'},
+  {tag:'Doctrine',text:'Per REF8007G, contingency in the Resource Estimate is best understood as:',
+   options:['A flexible buffer that can be resized whenever convenient','Funds set aside for scope additions requested by the sponsor','An estimate of the PM\u2019s personal judgment about uncertainty','An amount sized to specific risks documented in the Risk Register'],
+   correct:3,
+   explain:'Contingency under REF8007G is tied to specific identified risks in the Risk Register \u2014 it is not a generic cushion. Changing it without examining the underlying risk basis changes what risks the project is actually protected against, whether or not that is explicitly acknowledged.'},
+  {tag:'People Skill',text:'Bringing a funding gap to leadership already framed with realistic options, rather than just stating the gap, primarily helps because:',
+   options:['It guarantees leadership will approve the preferred option','It removes the need for leadership to make any decision','It shifts the conversation from "what even is this problem" to "which path forward makes sense"','It means the PM does not need to mention the size of the gap'],
+   correct:2,
+   explain:'Framing with real options does not predetermine the outcome \u2014 leadership still decides. But it changes where the conversation starts: instead of leadership absorbing a raw problem and then asking "what are our options," they encounter the problem and the options together.'},
+  {tag:'Judgment',text:'A DPM responds to a funding gap with "find a way to make it work within the ceiling." What should the project manager do next?',
+   options:['Refuse outright, since the ceiling cannot accommodate the estimate','Comply immediately without discussing what "making it work" would actually require','Agree to make it work, then quietly decide later how to handle any consequences','Acknowledge the constraint while being precise about what meeting it would require \u2014 including any risk tradeoffs'],
+   correct:3,
+   explain:'Neither blanket refusal nor silent compliance serves the DPM well. Being precise about what "making it work" actually requires \u2014 e.g., a contingency reduction below the risk-based amount \u2014 gives the DPM real information to make an informed decision, which may also support raising the issue further up the chain if needed.'},
+  {tag:'Judgment',text:'A PM quietly reduces contingency to close a funding gap without documenting the change in risk exposure. The most likely long-term consequence is:',
+   options:['No consequence, since the funding gap is resolved','PROC2070 approval will be automatically withheld','A risk the contingency was sized to cover may materialize later with no funding cushion, and the reduction\u2019s basis will be unclear','The Risk Register will be automatically updated to reflect the change'],
+   correct:2,
+   explain:'Contingency reductions are decisions about risk exposure, not just numbers. Without documentation, a risk the contingency was meant to cover can materialize later with no cushion \u2014 and without a record of why or when the contingency changed, the situation is harder to explain or address.'}
+];
+var kcAnswers={};
+var kcOrder={}; // kcOrder[qi] = array mapping displayed position -> original option index
+function shuffleArray(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=a[i];a[i]=a[j];a[j]=tmp;
+  }
+  return a;
+}
+function buildKCOrder(){
+  kcOrder={};
+  KC_QUESTIONS.forEach(function(q,qi){
+    var idxs=[];
+    for(var i=0;i<q.options.length;i++)idxs.push(i);
+    kcOrder[qi]=shuffleArray(idxs);
+  });
+}
+
+function renderKC(){
+  kcAnswers={};
+  buildKCOrder();
+  var qHTML=KC_QUESTIONS.map(function(q,qi){
+    var order=kcOrder[qi];
+    return '<div class="question-block" id="kc-q-'+qi+'">'
+    +'<div class="question-num">Question '+(qi+1)+' of '+KC_QUESTIONS.length+'</div>'
+    +'<span class="question-tag">'+q.tag+'</span>'
+    +'<div class="question-text">'+q.text+'</div>'
+    +order.map(function(origIdx,pos){
+      return '<div class="answer-option" id="kc-opt-'+qi+'-'+pos+'" onclick="selectKCAnswer('+qi+','+pos+')">'
+      +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+q.options[origIdx]+'</div>';
+    }).join('')
+    +'<div class="kc-explain" id="kc-explain-'+qi+'"><strong>Why:</strong> '+q.explain+'</div>'
+    +'</div>';
+  }).join('');
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Knowledge Check &middot; 5 Questions &middot; 60% to Pass</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Doctrine &amp; Judgment</h2>'
+  +'<p class="lede">Some questions have a single correct doctrinal answer. Others ask what the project manager should do \u2014 choose the best course of action and read the explanation after answering either way.</p>'
+  +qHTML
+  +'<div class="kc-feedback" id="kc-feedback"></div>'
+  +'<div class="btn-row" id="kc-btn-row"><button class="btn-primary" id="kc-submit-btn" onclick="submitKC()" disabled>Submit Answers</button></div>'
+  +'</div>';
+}
+
+function selectKCAnswer(qi,oi){
+  document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+  kcAnswers[qi]=oi;
+  document.getElementById('kc-opt-'+qi+'-'+oi).classList.add('selected');
+  if(Object.keys(kcAnswers).length===KC_QUESTIONS.length){
+    document.getElementById('kc-submit-btn').disabled=false;
+  }
+}
+
+function submitKC(){
+  var correct=0;
+  KC_QUESTIONS.forEach(function(q,qi){
+    var order=kcOrder[qi];
+    var selPos=kcAnswers[qi];
+    var selOrigIdx=order[selPos];
+    var correctPos=order.indexOf(q.correct);
+    var isCorrect=selOrigIdx===q.correct;
+    if(isCorrect)correct++;
+    document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+    document.getElementById('kc-opt-'+qi+'-'+selPos).classList.add(isCorrect?'correct':'incorrect');
+    if(!isCorrect)document.getElementById('kc-opt-'+qi+'-'+correctPos).classList.add('correct');
+    document.getElementById('kc-explain-'+qi).classList.add('show');
+  });
+  CS.kcScore=correct;
+  var pct=Math.round((correct/KC_QUESTIONS.length)*100);
+  var passed=pct>=60;
+  var fb=document.getElementById('kc-feedback');
+  fb.className='kc-feedback show '+(passed?'pass':'fail');
+  fb.innerHTML='<div class="kc-score '+(passed?'pass':'fail')+'">'+correct+'/'+KC_QUESTIONS.length+'</div>'
+  +(passed?'<strong>Well done.</strong> You have completed Case File 05.':'<strong>Review the explanations above.</strong> Score 60% or higher to complete this case file.');
+  var btnRow=document.getElementById('kc-btn-row');
+  if(passed){
+    CS.sectionsComplete.kc=true;saveState();
+    btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'complete\')">Finish Case File &rarr;</button>';
+  } else {
+    btnRow.innerHTML='<button class="btn-primary" onclick="retakeKC()">Retake Knowledge Check</button>';
+  }
+}
+function retakeKC(){kcAnswers={};goSection('kc');}
+
+function renderComplete(){
+  return '<div class="screen active">'
+  +'<div class="complete-wrap">'
+  +'<div class="complete-seal">&#10003;</div>'
+  +'<div class="complete-title">Case File 05 Complete</div>'
+  +'<div class="complete-sub">'+CS.name+' &middot; The Number Doesn&#39;t Fit &middot; Score: '+CS.kcScore+'/5</div>'
+  +'<div style="text-align:left;max-width:480px;margin:0 auto 20px;">'
+  +'<label class="field-label">What is one thing you will do differently this week, based on this case?</label>'
+  +'<textarea class="reflect-input" id="commitment" placeholder="Type your commitment..."></textarea>'
+  +'</div>'
+  +'<div class="btn-row" style="justify-content:center;"><button class="btn-primary" onclick="saveCommitment()">Save &amp; Finish</button>'
+  +'<button class="btn-secondary" onclick="restartCase()">Restart Case File</button></div>'
+  +'<p style="font-size:0.625rem;color:var(--white-dim);margin-top:18px;">Interactive PM in USACE &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile06_FeedbackConversation.html" style="color:var(--gold);text-decoration:underline;">Continue to Case File 06 &rarr;</a> &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" style="color:var(--white-dim);text-decoration:underline;">Course Home</a></p>'
+  +'</div></div>';
+}
+function saveCommitment(){
+  CS.commitment=document.getElementById('commitment').value;
+  saveState();
+  alert('Saved. Thank you for completing Case File 05.');
+}
+function restartCase(){
+  if(confirm('This will clear your progress for this case file. Continue?')){
+    try{localStorage.removeItem(STORAGE_KEY);}catch(e){}location.reload();
+  }
+}
+
+// ===== INIT =====
+(function init(){render();})();
+</script>
+<script>
+var CS={name:'',strength:'',section:'welcome',sectionsComplete:{training:false,discussion:false,casestudy:false,kc:false},kcScore:0,decisions:{},caseStep:0};
+var STORAGE_KEY='casefile05_v1';
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(CS));}catch(e){}}
+function loadState(){try{var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;var d=JSON.parse(raw);if(!d||!d.name)return false;CS=d;return true;}catch(e){return false;}}
+
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+
+var SECTIONS=['welcome','training','discussion','casestudy','kc','complete'];
+var SECTION_LABELS={welcome:'Welcome',training:'Training',discussion:'Discussion',casestudy:'Case Study',kc:'Knowledge Check',complete:'Complete'};
+
+function updateProgress(){
+  var idx=SECTIONS.indexOf(CS.section);
+  var pct=Math.round((idx/(SECTIONS.length-1))*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-label').textContent=SECTION_LABELS[CS.section]||'';
+}
+
+function renderNav(){
+  var order=['training','discussion','casestudy','kc'];
+  var html='<div class="section-nav">';
+  order.forEach(function(s){
+    var cls='sec-btn'+(CS.section===s?' active':'')+(CS.sectionsComplete[s]?' complete':'');
+    var locked=false;
+    var idx=order.indexOf(s);
+    if(idx>0 && !CS.sectionsComplete[order[idx-1]] && CS.section!==s) locked=true;
+    if(locked) cls+=' locked';
+    html+='<button class="'+cls+'" '+(locked?'disabled':'onclick="goSection(\''+s+'\')"')+'>'+(CS.sectionsComplete[s]?'&#10003; ':'')+SECTION_LABELS[s]+'</button>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function goSection(s){CS.section=s;saveState();render();}
+
+function render(){
+  var m=document.getElementById('main-content');
+  document.getElementById('progress-bar-wrap').style.display=(CS.section==='welcome')?'none':'block';
+  if(CS.section==='welcome') m.innerHTML=renderWelcome();
+  else if(CS.section==='training') m.innerHTML=renderTraining();
+  else if(CS.section==='discussion') m.innerHTML=renderDiscussion();
+  else if(CS.section==='casestudy') m.innerHTML=renderCaseStudy();
+  else if(CS.section==='kc') m.innerHTML=renderKC();
+  else if(CS.section==='complete') m.innerHTML=renderComplete();
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+var THEME_DOMAIN={'Analytical':'Strategic Thinking','Context':'Strategic Thinking','Futuristic':'Strategic Thinking','Ideation':'Strategic Thinking','Input':'Strategic Thinking','Intellection':'Strategic Thinking','Learner':'Strategic Thinking','Strategic':'Strategic Thinking','Adaptability':'Relationship Building','Connectedness':'Relationship Building','Developer':'Relationship Building','Empathy':'Relationship Building','Harmony':'Relationship Building','Includer':'Relationship Building','Individualization':'Relationship Building','Positivity':'Relationship Building','Relator':'Relationship Building','Activator':'Influencing','Command':'Influencing','Communication':'Influencing','Competition':'Influencing','Maximizer':'Influencing','Self-Assurance':'Influencing','Significance':'Influencing','Woo':'Influencing','Achiever':'Executing','Arranger':'Executing','Belief':'Executing','Consistency':'Executing','Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'};
+var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N/A">N/A / Not sure</option><optgroup label="Strategic Thinking"><option value="Analytical">Analytical</option><option value="Context">Context</option><option value="Futuristic">Futuristic</option><option value="Ideation">Ideation</option><option value="Input">Input</option><option value="Intellection">Intellection</option><option value="Learner">Learner</option><option value="Strategic">Strategic</option></optgroup><optgroup label="Relationship Building"><option value="Adaptability">Adaptability</option><option value="Connectedness">Connectedness</option><option value="Developer">Developer</option><option value="Empathy">Empathy</option><option value="Harmony">Harmony</option><option value="Includer">Includer</option><option value="Individualization">Individualization</option><option value="Positivity">Positivity</option><option value="Relator">Relator</option></optgroup><optgroup label="Influencing"><option value="Activator">Activator</option><option value="Command">Command</option><option value="Communication">Communication</option><option value="Competition">Competition</option><option value="Maximizer">Maximizer</option><option value="Self-Assurance">Self-Assurance</option><option value="Significance">Significance</option><option value="Woo">Woo</option></optgroup><optgroup label="Executing"><option value="Achiever">Achiever</option><option value="Arranger">Arranger</option><option value="Belief">Belief</option><option value="Consistency">Consistency</option><option value="Deliberative">Deliberative</option><option value="Discipline">Discipline</option><option value="Focus">Focus</option><option value="Responsibility">Responsibility</option><option value="Restorative">Restorative</option></optgroup>';
+
+function getProfile(){
+  try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
+}
+function saveProfile(name,themes){
+  try{localStorage.setItem('pm-learner-profile',JSON.stringify({name:name,themes:themes,savedAt:new Date().toISOString()}));}catch(e){}
+}
+function clearProfile(){
+  try{localStorage.removeItem('pm-learner-profile');}catch(e){}
+}
+function clearProfileAndReload(){
+  clearProfile();
+  render();
+  return false;
+}
+function toggleNAThemes(){
+  var cb=document.getElementById('na-checkbox');
+  var grid=document.getElementById('theme-select-grid');
+  if(grid)grid.style.display=cb.checked?'none':'';
+}
+
+function renderProfileFields(){
+  var p=getProfile();
+  if(p&&p.name){
+    var isNA=(p.themes||[]).length===1&&p.themes[0]==='N/A';
+    var themesDisplay=isNA?'N/A &mdash; not provided':(p.themes||[]).map(function(t){return t+' ('+THEME_DOMAIN[t]+')';}).join(', ');
+    return '<div class="profile-display">'
+      +'<div class="profile-row"><span class="field-label">Learner</span><div class="profile-value">'+p.name+'</div></div>'
+      +'<div class="profile-row"><span class="field-label">Top 5 CliftonStrengths</span><div class="profile-value">'+themesDisplay+'</div></div>'
+      +'<p class="profile-clear"><a onclick="return clearProfileAndReload()">Not '+p.name+'? Clear saved name &amp; strengths</a></p>'
+      +'</div>';
+  }
+  var grid='<div class="theme-select-grid" id="theme-select-grid">';
+  for(var i=1;i<=5;i++){
+    grid+='<div class="theme-select-item"><label>Theme '+i+' <span class="required-mark">*</span></label>'
+      +'<select class="theme-select" id="theme-select-'+i+'">'+THEME_OPTIONS_HTML+'</select></div>';
+  }
+  grid+='</div>';
+  return '<div style="margin-bottom:18px;">'
+    +'<label class="field-label">Your Name <span class="required-mark">*</span></label>'
+    +'<input class="name-input" id="name-input" type="text" placeholder="First Last"/>'
+    +'</div>'
+    +'<div style="margin-bottom:8px;">'
+    +'<label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>'
+    +'</div>'
+    +'<label class="na-checkbox-row" for="na-checkbox"><input type="checkbox" id="na-checkbox" onchange="toggleNAThemes()"/>I do not know my CliftonStrengths (select N/A)</label>'
+    +grid;
+}
+
+function renderWelcome(){
+  var saved=loadState();
+  var resumeBtn=(saved&&CS.name)?'<button class="btn-secondary" onclick="resumeCase()" style="margin-left:10px;">Resume as '+CS.name+' &rarr;</button>':'';
+  return '<div class="screen active">'
+  +'<p class="eyebrow">Interactive PM in USACE &middot; Case File 05</p>'
+  +'<h1 class="title-main">The Number<br><em>Does Not Fit.</em></h1>'
+  +'<p class="lede">The corrected schedule has a cost. Your revised resource estimate is higher than the funding ceiling you were given. <strong>How you bring this forward determines whether it becomes a problem \u2014 or a plan.</strong></p>'
+  +'<div class="card"><div class="card-label">What This Case File Covers</div>'
+  +'<p><strong>PDBP Doctrine:</strong> PROC2040 \u2014 the Resource Estimate, its Basis of Estimate, and risk-based contingency (REF8007G) \u2014 and how a funding gap relates to the ceiling set under PROC1040.</p>'
+  +'<p><strong>People Skill:</strong> "Managing up" \u2014 bringing difficult news to leadership in a way that leads with understanding and options, not just the problem.</p>'
+  +'</div>'
+  +'<div class="card"><div class="card-label">How This Works</div>'
+  +'<p>Training (5 min) &rarr; Reflection &rarr; Case Study (branching scenario) &rarr; Knowledge Check (5 questions, 60% to pass).</p>'
+  +'</div>'
+  +'<div class="card people-card"><div class="card-label">Continuing the Story</div>'
+  +'<p>You are still <strong>Maria Chen</strong>, PM on the Building 4521 Renovation. The PROC2030 schedule baselined on time \u2014 but the corrected HVAC duration (and a few related adjustments) has a cost. <strong>Dana (Cost Engineer)</strong> has just sent you the revised PROC2040 estimate.</p></div>'
+  +renderProfileFields()
+  +'<div class="btn-row"><button class="btn-primary" onclick="startCase()">Begin Case File &rarr;</button>'+resumeBtn+'</div>'
+  +'</div>';
+}
+function startCase(){
+  var p=getProfile();
+  var name,themes;
+  if(p&&p.name){
+    name=p.name;themes=p.themes;
+  }else{
+    name=document.getElementById('name-input').value.trim();
+    if(!name){alert('Please enter your name to continue.');return;}
+    var naChecked=document.getElementById('na-checkbox').checked;
+    if(naChecked){
+      themes=['N/A'];
+    }else{
+      themes=[];
+      for(var i=1;i<=5;i++){
+        var v=document.getElementById('theme-select-'+i).value;
+        if(!v){alert('Please select all five CliftonStrengths themes, or check the box if you do not know them.');return;}
+        themes.push(v);
+      }
+    }
+    saveProfile(name,themes);
+  }
+  CS.name=name;
+  CS.themes=themes;
+  CS.section='training';
+  saveState();render();
+}
+function resumeCase(){render();}
+
+function renderTraining(){
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Training &middot; 5 Minutes</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">When the Estimate Exceeds the Ceiling</h2>'
+  +'<div class="card">'
+  +'<div class="card-label">PROC2040 \u2014 Resource Estimate, Basis of Estimate &amp; Contingency</div>'
+  +'<p>The PROC2040 Resource Estimate is built on a <strong>Basis of Estimate</strong> \u2014 documented assumptions, quantities, and unit costs \u2014 plus a <strong>risk-based contingency</strong> developed from the Risk Register (REF8007G). The funding <strong>ceiling</strong> was set earlier, under PROC1040, often before design was complete. It is not unusual for a refined estimate, built on better information, to land above that ceiling.</p>'
+  +'<p>A gap between the estimate and the ceiling is not automatically a crisis \u2014 it is <strong>information</strong>. The PDT\u2019s job is to understand where the gap comes from (scope, market conditions, corrected assumptions) and what realistic options exist \u2014 value engineering, phasing, contingency adjustment, or a funding action \u2014 before anyone outside the PDT needs to react to it.</p>'
+  +'<p>It helps to be precise about what an estimate <em>is</em>: a forecast based on stated assumptions, including a calculated allowance for risk and uncertainty. It is <strong>not</strong> the final cost, a measure of anyone\u2019s performance, or a guarantee. How much of a gap counts as "expected" can also depend on <em>how</em> the original estimate was built \u2014 a <strong>parametric</strong> estimate (cost per unit, e.g., $/sq ft, typically accurate to roughly +25%/-10%) is rougher by design than a <strong>detailed</strong> estimate built up from WBS deliverables (roughly +10%/-5%). An 8% gap against a parametric baseline tells a different story than the same gap against a detailed one.</p>'
+  +'<span class="proc-tag">PROC2040</span><span class="proc-tag">Basis of Estimate</span><span class="proc-tag">REF8007G Contingency</span><span class="proc-tag">Parametric vs. Detailed</span>'
+  +'</div>'
+  +'<div class="card people-card">'
+  +'<div class="card-label">People Skill \u2014 Managing Up With Options, Not Just Problems</div>'
+  +'<p>Bringing bad news to leadership is uncomfortable \u2014 and the instinct is often to either delay it (hoping it resolves itself) or deliver it as a flat statement of the problem ("we are over budget"). Both leave leadership with nothing to do except react.</p>'
+  +'<p>The more effective approach: <strong>bring the problem already framed with options.</strong> "Our estimate is X% over the ceiling, driven primarily by Y. We have identified three paths: A, B, and C \u2014 each with these tradeoffs." This does not mean you have already decided \u2014 it means leadership\u2019s first experience of the problem is also their first experience of a path through it. That changes the entire tone of the conversation.</p>'
+  +'<p><strong>This only works if the options are real.</strong> Manufactured "options" that all secretly mean the same thing erode trust fast. The goal is genuine analysis, not the appearance of having done it.</p>'
+  +'</div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'training\',\'discussion\')">Continue to Discussion &rarr;</button></div>'
+  +'</div>';
+}
+
+function completeSection(current,next){
+  CS.sectionsComplete[current]=true;
+  CS.section=next;
+  saveState();render();
+}
+
+function renderDiscussion(){
+  var strengthNote='';
+  var primaryDomain='Influencing';
+  var domainInsights={'Strategic Thinking':'Your {theme} will want to build the full case — every option, every tradeoff — before saying anything. Leadership needs that thinking, but eventually. Lead with the headline, then bring the analysis.','Relationship Building':'Your {theme} will want to soften this so it lands easy. The number does not get smaller because you are gentle with it. Say it plainly, then use your strength on what comes next.','Influencing':'Your {theme} is built for this moment — leading with options, not just the problem. Use it. Walk in with a clear ask, not just a clear gap.','Executing':'Your {theme} wants to skip straight to the fix. Good instinct, wrong order here. Name the gap first, or the fix looks like it is covering something up.'};
+  var themes=(CS.themes||[]).filter(function(t){return t&&t!=='N/A';});
+  var matchedTheme=null;
+  for(var ti=0;ti<themes.length;ti++){
+    if(THEME_DOMAIN[themes[ti]]===primaryDomain){matchedTheme=themes[ti];break;}
+  }
+  if(!matchedTheme&&themes.length>0){matchedTheme=themes[0];}
+  if(matchedTheme){
+    var domain=THEME_DOMAIN[matchedTheme];
+    var template=domainInsights[domain]||'';
+    strengthNote=template.replace('{theme}',matchedTheme);
+  }
+  if(!strengthNote){
+    strengthNote='Whatever your natural style, bad news upward lands better with options attached. Notice whether your instinct leads with the problem or the path forward, and aim for both.';
+  }
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Discussion &amp; Reflection</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Before You See the Scenario</h2>'
+  +'<p class="lede">These reflections are not graded. Take a moment to think honestly \u2014 your answers are saved only on this device.</p>'
+  +'<div class="card"><div class="card-label">Your Strengths Lens</div><p>'+strengthNote+'</p></div>'
+  +'<div class="reflect-block"><div class="reflect-q">1. Have you ever had to tell someone above you that a number did not work out the way everyone hoped? How did you approach it \u2014 and how did it go?</div>'
+  +'<textarea class="reflect-input" id="r1" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">2. When you receive bad news from someone on your team, does it land differently depending on whether they also bring options? Why do you think that is?</div>'
+  +'<textarea class="reflect-input" id="r2" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="reflect-block"><div class="reflect-q">3. Have you ever felt pressure to "just make the numbers work" when you knew the underlying problem had not actually changed? What did you do?</div>'
+  +'<textarea class="reflect-input" id="r3" placeholder="Type your thoughts..."></textarea></div>'
+  +'<div class="nav-row"><span></span><button class="btn-primary" onclick="saveReflectionsAndContinue()">Continue to Case Study &rarr;</button></div>'
+  +'</div>';
+}
+function saveReflectionsAndContinue(){
+  CS.reflections={r1:document.getElementById('r1').value,r2:document.getElementById('r2').value,r3:document.getElementById('r3').value};
+  completeSection('discussion','casestudy');
+}
+
+// ===== CASE STUDY =====
+var CASE_STEP=0;
+var CASE_STEPS=[
+  {
+    type:'scenario',
+    label:'The Email',
+    text:'Dana emails the revised PROC2040 estimate: <strong>the total is 8% over the funding ceiling</strong> set under PROC1040. The email notes the increase is driven mainly by the HVAC duration review from Case File 04 and a related update to material escalation assumptions \u2014 the estimate reflects the most current schedule data available. Dana adds: "Wanted you to see this first before it goes anywhere else."'
+  },
+  {
+    type:'decision',
+    label:'Decision 1 of 3',
+    prompt:'You have this information before anyone else does. What is your next step?',
+    options:[
+      {letter:'A',text:'Email your DPM right away: "We have a problem \u2014 our revised estimate is 8% over the funding ceiling."'},
+      {letter:'B',text:'Hold off mentioning it for now \u2014 maybe it will resolve itself as design finalizes, or contingency will absorb it without anyone needing to know.'},
+      {letter:'C',text:'Set up time with Dana to walk through where the 8% comes from and what realistic options exist \u2014 value engineering, phasing, contingency, or a funding action \u2014 before bringing it to your DPM.'}
+    ],
+    consequences:{
+      A:{text:'Your DPM responds quickly \u2014 with questions you do not yet have answers to: "Where is the increase coming from? Have you looked at value engineering? What is your contingency status?" The conversation stalls while you go find Dana to get the answers you could have had before sending the email.',
+         insight:'<strong>What this reveals:</strong> Escalating the moment you have the headline number \u2014 before understanding it \u2014 means leadership\u2019s first questions become your homework, in real time, often in a less controlled setting than a planned conversation.'},
+      B:{text:'Two weeks pass. The gap does not resolve itself \u2014 contingency was already allocated to known risks per the Risk Register, and using it for this would leave other identified risks uncovered. Your DPM asks about overall project funding status at a routine review, and you have to explain the gap then, without having prepared anything \u2014 and explain why it was not raised two weeks ago.',
+         insight:'<strong>What this reveals:</strong> A funding gap grounded in corrected information does not go away by waiting \u2014 and the longer it sits unaddressed, the more "why did we not know about this sooner" becomes part of the conversation, on top of the gap itself.'},
+      C:{text:'Working through it with Dana, you find: the HVAC correction accounts for about 5% of the gap, and a material escalation update accounts for the other 3%. Two realistic paths emerge \u2014 a modest value-engineering opportunity in a non-critical finish (covers about 3%), and the remainder would need either a funding action or a documented contingency adjustment with Risk Register justification.',
+         insight:'<strong>What this reveals:</strong> Understanding the gap\u2019s composition \u2014 not just its size \u2014 turns "we are 8% over" into "here is exactly where it comes from and here is what we can realistically do about each piece." That is the difference between a problem and a problem with a plan attached.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 2 of 3',
+    prompt:'You meet with your DPM. How do you open the conversation?',
+    options:[
+      {letter:'A',text:'"Our revised PROC2040 estimate is 8% over the funding ceiling, driven mainly by the corrected HVAC schedule and a material cost update. We have identified a value-engineering option that covers about 3% \u2014 for the remaining 5%, the realistic paths are a funding action or a documented contingency adjustment. I would like to walk through both."'},
+      {letter:'B',text:'"We are 8% over the funding ceiling. What do you want to do?"'},
+      {letter:'C',text:'"There is a small gap in the estimate \u2014 probably nothing, but wanted to flag it just in case."'}
+    ],
+    consequences:{
+      A:{text:'Your DPM listens, then asks a few clarifying questions about the value-engineering option and the Risk Register basis for a contingency adjustment \u2014 questions you can answer, because you and Dana already worked through them. The conversation moves quickly to deciding between the two real paths for the remaining 5%.',
+         insight:'<strong>What this reveals:</strong> Leading with the framed problem AND the analysis means your DPM\u2019s first experience of this issue is also their first experience of a path through it. The conversation starts at "which option" rather than "what even is this."'},
+      B:{text:'Your DPM, fairly, asks: "What are our options?" \u2014 and now you are doing the analysis live, in the meeting, that could have been done beforehand. The DPM may also reasonably wonder whether you have looked into this much before bringing it forward.',
+         insight:'<strong>What this reveals:</strong> Stating the problem without framing is honest \u2014 but it puts the burden of the next step entirely on the DPM, in real time. If the analysis was available (as it was here), not bringing it means the DPM has to ask for the thing you already have.'},
+      C:{text:'Your DPM, reasonably, does not register this as urgent \u2014 "probably nothing" suggests it is not. Two weeks later, when the 8% gap becomes relevant to a funding decision, your DPM is caught off guard: "I thought you said this was probably nothing?"',
+         insight:'<strong>What this reveals:</strong> Downplaying a real gap to soften the conversation creates a different problem \u2014 when the real size becomes apparent later, it looks like either the original framing was wrong, or something was being hidden. Neither is true here, but both become harder to dispel after the fact.'}
+    }
+  },
+  {
+    type:'decision',
+    label:'Decision 3 of 3',
+    prompt:'Your DPM says: "Going back for additional funds right now is not realistic \u2014 I need you to find a way to make this work within the existing ceiling." How do you respond?',
+    options:[
+      {letter:'A',text:'"Understood \u2014 we will make it work within the ceiling. I will let you know once it is handled."'},
+      {letter:'B',text:'"Understood. The value-engineering option gets us part of the way \u2014 about 3%. For the remaining 5%, the only way to stay within the ceiling without a funding action is to draw down contingency below what the Risk Register supports. I want to be clear that is a real risk tradeoff, not a free option \u2014 but if that is the direction, I will document it accordingly."'},
+      {letter:'C',text:'"We cannot just make the numbers fit \u2014 if the ceiling does not cover the estimate, the estimate is what it is. I cannot recommend reducing contingency below what the risk register supports."'}
+    ],
+    consequences:{
+      A:{text:'You quietly reduce contingency to close the gap, without flagging the risk tradeoff. Three months later, a risk that the original contingency was sized to cover materializes \u2014 and there is no funding cushion left. The conversation about "why was contingency reduced without anyone knowing the risk basis changed" happens then, under worse conditions.',
+         insight:'<strong>What this reveals:</strong> "Making it work" without naming what is being traded away does not make the tradeoff disappear \u2014 it just moves the conversation about it to a worse moment, usually when the traded-away protection was actually needed.'},
+      B:{text:'Your DPM pauses: "I did not realize that is what \u2018within the ceiling\u2019 would actually mean here. Let me take that back up the chain \u2014 maybe there is more flexibility than I thought, or maybe we accept that risk consciously. Either way, document it clearly." The conversation shifts from "make it fit" to an informed decision, made by the person with authority to make it.',
+         insight:'<strong>What this reveals:</strong> Acknowledging the constraint while being precise about what meeting it actually requires \u2014 without refusing, and without hiding the tradeoff \u2014 gives the DPM real information to take into their own conversations. This is the PROC2040/REF8007G connection: contingency is sized to risk for a reason, and changing one without examining the other is a decision, not a formality.'},
+      C:{text:'Your DPM hears this as a flat refusal: "I am not asking you whether you recommend it \u2014 I am telling you what we need to do." The relationship becomes adversarial, and your DPM may now route around you for a solution \u2014 possibly arriving at the same contingency reduction as Option A, but without your input on how to document the risk.',
+         insight:'<strong>What this reveals:</strong> A firm "no" \u2014 even when technically correct \u2014 can read as refusing to help solve the DPM\u2019s problem. The DPM has their own constraints too. The goal is not to refuse the constraint, but to make sure everyone understands what meeting it actually costs.'}
+    }
+  },
+  {
+    type:'debrief',
+    label:'Case Debrief'
+  }
+];
+
+
+function renderCaseStudy(){
+  CASE_STEP=CS.caseStep||0;
+  var step=CASE_STEPS[CASE_STEP];
+  var html='<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Case Study &middot; Building 4521 Renovation</p>';
+
+  if(step.type==='scenario'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">'+step.label+'</h2>'
+    +'<div class="scenario-box"><div class="scenario-label">Scenario Setup</div><div class="scenario-text">'+step.text+'</div></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()">Begin Decision 1 &rarr;</button></div>';
+  } else if(step.type==='decision'){
+    html+='<div class="scenario-label" style="margin-bottom:6px;">'+step.label+'</div>'
+    +'<div class="decision-prompt">'+step.prompt+'</div>'
+    +'<div id="case-options">';
+    step.options.forEach(function(opt){
+      html+='<div class="choice-option" onclick="chooseOption(\''+opt.letter+'\')"><span class="choice-letter">'+opt.letter+'.</span>'+opt.text+'</div>';
+    });
+    html+='</div><div id="case-consequence"></div><div id="case-nav" class="nav-row" style="display:none;"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">Continue &rarr;</button></div>';
+  } else if(step.type==='debrief'){
+    html+='<h2 class="title-main" style="font-size:1.625rem;">Case Debrief</h2>'
+    +'<div class="card people-card"><div class="card-label">What This Conversation Showed</div>'
+    +'<p>An 8% gap between the estimate and the ceiling was never going to disappear on its own \u2014 it was grounded in corrected information from the schedule review. What changed the conversation was not the number itself, but the <strong>sequence</strong>: understanding the gap\u2019s composition first, then bringing it forward already framed with real options.</p>'
+    +'<p>When the DPM pushed for "make it fit," the most useful response was neither blanket compliance nor blanket refusal \u2014 it was being <strong>precise about what "fitting" would actually require</strong>, so the DPM could make an informed call rather than an uninformed one.</p>'
+    +'</div>'
+    +'<div class="card"><div class="card-label">PROC2040 / REF8007G Tie-In</div>'
+    +'<p>Contingency is not a buffer to be quietly resized whenever a gap appears \u2014 it is sized to specific risks documented in the Risk Register. Reducing it changes the project\u2019s risk exposure, whether or not anyone names that explicitly. Documenting the basis for any contingency adjustment \u2014 just like documenting the basis for a revised schedule duration in Case File 04 \u2014 is what makes the decision defensible, and makes the risk visible to whoever has to live with it later.</p>'
+    +'<p>If a funding action becomes one of the real options, it helps to know <em>where</em> in the funding chain the conversation needs to happen: Congress <strong>Authorizes</strong> a project, Congress <strong>Appropriates</strong> funds, and OMB <strong>Apportions</strong> those funds for release. A PM tracks all of this \u2014 ceiling, current funding status, and where a request would sit in that chain \u2014 in <a href="Toolbelt.html#cwifd" style="color:inherit;text-decoration:underline;">CWIFD</a>. Knowing which link of Authorization \u2192 Appropriation \u2192 Apportionment a gap actually sits in changes what "asking for more" would even mean.</p></div>'
+    +'<div class="nav-row"><span></span><button class="btn-primary" onclick="completeSection(\'casestudy\',\'kc\')">Continue to Knowledge Check &rarr;</button></div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function caseNext(){
+  CASE_STEP++;
+  CS.caseStep=CASE_STEP;
+  saveState();
+  document.getElementById('main-content').innerHTML=renderCaseStudy();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function chooseOption(letter){
+  var step=CASE_STEPS[CASE_STEP];
+  CS.decisions[CASE_STEP]=letter;
+  saveState();
+  document.querySelectorAll('.choice-option').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='.55';});
+  var chosen=Array.from(document.querySelectorAll('.choice-option')).find(function(el){return el.textContent.trim().indexOf(letter+'.')===0;});
+  if(chosen){chosen.style.opacity='1';chosen.style.borderColor='var(--gold)';}
+  var c=step.consequences[letter];
+  document.getElementById('case-consequence').innerHTML=
+    '<div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+    +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div>';
+  document.getElementById('case-nav').style.display='flex';
+  var nextBtn=document.getElementById('case-next-btn');
+  if(CASE_STEP===3){nextBtn.textContent='Continue to Debrief \u2192';}
+}
+
+// ===== KNOWLEDGE CHECK =====
+var KC_QUESTIONS=[
+  {tag:'Doctrine',text:'A PROC2040 Resource Estimate that comes in above the funding ceiling set under PROC1040 most accurately indicates:',
+   options:['The PDT made an error that must be corrected before proceeding','The project must be cancelled','New information that needs to be understood and addressed \u2014 not automatically a crisis','The ceiling was set incorrectly and should be ignored'],
+   correct:2,
+   explain:'Ceilings are often set before design is complete. A refined estimate landing above the ceiling is information \u2014 about scope, market conditions, or corrected assumptions \u2014 that the PDT needs to understand and address, not evidence of an error or a reason to ignore the ceiling.'},
+  {tag:'Doctrine',text:'Per REF8007G, contingency in the Resource Estimate is best understood as:',
+   options:['A flexible buffer that can be resized whenever convenient','Funds set aside for scope additions requested by the sponsor','An estimate of the PM\u2019s personal judgment about uncertainty','An amount sized to specific risks documented in the Risk Register'],
+   correct:3,
+   explain:'Contingency under REF8007G is tied to specific identified risks in the Risk Register \u2014 it is not a generic cushion. Changing it without examining the underlying risk basis changes what risks the project is actually protected against, whether or not that is explicitly acknowledged.'},
+  {tag:'People Skill',text:'Bringing a funding gap to leadership already framed with realistic options, rather than just stating the gap, primarily helps because:',
+   options:['It guarantees leadership will approve the preferred option','It removes the need for leadership to make any decision','It shifts the conversation from "what even is this problem" to "which path forward makes sense"','It means the PM does not need to mention the size of the gap'],
+   correct:2,
+   explain:'Framing with real options does not predetermine the outcome \u2014 leadership still decides. But it changes where the conversation starts: instead of leadership absorbing a raw problem and then asking "what are our options," they encounter the problem and the options together.'},
+  {tag:'Judgment',text:'A DPM responds to a funding gap with "find a way to make it work within the ceiling." What should the project manager do next?',
+   options:['Refuse outright, since the ceiling cannot accommodate the estimate','Comply immediately without discussing what "making it work" would actually require','Agree to make it work, then quietly decide later how to handle any consequences','Acknowledge the constraint while being precise about what meeting it would require \u2014 including any risk tradeoffs'],
+   correct:3,
+   explain:'Neither blanket refusal nor silent compliance serves the DPM well. Being precise about what "making it work" actually requires \u2014 e.g., a contingency reduction below the risk-based amount \u2014 gives the DPM real information to make an informed decision, which may also support raising the issue further up the chain if needed.'},
+  {tag:'Judgment',text:'A PM quietly reduces contingency to close a funding gap without documenting the change in risk exposure. The most likely long-term consequence is:',
+   options:['No consequence, since the funding gap is resolved','PROC2070 approval will be automatically withheld','A risk the contingency was sized to cover may materialize later with no funding cushion, and the reduction\u2019s basis will be unclear','The Risk Register will be automatically updated to reflect the change'],
+   correct:2,
+   explain:'Contingency reductions are decisions about risk exposure, not just numbers. Without documentation, a risk the contingency was meant to cover can materialize later with no cushion \u2014 and without a record of why or when the contingency changed, the situation is harder to explain or address.'}
+];
+var kcAnswers={};
+var kcOrder={}; // kcOrder[qi] = array mapping displayed position -> original option index
+function shuffleArray(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=a[i];a[i]=a[j];a[j]=tmp;
+  }
+  return a;
+}
+function buildKCOrder(){
+  kcOrder={};
+  KC_QUESTIONS.forEach(function(q,qi){
+    var idxs=[];
+    for(var i=0;i<q.options.length;i++)idxs.push(i);
+    kcOrder[qi]=shuffleArray(idxs);
+  });
+}
+
+function renderKC(){
+  kcAnswers={};
+  buildKCOrder();
+  var qHTML=KC_QUESTIONS.map(function(q,qi){
+    var order=kcOrder[qi];
+    return '<div class="question-block" id="kc-q-'+qi+'">'
+    +'<div class="question-num">Question '+(qi+1)+' of '+KC_QUESTIONS.length+'</div>'
+    +'<span class="question-tag">'+q.tag+'</span>'
+    +'<div class="question-text">'+q.text+'</div>'
+    +order.map(function(origIdx,pos){
+      return '<div class="answer-option" id="kc-opt-'+qi+'-'+pos+'" onclick="selectKCAnswer('+qi+','+pos+')">'
+      +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+q.options[origIdx]+'</div>';
+    }).join('')
+    +'<div class="kc-explain" id="kc-explain-'+qi+'"><strong>Why:</strong> '+q.explain+'</div>'
+    +'</div>';
+  }).join('');
+  return '<div class="screen active">'+renderNav()
+  +'<p class="eyebrow">Knowledge Check &middot; 5 Questions &middot; 60% to Pass</p>'
+  +'<h2 class="title-main" style="font-size:1.625rem;">Doctrine &amp; Judgment</h2>'
+  +'<p class="lede">Some questions have a single correct doctrinal answer. Others ask what the project manager should do \u2014 choose the best course of action and read the explanation after answering either way.</p>'
+  +qHTML
+  +'<div class="kc-feedback" id="kc-feedback"></div>'
+  +'<div class="btn-row" id="kc-btn-row"><button class="btn-primary" id="kc-submit-btn" onclick="submitKC()" disabled>Submit Answers</button></div>'
+  +'</div>';
+}
+
+function selectKCAnswer(qi,oi){
+  document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+  kcAnswers[qi]=oi;
+  document.getElementById('kc-opt-'+qi+'-'+oi).classList.add('selected');
+  if(Object.keys(kcAnswers).length===KC_QUESTIONS.length){
+    document.getElementById('kc-submit-btn').disabled=false;
+  }
+}
+
+function submitKC(){
+  var correct=0;
+  KC_QUESTIONS.forEach(function(q,qi){
+    var order=kcOrder[qi];
+    var selPos=kcAnswers[qi];
+    var selOrigIdx=order[selPos];
+    var correctPos=order.indexOf(q.correct);
+    var isCorrect=selOrigIdx===q.correct;
+    if(isCorrect)correct++;
+    document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
+    document.getElementById('kc-opt-'+qi+'-'+selPos).classList.add(isCorrect?'correct':'incorrect');
+    if(!isCorrect)document.getElementById('kc-opt-'+qi+'-'+correctPos).classList.add('correct');
+    document.getElementById('kc-explain-'+qi).classList.add('show');
+  });
+  CS.kcScore=correct;
+  var pct=Math.round((correct/KC_QUESTIONS.length)*100);
+  var passed=pct>=60;
+  var fb=document.getElementById('kc-feedback');
+  fb.className='kc-feedback show '+(passed?'pass':'fail');
+  fb.innerHTML='<div class="kc-score '+(passed?'pass':'fail')+'">'+correct+'/'+KC_QUESTIONS.length+'</div>'
+  +(passed?'<strong>Well done.</strong> You have completed Case File 05.':'<strong>Review the explanations above.</strong> Score 60% or higher to complete this case file.');
+  var btnRow=document.getElementById('kc-btn-row');
+  if(passed){
+    CS.sectionsComplete.kc=true;saveState();
+    btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'complete\')">Finish Case File &rarr;</button>';
+  } else {
+    btnRow.innerHTML='<button class="btn-primary" onclick="retakeKC()">Retake Knowledge Check</button>';
+  }
+}
+function retakeKC(){kcAnswers={};goSection('kc');}
+
+function renderComplete(){
+  return '<div class="screen active">'
+  +'<div class="complete-wrap">'
+  +'<div class="complete-seal">&#10003;</div>'
+  +'<div class="complete-title">Case File 05 Complete</div>'
+  +'<div class="complete-sub">'+CS.name+' &middot; The Number Doesn&#39;t Fit &middot; Score: '+CS.kcScore+'/5</div>'
+  +'<div style="text-align:left;max-width:480px;margin:0 auto 20px;">'
+  +'<label class="field-label">What is one thing you will do differently this week, based on this case?</label>'
+  +'<textarea class="reflect-input" id="commitment" placeholder="Type your commitment..."></textarea>'
+  +'</div>'
+  +'<div class="btn-row" style="justify-content:center;"><button class="btn-primary" onclick="saveCommitment()">Save &amp; Finish</button>'
+  +'<button class="btn-secondary" onclick="restartCase()">Restart Case File</button></div>'
+  +'<p style="font-size:0.625rem;color:var(--white-dim);margin-top:18px;">Interactive PM in USACE &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile06_FeedbackConversation.html" style="color:var(--gold);text-decoration:underline;">Continue to Case File 06 &rarr;</a> &middot; <a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" style="color:var(--white-dim);text-decoration:underline;">Course Home</a></p>'
+  +'</div></div>';
+}
+function saveCommitment(){
+  CS.commitment=document.getElementById('commitment').value;
+  saveState();
+  alert('Saved. Thank you for completing Case File 05.');
+}
+function restartCase(){
+  if(confirm('This will clear your progress for this case file. Continue?')){
+    try{localStorage.removeItem(STORAGE_KEY);}catch(e){}location.reload();
+  }
+}
+
+// ===== INIT =====
+(function init(){render();})();
+</script>
+</body>
+</html>

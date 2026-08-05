@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive PM in USACE</title>
+</head>
+<body>
+<!-- ==========================================
+     Interactive PM in USACE — SharePoint Snippet
+     Page: index.aspx
+     Paste this entire block into a Script Editor web part
+     on a Classic SharePoint page.
+     ========================================== -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;--army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;--white:#F5F2EB;--white-dim:#C8C4B8;--accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;--border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+html.font-l{font-size:18px;}
+html.font-s{font-size:14px;}
+body{background:var(--army-dark);color:var(--white);font-family:'Inter',sans-serif;font-weight:400;min-height:100vh;}
+body.light-mode{--army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-dim:#222222;--gold:#5A4010;--gold-light:#3A2A08;--gold-dim:#5A4010;--border:rgba(90,64,16,0.4);--border-strong:rgba(90,64,16,0.7);--accent:#1A4A10;--warn:#8B3A00;--danger:#7A1A1A;}
+.wrap{max-width:760px;margin:0 auto;padding:28px 22px 60px;}
+.topbar{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:28px;gap:10px;}
+.brand{display:flex;align-items:center;gap:12px;}
+.logo-seal{width:38px;height:38px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.6875rem;color:var(--gold);flex-shrink:0;}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:0.9375rem;color:var(--white);}
+.logo-sub{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-top:2px;}
+.theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:7px 12px;cursor:pointer;letter-spacing:.08em;}
+.eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.title-main{font-family:'DM Serif Display',serif;font-size:clamp(1.75rem,5vw,2.625rem);line-height:1.18;color:var(--white);margin-bottom:14px;}
+.lede{font-size:0.875rem;color:var(--white-dim);line-height:1.7;margin-bottom:28px;max-width:600px;}
+.lede strong{color:var(--white);}
+.phase-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin:30px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.phase-label:first-of-type{margin-top:0;}
+.case-card{display:flex;align-items:center;gap:16px;border:1px solid var(--border);padding:16px 18px;margin-bottom:10px;text-decoration:none;color:var(--white);transition:border-color .15s;}
+.case-card:hover{border-color:var(--border-strong);}
+.case-num{font-family:'DM Mono',monospace;font-size:0.6875rem;color:var(--gold);border:1px solid var(--border-strong);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.case-num.done{background:var(--accent);border-color:var(--accent);color:var(--army-dark);}
+.case-body{flex:1;min-width:0;}
+.case-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--white);margin-bottom:3px;}
+.case-meta{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;}
+.case-arrow{font-family:'DM Mono',monospace;font-size:0.875rem;color:var(--gold-dim);flex-shrink:0;}
+.status-pill{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.08em;color:var(--accent);text-transform:uppercase;flex-shrink:0;border:1px solid rgba(123,160,91,.5);padding:3px 8px;}
+.progress-wrap{margin-bottom:6px;}
+.progress-bar-outer{height:5px;background:rgba(120,120,120,.2);width:100%;margin-bottom:6px;}
+.progress-bar-inner{height:5px;background:var(--accent);width:0%;transition:width .3s;}
+.progress-summary{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold-dim);letter-spacing:.08em;text-transform:uppercase;}
+.footer-note{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-size:0.6875rem;color:var(--white-dim);line-height:1.7;}
+.footer-doc{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.1em;color:var(--gold-dim);}
+
+.case-time{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--white-dim);letter-spacing:.08em;text-transform:uppercase;flex-shrink:0;white-space:nowrap;}
+.instr-card{border-left:4px solid var(--accent);border:1px solid var(--border);padding:18px 20px;margin-bottom:28px;}
+.instr-card .card-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.instr-card p{font-size:0.8125rem;line-height:1.7;color:var(--white-dim);margin-bottom:8px;}
+.instr-card p:last-child{margin-bottom:0;}
+.instr-card strong{color:var(--white);}
+.cert-section{display:none;margin-top:36px;border:2px solid var(--gold);padding:32px;text-align:center;}
+.cert-section.show{display:block;}
+.cert-seal{width:56px;height:56px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.875rem;color:var(--gold);margin:0 auto 16px;}
+.cert-title{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.cert-name{font-family:'DM Serif Display',serif;font-size:1.75rem;color:var(--white);margin-bottom:6px;}
+.cert-sub{font-size:0.8125rem;color:var(--white-dim);line-height:1.7;max-width:480px;margin:0 auto 18px;}
+.cert-meta{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold-dim);letter-spacing:.08em;margin-bottom:20px;}
+.cert-print{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.08em;text-transform:uppercase;padding:9px 18px;background:transparent;border:1px solid var(--border-strong);color:var(--white);cursor:pointer;}
+@media print{
+  .topbar,.eyebrow,.title-main,.lede,.progress-wrap,.phase-label,.case-card,.instr-card,.theme-toggle,.footer-note{display:none!important;}
+  .cert-section{display:block!important;border:2px solid #5A4010;margin-top:0;}
+  body.light-mode{--gold:#5A4010;--white:#111111;--white-dim:#333333;--gold-dim:#5A4010;}
+}
+
+.font-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:7px 12px;cursor:pointer;letter-spacing:.08em;margin-right:8px;}
+body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
+
+.ref-link-row{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;}
+.ref-link-card{flex:1;min-width:200px;border:1px solid var(--border);padding:14px 16px;text-decoration:none;color:var(--white);transition:border-color .15s;}
+.ref-link-card:hover{border-color:var(--border-strong);}
+.ref-link-title{font-family:'DM Serif Display',serif;font-size:0.9375rem;color:var(--white);margin-bottom:3px;}
+.ref-link-meta{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;}
+</style>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo-seal">USACE</div>
+      <div>
+        <div class="logo-primary">Interactive PM in USACE</div>
+        <div class="logo-sub">PROSPECT 355 &middot; Interactive Alternative &middot; 13 Case Files</div>
+      </div>
+    </div>
+    <button class="font-toggle" id="font-toggle" onclick="toggleFontSize()">Text: M</button>
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">Dark Mode</button>
+  </div>
+
+  <p class="eyebrow">Course Home</p>
+  <h1 class="title-main">Thirteen Decisions.<br><em>One Project.</em></h1>
+  <p class="lede">An interactive, scenario-based alternative to <strong>PROSPECT 355: Project Management in USACE</strong>, built around the PDBP lifecycle. Follow <strong>Maria Chen</strong> through the Building 4521 Renovation &mdash; from an unfamiliar PDT in Case File 01 to a closed-out AAR in Case File 13. Each case file pairs a PDBP doctrine concept with a people-skill in practice, through a branching scenario and a 5-question Knowledge Check.</p>
+
+  
+  <div class="instr-card">
+    <div class="card-label">For Facilitators &amp; Self-Paced Learners</div>
+    <p>Each case file runs <strong>20–30 minutes</strong> and is self-contained &mdash; training, reflection, branching scenario, and a 5-question Knowledge Check (60% to pass, with shuffled answer order). The full course is roughly <strong>5.5–7 hours</strong> and maps to the Initiation, Planning, Execution, and Closeout phases of the PDBP lifecycle.</p>
+    <p>Recommended use: complete 1&ndash;2 case files per week as a self-paced alternative to classroom PROSPECT 355 sessions, or use individual case files as discussion-starters in PDT or CCB training sessions. The storyline is continuous &mdash; case files reference earlier ones &mdash; but each stands on its own if used out of sequence.</p>
+  </div>
+
+  <div class="ref-link-row">
+    <a class="ref-link-card" href="https://leanne-vantuyl.github.io/interactive-pm-usace/Module00_Orientation.html" style="border-color:var(--gold-dim);">
+      <div class="ref-link-title">Module 0: Orientation</div>
+      <div class="ref-link-meta">Start Here &middot; ~10 min</div>
+    </a>
+  </div>
+
+  <div class="ref-link-row">
+    <a class="ref-link-card" href="https://leanne-vantuyl.github.io/interactive-pm-usace/PROC_Map.html">
+      <div class="ref-link-title">The PDBP Lifecycle Map</div>
+      <div class="ref-link-meta">Course Reference &middot; PROC Map</div>
+    </a>
+    <a class="ref-link-card" href="https://leanne-vantuyl.github.io/interactive-pm-usace/Toolbelt.html">
+      <div class="ref-link-title">The PM&#39;s Toolbelt</div>
+      <div class="ref-link-meta">Course Reference &middot; Real Systems</div>
+    </a>
+    <a class="ref-link-card" href="https://leanne-vantuyl.github.io/interactive-pm-usace/PostCheck.html">
+      <div class="ref-link-title">Looking Back</div>
+      <div class="ref-link-meta">After Case File 13 &middot; Reflection</div>
+    </a>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="overall-bar"></div></div>
+    <div class="progress-summary" id="overall-text">Loading progress&hellip;</div>
+  </div>
+
+  <div class="phase-label">Initiation &amp; Planning</div>
+  <a class="case-card" data-key="casefile01_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile01_NewPM_UnclearRoles.html">
+    <div class="case-num" data-num="1">1</div>
+    <div class="case-body"><div class="case-title">New PM, Unclear Roles</div><div class="case-meta">PROC2020 &middot; PDT Charter</div></div>
+    <div class="case-time">~25 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+  <a class="case-card" data-key="casefile02_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile02_ScheduleVsScope.html">
+    <div class="case-num" data-num="2">2</div>
+    <div class="case-body"><div class="case-title">The Schedule vs. The Scope</div><div class="case-meta">PROC2030/2040 &middot; Conflict Resolution</div></div>
+    <div class="case-time">~25 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+  <a class="case-card" data-key="casefile03_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile03_TheNewHome.html">
+    <div class="case-num" data-num="3">3</div>
+    <div class="case-body"><div class="case-title">The New Home</div><div class="case-meta">PROC2010 &middot; Scope Statement</div></div>
+    <div class="case-time">~25 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+  <a class="case-card" data-key="casefile04_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile04_BuiltToSlip.html">
+    <div class="case-num" data-num="4">4</div>
+    <div class="case-body"><div class="case-title">Built to Slip</div><div class="case-meta">PROC2030 &middot; Schedule Realism</div></div>
+    <div class="case-time">~25 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+  <a class="case-card" data-key="casefile05_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile05_TheNumberDoesntFit.html">
+    <div class="case-num" data-num="5">5</div>
+    <div class="case-body"><div class="case-title">The Number Doesn&#39;t Fit</div><div class="case-meta">PROC2040 &middot; Resource Estimate</div></div>
+    <div class="case-time">~30 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+  <a class="case-card" data-key="casefile06_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile06_FeedbackConversation.html">
+    <div class="case-num" data-num="6">6</div>
+    <div class="case-body"><div class="case-title">The Feedback Nobody Wants to Give</div><div class="case-meta">PROC1020/2020 &middot; Performance &amp; Feedback</div></div>
+    <div class="case-time">~25 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+
+  <div class="phase-label">Execution</div>
+  <a class="case-card" data-key="casefile07_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile07_PhantomSlip.html">
+    <div class="case-num" data-num="7">7</div>
+    <div class="case-body"><div class="case-title">The Phantom Slip</div><div class="case-meta">PROC3000 &middot; Performance Measurement</div></div>
+    <div class="case-time">~25 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+  <a class="case-card" data-key="casefile08_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile08_RiskNobodyTracked.html">
+    <div class="case-num" data-num="8">8</div>
+    <div class="case-body"><div class="case-title">The Risk Nobody Tracked</div><div class="case-meta">Risk Register &middot; REF8007G</div></div>
+    <div class="case-time">~25 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+  <a class="case-card" data-key="casefile09_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile09_MeetingGotAway.html">
+    <div class="case-num" data-num="9">9</div>
+    <div class="case-body"><div class="case-title">The Meeting That Got Away</div><div class="case-meta">PDT Meetings &middot; Facilitation</div></div>
+    <div class="case-time">~25 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+  <a class="case-card" data-key="casefile10_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile10_WrongShadeOfGray.html">
+    <div class="case-num" data-num="10">10</div>
+    <div class="case-body"><div class="case-title">The Wrong Shade of Gray</div><div class="case-meta">PROC3010 &middot; Change Management</div></div>
+    <div class="case-time">~25 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+  <a class="case-card" data-key="casefile11_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile11_TwoFacesOfRisk.html">
+    <div class="case-num" data-num="11">11</div>
+    <div class="case-body"><div class="case-title">Two Faces of Risk</div><div class="case-meta">REF8007G &middot; Opportunity Management</div></div>
+    <div class="case-time">~25 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+  <a class="case-card" data-key="casefile12_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile12_TheFavor.html">
+    <div class="case-num" data-num="12">12</div>
+    <div class="case-body"><div class="case-title">The Favor</div><div class="case-meta">Eisenhower Matrix &middot; Objectivity</div></div>
+    <div class="case-time">~25 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+
+  <div class="phase-label">Closeout</div>
+  <a class="case-card" data-key="casefile13_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile13_ClosingWell.html">
+    <div class="case-num" data-num="13">13</div>
+    <div class="case-body"><div class="case-title">Closing Well</div><div class="case-meta">PROC4000 &middot; Closeout &amp; AAR</div></div>
+    <div class="case-time">~30 min</div>
+    <div class="case-arrow">&rarr;</div>
+  </a>
+
+
+  <div class="cert-section" id="cert-section">
+    <div class="cert-seal">USACE</div>
+    <div class="cert-title">Certificate of Completion</div>
+    <div class="cert-name" id="cert-name">Learner Name</div>
+    <div class="cert-sub">has completed all thirteen case files of <strong>Interactive PM in USACE</strong>, an interactive alternative to PROSPECT 355 covering the Initiation, Planning, Execution, and Closeout phases of the Project &amp; Program Delivery Business Process (PDBP).</div>
+    <div class="cert-meta" id="cert-meta">Average Knowledge Check Score: — / 5 &middot; Completed: —</div>
+    <button class="cert-print" onclick="window.print()">Print Certificate</button>
+  </div>
+
+  <div class="footer-note">
+    Each case file tracks your progress and Knowledge Check score independently in your browser. You can complete case files in order, or jump to a specific topic &mdash; each one stands on its own, though references to earlier case files build a continuous storyline.<br><br>
+    <span class="footer-doc">EM 5-1-11 &middot; PROSPECT 355 &middot; Course Index v1.0</span>
+  </div>
+</div>
+
+<script>
+function applyTheme(t){
+  document.body.className = t;
+  document.getElementById('theme-btn').textContent = (t==='light-mode') ? 'Dark Mode' : 'Light Mode';
+  try{localStorage.setItem('pm-course-theme', t);}catch(e){}
+}
+function toggleTheme(){
+  applyTheme(document.body.classList.contains('light-mode') ? 'dark-mode' : 'light-mode');
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){
+  var saved;
+  try{saved = localStorage.getItem('pm-course-theme');}catch(e){}
+  applyTheme(saved || 'light-mode');
+})();
+
+// Best-effort progress check: reads each case file's localStorage key
+// (only works if all files are served from the same origin, e.g. SharePoint)
+(function(){
+  var cards = document.querySelectorAll('.case-card');
+  var completed = 0;
+  var scoreSum = 0, scoreCount = 0;
+  var learnerName = '';
+  cards.forEach(function(card){
+    var key = card.getAttribute('data-key');
+    var raw;
+    try{raw = localStorage.getItem(key);}catch(e){}
+    var num = card.querySelector('.case-num');
+    if(raw){
+      try{
+        var data = JSON.parse(raw);
+        if(data && data.name && !learnerName) learnerName = data.name;
+        if(data && data.kcScore !== undefined && data.kcScore !== null && data.section==='complete'){
+          num.classList.add('done');
+          num.innerHTML = '&#10003;';
+          var pill = document.createElement('div');
+          pill.className='status-pill';
+          pill.textContent='Complete';
+          card.insertBefore(pill, card.querySelector('.case-arrow'));
+          completed++;
+          scoreSum += data.kcScore;
+          scoreCount++;
+        }
+      }catch(e){}
+    }
+  });
+  var bar = document.getElementById('overall-bar');
+  var text = document.getElementById('overall-text');
+  var pct = Math.round((completed/13)*100);
+  bar.style.width = pct+'%';
+  if(completed===0){
+    text.textContent = '0 of 13 case files complete \u00b7 progress shown here is per-browser';
+  }else if(completed===13){
+    text.textContent = 'All 13 case files complete \u2014 course finished';
+  }else{
+    text.textContent = completed+' of 13 case files complete';
+  }
+
+  if(completed===13){
+    var avg = (scoreSum/scoreCount).toFixed(1);
+    document.getElementById('cert-name').textContent = learnerName || 'Learner';
+    var today = new Date();
+    var dateStr = (today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear();
+    document.getElementById('cert-meta').textContent = 'Average Knowledge Check Score: '+avg+' / 5 \u00b7 Completed: '+dateStr;
+    document.getElementById('cert-section').classList.add('show');
+  }
+})();
+</script>
+<script>
+function applyTheme(t){
+  document.body.className = t;
+  document.getElementById('theme-btn').textContent = (t==='light-mode') ? 'Dark Mode' : 'Light Mode';
+  try{localStorage.setItem('pm-course-theme', t);}catch(e){}
+}
+function toggleTheme(){
+  applyTheme(document.body.classList.contains('light-mode') ? 'dark-mode' : 'light-mode');
+}
+
+var FONT_SIZES=['font-s','','font-l'];
+var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
+function applyFontSize(cls){
+  document.documentElement.classList.remove('font-s','font-l');
+  if(cls){document.documentElement.classList.add(cls);}
+  var btn=document.getElementById('font-toggle');
+  if(btn)btn.textContent=FONT_LABELS[cls];
+  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+}
+function toggleFontSize(){
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
+}
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){
+  var saved;
+  try{saved = localStorage.getItem('pm-course-theme');}catch(e){}
+  applyTheme(saved || 'light-mode');
+})();
+
+// Best-effort progress check: reads each case file's localStorage key
+// (only works if all files are served from the same origin, e.g. SharePoint)
+(function(){
+  var cards = document.querySelectorAll('.case-card');
+  var completed = 0;
+  var scoreSum = 0, scoreCount = 0;
+  var learnerName = '';
+  cards.forEach(function(card){
+    var key = card.getAttribute('data-key');
+    var raw;
+    try{raw = localStorage.getItem(key);}catch(e){}
+    var num = card.querySelector('.case-num');
+    if(raw){
+      try{
+        var data = JSON.parse(raw);
+        if(data && data.name && !learnerName) learnerName = data.name;
+        if(data && data.kcScore !== undefined && data.kcScore !== null && data.section==='complete'){
+          num.classList.add('done');
+          num.innerHTML = '&#10003;';
+          var pill = document.createElement('div');
+          pill.className='status-pill';
+          pill.textContent='Complete';
+          card.insertBefore(pill, card.querySelector('.case-arrow'));
+          completed++;
+          scoreSum += data.kcScore;
+          scoreCount++;
+        }
+      }catch(e){}
+    }
+  });
+  var bar = document.getElementById('overall-bar');
+  var text = document.getElementById('overall-text');
+  var pct = Math.round((completed/13)*100);
+  bar.style.width = pct+'%';
+  if(completed===0){
+    text.textContent = '0 of 13 case files complete \u00b7 progress shown here is per-browser';
+  }else if(completed===13){
+    text.textContent = 'All 13 case files complete \u2014 course finished';
+  }else{
+    text.textContent = completed+' of 13 case files complete';
+  }
+
+  if(completed===13){
+    var avg = (scoreSum/scoreCount).toFixed(1);
+    document.getElementById('cert-name').textContent = learnerName || 'Learner';
+    var today = new Date();
+    var dateStr = (today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear();
+    document.getElementById('cert-meta').textContent = 'Average Knowledge Check Score: '+avg+' / 5 \u00b7 Completed: '+dateStr;
+    document.getElementById('cert-section').classList.add('show');
+  }
+})();
+</script>
+</body>
+</html>
