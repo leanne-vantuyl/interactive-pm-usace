@@ -429,12 +429,7 @@ function toggleFontSize(){
 (function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
 </script>
 <script>
-function toggleTheme(){
-  var isDark=document.body.classList.toggle('light-mode');
-  var btn=document.getElementById('theme-toggle');
-  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
-  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
-}
+
 
 var FONT_SIZES=['font-s','','font-l'];
 var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
