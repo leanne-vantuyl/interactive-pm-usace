@@ -27,6 +27,9 @@ body.light-mode{--army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-d
 .logo-seal{width:38px;height:38px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.6875rem;color:var(--gold);flex-shrink:0;}
 .logo-primary{font-family:'DM Serif Display',serif;font-size:0.9375rem;color:var(--white);}
 .logo-sub{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-top:2px;}
+
+.reset-all-btn{background:transparent;border:1px solid rgba(200,50,50,0.35);color:rgba(200,100,100,0.7);font-family:'DM Mono',monospace;font-size:0.5rem;padding:6px 11px;cursor:pointer;letter-spacing:.06em;}
+.reset-all-btn:hover{border-color:rgba(220,80,80,0.7);color:rgba(220,100,100,1);}
 .theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:7px 12px;cursor:pointer;letter-spacing:.08em;}
 .eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
 .title-main{font-family:'DM Serif Display',serif;font-size:clamp(1.75rem,5vw,2.625rem);line-height:1.18;color:var(--white);margin-bottom:14px;}
@@ -85,9 +88,10 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
       <div class="logo-seal">USACE</div>
       <div>
         <div class="logo-primary">Interactive PM in USACE</div>
-        <div class="logo-sub">Prototype to accompany PROSPECT 355 &middot; Interactive &middot; 13 Case Files</div>
+        <div class="logo-sub">PROSPECT 355 &middot; Interactive Alternative &middot; 13 Case Files</div>
       </div>
     </div>
+    <button class="reset-all-btn" onclick="resetAllProgress()" title="Clear all case file progress">&#8635; Reset All</button>
     <button class="font-toggle" id="font-toggle" onclick="toggleFontSize()">Text: M</button>
     <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">Dark Mode</button>
   </div>
@@ -235,6 +239,15 @@ function applyTheme(t){
   document.getElementById('theme-btn').textContent = (t==='light-mode') ? 'Dark Mode' : 'Light Mode';
   try{localStorage.setItem('pm-course-theme', t);}catch(e){}
 }
+function resetAllProgress(){
+  if(confirm('Reset ALL case file progress? This clears your progress across all 13 case files.')){
+    var keys=['casefile01_v1','casefile02_v1','casefile03_v1','casefile04_v1','casefile05_v1',
+      'casefile06_v1','casefile07_v1','casefile08_v1','casefile09_v1','casefile10_v1',
+      'casefile11_v1','casefile12_v1','casefile13_v1','pm-learner-profile'];
+    keys.forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
+    location.reload();
+  }
+}
 function toggleTheme(){
   applyTheme(document.body.classList.contains('light-mode') ? 'dark-mode' : 'light-mode');
 }
@@ -324,9 +337,16 @@ function applyTheme(t){
   document.getElementById('theme-btn').textContent = (t==='light-mode') ? 'Dark Mode' : 'Light Mode';
   try{localStorage.setItem('pm-course-theme', t);}catch(e){}
 }
-function toggleTheme(){
-  applyTheme(document.body.classList.contains('light-mode') ? 'dark-mode' : 'light-mode');
+function resetAllProgress(){
+  if(confirm('Reset ALL case file progress? This clears your progress across all 13 case files.')){
+    var keys=['casefile01_v1','casefile02_v1','casefile03_v1','casefile04_v1','casefile05_v1',
+      'casefile06_v1','casefile07_v1','casefile08_v1','casefile09_v1','casefile10_v1',
+      'casefile11_v1','casefile12_v1','casefile13_v1','pm-learner-profile'];
+    keys.forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
+    location.reload();
+  }
 }
+
 
 var FONT_SIZES=['font-s','','font-l'];
 var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
