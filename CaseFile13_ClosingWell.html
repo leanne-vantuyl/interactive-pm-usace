@@ -356,7 +356,7 @@ function toggleFontSize(){
   if(saved===null||saved===undefined)saved='';
   applyFontSize(saved);
 })();
-(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+(function(){var t;try{t=localStorage.getItem('pm-course-theme');}catch(e){}if(t==='dark'){document.body.classList.remove('light-mode');}else{document.body.classList.add('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9790; Dark';}})();
 
 var SECTIONS=['welcome','training','discussion','casestudy','kc','complete'];
 var SECTION_LABELS={welcome:'Welcome',training:'Training',discussion:'Discussion',casestudy:'Case Study',kc:'Knowledge Check',complete:'Complete'};
@@ -874,7 +874,7 @@ function toggleFontSize(){
   if(saved===null||saved===undefined)saved='';
   applyFontSize(saved);
 })();
-(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
+(function(){var t;try{t=localStorage.getItem('pm-course-theme');}catch(e){}if(t==='dark'){document.body.classList.remove('light-mode');}else{document.body.classList.add('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9790; Dark';}})();
 
 var SECTIONS=['welcome','training','discussion','casestudy','kc','complete'];
 var SECTION_LABELS={welcome:'Welcome',training:'Training',discussion:'Discussion',casestudy:'Case Study',kc:'Knowledge Check',complete:'Complete'};
