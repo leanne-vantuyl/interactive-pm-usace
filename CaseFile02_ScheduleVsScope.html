@@ -49,6 +49,10 @@ body.light-mode .cqn-link{color:#5A4010;border-color:#5A4010;}
 body.light-mode .cqn-link:hover{background:#E8E4D9;}
 body.light-mode .cqn-link.current{background:#5A4010;color:#FFFFFF;border-color:#5A4010;}
 body.light-mode .case-badge{color:#111111;border-color:#5A4010;background:#E8E4D9;font-weight:700;}
+
+.reset-btn{background:transparent;border:1px solid rgba(200,50,50,0.35);color:rgba(200,100,100,0.7);font-family:'DM Mono',monospace;font-size:0.5rem;padding:6px 11px;cursor:pointer;letter-spacing:.06em;margin-right:4px;}
+.reset-btn:hover{border-color:rgba(220,80,80,0.7);color:rgba(220,100,100,1);}
+body.light-mode .reset-btn{border-color:rgba(180,40,40,0.4);color:rgba(160,40,40,0.8);}
 .theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;}
 body.light-mode .theme-toggle{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
 
@@ -284,6 +288,7 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
       <span class="case-badge">PROC2030/2040 &middot; Conflict Resolution</span>
+      <button class="reset-btn" onclick="resetCaseFile()" title="Clear your progress on this case file and start over">&#8635; Reset</button>
       <button class="font-toggle" id="font-toggle" onclick="toggleFontSize()">Text: M</button>
       <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
     </div>
@@ -317,6 +322,12 @@ var STORAGE_KEY='casefile02_v1';
 function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(CS));}catch(e){}}
 function loadState(){try{var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;var d=JSON.parse(raw);if(!d||!d.name)return false;CS=d;return true;}catch(e){return false;}}
 
+function resetCaseFile(){
+  if(confirm('Reset this case file? Your progress and answers will be cleared.')){
+    try{localStorage.removeItem(STORAGE_KEY);}catch(e){}
+    location.reload();
+  }
+}
 function toggleTheme(){
   var isDark=document.body.classList.toggle('light-mode');
   var btn=document.getElementById('theme-toggle');
@@ -818,12 +829,8 @@ var STORAGE_KEY='casefile02_v1';
 function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(CS));}catch(e){}}
 function loadState(){try{var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;var d=JSON.parse(raw);if(!d||!d.name)return false;CS=d;return true;}catch(e){return false;}}
 
-function toggleTheme(){
-  var isDark=document.body.classList.toggle('light-mode');
-  var btn=document.getElementById('theme-toggle');
-  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
-  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
-}
+
+
 
 var FONT_SIZES=['font-s','','font-l'];
 var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
