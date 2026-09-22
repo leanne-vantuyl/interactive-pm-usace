@@ -280,25 +280,36 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
   </div>
 </div>
 
+
+<!-- ── COHORT MODAL ── -->
+<div id="cohort-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#1A1F14;border:1px solid rgba(200,168,75,.5);padding:32px;max-width:440px;width:90vw;">
+    <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:#F5F2EB;margin-bottom:8px;">Welcome</div>
+    <div style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:#C8A84B;text-transform:uppercase;margin-bottom:16px;">Enter your cohort code to get started</div>
+    <p style="font-size:.8rem;color:#C8C4B8;line-height:1.6;margin-bottom:20px;">Your instructor will provide a cohort code at the start of class. It looks like <strong style="color:#F5F2EB;">USACE-2026-09-FTW</strong>. This code tags your responses for the course tracker.</p>
+    <input id="cohort-modal-input" type="text" placeholder="e.g. USACE-2026-09-FTW" maxlength="40"
+      style="width:100%;background:#252D1C;border:1px solid rgba(200,168,75,.4);color:#F5F2EB;font-family:'DM Mono',monospace;font-size:.8rem;padding:10px 14px;margin-bottom:12px;box-sizing:border-box;"
+      onkeydown="if(event.key==='Enter')saveCohortFromModal()"/>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="closeCohortModal()" style="background:transparent;border:1px solid rgba(200,168,75,.3);color:#C8C4B8;font-family:'DM Mono',monospace;font-size:.6rem;padding:8px 16px;cursor:pointer;letter-spacing:.06em;">Skip for now</button>
+      <button onclick="saveCohortFromModal()" style="background:#C8A84B;border:none;color:#1A1F14;font-family:'DM Mono',monospace;font-size:.6rem;padding:8px 18px;cursor:pointer;font-weight:700;letter-spacing:.06em;">Save &amp; Continue</button>
+    </div>
+  </div>
+</div>
+
 <script>
+// ── THEME ─────────────────────────────────────────────────────────────────────
 function applyTheme(t){
   document.body.className = t;
-  document.getElementById('theme-btn').textContent = (t==='light-mode') ? 'Dark Mode' : 'Light Mode';
+  var btn = document.getElementById('theme-btn');
+  if(btn) btn.textContent = (t==='light-mode') ? 'Dark Mode' : 'Light Mode';
   try{localStorage.setItem('pm-course-theme', t);}catch(e){}
-}
-function resetAllProgress(){
-  if(confirm('Reset ALL case file progress? This clears your progress across all 13 case files.')){
-    var keys=['casefile01_v1','casefile02_v1','casefile03_v1','casefile04_v1','casefile05_v1',
-      'casefile06_v1','casefile07_v1','casefile08_v1','casefile09_v1','casefile10_v1',
-      'casefile11_v1','casefile12_v1','casefile13_v1','pm-learner-profile'];
-    keys.forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
-    location.reload();
-  }
 }
 function toggleTheme(){
   applyTheme(document.body.classList.contains('light-mode') ? 'dark-mode' : 'light-mode');
 }
 
+// ── FONT SIZE ─────────────────────────────────────────────────────────────────
 var FONT_SIZES=['font-s','','font-l'];
 var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
 function applyFontSize(cls){
@@ -309,275 +320,176 @@ function applyFontSize(cls){
   try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
 }
 function toggleFontSize(){
-  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
-  var idx=FONT_SIZES.indexOf(current);
-  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
-  applyFontSize(next);
+  var cur=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  applyFontSize(FONT_SIZES[(FONT_SIZES.indexOf(cur)+1)%FONT_SIZES.length]);
 }
-(function(){
-  var saved;
-  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
-  if(saved===null||saved===undefined)saved='';
-  applyFontSize(saved);
-})();
-(function(){
-  var saved;
-  try{saved = localStorage.getItem('pm-course-theme');}catch(e){}
-  applyTheme(saved || 'light-mode');
-})();
 
-// Best-effort progress check: reads each case file's localStorage key
-// (only works if all files are served from the same origin, e.g. SharePoint)
-(function(){
-  var cards = document.querySelectorAll('.case-card');
-  var completed = 0;
-  var scoreSum = 0, scoreCount = 0;
-  var learnerName = '';
-  cards.forEach(function(card){
-    var key = card.getAttribute('data-key');
-    var raw;
-    try{raw = localStorage.getItem(key);}catch(e){}
-    var num = card.querySelector('.case-num');
-    if(raw){
-      try{
-        var data = JSON.parse(raw);
-        if(data && data.name && !learnerName) learnerName = data.name;
-        if(data && data.kcScore !== undefined && data.kcScore !== null && data.section==='complete'){
-          num.classList.add('done');
-          num.innerHTML = '&#10003;';
-          var pill = document.createElement('div');
-          pill.className='status-pill';
-          pill.textContent='Complete';
-          card.insertBefore(pill, card.querySelector('.case-arrow'));
-          completed++;
-          scoreSum += data.kcScore;
-          scoreCount++;
-        }
-      }catch(e){}
-    }
-  });
-  var bar = document.getElementById('overall-bar');
-  var text = document.getElementById('overall-text');
-  var pct = Math.round((completed/13)*100);
-  bar.style.width = pct+'%';
-  if(completed===0){
-    text.textContent = '0 of 13 case files complete \u00b7 progress shown here is per-browser';
-  }else if(completed===13){
-    text.textContent = 'All 13 case files complete \u2014 course finished';
-  }else{
-    text.textContent = completed+' of 13 case files complete';
-  }
-
-  if(completed===13){
-    var avg = (scoreSum/scoreCount).toFixed(1);
-    document.getElementById('cert-name').textContent = learnerName || 'Learner';
-    var today = new Date();
-    var dateStr = (today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear();
-    document.getElementById('cert-meta').textContent = 'Average Knowledge Check Score: '+avg+' / 5 \u00b7 Completed: '+dateStr;
-    document.getElementById('cert-section').classList.add('show');
-  }
-})();
-</script>
-<script>
-function applyTheme(t){
-  document.body.className = t;
-  document.getElementById('theme-btn').textContent = (t==='light-mode') ? 'Dark Mode' : 'Light Mode';
-  try{localStorage.setItem('pm-course-theme', t);}catch(e){}
-}
+// ── RESET ─────────────────────────────────────────────────────────────────────
 function resetAllProgress(){
-  if(confirm('Reset ALL case file progress? This clears your progress across all 13 case files.')){
-    var keys=['casefile01_v1','casefile02_v1','casefile03_v1','casefile04_v1','casefile05_v1',
-      'casefile06_v1','casefile07_v1','casefile08_v1','casefile09_v1','casefile10_v1',
-      'casefile11_v1','casefile12_v1','casefile13_v1','pm-learner-profile'];
-    keys.forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
+  if(confirm('Reset ALL case file progress? Your cohort code and StrengthsFinder profile will be kept.')){
+    ['casefile01_v1','casefile02_v1','casefile03_v1','casefile04_v1','casefile05_v1',
+     'casefile06_v1','casefile07_v1','casefile08_v1','casefile09_v1','casefile10_v1',
+     'casefile11_v1','casefile12_v1','casefile13_v1','pm-learner-profile'
+    ].forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
     location.reload();
   }
 }
 
-
-var FONT_SIZES=['font-s','','font-l'];
-var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
-function applyFontSize(cls){
-  document.documentElement.classList.remove('font-s','font-l');
-  if(cls){document.documentElement.classList.add(cls);}
-  var btn=document.getElementById('font-toggle');
-  if(btn)btn.textContent=FONT_LABELS[cls];
-  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
+// ── COHORT MODAL ──────────────────────────────────────────────────────────────
+function showCohortModal(){
+  var m = document.getElementById('cohort-modal');
+  if(m){ m.style.display='flex'; }
+  var inp = document.getElementById('cohort-modal-input');
+  if(inp) inp.focus();
 }
-function toggleFontSize(){
-  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
-  var idx=FONT_SIZES.indexOf(current);
-  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
-  applyFontSize(next);
+function closeCohortModal(){
+  var m = document.getElementById('cohort-modal');
+  if(m) m.style.display='none';
 }
-(function(){
-  var saved;
-  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
-  if(saved===null||saved===undefined)saved='';
-  applyFontSize(saved);
-})();
-(function(){
-  var saved;
-  try{saved = localStorage.getItem('pm-course-theme');}catch(e){}
-  applyTheme(saved || 'light-mode');
-})();
+function saveCohortFromModal(){
+  var inp = document.getElementById('cohort-modal-input');
+  var v = inp ? inp.value.trim().toUpperCase() : '';
+  if(!v){ alert('Please enter your cohort code before continuing.'); return; }
+  try{localStorage.setItem('pm-cohort-code', v);}catch(e){}
+  updateCohortDisplay();
+  closeCohortModal();
+}
+function updateCohortDisplay(){
+  try{
+    var saved = localStorage.getItem('pm-cohort-code');
+    var statusEl = document.getElementById('cohort-status');
+    var inputEl  = document.getElementById('cohort-inline-input');
+    if(statusEl) statusEl.textContent = saved ? 'Active cohort: ' + saved : '';
+    if(inputEl && saved) inputEl.value = saved;
+  }catch(e){}
+}
+function saveCohortInline(){
+  var inp = document.getElementById('cohort-inline-input');
+  var v = inp ? inp.value.trim().toUpperCase() : '';
+  if(!v){ alert('Please enter a cohort code.'); return; }
+  try{localStorage.setItem('pm-cohort-code', v);}catch(e){}
+  updateCohortDisplay();
+}
 
-// Best-effort progress check: reads each case file's localStorage key
-// (only works if all files are served from the same origin, e.g. SharePoint)
-(function(){
-  var cards = document.querySelectorAll('.case-card');
-  var completed = 0;
-  var scoreSum = 0, scoreCount = 0;
-  var learnerName = '';
+// ── STRENGTHS SELECTOR ────────────────────────────────────────────────────────
+var sfSelected = [];
+var SF_THEMES_BY_DOMAIN = {
+  'Executing': ['Achiever','Arranger','Belief','Consistency','Deliberative','Discipline','Focus','Responsibility','Restorative'],
+  'Influencing': ['Activator','Command','Communication','Competition','Maximizer','Self-Assurance','Significance','Woo'],
+  'Relationship Building': ['Adaptability','Connectedness','Developer','Empathy','Harmony','Includer','Individualization','Positivity','Relator'],
+  'Strategic Thinking': ['Analytical','Context','Futuristic','Ideation','Input','Intellection','Learner','Strategic']
+};
+
+function toggleSFTheme(theme){
+  var idx = sfSelected.indexOf(theme);
+  if(idx >= 0){
+    sfSelected.splice(idx, 1);
+  } else {
+    if(sfSelected.length >= 5){ alert('You can only select 5 themes. Deselect one first.'); return; }
+    sfSelected.push(theme);
+  }
+  updateSFDisplay();
+}
+
+function updateSFDisplay(){
+  document.querySelectorAll('.sf-theme-btn').forEach(function(btn){
+    var theme = btn.id.replace('sf-btn-','').replace(/-/g,' ');
+    var rank = sfSelected.indexOf(theme) + 1;
+    btn.className = 'sf-theme-btn' + (rank > 0 ? ' selected-' + rank : '');
+    btn.textContent = rank > 0 ? theme + ' #' + rank : theme;
+  });
+  var disp = document.getElementById('sf-selected-display');
+  if(!disp) return;
+  if(sfSelected.length === 0){
+    disp.innerHTML = 'No themes selected yet.';
+  } else {
+    disp.innerHTML = sfSelected.map(function(t,i){
+      return '<span class="sf-rank">#'+(i+1)+'</span> '+t+(i<sfSelected.length-1?'&nbsp;&nbsp;·&nbsp;&nbsp;':'');
+    }).join('');
+  }
+}
+
+function saveStrengths(){
+  if(sfSelected.length < 5){ alert('Please select all 5 of your top themes before saving.'); return; }
+  try{localStorage.setItem('pm-sf-themes', JSON.stringify(sfSelected));}catch(e){}
+  var disp = document.getElementById('sf-selected-display');
+  if(disp) disp.innerHTML += '&nbsp;&nbsp;<strong style="color:#BB99EE">&#10003; Saved</strong>';
+}
+
+function initStrengths(){
+  try{
+    var saved = localStorage.getItem('pm-sf-themes');
+    if(saved) sfSelected = JSON.parse(saved);
+  }catch(e){}
+  var container = document.getElementById('sf-domains');
+  if(!container) return;
+  container.innerHTML = Object.entries(SF_THEMES_BY_DOMAIN).map(function(e){
+    var domain=e[0], themes=e[1];
+    return '<div class="sf-domain"><div class="sf-domain-label">'+domain+'</div>'
+      +themes.map(function(t){
+        return '<button class="sf-theme-btn" id="sf-btn-'+t.replace(/ /g,'-')+'" onclick="toggleSFTheme(\''+t+'\')">'+t+'</button>';
+      }).join('')+'</div>';
+  }).join('');
+  updateSFDisplay();
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
+function initProgress(){
+  var cards=document.querySelectorAll('.case-card');
+  var completed=0,scoreSum=0,scoreCount=0,learnerName='';
   cards.forEach(function(card){
-    var key = card.getAttribute('data-key');
-    var raw;
-    try{raw = localStorage.getItem(key);}catch(e){}
-    var num = card.querySelector('.case-num');
+    var key=card.getAttribute('data-key'), raw;
+    try{raw=localStorage.getItem(key);}catch(e){}
+    var num=card.querySelector('.case-num');
     if(raw){
       try{
-        var data = JSON.parse(raw);
-        if(data && data.name && !learnerName) learnerName = data.name;
-        if(data && data.kcScore !== undefined && data.kcScore !== null && data.section==='complete'){
-          num.classList.add('done');
-          num.innerHTML = '&#10003;';
-          var pill = document.createElement('div');
-          pill.className='status-pill';
-          pill.textContent='Complete';
-          card.insertBefore(pill, card.querySelector('.case-arrow'));
-          completed++;
-          scoreSum += data.kcScore;
-          scoreCount++;
+        var data=JSON.parse(raw);
+        if(data&&data.name&&!learnerName) learnerName=data.name;
+        if(data&&data.kcScore!==undefined&&data.section==='complete'){
+          num.classList.add('done'); num.innerHTML='&#10003;';
+          var pill=document.createElement('div');
+          pill.className='status-pill'; pill.textContent='Complete';
+          card.insertBefore(pill,card.querySelector('.case-arrow'));
+          completed++; scoreSum+=data.kcScore; scoreCount++;
         }
       }catch(e){}
     }
   });
-  var bar = document.getElementById('overall-bar');
-  var text = document.getElementById('overall-text');
-  var pct = Math.round((completed/13)*100);
-  bar.style.width = pct+'%';
-  if(completed===0){
-    text.textContent = '0 of 13 case files complete \u00b7 progress shown here is per-browser';
-  }else if(completed===13){
-    text.textContent = 'All 13 case files complete \u2014 course finished';
-  }else{
-    text.textContent = completed+' of 13 case files complete';
+  var bar=document.getElementById('overall-bar');
+  var txt=document.getElementById('overall-text');
+  var pct=Math.round((completed/13)*100);
+  if(bar) bar.style.width=pct+'%';
+  if(txt){
+    if(completed===0) txt.textContent='0 of 13 case files complete · progress shown here is per-browser';
+    else if(completed===13) txt.textContent='All 13 case files complete — course finished';
+    else txt.textContent=completed+' of 13 case files complete';
   }
-
   if(completed===13){
-    var avg = (scoreSum/scoreCount).toFixed(1);
-    document.getElementById('cert-name').textContent = learnerName || 'Learner';
-    var today = new Date();
-    var dateStr = (today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear();
-    document.getElementById('cert-meta').textContent = 'Average Knowledge Check Score: '+avg+' / 5 \u00b7 Completed: '+dateStr;
-    document.getElementById('cert-section').classList.add('show');
+    var avg=(scoreSum/scoreCount).toFixed(1);
+    var cn=document.getElementById('cert-name'),cm=document.getElementById('cert-meta'),cs=document.getElementById('cert-section');
+    if(cn) cn.textContent=learnerName||'Learner';
+    if(cm){var d=new Date();cm.textContent='Average KC Score: '+avg+' / 5 · Completed: '+(d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear();}
+    if(cs) cs.classList.add('show');
   }
-})();
-</script>
+}
 
-<script>
-
-// ── PM TRACKER — SUPABASE ────────────────────────────────────────────────────
+// ── BOOT ─────────────────────────────────────────────────────────────────────
 (function(){
-  const SB_URL='https://uvzgrrypvjuxmzytdyvs.supabase.co';
-  const SB_KEY='sb_publishable_3un3K44EQlu3n_1W8TzhpA_laikZo6h';
-  function getSessionId(){try{let s=localStorage.getItem('pm-session-id');if(!s){s='S'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);localStorage.setItem('pm-session-id',s);}return s;}catch(e){return 'anon';}}
-  function getCohortCode(){try{return localStorage.getItem('pm-cohort-code')||'UNASSIGNED';}catch(e){return 'UNASSIGNED';}}
-  async function post(path,body){try{await fetch(SB_URL+'/rest/v1/'+path,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify(body)});}catch(e){}}
-  window.PMTracker={
-    postResponse:function(cf,decisions,kcAnswers,kcScore){
-      const code=getCohortCode();if(code==='UNASSIGNED')return;
-      post('responses',{cohort_code:code,session_id:getSessionId(),cf_number:cf,decisions:decisions,kc_answers:kcAnswers,kc_score:kcScore});
-    },
-    postTestScore:function(type,score){
-      const code=getCohortCode();if(code==='UNASSIGNED')return;
-      post('test_scores',{cohort_code:code,session_id:getSessionId(),test_type:type,score:score});
-    },
-    getCohortCode:getCohortCode,getSessionId:getSessionId
-  };
-})();
+  var fs; try{fs=localStorage.getItem('pm-fontsize');}catch(e){}
+  applyFontSize(fs||'');
 
+  var th; try{th=localStorage.getItem('pm-course-theme');}catch(e){}
+  applyTheme(th||'light-mode');
 
-function saveCohortCode(){
-  const v=document.getElementById('cohort-code-input').value.trim().toUpperCase();
-  if(!v){alert('Please enter a cohort code.');return;}
-  try{localStorage.setItem('pm-cohort-code',v);}catch(e){}
-  document.getElementById('cohort-status').textContent='Saved: '+v;
-  if(window.PMTracker)console.log('Cohort set:',v);
-}
-function initCohortEntry(){
-  try{
-    const saved=localStorage.getItem('pm-cohort-code');
-    if(saved){
-      document.getElementById('cohort-code-input').value=saved;
-      document.getElementById('cohort-status').textContent='Active: '+saved;
-    }
-  }catch(e){}
-}
+  var cohort; try{cohort=localStorage.getItem('pm-cohort-code');}catch(e){}
+  if(!cohort){ setTimeout(showCohortModal, 350); }
 
-document.addEventListener("DOMContentLoaded", initCohortEntry);
-</script>
-
-<script>
-
-const SF_THEMES_BY_DOMAIN = {"Executing": ["Achiever", "Arranger", "Belief", "Consistency", "Deliberative", "Discipline", "Focus", "Responsibility", "Restorative"], "Influencing": ["Activator", "Command", "Communication", "Competition", "Maximizer", "Self-Assurance", "Significance", "Woo"], "Relationship Building": ["Adaptability", "Connectedness", "Developer", "Empathy", "Harmony", "Includer", "Individualization", "Positivity", "Relator"], "Strategic Thinking": ["Analytical", "Context", "Futuristic", "Ideation", "Input", "Intellection", "Learner", "Strategic"]};
-let sfSelected = [];
-
-function initStrengths() {
-  // Load saved selection
-  try {
-    const saved = localStorage.getItem('pm-sf-themes');
-    if (saved) sfSelected = JSON.parse(saved);
-  } catch(e) {}
-
-  // Render domain blocks
-  const container = document.getElementById('sf-domains');
-  if (!container) return;
-  container.innerHTML = Object.entries(SF_THEMES_BY_DOMAIN).map(([domain, themes]) => `
-    <div class="sf-domain">
-      <div class="sf-domain-label">${domain}</div>
-      ${themes.map(t => `<button class="sf-theme-btn" id="sf-btn-${t.replace(/ /g,'-')}" onclick="toggleTheme('${t}')">${t}</button>`).join('')}
-    </div>
-  `).join('');
-
-  updateThemeDisplay();
-}
-
-
-
-function updateThemeDisplay() {
-  // Update buttons — derive theme name from id, not textContent
-  document.querySelectorAll('.sf-theme-btn').forEach(btn => {
-    const theme = btn.id.replace('sf-btn-', '').replace(/-/g, ' ');
-    const rank = sfSelected.indexOf(theme) + 1;
-    btn.className = 'sf-theme-btn' + (rank > 0 ? ' selected-' + rank : '');
-    btn.textContent = rank > 0 ? `${theme} #${rank}` : theme;
+  document.addEventListener('DOMContentLoaded', function(){
+    updateCohortDisplay();
+    initStrengths();
+    initProgress();
   });
-
-  // Update display
-  const disp = document.getElementById('sf-selected-display');
-  if (!disp) return;
-  if (sfSelected.length === 0) {
-    disp.innerHTML = 'No themes selected yet.';
-  } else {
-    disp.innerHTML = sfSelected.map((t,i) =>
-      `<span class="sf-rank">#${i+1}</span> ${t}${i < sfSelected.length-1 ? '&nbsp;&nbsp;·&nbsp;&nbsp;' : ''}`
-    ).join('');
-  }
-}
-
-function saveStrengths() {
-  if (sfSelected.length < 5) {
-    alert('Please select all 5 of your top themes before saving.');
-    return;
-  }
-  try { localStorage.setItem('pm-sf-themes', JSON.stringify(sfSelected)); } catch(e) {}
-  const disp = document.getElementById('sf-selected-display');
-  if (disp) disp.innerHTML += '&nbsp;&nbsp;<strong style="color:#BB99EE">✓ Saved</strong>';
-}
-
-document.addEventListener('DOMContentLoaded', initStrengths);
-
+})();
 </script>
 </body>
 </html>
