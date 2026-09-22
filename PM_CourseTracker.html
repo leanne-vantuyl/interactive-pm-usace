@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PM in USACE — Course Response Tracker</title>
+<style>
+:root {
+  --dark:#1A1A2E;--navy:#2C3E6B;--gold:#8B6914;--gold-lt:#C49A2A;
+  --white:#F5F2EB;--gray:#D0D4DC;--gray-dk:#6B7280;
+  --cw:#1B3A6B;--mp:#1B5C2A;--sf:#5B2D8E;--green:#1B6B3A;
+  --teal:#1B5B6B;--red:#6B1B1B;--bg:#F0F0EA;--card:#FFFFFF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-height:100vh;}
+.header{background:var(--dark);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.header h1{font-size:1.15rem;color:var(--white);font-weight:700;}
+.header-sub{font-size:.72rem;color:var(--gray-dk);margin-top:2px;}
+.cohort-row{display:flex;align-items:center;gap:10px;}
+.cohort-row label{font-size:.8rem;color:var(--gray);}
+.cohort-row select{background:#1E2440;border:1px solid #3A4060;color:var(--white);font-size:.82rem;padding:6px 10px;border-radius:3px;cursor:pointer;}
+.btn-gold{background:var(--gold);border:none;color:var(--dark);font-size:.8rem;font-weight:700;padding:7px 13px;cursor:pointer;border-radius:3px;}
+.btn-gold:hover{background:var(--gold-lt);}
+.tabs{background:var(--navy);display:flex;padding:0 28px;gap:2px;overflow-x:auto;}
+.tab{padding:10px 18px;font-size:.83rem;color:var(--gray);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;}
+.tab.active{color:var(--white);border-bottom-color:var(--gold-lt);font-weight:700;}
+.tab:hover:not(.active){color:var(--white);}
+.main{padding:22px 28px;max-width:1200px;margin:0 auto;}
+.summary-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px;}
+.scard{background:var(--card);border:1px solid #E0E0D8;padding:14px;border-radius:4px;}
+.scard .val{font-size:1.9rem;font-weight:700;color:var(--navy);font-family:Cambria,serif;}
+.scard .lbl{font-size:.7rem;color:var(--gray-dk);margin-top:2px;text-transform:uppercase;letter-spacing:.06em;}
+.scard .sub{font-size:.75rem;color:var(--gray-dk);margin-top:3px;}
+.section-hdr{font-size:.95rem;font-weight:700;color:var(--dark);margin-bottom:12px;padding-bottom:7px;border-bottom:2px solid var(--gold);letter-spacing:.04em;}
+.cf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.cf-card{background:var(--card);border:1px solid #E0E0D8;border-radius:4px;overflow:hidden;}
+.cf-hdr{background:var(--dark);padding:9px 13px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.cf-num{font-size:1rem;font-weight:700;color:var(--gold-lt);font-family:Cambria,serif;flex-shrink:0;}
+.cf-title-wrap{font-size:.75rem;color:var(--gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cf-body{padding:11px 13px;}
+.d-label{font-size:.7rem;font-weight:700;color:var(--gray-dk);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em;}
+.d-row{margin-bottom:9px;}
+.ch-row{display:flex;gap:5px;align-items:center;margin-bottom:2px;}
+.ch-lbl{font-size:.72rem;color:var(--gray-dk);width:18px;flex-shrink:0;}
+.bar-wrap{flex:1;background:#EEE;height:11px;border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;transition:width .4s;background:var(--navy);}
+.ch-pct{font-size:.7rem;color:var(--gray-dk);width:30px;text-align:right;flex-shrink:0;}
+.n-lbl{font-size:.67rem;color:var(--gray-dk);margin-top:1px;}
+.kc-section{margin-top:10px;padding-top:9px;border-top:1px solid #EEE;}
+.kc-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+.kc-q{font-size:.7rem;color:var(--gray-dk);width:20px;flex-shrink:0;}
+.kc-bar-wrap{flex:1;background:#EEE;height:9px;border-radius:2px;overflow:hidden;}
+.kc-bar{height:100%;border-radius:2px;transition:width .4s;}
+.kc-pct{font-size:.7rem;color:var(--gray-dk);width:30px;text-align:right;}
+.green{background:var(--green);}
+.amber{background:#C49A2A;}
+.red-bar{background:var(--red);}
+.pill{display:inline-block;font-size:.62rem;font-weight:700;padding:2px 6px;border-radius:2px;color:#fff;letter-spacing:.04em;margin-left:6px;vertical-align:middle;}
+.p-init{background:var(--navy);}.p-plan{background:var(--teal);}.p-exec{background:var(--green);}.p-close{background:var(--red);}
+.prepost-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;}
+.pp-card{background:var(--card);border:1px solid #E0E0D8;border-radius:4px;padding:18px;text-align:center;}
+.pp-val{font-size:2rem;font-weight:700;font-family:Cambria,serif;color:var(--navy);}
+.pp-val.gain{color:var(--green);}.pp-val.loss{color:var(--red);}
+.pp-lbl{font-size:.72rem;color:var(--gray-dk);text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
+.prepost-table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--card);border:1px solid #E0E0D8;border-radius:4px;overflow:hidden;}
+.prepost-table th{background:var(--dark);color:var(--white);padding:8px 12px;text-align:left;font-size:.75rem;letter-spacing:.04em;}
+.prepost-table td{padding:8px 12px;border-bottom:1px solid #EEE;}
+.prepost-table tr:nth-child(even) td{background:#F8F8F5;}
+.dp{color:var(--green);font-weight:700;}.dn{color:var(--red);font-weight:700;}.d0{color:var(--gray-dk);}
+.export-card{background:var(--card);border:1px solid #E0E0D8;border-radius:4px;padding:20px;margin-bottom:16px;}
+.export-card p{font-size:.88rem;color:var(--gray-dk);margin-bottom:14px;line-height:1.6;}
+.code-display{font-size:1.6rem;font-weight:700;color:var(--navy);font-family:Cambria,serif;letter-spacing:.12em;padding:10px 0;}
+.btn-navy{background:var(--navy);border:none;color:var(--white);padding:9px 18px;font-size:.88rem;font-weight:700;cursor:pointer;border-radius:3px;}
+.btn-navy:hover{background:#1A2B55;}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--card);padding:26px;border-radius:6px;width:400px;max-width:90vw;}
+.modal h3{font-size:1.05rem;color:var(--dark);margin-bottom:6px;}
+.modal p{font-size:.8rem;color:var(--gray-dk);margin-bottom:14px;line-height:1.6;}
+.modal input{width:100%;border:1px solid #DDD;padding:8px 12px;font-size:.88rem;border-radius:3px;margin-bottom:10px;}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;}
+.btn-cancel{background:#EEE;border:none;padding:8px 16px;cursor:pointer;border-radius:3px;font-size:.82rem;}
+.empty{text-align:center;padding:40px;color:var(--gray-dk);}
+.empty .ico{font-size:2.2rem;margin-bottom:10px;}
+.empty p{font-size:.85rem;line-height:1.7;}
+.loading{text-align:center;padding:30px;color:var(--gray-dk);font-size:.85rem;}
+.err{background:#FDF0F0;border:1px solid var(--red);color:var(--red);padding:10px 14px;border-radius:4px;margin-bottom:14px;font-size:.83rem;}
+.status{font-size:.75rem;color:var(--gray-dk);text-align:right;margin-bottom:10px;}
+.status.live{color:var(--green);}
+@media(max-width:700px){.cf-grid{grid-template-columns:1fr;}.summary-row{grid-template-columns:repeat(2,1fr);}.prepost-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header h1">PM in USACE — Course Response Tracker</div>
+    <div class="header-sub">Decision votes · Knowledge Check scores · Pre/Post comparison · Supabase-powered</div>
+  </div>
+  <div class="cohort-row">
+    <label>Cohort:</label>
+    <select id="cohort-sel" onchange="loadCohort()"><option value="">— select —</option></select>
+    <button class="btn-gold" onclick="openModal()">+ New Cohort</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('decisions')">Decision Trends</div>
+  <div class="tab" onclick="showTab('kc')">Knowledge Check</div>
+  <div class="tab" onclick="showTab('prepost')">Pre / Post Test</div>
+  <div class="tab" onclick="showTab('export')">Export &amp; Setup</div>
+</div>
+
+<div class="main">
+  <div id="err-area"></div>
+  <div id="status-line" class="status"></div>
+
+  <div class="summary-row" id="summary-row" style="display:none">
+    <div class="scard"><div class="val" id="s-n">—</div><div class="lbl">Participants</div></div>
+    <div class="scard"><div class="val" id="s-cfs">—</div><div class="lbl">Avg CFs Done</div><div class="sub">per participant</div></div>
+    <div class="scard"><div class="val" id="s-kc">—</div><div class="lbl">Avg KC Score</div></div>
+    <div class="scard"><div class="val" id="s-pre">—</div><div class="lbl">Avg Pretest</div></div>
+    <div class="scard"><div class="val" id="s-post">—</div><div class="lbl">Avg Posttest</div><div class="sub" id="s-delta"></div></div>
+  </div>
+
+  <div id="tab-decisions">
+    <div class="section-hdr">DECISION VOTES BY CASE FILE</div>
+    <div id="decisions-grid" class="cf-grid"><div class="loading">Select a cohort to load data.</div></div>
+  </div>
+
+  <div id="tab-kc" style="display:none">
+    <div class="section-hdr">KNOWLEDGE CHECK — % CORRECT BY QUESTION</div>
+    <div id="kc-grid" class="cf-grid"><div class="loading">Select a cohort to load data.</div></div>
+  </div>
+
+  <div id="tab-prepost" style="display:none">
+    <div class="section-hdr">PRE-TEST / POST-TEST COMPARISON</div>
+    <div id="prepost-content"><div class="loading">Select a cohort to load data.</div></div>
+  </div>
+
+  <div id="tab-export" style="display:none">
+    <div class="section-hdr">EXPORT DATA</div>
+    <div class="export-card">
+      <p>Download all response data for the selected cohort as CSV. Open in Excel for deeper analysis.</p>
+      <button class="btn-navy" onclick="exportCSV()">⬇ Download CSV</button>
+    </div>
+
+    <div class="section-hdr" style="margin-top:24px;">COHORT CODE FOR PARTICIPANTS</div>
+    <div class="export-card">
+      <p>Share this code with participants at the start of class. They enter it on the course home page before starting Case File 01. All their responses will be tagged to this cohort.</p>
+      <div class="code-display" id="code-display">—</div>
+      <p style="font-size:.75rem;color:var(--gray-dk)">Each participant gets an anonymous random ID — no names are collected.</p>
+    </div>
+
+    <div class="section-hdr" style="margin-top:24px;">DATABASE SETUP STATUS</div>
+    <div class="export-card" id="db-status-card">
+      <p>Checking connection to Supabase...</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3>Create New Cohort</h3>
+    <p>Use a code like <strong>USACE-2026-09-FTW</strong> — year, month, location. This is what participants type in to tag their responses.</p>
+    <input id="m-code" placeholder="Cohort code (e.g. USACE-2026-09-FTW)" maxlength="40"/>
+    <input id="m-name" placeholder="Friendly name (e.g. Fort Worth Sept 2026)" maxlength="80"/>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-gold" onclick="createCohort()">Create Cohort</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SB_URL  = 'https://uvzgrrypvjuxmzytdyvs.supabase.co';
+const SB_KEY  = 'sb_publishable_3un3K44EQlu3n_1W8TzhpA_laikZo6h';
+
+const CF_META = [
+  {num:'01',title:'New PM, Unclear Roles',phase:'INITIATION'},
+  {num:'02',title:'Schedule vs. Scope',phase:'INITIATION'},
+  {num:'03',title:'The New Home',phase:'INITIATION'},
+  {num:'04',title:'Built to Slip',phase:'PLANNING'},
+  {num:'05',title:"The Number Doesn't Fit",phase:'PLANNING'},
+  {num:'06',title:'The Feedback Conversation',phase:'PLANNING'},
+  {num:'07',title:'The Phantom Slip',phase:'EXEC / M&C'},
+  {num:'08',title:'The Risk Nobody Tracked',phase:'EXEC / M&C'},
+  {num:'09',title:'The Meeting That Got Away',phase:'EXEC / M&C'},
+  {num:'10',title:'The Wrong Shade of Gray',phase:'EXEC / M&C'},
+  {num:'11',title:'Two Faces of Risk',phase:'EXEC / M&C'},
+  {num:'12',title:'The Favor',phase:'EXEC / M&C'},
+  {num:'13',title:'Closing Well',phase:'CLOSEOUT'},
+];
+const PHASE_PILL = {
+  'INITIATION':'p-init','PLANNING':'p-plan','EXEC / M&C':'p-exec','CLOSEOUT':'p-close'
+};
+
+const D_LABELS = [
+  ['Charter Update','PDT Engagement','DPM Communication'],
+  ['Mediation Approach','Documentation','Escalation'],
+  ['Gap Discovery','Sponsor Conversation','Path Forward'],
+  ['Raising the Question','Schedule Revision','Baseline Update'],
+  ['Presenting the Gap','Option Selected','DPM Response'],
+  ['OIR Delivery','Pivot Response','Follow-up'],
+  ['Ashford Response','Diagnostic Step','Narrative'],
+  ['Marcus Comment','Register Entry','Owner Assignment'],
+  ['Recovery Technique','Parking Lot','Time Check'],
+  ['Change Classification','Approval Path','Documentation'],
+  ['Pre-Action Check','Opportunity Response','Communication'],
+  ['Initial Response','AER Delivery','Relationship'],
+  ['AAR Opening','Difficult Moment','Lesson Capture'],
+];
+
+let currentCohort = null;
+let allResponses = [];
+let allTestScores = [];
+let activeTab = 'decisions';
+
+// ── SUPABASE HELPERS ──────────────────────────────────────────────────────────
+async function sbGet(path, params='') {
+  const r = await fetch(`${SB_URL}/rest/v1/${path}${params}`, {
+    headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json'}
+  });
+  if (!r.ok) throw new Error(`Supabase error ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+async function sbPost(path, body) {
+  const r = await fetch(`${SB_URL}/rest/v1/${path}`, {
+    method:'POST',
+    headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=representation'},
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error(`Supabase error ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+async function init() {
+  try {
+    const cohorts = await sbGet('cohorts','?select=code,name,created_at&order=created_at.desc');
+    populateCohortSelect(cohorts);
+    document.getElementById('status-line').textContent = `Connected to Supabase · ${cohorts.length} cohort(s)`;
+    document.getElementById('status-line').classList.add('live');
+    document.getElementById('db-status-card').innerHTML =
+      '<p style="color:var(--green);font-weight:700;">✓ Connected to Supabase successfully.</p>' +
+      '<p style="font-size:.8rem;color:var(--gray-dk);margin-top:8px;">Project: uvzgrrypvjuxmzytdyvs.supabase.co · Tables: cohorts, responses, test_scores</p>';
+  } catch(e) {
+    showErr('Cannot connect to Supabase. Check your network connection. ' + e.message);
+    document.getElementById('db-status-card').innerHTML =
+      '<p style="color:var(--red);">✗ Cannot reach Supabase. Check that the database tables have been created (see setup SQL).</p>';
+  }
+}
+
+function populateCohortSelect(cohorts) {
+  const sel = document.getElementById('cohort-sel');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— select cohort —</option>';
+  cohorts.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.code;
+    o.textContent = `${c.code}  (${c.name})`;
+    sel.appendChild(o);
+  });
+  if (cur) sel.value = cur;
+}
+
+// ── COHORT MANAGEMENT ─────────────────────────────────────────────────────────
+function openModal() { document.getElementById('modal').classList.add('open'); document.getElementById('m-code').focus(); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); document.getElementById('m-code').value=''; document.getElementById('m-name').value=''; }
+
+async function createCohort() {
+  const code = document.getElementById('m-code').value.trim().toUpperCase().replace(/[^A-Z0-9\-]/g,'');
+  const name = document.getElementById('m-name').value.trim();
+  if (!code || !name) { alert('Both fields required.'); return; }
+  try {
+    await sbPost('cohorts', {code, name});
+    closeModal();
+    const cohorts = await sbGet('cohorts','?select=code,name,created_at&order=created_at.desc');
+    populateCohortSelect(cohorts);
+    document.getElementById('cohort-sel').value = code;
+    loadCohort();
+  } catch(e) {
+    if (e.message.includes('duplicate')) alert('That cohort code already exists.');
+    else showErr('Could not create cohort: ' + e.message);
+  }
+}
+
+// ── LOAD COHORT DATA ──────────────────────────────────────────────────────────
+async function loadCohort() {
+  currentCohort = document.getElementById('cohort-sel').value;
+  document.getElementById('code-display').textContent = currentCohort || '—';
+
+  if (!currentCohort) {
+    document.getElementById('summary-row').style.display = 'none';
+    renderEmpty();
+    return;
+  }
+
+  document.getElementById('summary-row').style.display = 'grid';
+  document.getElementById('status-line').textContent = 'Loading cohort data…';
+
+  try {
+    [allResponses, allTestScores] = await Promise.all([
+      sbGet('responses', `?cohort_code=eq.${currentCohort}&select=*`),
+      sbGet('test_scores', `?cohort_code=eq.${currentCohort}&select=*`),
+    ]);
+    document.getElementById('status-line').textContent =
+      `${currentCohort} · ${allResponses.length} CF responses · ${allTestScores.length} test scores`;
+    document.getElementById('status-line').classList.add('live');
+    renderAll();
+  } catch(e) {
+    showErr('Could not load cohort data: ' + e.message);
+  }
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll() {
+  updateSummary();
+  if (activeTab==='decisions') renderDecisions();
+  else if (activeTab==='kc') renderKC();
+  else if (activeTab==='prepost') renderPrePost();
+}
+
+function updateSummary() {
+  const sessions = [...new Set(allResponses.map(r=>r.session_id))];
+  const n = sessions.length;
+  document.getElementById('s-n').textContent = n || '—';
+
+  if (!n) {
+    ['s-cfs','s-kc','s-pre','s-post'].forEach(id=>document.getElementById(id).textContent='—');
+    document.getElementById('s-delta').textContent='';
+    return;
+  }
+
+  // Avg CFs per session
+  const cfPerSession = sessions.map(s=>allResponses.filter(r=>r.session_id===s).length);
+  document.getElementById('s-cfs').textContent = (cfPerSession.reduce((a,b)=>a+b,0)/n).toFixed(1);
+
+  // Avg KC score
+  const kcs = allResponses.filter(r=>r.kc_score!=null).map(r=>r.kc_score);
+  document.getElementById('s-kc').textContent = kcs.length ? Math.round(kcs.reduce((a,b)=>a+b,0)/kcs.length*100)+'%' : '—';
+
+  // Pre/post
+  const pres = allTestScores.filter(t=>t.test_type==='pretest').map(t=>t.score);
+  const posts = allTestScores.filter(t=>t.test_type==='posttest').map(t=>t.score);
+  const preAvg = pres.length ? pres.reduce((a,b)=>a+b,0)/pres.length : null;
+  const postAvg = posts.length ? posts.reduce((a,b)=>a+b,0)/posts.length : null;
+
+  document.getElementById('s-pre').textContent = preAvg!==null ? Math.round(preAvg)+'%' : '—';
+  document.getElementById('s-post').textContent = postAvg!==null ? Math.round(postAvg)+'%' : '—';
+  if (preAvg!==null && postAvg!==null) {
+    const d = Math.round(postAvg-preAvg);
+    const el = document.getElementById('s-delta');
+    el.textContent = (d>=0?'+':'')+d+'% gain';
+    el.className = 'sub '+(d>0?'dp':d<0?'dn':'d0');
+  }
+}
+
+function renderDecisions() {
+  const grid = document.getElementById('decisions-grid');
+  const sessions = [...new Set(allResponses.map(r=>r.session_id))];
+  if (!sessions.length) {
+    grid.innerHTML = `<div class="empty"><div class="ico">📋</div><p>No responses yet for <strong>${currentCohort}</strong>.<br>Share the cohort code with participants.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = CF_META.map((cf,ci) => {
+    const cfResps = allResponses.filter(r=>r.cf_number===cf.num);
+    const votes = [{},{},{}];
+    cfResps.forEach(r => {
+      const decs = r.decisions || [];
+      decs.forEach((choice,di) => { if(choice) votes[di][choice]=(votes[di][choice]||0)+1; });
+    });
+
+    const decisionsHTML = D_LABELS[ci].map((label,di) => {
+      const total = Object.values(votes[di]).reduce((a,b)=>a+b,0)||1;
+      const n = Object.values(votes[di]).reduce((a,b)=>a+b,0);
+      return `<div class="d-row">
+        <div class="d-label">${label}</div>
+        ${['A','B','C'].map(c=>{
+          const cnt = votes[di][c]||0;
+          const pct = Math.round(cnt/total*100);
+          return `<div class="ch-row">
+            <div class="ch-lbl">${c}</div>
+            <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
+            <div class="ch-pct">${pct}%</div>
+          </div>`;
+        }).join('')}
+        <div class="n-lbl">n = ${n}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="cf-card">
+      <div class="cf-hdr">
+        <div class="cf-num">CF ${cf.num}</div>
+        <div class="cf-title-wrap">${cf.title} <span class="pill ${PHASE_PILL[cf.phase]}">${cf.phase}</span></div>
+      </div>
+      <div class="cf-body">${decisionsHTML}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderKC() {
+  const grid = document.getElementById('kc-grid');
+  const sessions = [...new Set(allResponses.map(r=>r.session_id))];
+  if (!sessions.length) {
+    grid.innerHTML = `<div class="empty"><div class="ico">📊</div><p>No responses yet for this cohort.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = CF_META.map(cf => {
+    const cfResps = allResponses.filter(r=>r.cf_number===cf.num);
+    const correct=[0,0,0,0,0], totals=[0,0,0,0,0];
+    cfResps.forEach(r => {
+      const ans = r.kc_answers||[];
+      ans.forEach((a,qi) => { if(a!==null&&a!==undefined){totals[qi]++;if(a===true||a===1)correct[qi]++;} });
+    });
+
+    const kcHTML = [1,2,3,4,5].map((_,qi) => {
+      const pct = totals[qi]?Math.round(correct[qi]/totals[qi]*100):0;
+      const cls = pct>=80?'green':pct>=60?'amber':'red-bar';
+      return `<div class="kc-row">
+        <div class="kc-q">Q${qi+1}</div>
+        <div class="kc-bar-wrap"><div class="kc-bar ${cls}" style="width:${pct}%"></div></div>
+        <div class="kc-pct">${totals[qi]?pct+'%':'—'}</div>
+      </div>`;
+    }).join('');
+
+    const avgKC = cfResps.filter(r=>r.kc_score!=null);
+    const avg = avgKC.length?Math.round(avgKC.reduce((a,b)=>a+b.kc_score,0)/avgKC.length*100):null;
+
+    return `<div class="cf-card">
+      <div class="cf-hdr">
+        <div class="cf-num">CF ${cf.num}</div>
+        <div class="cf-title-wrap">${cf.title}</div>
+      </div>
+      <div class="cf-body">
+        <div class="kc-section">
+          <div class="d-label" style="margin-bottom:7px">% Correct — avg ${avg!==null?avg+'%':'—'}</div>
+          ${kcHTML}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPrePost() {
+  const container = document.getElementById('prepost-content');
+  if (!allTestScores.length) {
+    container.innerHTML = `<div class="empty"><div class="ico">📈</div><p>No pre/post test data yet for this cohort.</p></div>`;
+    return;
+  }
+
+  const sessions = [...new Set(allTestScores.map(t=>t.session_id))];
+  const pres = allTestScores.filter(t=>t.test_type==='pretest');
+  const posts = allTestScores.filter(t=>t.test_type==='posttest');
+  const preAvg = pres.length?pres.reduce((a,b)=>a+b.score,0)/pres.length:null;
+  const postAvg = posts.length?posts.reduce((a,b)=>a+b.score,0)/posts.length:null;
+  const delta = preAvg!==null&&postAvg!==null?postAvg-preAvg:null;
+
+  container.innerHTML = `
+    <div class="prepost-grid">
+      <div class="pp-card"><div class="pp-val">${preAvg!==null?Math.round(preAvg)+'%':'—'}</div><div class="pp-lbl">Avg Pretest (n=${pres.length})</div></div>
+      <div class="pp-card"><div class="pp-val ${delta!==null?(delta>=0?'gain':'loss'):''}">
+        ${delta!==null?(delta>=0?'+':'')+Math.round(delta)+'%':'—'}</div><div class="pp-lbl">Avg Gain</div></div>
+      <div class="pp-card"><div class="pp-val">${postAvg!==null?Math.round(postAvg)+'%':'—'}</div><div class="pp-lbl">Avg Posttest (n=${posts.length})</div></div>
+    </div>
+    <table class="prepost-table">
+      <thead><tr><th>#</th><th>Pretest</th><th>Posttest</th><th>Gain</th></tr></thead>
+      <tbody>${sessions.sort().map((sid,i) => {
+        const pre = pres.find(t=>t.session_id===sid);
+        const post = posts.find(t=>t.session_id===sid);
+        const d = pre&&post?post.score-pre.score:null;
+        return `<tr>
+          <td style="color:var(--gray-dk)">Participant ${i+1}</td>
+          <td>${pre?pre.score+'%':'—'}</td>
+          <td>${post?post.score+'%':'—'}</td>
+          <td class="${d!==null?(d>0?'dp':d<0?'dn':'d0'):'d0'}">${d!==null?(d>=0?'+':'')+d+'%':'—'}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+}
+
+function renderEmpty() {
+  ['decisions-grid','kc-grid','prepost-content'].forEach(id => {
+    document.getElementById(id).innerHTML = '<div class="loading">Select a cohort to load data.</div>';
+  });
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function showTab(name) {
+  activeTab = name;
+  const names = ['decisions','kc','prepost','export'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
+  names.forEach(n=>document.getElementById('tab-'+n).style.display=n===name?'':'none');
+  if (currentCohort && name!=='export') renderAll();
+}
+
+// ── EXPORT CSV ────────────────────────────────────────────────────────────────
+function exportCSV() {
+  if (!currentCohort||!allResponses.length) { alert('No data to export.'); return; }
+  const rows=[['ParticipantID','Cohort','CaseFile','Decision1','Decision2','Decision3','KC1','KC2','KC3','KC4','KC5','KCScore','Pretest','Posttest']];
+  const sessions=[...new Set(allResponses.map(r=>r.session_id))];
+  sessions.forEach((sid,i) => {
+    const myResps = allResponses.filter(r=>r.session_id===sid);
+    const pre = allTestScores.find(t=>t.session_id===sid&&t.test_type==='pretest');
+    const post = allTestScores.find(t=>t.session_id===sid&&t.test_type==='posttest');
+    myResps.forEach(r => {
+      rows.push([
+        `P${String(i+1).padStart(3,'0')}`, currentCohort, r.cf_number,
+        ...(r.decisions||['','','']),
+        ...(r.kc_answers||['','','','']).map(a=>a===true?'1':a===false?'0':''),
+        r.kc_score!=null?Math.round(r.kc_score*100)+'%':'',
+        pre?pre.score+'%':'', post?post.score+'%':'',
+      ]);
+    });
+  });
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`PM-USACE-${currentCohort}.csv`;
+  a.click();
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function showErr(msg) { document.getElementById('err-area').innerHTML=`<div class="err">${msg}</div>`; }
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
