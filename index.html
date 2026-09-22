@@ -546,9 +546,9 @@ function initStrengths() {
 
 
 function updateThemeDisplay() {
-  // Update buttons
+  // Update buttons — derive theme name from id, not textContent
   document.querySelectorAll('.sf-theme-btn').forEach(btn => {
-    const theme = btn.textContent;
+    const theme = btn.id.replace('sf-btn-', '').replace(/-/g, ' ');
     const rank = sfSelected.indexOf(theme) + 1;
     btn.className = 'sf-theme-btn' + (rank > 0 ? ' selected-' + rank : '');
     btn.textContent = rank > 0 ? `${theme} #${rank}` : theme;
