@@ -286,7 +286,11 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
   <div style="background:#1A1F14;border:1px solid rgba(200,168,75,.5);padding:32px;max-width:440px;width:90vw;">
     <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:#F5F2EB;margin-bottom:8px;">Welcome</div>
     <div style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:#C8A84B;text-transform:uppercase;margin-bottom:16px;">Enter your cohort code to get started</div>
-    <p style="font-size:.8rem;color:#C8C4B8;line-height:1.6;margin-bottom:20px;">Your instructor will provide a cohort code at the start of class. It looks like <strong style="color:#F5F2EB;">USACE-2026-09-FTW</strong>. This code tags your responses for the course tracker.</p>
+    <p style="font-size:.8rem;color:#C8C4B8;line-height:1.6;margin-bottom:20px;">Your instructor will provide a cohort code at the start of class. Enter your name once here and it carries through all 13 case files automatically.</p>
+    <div style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:#C8A84B;text-transform:uppercase;margin-bottom:6px;">Your Name</div>
+    <input id="cohort-modal-name" type="text" placeholder="First Last" maxlength="60"
+      style="width:100%;background:#252D1C;border:1px solid rgba(200,168,75,.4);color:#F5F2EB;font-family:'Inter',sans-serif;font-size:.85rem;padding:10px 14px;margin-bottom:14px;box-sizing:border-box;"/>
+    <div style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:#C8A84B;text-transform:uppercase;margin-bottom:6px;">Cohort Code (from your instructor)</div>
     <input id="cohort-modal-input" type="text" placeholder="e.g. USACE-2026-09-FTW" maxlength="40"
       style="width:100%;background:#252D1C;border:1px solid rgba(200,168,75,.4);color:#F5F2EB;font-family:'DM Mono',monospace;font-size:.8rem;padding:10px 14px;margin-bottom:12px;box-sizing:border-box;"
       onkeydown="if(event.key==='Enter')saveCohortFromModal()"/>
@@ -347,9 +351,13 @@ function closeCohortModal(){
   if(m) m.style.display='none';
 }
 function saveCohortFromModal(){
+  var nameInp = document.getElementById('cohort-modal-name');
+  var name = nameInp ? nameInp.value.trim() : '';
   var inp = document.getElementById('cohort-modal-input');
   var v = inp ? inp.value.trim().toUpperCase() : '';
-  if(!v){ alert('Please enter your cohort code before continuing.'); return; }
+  if(!name){ alert('Please enter your name before continuing.'); nameInp && nameInp.focus(); return; }
+  if(!v){ alert('Please enter your cohort code before continuing.'); inp && inp.focus(); return; }
+  try{localStorage.setItem('pm-learner-name', name);}catch(e){}
   try{localStorage.setItem('pm-cohort-code', v);}catch(e){}
   updateCohortDisplay();
   closeCohortModal();

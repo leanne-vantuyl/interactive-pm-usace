@@ -422,6 +422,24 @@ function toggleNAThemes(){
   if(grid)grid.style.display=cb.checked?'none':'';
 }
 
+
+  // ── AUTO-IMPORT FROM INDEX ─────────────────────────────────────────────────
+  // If pm-learner-profile is not set but pm-sf-themes and pm-learner-name are,
+  // silently create the profile so the form is skipped
+  (function autoImport(){
+    try{
+      if(localStorage.getItem('pm-learner-profile')) return; // already set
+      var sfRaw = localStorage.getItem('pm-sf-themes');
+      var nameRaw = localStorage.getItem('pm-learner-name');
+      if(sfRaw && nameRaw){
+        var themes = JSON.parse(sfRaw);
+        if(themes && themes.length >= 1 && nameRaw.trim()){
+          saveProfile(nameRaw.trim(), themes);
+        }
+      }
+    }catch(e){}
+  })();
+
 function renderProfileFields(){
   var p=getProfile();
   if(p&&p.name){
