@@ -81,6 +81,32 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
 .ref-link-card:hover{border-color:var(--border-strong);}
 .ref-link-title{font-family:'DM Serif Display',serif;font-size:0.9375rem;color:var(--white);margin-bottom:3px;}
 .ref-link-meta{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;}
+
+.cohort-entry{background:'E8EEF7';border:1px solid rgba(44,62,107,.3);padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.cohort-entry label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;}
+.cohort-entry input{background:var(--army-mid);border:1px solid var(--border);color:var(--white);font-family:'DM Mono',monospace;font-size:.75rem;padding:7px 12px;width:220px;}
+.cohort-entry .cohort-btn{background:var(--gold-dim);border:none;color:var(--white);font-family:'DM Mono',monospace;font-size:.6rem;padding:7px 14px;cursor:pointer;letter-spacing:.06em;}
+.cohort-entry .cohort-status{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--accent);letter-spacing:.06em;}
+
+
+.sf-section{margin-bottom:20px;border:1px solid rgba(91,45,142,.3);background:rgba(91,45,142,.05);}
+.sf-section-hdr{background:rgba(91,45,142,.15);padding:10px 16px;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;color:#BB99EE;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;}
+.sf-section-hdr span{color:var(--gray-mid);font-size:.55rem;}
+.sf-domains{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.sf-domain{padding:10px 14px;border-right:1px solid rgba(91,45,142,.2);border-bottom:1px solid rgba(91,45,142,.2);}
+.sf-domain:nth-child(even){border-right:none;}
+.sf-domain:nth-child(3),.sf-domain:nth-child(4){border-bottom:none;}
+.sf-domain-label{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;color:#BB99EE;margin-bottom:8px;text-transform:uppercase;}
+.sf-theme-btn{display:inline-block;margin:2px 3px 2px 0;padding:4px 8px;font-family:'DM Mono',monospace;font-size:.58rem;border:1px solid rgba(91,45,142,.3);background:transparent;color:var(--gray-light);cursor:pointer;transition:.15s;}
+.sf-theme-btn:hover{border-color:#BB99EE;color:#BB99EE;}
+.sf-theme-btn.selected-1{background:#5B2D8E;border-color:#5B2D8E;color:#fff;}
+.sf-theme-btn.selected-2{background:#3D1D6B;border-color:#5B2D8E;color:#BB99EE;}
+.sf-theme-btn.selected-3,.sf-theme-btn.selected-4,.sf-theme-btn.selected-5{background:#1A0A2E;border-color:#3D1D6B;color:#9977CC;}
+.sf-selected-display{padding:10px 14px;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--gray-mid);border-top:1px solid rgba(91,45,142,.2);}
+.sf-selected-display .sf-rank{color:#BB99EE;font-weight:700;}
+.sf-save-btn{background:#5B2D8E;border:none;color:#fff;font-family:'DM Mono',monospace;font-size:.6rem;padding:7px 14px;cursor:pointer;letter-spacing:.06em;margin:8px 14px 10px;}
+.sf-save-btn:hover{background:#7B4DAE;}
+
 </style>
 <div class="wrap">
   <div class="topbar">
@@ -101,7 +127,28 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
   <p class="lede">An interactive, scenario-based alternative to <strong>PROSPECT 355: Project Management in USACE</strong>, built around the PDBP lifecycle. Follow <strong>Maria Chen</strong> through the Building 4521 Renovation &mdash; from an unfamiliar PDT in Case File 01 to a closed-out AAR in Case File 13. Each case file pairs a PDBP doctrine concept with a people-skill in practice, through a branching scenario and a 5-question Knowledge Check.</p>
 
   
-  <div class="instr-card">
+  
+<div class="cohort-entry" id="cohort-entry">
+  <label>Cohort Code:</label>
+  <input id="cohort-code-input" type="text" placeholder="e.g. USACE-2026-09-FTW" maxlength="40"/>
+  <button class="cohort-btn" onclick="saveCohortCode()">Save</button>
+  <span class="cohort-status" id="cohort-status"></span>
+</div>
+
+
+<div class="sf-section" id="sf-section">
+  <div class="sf-section-hdr">
+    StrengthsFinder Profile
+    <span>Select your top 5 themes in order — #1 first</span>
+  </div>
+  <div class="sf-domains" id="sf-domains">
+    <!-- rendered by JS -->
+  </div>
+  <div class="sf-selected-display" id="sf-selected-display">No themes selected yet.</div>
+  <button class="sf-save-btn" onclick="saveStrengths()">Save My Profile</button>
+</div>
+
+<div class="instr-card">
     <div class="card-label">For Facilitators &amp; Self-Paced Learners</div>
     <p>Each case file runs <strong>20–30 minutes</strong> and is self-contained &mdash; training, reflection, branching scenario, and a 5-question Knowledge Check (60% to pass, with shuffled answer order). The full course is roughly <strong>5.5–7 hours</strong> and maps to the Initiation, Planning, Execution, and Closeout phases of the PDBP lifecycle.</p>
     <p>Recommended use: complete 1&ndash;2 case files per week as a self-paced alternative to classroom PROSPECT 355 sessions, or use individual case files as discussion-starters in PDT or CCB training sessions. The storyline is continuous &mdash; case files reference earlier ones &mdash; but each stands on its own if used out of sequence.</p>
@@ -426,6 +473,111 @@ function toggleFontSize(){
     document.getElementById('cert-section').classList.add('show');
   }
 })();
+</script>
+
+<script>
+
+// ── PM TRACKER — SUPABASE ────────────────────────────────────────────────────
+(function(){
+  const SB_URL='https://uvzgrrypvjuxmzytdyvs.supabase.co';
+  const SB_KEY='sb_publishable_3un3K44EQlu3n_1W8TzhpA_laikZo6h';
+  function getSessionId(){try{let s=localStorage.getItem('pm-session-id');if(!s){s='S'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);localStorage.setItem('pm-session-id',s);}return s;}catch(e){return 'anon';}}
+  function getCohortCode(){try{return localStorage.getItem('pm-cohort-code')||'UNASSIGNED';}catch(e){return 'UNASSIGNED';}}
+  async function post(path,body){try{await fetch(SB_URL+'/rest/v1/'+path,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify(body)});}catch(e){}}
+  window.PMTracker={
+    postResponse:function(cf,decisions,kcAnswers,kcScore){
+      const code=getCohortCode();if(code==='UNASSIGNED')return;
+      post('responses',{cohort_code:code,session_id:getSessionId(),cf_number:cf,decisions:decisions,kc_answers:kcAnswers,kc_score:kcScore});
+    },
+    postTestScore:function(type,score){
+      const code=getCohortCode();if(code==='UNASSIGNED')return;
+      post('test_scores',{cohort_code:code,session_id:getSessionId(),test_type:type,score:score});
+    },
+    getCohortCode:getCohortCode,getSessionId:getSessionId
+  };
+})();
+
+
+function saveCohortCode(){
+  const v=document.getElementById('cohort-code-input').value.trim().toUpperCase();
+  if(!v){alert('Please enter a cohort code.');return;}
+  try{localStorage.setItem('pm-cohort-code',v);}catch(e){}
+  document.getElementById('cohort-status').textContent='Saved: '+v;
+  if(window.PMTracker)console.log('Cohort set:',v);
+}
+function initCohortEntry(){
+  try{
+    const saved=localStorage.getItem('pm-cohort-code');
+    if(saved){
+      document.getElementById('cohort-code-input').value=saved;
+      document.getElementById('cohort-status').textContent='Active: '+saved;
+    }
+  }catch(e){}
+}
+
+document.addEventListener("DOMContentLoaded", initCohortEntry);
+</script>
+
+<script>
+
+const SF_THEMES_BY_DOMAIN = {"Executing": ["Achiever", "Arranger", "Belief", "Consistency", "Deliberative", "Discipline", "Focus", "Responsibility", "Restorative"], "Influencing": ["Activator", "Command", "Communication", "Competition", "Maximizer", "Self-Assurance", "Significance", "Woo"], "Relationship Building": ["Adaptability", "Connectedness", "Developer", "Empathy", "Harmony", "Includer", "Individualization", "Positivity", "Relator"], "Strategic Thinking": ["Analytical", "Context", "Futuristic", "Ideation", "Input", "Intellection", "Learner", "Strategic"]};
+let sfSelected = [];
+
+function initStrengths() {
+  // Load saved selection
+  try {
+    const saved = localStorage.getItem('pm-sf-themes');
+    if (saved) sfSelected = JSON.parse(saved);
+  } catch(e) {}
+
+  // Render domain blocks
+  const container = document.getElementById('sf-domains');
+  if (!container) return;
+  container.innerHTML = Object.entries(SF_THEMES_BY_DOMAIN).map(([domain, themes]) => `
+    <div class="sf-domain">
+      <div class="sf-domain-label">${domain}</div>
+      ${themes.map(t => `<button class="sf-theme-btn" id="sf-btn-${t.replace(/ /g,'-')}" onclick="toggleTheme('${t}')">${t}</button>`).join('')}
+    </div>
+  `).join('');
+
+  updateThemeDisplay();
+}
+
+
+
+function updateThemeDisplay() {
+  // Update buttons
+  document.querySelectorAll('.sf-theme-btn').forEach(btn => {
+    const theme = btn.textContent;
+    const rank = sfSelected.indexOf(theme) + 1;
+    btn.className = 'sf-theme-btn' + (rank > 0 ? ' selected-' + rank : '');
+    btn.textContent = rank > 0 ? `${theme} #${rank}` : theme;
+  });
+
+  // Update display
+  const disp = document.getElementById('sf-selected-display');
+  if (!disp) return;
+  if (sfSelected.length === 0) {
+    disp.innerHTML = 'No themes selected yet.';
+  } else {
+    disp.innerHTML = sfSelected.map((t,i) =>
+      `<span class="sf-rank">#${i+1}</span> ${t}${i < sfSelected.length-1 ? '&nbsp;&nbsp;·&nbsp;&nbsp;' : ''}`
+    ).join('');
+  }
+}
+
+function saveStrengths() {
+  if (sfSelected.length < 5) {
+    alert('Please select all 5 of your top themes before saving.');
+    return;
+  }
+  try { localStorage.setItem('pm-sf-themes', JSON.stringify(sfSelected)); } catch(e) {}
+  const disp = document.getElementById('sf-selected-display');
+  if (disp) disp.innerHTML += '&nbsp;&nbsp;<strong style="color:#BB99EE">✓ Saved</strong>';
+}
+
+document.addEventListener('DOMContentLoaded', initStrengths);
+
 </script>
 </body>
 </html>

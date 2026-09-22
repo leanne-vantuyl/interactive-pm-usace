@@ -454,5 +454,50 @@ function toggleFontSize(){
 })();
 (function(){var t;try{t=localStorage.getItem('pm-course-theme');}catch(e){}if(t==='dark'){document.body.classList.remove('light-mode');}else{document.body.classList.add('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9790; Dark';}})();
 </script>
+
+<script>
+
+// ── PM TRACKER — SUPABASE ────────────────────────────────────────────────────
+(function(){
+  const SB_URL='https://uvzgrrypvjuxmzytdyvs.supabase.co';
+  const SB_KEY='sb_publishable_3un3K44EQlu3n_1W8TzhpA_laikZo6h';
+  function getSessionId(){try{let s=localStorage.getItem('pm-session-id');if(!s){s='S'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);localStorage.setItem('pm-session-id',s);}return s;}catch(e){return 'anon';}}
+  function getCohortCode(){try{return localStorage.getItem('pm-cohort-code')||'UNASSIGNED';}catch(e){return 'UNASSIGNED';}}
+  async function post(path,body){try{await fetch(SB_URL+'/rest/v1/'+path,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify(body)});}catch(e){}}
+  window.PMTracker={
+    postResponse:function(cf,decisions,kcAnswers,kcScore){
+      const code=getCohortCode();if(code==='UNASSIGNED')return;
+      post('responses',{cohort_code:code,session_id:getSessionId(),cf_number:cf,decisions:decisions,kc_answers:kcAnswers,kc_score:kcScore});
+    },
+    postTestScore:function(type,score){
+      const code=getCohortCode();if(code==='UNASSIGNED')return;
+      post('test_scores',{cohort_code:code,session_id:getSessionId(),test_type:type,score:score});
+    },
+    getCohortCode:getCohortCode,getSessionId:getSessionId
+  };
+})();
+
+
+// ── PM TRACKER HOOK ──────────────────────────────────────────────────────────
+// Called when participant completes the KC — extract responses and post
+(function hookTracker(){
+  const origSave = window.saveProgress;
+  if(typeof origSave === 'function'){
+    window.saveProgress = function(data){
+      origSave(data);
+      if(window.PMTracker && data && data.section==='complete'){
+        // Extract CF number from STORAGE_KEY
+        const cfMatch = (typeof STORAGE_KEY !== 'undefined' ? STORAGE_KEY : '').match(/casefile(\d+)/i);
+        const cfNum = cfMatch ? cfMatch[1].padStart(2,'0') : '00';
+        const decisions = data.decisions || [];
+        const kcAnswers = data.kcAnswers ? Object.values(data.kcAnswers) : [];
+        const kcScore = typeof data.kcScore === 'number' ? data.kcScore : null;
+        window.PMTracker.postResponse(cfNum, decisions, kcAnswers, kcScore);
+      }
+    };
+  }
+})();
+
+</script>
 </body>
 </html>
