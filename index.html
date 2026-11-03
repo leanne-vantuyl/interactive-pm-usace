@@ -1,18 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interactive PM in USACE</title>
-</head>
-<body>
-<!-- ==========================================
-     Interactive PM in USACE — SharePoint Snippet
-     Page: index.aspx
-     Paste this entire block into a Script Editor web part
-     on a Classic SharePoint page.
-     ========================================== -->
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Interactive PM in USACE | Course Home</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;--army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;--white:#F5F2EB;--white-dim:#C8C4B8;--accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;--border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -27,9 +19,6 @@ body.light-mode{--army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-d
 .logo-seal{width:38px;height:38px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.6875rem;color:var(--gold);flex-shrink:0;}
 .logo-primary{font-family:'DM Serif Display',serif;font-size:0.9375rem;color:var(--white);}
 .logo-sub{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-top:2px;}
-
-.reset-all-btn{background:transparent;border:1px solid rgba(200,50,50,0.35);color:rgba(200,100,100,0.7);font-family:'DM Mono',monospace;font-size:0.5rem;padding:6px 11px;cursor:pointer;letter-spacing:.06em;}
-.reset-all-btn:hover{border-color:rgba(220,80,80,0.7);color:rgba(220,100,100,1);}
 .theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:7px 12px;cursor:pointer;letter-spacing:.08em;}
 .eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
 .title-main{font-family:'DM Serif Display',serif;font-size:clamp(1.75rem,5vw,2.625rem);line-height:1.18;color:var(--white);margin-bottom:14px;}
@@ -81,33 +70,9 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
 .ref-link-card:hover{border-color:var(--border-strong);}
 .ref-link-title{font-family:'DM Serif Display',serif;font-size:0.9375rem;color:var(--white);margin-bottom:3px;}
 .ref-link-meta{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;}
-
-.cohort-entry{background:'E8EEF7';border:1px solid rgba(44,62,107,.3);padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-.cohort-entry label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;}
-.cohort-entry input{background:var(--army-mid);border:1px solid var(--border);color:var(--white);font-family:'DM Mono',monospace;font-size:.75rem;padding:7px 12px;width:220px;}
-.cohort-entry .cohort-btn{background:var(--gold-dim);border:none;color:var(--white);font-family:'DM Mono',monospace;font-size:.6rem;padding:7px 14px;cursor:pointer;letter-spacing:.06em;}
-.cohort-entry .cohort-status{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--accent);letter-spacing:.06em;}
-
-
-.sf-section{margin-bottom:20px;border:1px solid rgba(91,45,142,.3);background:rgba(91,45,142,.05);}
-.sf-section-hdr{background:rgba(91,45,142,.15);padding:10px 16px;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;color:#BB99EE;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;}
-.sf-section-hdr span{color:var(--gray-mid);font-size:.55rem;}
-.sf-domains{display:grid;grid-template-columns:1fr 1fr;gap:0;}
-.sf-domain{padding:10px 14px;border-right:1px solid rgba(91,45,142,.2);border-bottom:1px solid rgba(91,45,142,.2);}
-.sf-domain:nth-child(even){border-right:none;}
-.sf-domain:nth-child(3),.sf-domain:nth-child(4){border-bottom:none;}
-.sf-domain-label{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;color:#BB99EE;margin-bottom:8px;text-transform:uppercase;}
-.sf-theme-btn{display:inline-block;margin:2px 3px 2px 0;padding:4px 8px;font-family:'DM Mono',monospace;font-size:.58rem;border:1px solid rgba(91,45,142,.3);background:transparent;color:var(--gray-light);cursor:pointer;transition:.15s;}
-.sf-theme-btn:hover{border-color:#BB99EE;color:#BB99EE;}
-.sf-theme-btn.selected-1{background:#5B2D8E;border-color:#5B2D8E;color:#fff;}
-.sf-theme-btn.selected-2{background:#3D1D6B;border-color:#5B2D8E;color:#BB99EE;}
-.sf-theme-btn.selected-3,.sf-theme-btn.selected-4,.sf-theme-btn.selected-5{background:#1A0A2E;border-color:#3D1D6B;color:#9977CC;}
-.sf-selected-display{padding:10px 14px;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--gray-mid);border-top:1px solid rgba(91,45,142,.2);}
-.sf-selected-display .sf-rank{color:#BB99EE;font-weight:700;}
-.sf-save-btn{background:#5B2D8E;border:none;color:#fff;font-family:'DM Mono',monospace;font-size:.6rem;padding:7px 14px;cursor:pointer;letter-spacing:.06em;margin:8px 14px 10px;}
-.sf-save-btn:hover{background:#7B4DAE;}
-
 </style>
+</head>
+<body class="light-mode">
 <div class="wrap">
   <div class="topbar">
     <div class="brand">
@@ -117,7 +82,6 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
         <div class="logo-sub">PROSPECT 355 &middot; Interactive Alternative &middot; 13 Case Files</div>
       </div>
     </div>
-    <button class="reset-all-btn" onclick="resetAllProgress()" title="Clear all case file progress">&#8635; Reset All</button>
     <button class="font-toggle" id="font-toggle" onclick="toggleFontSize()">Text: M</button>
     <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">Dark Mode</button>
   </div>
@@ -127,50 +91,51 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
   <p class="lede">An interactive, scenario-based alternative to <strong>PROSPECT 355: Project Management in USACE</strong>, built around the PDBP lifecycle. Follow <strong>Maria Chen</strong> through the Building 4521 Renovation &mdash; from an unfamiliar PDT in Case File 01 to a closed-out AAR in Case File 13. Each case file pairs a PDBP doctrine concept with a people-skill in practice, through a branching scenario and a 5-question Knowledge Check.</p>
 
   
-  
-<div class="cohort-entry" id="cohort-entry">
-  <label>Cohort Code:</label>
-  <input id="cohort-code-input" type="text" placeholder="e.g. USACE-2026-09-FTW" maxlength="40"/>
-  <button class="cohort-btn" onclick="saveCohortCode()">Save</button>
-  <span class="cohort-status" id="cohort-status"></span>
-</div>
-
-
-<div class="sf-section" id="sf-section">
-  <div class="sf-section-hdr">
-    StrengthsFinder Profile
-    <span>Select your top 5 themes in order — #1 first</span>
-  </div>
-  <div class="sf-domains" id="sf-domains">
-    <!-- rendered by JS -->
-  </div>
-  <div class="sf-selected-display" id="sf-selected-display">No themes selected yet.</div>
-  <button class="sf-save-btn" onclick="saveStrengths()">Save My Profile</button>
-</div>
-
-<div class="instr-card">
+  <div class="instr-card">
     <div class="card-label">For Facilitators &amp; Self-Paced Learners</div>
     <p>Each case file runs <strong>20–30 minutes</strong> and is self-contained &mdash; training, reflection, branching scenario, and a 5-question Knowledge Check (60% to pass, with shuffled answer order). The full course is roughly <strong>5.5–7 hours</strong> and maps to the Initiation, Planning, Execution, and Closeout phases of the PDBP lifecycle.</p>
     <p>Recommended use: complete 1&ndash;2 case files per week as a self-paced alternative to classroom PROSPECT 355 sessions, or use individual case files as discussion-starters in PDT or CCB training sessions. The storyline is continuous &mdash; case files reference earlier ones &mdash; but each stands on its own if used out of sequence.</p>
   </div>
 
   <div class="ref-link-row">
-    <a class="ref-link-card" href="https://leanne-vantuyl.github.io/interactive-pm-usace/Module00_Orientation.html" style="border-color:var(--gold-dim);">
+    <a class="ref-link-card" href="Module00_Orientation.html" style="border-color:var(--gold-dim);">
       <div class="ref-link-title">Module 0: Orientation</div>
       <div class="ref-link-meta">Start Here &middot; ~10 min</div>
+    </a>
+    <a class="ref-link-card" href="PreWork.html">
+      <div class="ref-link-title">Pre-Work Read-Aheads</div>
+      <div class="ref-link-meta">13 Lessons &middot; Read Before Each Day</div>
+    </a>
+  </div>
+  <div class="ref-link-row">
+    <a class="ref-link-card" href="PMP_MP.html" style="border-color:rgba(27,92,42,0.5);">
+      <div class="ref-link-title">Example PMP &mdash; Military Programs</div>
+      <div class="ref-link-meta">MILCON &middot; Building 2247 Replacement &middot; Fort Marcus</div>
+    </a>
+    <a class="ref-link-card" href="PMP_CW.html" style="border-color:rgba(27,58,107,0.5);">
+      <div class="ref-link-title">Example PMP &mdash; Civil Works</div>
+      <div class="ref-link-meta">O&amp;M &middot; District Operations Center Renovation &middot; Building 412</div>
     </a>
   </div>
 
   <div class="ref-link-row">
-    <a class="ref-link-card" href="https://leanne-vantuyl.github.io/interactive-pm-usace/PROC_Map.html">
+    <a class="ref-link-card" href="PROC_Map.html">
       <div class="ref-link-title">The PDBP Lifecycle Map</div>
       <div class="ref-link-meta">Course Reference &middot; PROC Map</div>
     </a>
-    <a class="ref-link-card" href="https://leanne-vantuyl.github.io/interactive-pm-usace/Toolbelt.html">
+    <a class="ref-link-card" href="Toolbelt.html">
       <div class="ref-link-title">The PM&#39;s Toolbelt</div>
       <div class="ref-link-meta">Course Reference &middot; Real Systems</div>
     </a>
-    <a class="ref-link-card" href="https://leanne-vantuyl.github.io/interactive-pm-usace/PostCheck.html">
+    <a class="ref-link-card" href="KO_Reference.html" style="border-color:rgba(184,151,42,0.45);">
+      <div class="ref-link-title">PM and the Contracting Officer</div>
+      <div class="ref-link-meta">Reference &middot; Contracting Authority &middot; Pre-Award Process</div>
+    </a>
+    <a class="ref-link-card" href="Funding_Reference.html" style="border-color:rgba(184,151,42,0.45);">
+      <div class="ref-link-title">Funding and Appropriations</div>
+      <div class="ref-link-meta">Reference &middot; Color of Money &middot; Fiscal Year Rules &middot; CW + MP</div>
+    </a>
+    <a class="ref-link-card" href="PostCheck.html">
       <div class="ref-link-title">Looking Back</div>
       <div class="ref-link-meta">After Case File 13 &middot; Reflection</div>
     </a>
@@ -181,37 +146,37 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
   </div>
 
   <div class="phase-label">Initiation &amp; Planning</div>
-  <a class="case-card" data-key="casefile01_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile01_NewPM_UnclearRoles.html">
+  <a class="case-card" data-key="casefile01_v1" href="CaseFile01_NewPM_UnclearRoles.html">
     <div class="case-num" data-num="1">1</div>
     <div class="case-body"><div class="case-title">New PM, Unclear Roles</div><div class="case-meta">PROC2020 &middot; PDT Charter</div></div>
     <div class="case-time">~25 min</div>
     <div class="case-arrow">&rarr;</div>
   </a>
-  <a class="case-card" data-key="casefile02_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile02_ScheduleVsScope.html">
+  <a class="case-card" data-key="casefile02_v1" href="CaseFile02_ScheduleVsScope.html">
     <div class="case-num" data-num="2">2</div>
     <div class="case-body"><div class="case-title">The Schedule vs. The Scope</div><div class="case-meta">PROC2030/2040 &middot; Conflict Resolution</div></div>
     <div class="case-time">~25 min</div>
     <div class="case-arrow">&rarr;</div>
   </a>
-  <a class="case-card" data-key="casefile03_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile03_TheNewHome.html">
+  <a class="case-card" data-key="casefile03_v1" href="CaseFile03_TheNewHome.html">
     <div class="case-num" data-num="3">3</div>
     <div class="case-body"><div class="case-title">The New Home</div><div class="case-meta">PROC2010 &middot; Scope Statement</div></div>
     <div class="case-time">~25 min</div>
     <div class="case-arrow">&rarr;</div>
   </a>
-  <a class="case-card" data-key="casefile04_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile04_BuiltToSlip.html">
+  <a class="case-card" data-key="casefile04_v1" href="CaseFile04_BuiltToSlip.html">
     <div class="case-num" data-num="4">4</div>
     <div class="case-body"><div class="case-title">Built to Slip</div><div class="case-meta">PROC2030 &middot; Schedule Realism</div></div>
     <div class="case-time">~25 min</div>
     <div class="case-arrow">&rarr;</div>
   </a>
-  <a class="case-card" data-key="casefile05_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile05_TheNumberDoesntFit.html">
+  <a class="case-card" data-key="casefile05_v1" href="CaseFile05_TheNumberDoesntFit.html">
     <div class="case-num" data-num="5">5</div>
     <div class="case-body"><div class="case-title">The Number Doesn&#39;t Fit</div><div class="case-meta">PROC2040 &middot; Resource Estimate</div></div>
     <div class="case-time">~30 min</div>
     <div class="case-arrow">&rarr;</div>
   </a>
-  <a class="case-card" data-key="casefile06_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile06_FeedbackConversation.html">
+  <a class="case-card" data-key="casefile06_v1" href="CaseFile06_FeedbackConversation.html">
     <div class="case-num" data-num="6">6</div>
     <div class="case-body"><div class="case-title">The Feedback Nobody Wants to Give</div><div class="case-meta">PROC1020/2020 &middot; Performance &amp; Feedback</div></div>
     <div class="case-time">~25 min</div>
@@ -219,37 +184,37 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
   </a>
 
   <div class="phase-label">Execution</div>
-  <a class="case-card" data-key="casefile07_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile07_PhantomSlip.html">
+  <a class="case-card" data-key="casefile07_v1" href="CaseFile07_PhantomSlip.html">
     <div class="case-num" data-num="7">7</div>
     <div class="case-body"><div class="case-title">The Phantom Slip</div><div class="case-meta">PROC3000 &middot; Performance Measurement</div></div>
     <div class="case-time">~25 min</div>
     <div class="case-arrow">&rarr;</div>
   </a>
-  <a class="case-card" data-key="casefile08_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile08_RiskNobodyTracked.html">
+  <a class="case-card" data-key="casefile08_v1" href="CaseFile08_RiskNobodyTracked.html">
     <div class="case-num" data-num="8">8</div>
     <div class="case-body"><div class="case-title">The Risk Nobody Tracked</div><div class="case-meta">Risk Register &middot; REF8007G</div></div>
     <div class="case-time">~25 min</div>
     <div class="case-arrow">&rarr;</div>
   </a>
-  <a class="case-card" data-key="casefile09_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile09_MeetingGotAway.html">
+  <a class="case-card" data-key="casefile09_v1" href="CaseFile09_MeetingGotAway.html">
     <div class="case-num" data-num="9">9</div>
     <div class="case-body"><div class="case-title">The Meeting That Got Away</div><div class="case-meta">PDT Meetings &middot; Facilitation</div></div>
     <div class="case-time">~25 min</div>
     <div class="case-arrow">&rarr;</div>
   </a>
-  <a class="case-card" data-key="casefile10_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile10_WrongShadeOfGray.html">
+  <a class="case-card" data-key="casefile10_v1" href="CaseFile10_WrongShadeOfGray.html">
     <div class="case-num" data-num="10">10</div>
     <div class="case-body"><div class="case-title">The Wrong Shade of Gray</div><div class="case-meta">PROC3010 &middot; Change Management</div></div>
     <div class="case-time">~25 min</div>
     <div class="case-arrow">&rarr;</div>
   </a>
-  <a class="case-card" data-key="casefile11_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile11_TwoFacesOfRisk.html">
+  <a class="case-card" data-key="casefile11_v1" href="CaseFile11_TwoFacesOfRisk.html">
     <div class="case-num" data-num="11">11</div>
     <div class="case-body"><div class="case-title">Two Faces of Risk</div><div class="case-meta">REF8007G &middot; Opportunity Management</div></div>
     <div class="case-time">~25 min</div>
     <div class="case-arrow">&rarr;</div>
   </a>
-  <a class="case-card" data-key="casefile12_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile12_TheFavor.html">
+  <a class="case-card" data-key="casefile12_v1" href="CaseFile12_TheFavor.html">
     <div class="case-num" data-num="12">12</div>
     <div class="case-body"><div class="case-title">The Favor</div><div class="case-meta">Eisenhower Matrix &middot; Objectivity</div></div>
     <div class="case-time">~25 min</div>
@@ -257,7 +222,7 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
   </a>
 
   <div class="phase-label">Closeout</div>
-  <a class="case-card" data-key="casefile13_v1" href="https://leanne-vantuyl.github.io/interactive-pm-usace/CaseFile13_ClosingWell.html">
+  <a class="case-card" data-key="casefile13_v1" href="CaseFile13_ClosingWell.html">
     <div class="case-num" data-num="13">13</div>
     <div class="case-body"><div class="case-title">Closing Well</div><div class="case-meta">PROC4000 &middot; Closeout &amp; AAR</div></div>
     <div class="case-time">~30 min</div>
@@ -280,40 +245,16 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
   </div>
 </div>
 
-
-<!-- ── COHORT MODAL ── -->
-<div id="cohort-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;">
-  <div style="background:#1A1F14;border:1px solid rgba(200,168,75,.5);padding:32px;max-width:440px;width:90vw;">
-    <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:#F5F2EB;margin-bottom:8px;">Welcome</div>
-    <div style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:#C8A84B;text-transform:uppercase;margin-bottom:16px;">Enter your cohort code to get started</div>
-    <p style="font-size:.8rem;color:#C8C4B8;line-height:1.6;margin-bottom:20px;">Your instructor will provide a cohort code at the start of class. Enter your name once here and it carries through all 13 case files automatically.</p>
-    <div style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:#C8A84B;text-transform:uppercase;margin-bottom:6px;">Your Name</div>
-    <input id="cohort-modal-name" type="text" placeholder="First Last" maxlength="60"
-      style="width:100%;background:#252D1C;border:1px solid rgba(200,168,75,.4);color:#F5F2EB;font-family:'Inter',sans-serif;font-size:.85rem;padding:10px 14px;margin-bottom:14px;box-sizing:border-box;"/>
-    <div style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:#C8A84B;text-transform:uppercase;margin-bottom:6px;">Cohort Code (from your instructor)</div>
-    <input id="cohort-modal-input" type="text" placeholder="e.g. USACE-2026-09-FTW" maxlength="40"
-      style="width:100%;background:#252D1C;border:1px solid rgba(200,168,75,.4);color:#F5F2EB;font-family:'DM Mono',monospace;font-size:.8rem;padding:10px 14px;margin-bottom:12px;box-sizing:border-box;"
-      onkeydown="if(event.key==='Enter')saveCohortFromModal()"/>
-    <div style="display:flex;gap:10px;justify-content:flex-end;">
-      <button onclick="closeCohortModal()" style="background:transparent;border:1px solid rgba(200,168,75,.3);color:#C8C4B8;font-family:'DM Mono',monospace;font-size:.6rem;padding:8px 16px;cursor:pointer;letter-spacing:.06em;">Skip for now</button>
-      <button onclick="saveCohortFromModal()" style="background:#C8A84B;border:none;color:#1A1F14;font-family:'DM Mono',monospace;font-size:.6rem;padding:8px 18px;cursor:pointer;font-weight:700;letter-spacing:.06em;">Save &amp; Continue</button>
-    </div>
-  </div>
-</div>
-
 <script>
-// ── THEME ─────────────────────────────────────────────────────────────────────
 function applyTheme(t){
   document.body.className = t;
-  var btn = document.getElementById('theme-btn');
-  if(btn) btn.textContent = (t==='light-mode') ? 'Dark Mode' : 'Light Mode';
+  document.getElementById('theme-btn').textContent = (t==='light-mode') ? 'Dark Mode' : 'Light Mode';
   try{localStorage.setItem('pm-course-theme', t);}catch(e){}
 }
 function toggleTheme(){
   applyTheme(document.body.classList.contains('light-mode') ? 'dark-mode' : 'light-mode');
 }
 
-// ── FONT SIZE ─────────────────────────────────────────────────────────────────
 var FONT_SIZES=['font-s','','font-l'];
 var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
 function applyFontSize(cls){
@@ -324,179 +265,73 @@ function applyFontSize(cls){
   try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
 }
 function toggleFontSize(){
-  var cur=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
-  applyFontSize(FONT_SIZES[(FONT_SIZES.indexOf(cur)+1)%FONT_SIZES.length]);
+  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
+  var idx=FONT_SIZES.indexOf(current);
+  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
+  applyFontSize(next);
 }
+(function(){
+  var saved;
+  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
+  if(saved===null||saved===undefined)saved='';
+  applyFontSize(saved);
+})();
+(function(){
+  var saved;
+  try{saved = localStorage.getItem('pm-course-theme');}catch(e){}
+  applyTheme(saved || 'light-mode');
+})();
 
-// ── RESET ─────────────────────────────────────────────────────────────────────
-function resetAllProgress(){
-  if(confirm('Reset ALL case file progress? Your cohort code and StrengthsFinder profile will be kept.')){
-    ['casefile01_v1','casefile02_v1','casefile03_v1','casefile04_v1','casefile05_v1',
-     'casefile06_v1','casefile07_v1','casefile08_v1','casefile09_v1','casefile10_v1',
-     'casefile11_v1','casefile12_v1','casefile13_v1','pm-learner-profile'
-    ].forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
-    location.reload();
-  }
-}
-
-// ── COHORT MODAL ──────────────────────────────────────────────────────────────
-function showCohortModal(){
-  var m = document.getElementById('cohort-modal');
-  if(m){ m.style.display='flex'; }
-  var inp = document.getElementById('cohort-modal-input');
-  if(inp) inp.focus();
-}
-function closeCohortModal(){
-  var m = document.getElementById('cohort-modal');
-  if(m) m.style.display='none';
-}
-function saveCohortFromModal(){
-  var nameInp = document.getElementById('cohort-modal-name');
-  var name = nameInp ? nameInp.value.trim() : '';
-  var inp = document.getElementById('cohort-modal-input');
-  var v = inp ? inp.value.trim().toUpperCase() : '';
-  if(!name){ alert('Please enter your name before continuing.'); nameInp && nameInp.focus(); return; }
-  if(!v){ alert('Please enter your cohort code before continuing.'); inp && inp.focus(); return; }
-  try{localStorage.setItem('pm-learner-name', name);}catch(e){}
-  try{localStorage.setItem('pm-cohort-code', v);}catch(e){}
-  updateCohortDisplay();
-  closeCohortModal();
-}
-function updateCohortDisplay(){
-  try{
-    var saved = localStorage.getItem('pm-cohort-code');
-    var statusEl = document.getElementById('cohort-status');
-    var inputEl  = document.getElementById('cohort-inline-input');
-    if(statusEl) statusEl.textContent = saved ? 'Active cohort: ' + saved : '';
-    if(inputEl && saved) inputEl.value = saved;
-  }catch(e){}
-}
-function saveCohortInline(){
-  var inp = document.getElementById('cohort-inline-input');
-  var v = inp ? inp.value.trim().toUpperCase() : '';
-  if(!v){ alert('Please enter a cohort code.'); return; }
-  try{localStorage.setItem('pm-cohort-code', v);}catch(e){}
-  updateCohortDisplay();
-}
-
-// ── STRENGTHS SELECTOR ────────────────────────────────────────────────────────
-var sfSelected = [];
-var SF_THEMES_BY_DOMAIN = {
-  'Executing': ['Achiever','Arranger','Belief','Consistency','Deliberative','Discipline','Focus','Responsibility','Restorative'],
-  'Influencing': ['Activator','Command','Communication','Competition','Maximizer','Self-Assurance','Significance','Woo'],
-  'Relationship Building': ['Adaptability','Connectedness','Developer','Empathy','Harmony','Includer','Individualization','Positivity','Relator'],
-  'Strategic Thinking': ['Analytical','Context','Futuristic','Ideation','Input','Intellection','Learner','Strategic']
-};
-
-function toggleSFTheme(theme){
-  var idx = sfSelected.indexOf(theme);
-  if(idx >= 0){
-    sfSelected.splice(idx, 1);
-  } else {
-    if(sfSelected.length >= 5){ alert('You can only select 5 themes. Deselect one first.'); return; }
-    sfSelected.push(theme);
-  }
-  updateSFDisplay();
-}
-
-function updateSFDisplay(){
-  document.querySelectorAll('.sf-theme-btn').forEach(function(btn){
-    var theme = btn.id.replace('sf-btn-','').replace(/-/g,' ');
-    var rank = sfSelected.indexOf(theme) + 1;
-    btn.className = 'sf-theme-btn' + (rank > 0 ? ' selected-' + rank : '');
-    btn.textContent = rank > 0 ? theme + ' #' + rank : theme;
-  });
-  var disp = document.getElementById('sf-selected-display');
-  if(!disp) return;
-  if(sfSelected.length === 0){
-    disp.innerHTML = 'No themes selected yet.';
-  } else {
-    disp.innerHTML = sfSelected.map(function(t,i){
-      return '<span class="sf-rank">#'+(i+1)+'</span> '+t+(i<sfSelected.length-1?'&nbsp;&nbsp;·&nbsp;&nbsp;':'');
-    }).join('');
-  }
-}
-
-function saveStrengths(){
-  if(sfSelected.length < 5){ alert('Please select all 5 of your top themes before saving.'); return; }
-  try{localStorage.setItem('pm-sf-themes', JSON.stringify(sfSelected));}catch(e){}
-  var disp = document.getElementById('sf-selected-display');
-  if(disp) disp.innerHTML += '&nbsp;&nbsp;<strong style="color:#BB99EE">&#10003; Saved</strong>';
-}
-
-function initStrengths(){
-  try{
-    var saved = localStorage.getItem('pm-sf-themes');
-    if(saved) sfSelected = JSON.parse(saved);
-  }catch(e){}
-  var container = document.getElementById('sf-domains');
-  if(!container) return;
-  container.innerHTML = Object.entries(SF_THEMES_BY_DOMAIN).map(function(e){
-    var domain=e[0], themes=e[1];
-    return '<div class="sf-domain"><div class="sf-domain-label">'+domain+'</div>'
-      +themes.map(function(t){
-        return '<button class="sf-theme-btn" id="sf-btn-'+t.replace(/ /g,'-')+'" onclick="toggleSFTheme(\''+t+'\')">'+t+'</button>';
-      }).join('')+'</div>';
-  }).join('');
-  updateSFDisplay();
-}
-
-// ── PROGRESS ─────────────────────────────────────────────────────────────────
-function initProgress(){
-  var cards=document.querySelectorAll('.case-card');
-  var completed=0,scoreSum=0,scoreCount=0,learnerName='';
+// Best-effort progress check: reads each case file's localStorage key
+// (only works if all files are served from the same origin, e.g. SharePoint)
+(function(){
+  var cards = document.querySelectorAll('.case-card');
+  var completed = 0;
+  var scoreSum = 0, scoreCount = 0;
+  var learnerName = '';
   cards.forEach(function(card){
-    var key=card.getAttribute('data-key'), raw;
-    try{raw=localStorage.getItem(key);}catch(e){}
-    var num=card.querySelector('.case-num');
+    var key = card.getAttribute('data-key');
+    var raw;
+    try{raw = localStorage.getItem(key);}catch(e){}
+    var num = card.querySelector('.case-num');
     if(raw){
       try{
-        var data=JSON.parse(raw);
-        if(data&&data.name&&!learnerName) learnerName=data.name;
-        if(data&&data.kcScore!==undefined&&data.section==='complete'){
-          num.classList.add('done'); num.innerHTML='&#10003;';
-          var pill=document.createElement('div');
-          pill.className='status-pill'; pill.textContent='Complete';
-          card.insertBefore(pill,card.querySelector('.case-arrow'));
-          completed++; scoreSum+=data.kcScore; scoreCount++;
+        var data = JSON.parse(raw);
+        if(data && data.name && !learnerName) learnerName = data.name;
+        if(data && data.kcScore !== undefined && data.kcScore !== null && data.section==='complete'){
+          num.classList.add('done');
+          num.innerHTML = '&#10003;';
+          var pill = document.createElement('div');
+          pill.className='status-pill';
+          pill.textContent='Complete';
+          card.insertBefore(pill, card.querySelector('.case-arrow'));
+          completed++;
+          scoreSum += data.kcScore;
+          scoreCount++;
         }
       }catch(e){}
     }
   });
-  var bar=document.getElementById('overall-bar');
-  var txt=document.getElementById('overall-text');
-  var pct=Math.round((completed/13)*100);
-  if(bar) bar.style.width=pct+'%';
-  if(txt){
-    if(completed===0) txt.textContent='0 of 13 case files complete · progress shown here is per-browser';
-    else if(completed===13) txt.textContent='All 13 case files complete — course finished';
-    else txt.textContent=completed+' of 13 case files complete';
+  var bar = document.getElementById('overall-bar');
+  var text = document.getElementById('overall-text');
+  var pct = Math.round((completed/13)*100);
+  bar.style.width = pct+'%';
+  if(completed===0){
+    text.textContent = '0 of 13 case files complete \u00b7 progress shown here is per-browser';
+  }else if(completed===13){
+    text.textContent = 'All 13 case files complete \u2014 course finished';
+  }else{
+    text.textContent = completed+' of 13 case files complete';
   }
+
   if(completed===13){
-    var avg=(scoreSum/scoreCount).toFixed(1);
-    var cn=document.getElementById('cert-name'),cm=document.getElementById('cert-meta'),cs=document.getElementById('cert-section');
-    if(cn) cn.textContent=learnerName||'Learner';
-    if(cm){var d=new Date();cm.textContent='Average KC Score: '+avg+' / 5 · Completed: '+(d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear();}
-    if(cs) cs.classList.add('show');
+    var avg = (scoreSum/scoreCount).toFixed(1);
+    document.getElementById('cert-name').textContent = learnerName || 'Learner';
+    var today = new Date();
+    var dateStr = (today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear();
+    document.getElementById('cert-meta').textContent = 'Average Knowledge Check Score: '+avg+' / 5 \u00b7 Completed: '+dateStr;
+    document.getElementById('cert-section').classList.add('show');
   }
-}
-
-// ── BOOT ─────────────────────────────────────────────────────────────────────
-(function(){
-  var fs; try{fs=localStorage.getItem('pm-fontsize');}catch(e){}
-  applyFontSize(fs||'');
-
-  var th; try{th=localStorage.getItem('pm-course-theme');}catch(e){}
-  applyTheme(th||'light-mode');
-
-  var cohort; try{cohort=localStorage.getItem('pm-cohort-code');}catch(e){}
-  if(!cohort){ setTimeout(showCohortModal, 350); }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    updateCohortDisplay();
-    initStrengths();
-    initProgress();
-  });
 })();
 </script>
 </body>

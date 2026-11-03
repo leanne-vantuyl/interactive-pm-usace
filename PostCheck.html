@@ -1,18 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interactive PM in USACE</title>
-</head>
-<body>
-<!-- ==========================================
-     Interactive PM in USACE — SharePoint Snippet
-     Page: PostCheck.aspx
-     Paste this entire block into a Script Editor web part
-     on a Classic SharePoint page.
-     ========================================== -->
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Looking Back | Interactive PM in USACE</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 
 :root{--gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;--army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;--white:#F5F2EB;--white-dim:#C8C4B8;--accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;--border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);}
@@ -278,6 +270,8 @@ body.light-mode .selected{border:3px solid #5A4010;background:#E8E4D9;color:#111
 body.light-mode .selected .answer-radio{border-color:#5A4010;background:#5A4010;}
 .selected .answer-radio-dot{display:block;}
 </style>
+</head>
+<body class="light-mode">
 <header>
   <div class="header-inner">
     <div class="logo-block">
@@ -295,7 +289,7 @@ body.light-mode .selected .answer-radio{border-color:#5A4010;background:#5A4010;
   </div>
 </header>
 <div class="main">
-<a class="ref-toplink" href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html">&larr; Course Home</a>
+<a class="ref-toplink" href="index.html">&larr; Course Home</a>
 <p class="eyebrow">Looking Back</p>
 <h1 class="title-main">Same Five<br><em>Scenarios.</em></h1>
 <p class="lede" id="intro-lede">Before Case File 01, you answered these five scenarios cold. Answer them again &mdash; then see both answers side by side. There is still no right answer; the point is simply to notice what, if anything, looks different now.</p>
@@ -318,10 +312,10 @@ body.light-mode .selected .answer-radio{border-color:#5A4010;background:#5A4010;
 </footer>
 <script>
 var VIGNETTES=[
-  {id:'v1',prompt:'Five minutes before your PDT meeting starts, the Chief of Engineering &amp; Construction stops by and asks for a quick update on a contract-award deadline — something that isn\'t on today\'s agenda.',options:['Give the Chief a few minutes now, even if the PDT meeting starts late.','Briefly acknowledge the Chief, say you\'ll follow up right after the meeting, and start the PDT meeting on time.','Ask someone else on the team to brief the Chief while you start the meeting.','Send a quick message to the PDT that the meeting will start a few minutes late, and give the Chief your attention.']},
-  {id:'v2',prompt:'A friend who manages a different team asks you, informally, how one of their employees — currently on your project team — has been doing, ahead of that employee\'s upcoming performance appraisal.',options:['Share your honest impressions right away, since it\'s a quick favor for a friend.','Let your friend know you\'re happy to help, and follow up with specific, complete input once you have a moment to think it through.','Tell your friend you\'d rather not comment, to avoid any appearance of bias.','Suggest your friend ask someone else on the team instead.']},
+  {id:'v1',prompt:'Five minutes before your PDT meeting starts, the Chief of Engineering &amp; Construction stops by and asks for a quick update on a contract-award deadline -- something that isn\'t on today\'s agenda.',options:['Give the Chief a few minutes now, even if the PDT meeting starts late.','Briefly acknowledge the Chief, say you\'ll follow up right after the meeting, and start the PDT meeting on time.','Ask someone else on the team to brief the Chief while you start the meeting.','Send a quick message to the PDT that the meeting will start a few minutes late, and give the Chief your attention.']},
+  {id:'v2',prompt:'A friend who manages a different team asks you, informally, how one of their employees -- currently on your project team -- has been doing, ahead of that employee\'s upcoming performance appraisal.',options:['Share your honest impressions right away, since it\'s a quick favor for a friend.','Let your friend know you\'re happy to help, and follow up with specific, complete input once you have a moment to think it through.','Tell your friend you\'d rather not comment, to avoid any appearance of bias.','Suggest your friend ask someone else on the team instead.']},
   {id:'v3',prompt:'The design team made an error that will require rework. The customer wants to discuss who will cover the additional cost.',options:['Have the discussion as soon as the customer raises it, even before you\'ve confirmed the cost impact internally.','Acknowledge the issue with the customer right away, and set up a follow-up conversation once you have the cost details.','Let the design team lead handle the conversation with the customer directly, since it was their error.','Wait until the cost impact is fully resolved before saying anything to the customer.']},
-  {id:'v4',prompt:'Your technical lead wants to schedule a brainstorming session about a potential deficiency in a levee floodwall — nothing urgent yet, but worth exploring.',options:['Schedule it this week, ahead of other planned work.','Add it to the calendar a few weeks out, once the team has more capacity.','Ask the technical lead to gather a bit more information first, then revisit scheduling.','Suggest it wait until the next regularly scheduled PDT meeting.']},
+  {id:'v4',prompt:'Your technical lead wants to schedule a brainstorming session about a potential deficiency in a levee floodwall -- nothing urgent yet, but worth exploring.',options:['Schedule it this week, ahead of other planned work.','Add it to the calendar a few weeks out, once the team has more capacity.','Ask the technical lead to gather a bit more information first, then revisit scheduling.','Suggest it wait until the next regularly scheduled PDT meeting.']},
   {id:'v5',prompt:'Your calendar is fully booked today with back-to-back meetings. Midway through the morning, you get a call: your child is sick at school and needs to be picked up.',options:['Step out to handle it, and have someone else cover or reschedule your meetings.','Finish your current meeting, then immediately rearrange the rest of the day.','Ask a family member or backup contact to help if possible, and continue your day as planned.','Wait until a natural break in your schedule before responding.']},
 ];
 
@@ -404,7 +398,7 @@ function renderComparison(postRecord){
     +'<div class="reflect-block"><div class="reflect-q">Looking at these five scenarios together \u2014 same or different from before \u2014 what, if anything, do you notice about how you are thinking about these situations now?</div>'
     +'<textarea class="reflect-input" id="final-reflect" placeholder="Type your thoughts..."></textarea></div>'
     +'</div>'
-    +'<div class="btn-row"><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" class="btn-primary" style="text-decoration:none;display:inline-block;">Return to Course Home</a></div>';
+    +'<div class="btn-row"><a href="index.html" class="btn-primary" style="text-decoration:none;display:inline-block;">Return to Course Home</a></div>';
   var compareEl=document.getElementById('compare-screen');
   compareEl.innerHTML=html;
   compareEl.style.display='block';
@@ -438,171 +432,7 @@ function toggleFontSize(){
   if(saved===null||saved===undefined)saved='';
   applyFontSize(saved);
 })();
-(function(){var t;try{t=localStorage.getItem('pm-course-theme');}catch(e){}if(t==='dark'){document.body.classList.remove('light-mode');}else{document.body.classList.add('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9790; Dark';}})();
-</script>
-<script>
-var VIGNETTES=[
-  {id:'v1',prompt:'Five minutes before your PDT meeting starts, the Chief of Engineering &amp; Construction stops by and asks for a quick update on a contract-award deadline — something that isn\'t on today\'s agenda.',options:['Give the Chief a few minutes now, even if the PDT meeting starts late.','Briefly acknowledge the Chief, say you\'ll follow up right after the meeting, and start the PDT meeting on time.','Ask someone else on the team to brief the Chief while you start the meeting.','Send a quick message to the PDT that the meeting will start a few minutes late, and give the Chief your attention.']},
-  {id:'v2',prompt:'A friend who manages a different team asks you, informally, how one of their employees — currently on your project team — has been doing, ahead of that employee\'s upcoming performance appraisal.',options:['Share your honest impressions right away, since it\'s a quick favor for a friend.','Let your friend know you\'re happy to help, and follow up with specific, complete input once you have a moment to think it through.','Tell your friend you\'d rather not comment, to avoid any appearance of bias.','Suggest your friend ask someone else on the team instead.']},
-  {id:'v3',prompt:'The design team made an error that will require rework. The customer wants to discuss who will cover the additional cost.',options:['Have the discussion as soon as the customer raises it, even before you\'ve confirmed the cost impact internally.','Acknowledge the issue with the customer right away, and set up a follow-up conversation once you have the cost details.','Let the design team lead handle the conversation with the customer directly, since it was their error.','Wait until the cost impact is fully resolved before saying anything to the customer.']},
-  {id:'v4',prompt:'Your technical lead wants to schedule a brainstorming session about a potential deficiency in a levee floodwall — nothing urgent yet, but worth exploring.',options:['Schedule it this week, ahead of other planned work.','Add it to the calendar a few weeks out, once the team has more capacity.','Ask the technical lead to gather a bit more information first, then revisit scheduling.','Suggest it wait until the next regularly scheduled PDT meeting.']},
-  {id:'v5',prompt:'Your calendar is fully booked today with back-to-back meetings. Midway through the morning, you get a call: your child is sick at school and needs to be picked up.',options:['Step out to handle it, and have someone else cover or reschedule your meetings.','Finish your current meeting, then immediately rearrange the rest of the day.','Ask a family member or backup contact to help if possible, and continue your day as planned.','Wait until a natural break in your schedule before responding.']},
-];
-
-var answers={};
-var preData=null;
-try{
-  var raw=localStorage.getItem('pm-prepost-v1');
-  if(raw){
-    var parsed=JSON.parse(raw);
-    if(parsed && parsed.pre) preData=parsed.pre;
-  }
-}catch(e){}
-
-if(!preData){
-  document.getElementById('intro-lede').innerHTML='We don\'t have a \"before\" answer saved on this device \u2014 that\'s alright. Answer these five scenarios now to see where your thinking stands today. (If you completed the Module 0 check-in on a different device or browser, your \"before\" answers won\'t carry over here.)';
-}
-
-function renderVignettes(){
-  var html='';
-  VIGNETTES.forEach(function(v,vi){
-    html+='<div class="question-block" id="vq-'+vi+'">';
-    html+='<div class="question-num">Scenario '+(vi+1)+' of '+VIGNETTES.length+'</div>';
-    html+='<div class="question-text">'+v.prompt+'</div>';
-    v.options.forEach(function(opt,oi){
-      html+='<div class="answer-option" id="vopt-'+vi+'-'+oi+'" onclick="selectAnswer('+vi+','+oi+')">'
-        +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+opt+'</div>';
-    });
-    html+='</div>';
-  });
-  document.getElementById('vignette-container').innerHTML=html;
-}
-function selectAnswer(vi,oi){
-  answers[vi]=oi;
-  for(var i=0;i<4;i++){
-    var el=document.getElementById('vopt-'+vi+'-'+i);
-    if(el)el.classList.remove('selected');
-  }
-  document.getElementById('vopt-'+vi+'-'+oi).classList.add('selected');
-  if(Object.keys(answers).length===VIGNETTES.length){
-    document.getElementById('submit-btn').disabled=false;
-  }
-}
-function submitPost(){
-  var record={};
-  VIGNETTES.forEach(function(v,vi){record[v.id]=answers[vi];});
-  try{
-    var existing=localStorage.getItem('pm-prepost-v1');
-    var data=existing?JSON.parse(existing):{};
-    data.post=record;
-    data.postDate=new Date().toISOString();
-    localStorage.setItem('pm-prepost-v1', JSON.stringify(data));
-  }catch(e){}
-  renderComparison(record);
-}
-function renderComparison(postRecord){
-  document.getElementById('check-screen').style.display='none';
-  var html='<p class="eyebrow">Your Comparison</p>'
-    +'<h2 class="title-main" style="font-size:1.625rem;">What, If Anything, Changed?</h2>';
-  VIGNETTES.forEach(function(v,vi){
-    var preIdx=preData?preData[v.id]:undefined;
-    var postIdx=postRecord[v.id];
-    var same=(preIdx!==undefined && preIdx===postIdx);
-    html+='<div class="question-block">'
-      +'<div class="question-num">Scenario '+(vi+1)+' of '+VIGNETTES.length+'</div>'
-      +'<div class="question-text">'+v.prompt+'</div>'
-      +'<div class="compare-row">';
-    if(preIdx!==undefined){
-      html+='<div class="compare-col'+(same?' compare-same':'')+'"><span class="compare-label">Before Case File 01</span>'+v.options[preIdx]+'</div>';
-    }else{
-      html+='<div class="compare-col"><span class="compare-label">Before Case File 01</span><em>No answer saved on this device.</em></div>';
-    }
-    html+='<div class="compare-col'+(same?' compare-same':'')+'"><span class="compare-label">Now</span>'+v.options[postIdx]+'</div>';
-    html+='</div>';
-    if(preIdx!==undefined){
-      html+='<p style="font-size:0.6875rem;color:var(--white-dim);margin-top:8px;">'+(same?'Same answer as before.':'A different answer than before.')+'</p>';
-    }
-    html+='</div>';
-  });
-  html+='<div class="card people-card"><div class="card-label">One Last Reflection</div>'
-    +'<div class="reflect-block"><div class="reflect-q">Looking at these five scenarios together \u2014 same or different from before \u2014 what, if anything, do you notice about how you are thinking about these situations now?</div>'
-    +'<textarea class="reflect-input" id="final-reflect" placeholder="Type your thoughts..."></textarea></div>'
-    +'</div>'
-    +'<div class="btn-row"><a href="https://leanne-vantuyl.github.io/interactive-pm-usace/index.html" class="btn-primary" style="text-decoration:none;display:inline-block;">Return to Course Home</a></div>';
-  var compareEl=document.getElementById('compare-screen');
-  compareEl.innerHTML=html;
-  compareEl.style.display='block';
-}
-renderVignettes();
-
-
-var FONT_SIZES=['font-s','','font-l'];
-var FONT_LABELS={'font-s':'Text: S','':'Text: M','font-l':'Text: L'};
-function applyFontSize(cls){
-  document.documentElement.classList.remove('font-s','font-l');
-  if(cls){document.documentElement.classList.add(cls);}
-  var btn=document.getElementById('font-toggle');
-  if(btn)btn.textContent=FONT_LABELS[cls];
-  try{localStorage.setItem('pm-fontsize',cls);}catch(e){}
-}
-function toggleFontSize(){
-  var current=document.documentElement.classList.contains('font-l')?'font-l':(document.documentElement.classList.contains('font-s')?'font-s':'');
-  var idx=FONT_SIZES.indexOf(current);
-  var next=FONT_SIZES[(idx+1)%FONT_SIZES.length];
-  applyFontSize(next);
-}
-(function(){
-  var saved;
-  try{saved=localStorage.getItem('pm-fontsize');}catch(e){}
-  if(saved===null||saved===undefined)saved='';
-  applyFontSize(saved);
-})();
-(function(){var t;try{t=localStorage.getItem('pm-course-theme');}catch(e){}if(t==='dark'){document.body.classList.remove('light-mode');}else{document.body.classList.add('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9790; Dark';}})();
-</script>
-
-<script>
-
-// ── PM TRACKER — SUPABASE ────────────────────────────────────────────────────
-(function(){
-  const SB_URL='https://uvzgrrypvjuxmzytdyvs.supabase.co';
-  const SB_KEY='sb_publishable_3un3K44EQlu3n_1W8TzhpA_laikZo6h';
-  function getSessionId(){try{let s=localStorage.getItem('pm-session-id');if(!s){s='S'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);localStorage.setItem('pm-session-id',s);}return s;}catch(e){return 'anon';}}
-  function getCohortCode(){try{return localStorage.getItem('pm-cohort-code')||'UNASSIGNED';}catch(e){return 'UNASSIGNED';}}
-  async function post(path,body){try{await fetch(SB_URL+'/rest/v1/'+path,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify(body)});}catch(e){}}
-  window.PMTracker={
-    postResponse:function(cf,decisions,kcAnswers,kcScore){
-      const code=getCohortCode();if(code==='UNASSIGNED')return;
-      post('responses',{cohort_code:code,session_id:getSessionId(),cf_number:cf,decisions:decisions,kc_answers:kcAnswers,kc_score:kcScore});
-    },
-    postTestScore:function(type,score){
-      const code=getCohortCode();if(code==='UNASSIGNED')return;
-      post('test_scores',{cohort_code:code,session_id:getSessionId(),test_type:type,score:score});
-    },
-    getCohortCode:getCohortCode,getSessionId:getSessionId
-  };
-})();
-
-
-// ── PM TRACKER HOOK ──────────────────────────────────────────────────────────
-// Called when participant completes the KC — extract responses and post
-(function hookTracker(){
-  const origSave = window.saveProgress;
-  if(typeof origSave === 'function'){
-    window.saveProgress = function(data){
-      origSave(data);
-      if(window.PMTracker && data && data.section==='complete'){
-        // Extract CF number from STORAGE_KEY
-        const cfMatch = (typeof STORAGE_KEY !== 'undefined' ? STORAGE_KEY : '').match(/casefile(\d+)/i);
-        const cfNum = cfMatch ? cfMatch[1].padStart(2,'0') : '00';
-        const decisions = data.decisions || [];
-        const kcAnswers = data.kcAnswers ? Object.values(data.kcAnswers) : [];
-        const kcScore = typeof data.kcScore === 'number' ? data.kcScore : null;
-        window.PMTracker.postResponse(cfNum, decisions, kcAnswers, kcScore);
-      }
-    };
-  }
-})();
-
+(function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
 </script>
 </body>
 </html>

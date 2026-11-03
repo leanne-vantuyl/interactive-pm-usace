@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Funding and Appropriations | PROSPECT 355</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #B8972A;
+      --gold-light: #F5EDD4;
+      --army-dark: #1B2B1E;
+      --army-mid: #2E4A34;
+      --army-pale: #F2F5F0;
+      --ink: #1A1A1A;
+      --ink-2: #3D3D3D;
+      --ink-3: #6B6B6B;
+      --border: #D8D8D8;
+      --bg: #FFFFFF;
+      --surface: #F7F7F5;
+      --tag-bg: #EEF0ED;
+      --ref-navy: #1B3A6B;
+      --ref-green: #1B5C2A;
+      --ref-cw: #1B5C7A;
+      --ref-mp: #5B2D8E;
+      --alert-bg: #FEF9EC;
+      --alert-border: #B8972A;
+      --warn-bg: #FDF2F2;
+      --warn-border: #C0392B;
+      --font-scale: 1;
+    }
+    [data-theme="dark"] {
+      --gold: #D4AA3A;
+      --gold-light: #3A2F10;
+      --army-dark: #E8EDE8;
+      --army-mid: #A8C4A8;
+      --army-pale: #1A1E1A;
+      --ink: #EAEAEA;
+      --ink-2: #C4C4C4;
+      --ink-3: #8A8A8A;
+      --border: #3A3A3A;
+      --bg: #121212;
+      --surface: #1E1E1C;
+      --tag-bg: #2A2E2A;
+      --ref-navy: #7AAAD4;
+      --ref-green: #7AC47A;
+      --ref-cw: #7AC4D4;
+      --ref-mp: #B47AE4;
+      --alert-bg: #2A2410;
+      --alert-border: #D4AA3A;
+      --warn-bg: #2A1A1A;
+      --warn-border: #E07070;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: calc(16px * var(--font-scale)); }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ---- topbar ---- */
+    .topbar {
+      background: var(--army-dark);
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .7rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      gap: 1rem;
+    }
+    .topbar-left { display: flex; align-items: center; gap: .75rem; }
+    .topbar-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: .8rem;
+      letter-spacing: .05em;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+    .topbar-sep { color: rgba(255,255,255,.25); font-size: 1.1rem; }
+    .topbar-title { font-size: .85rem; color: rgba(255,255,255,.8); }
+    .topbar-right { display: flex; align-items: center; gap: .5rem; }
+    .ctrl-btn {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15);
+      color: rgba(255,255,255,.8);
+      border-radius: 4px;
+      padding: .3rem .65rem;
+      font-size: .75rem;
+      cursor: pointer;
+      font-family: 'DM Mono', monospace;
+      white-space: nowrap;
+    }
+    .ctrl-btn:hover { background: rgba(255,255,255,.14); }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      font-size: .8rem;
+      color: var(--gold);
+      text-decoration: none;
+      font-family: 'DM Mono', monospace;
+      white-space: nowrap;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    /* ---- hero ---- */
+    .hero {
+      background: linear-gradient(135deg, var(--army-mid) 0%, var(--army-dark) 100%);
+      color: #FFF;
+      padding: 2.5rem 1.5rem 2rem;
+      border-bottom: 3px solid var(--gold);
+    }
+    .hero-inner { max-width: 900px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      border-radius: 3px;
+      padding: .2rem .55rem;
+      margin-bottom: .85rem;
+    }
+    .hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      line-height: 1.2;
+      margin-bottom: .6rem;
+    }
+    .hero-sub {
+      font-size: .95rem;
+      color: rgba(255,255,255,.75);
+      max-width: 600px;
+      line-height: 1.55;
+    }
+
+    /* ---- authority banner ---- */
+    .authority-banner {
+      background: var(--warn-bg);
+      border-left: 4px solid var(--warn-border);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem auto 0;
+      max-width: 900px;
+      border-radius: 0 4px 4px 0;
+    }
+    .authority-banner strong {
+      display: block;
+      font-size: .8rem;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--warn-border);
+      margin-bottom: .35rem;
+    }
+    .authority-banner p {
+      font-size: .9rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    /* ---- layout ---- */
+    .page { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    /* ---- section headers ---- */
+    .ref-section { margin-bottom: 2.5rem; }
+    .ref-section-hdr {
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: .4rem;
+      margin-bottom: 1.1rem;
+    }
+    .ref-body-text {
+      font-size: .875rem;
+      color: var(--ink-2);
+      line-height: 1.55;
+      margin-bottom: 1rem;
+    }
+
+    /* ---- audience tags ---- */
+    .tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: .62rem;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      border-radius: 3px;
+      padding: .15rem .45rem;
+      font-weight: 500;
+      vertical-align: middle;
+      margin-left: .3rem;
+    }
+    .tag-cw { background: rgba(27,92,122,.12); color: var(--ref-cw); border: 1px solid rgba(27,92,122,.25); }
+    .tag-mp { background: rgba(91,45,142,.12); color: var(--ref-mp); border: 1px solid rgba(91,45,142,.25); }
+    .tag-both { background: rgba(184,151,42,.12); color: var(--gold); border: 1px solid rgba(184,151,42,.3); }
+    [data-theme="dark"] .tag-cw { background: rgba(122,196,212,.1); }
+    [data-theme="dark"] .tag-mp { background: rgba(180,122,228,.1); }
+    [data-theme="dark"] .tag-both { background: rgba(212,170,58,.1); }
+
+    /* ---- color of money grid ---- */
+    .money-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .money-col {
+      background: var(--surface);
+      padding: 1.1rem;
+    }
+    .money-col-hdr {
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: .6rem;
+      padding-bottom: .4rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .money-col-hdr.milcon { border-color: var(--ref-mp); color: var(--ref-mp); }
+    .money-col-hdr.om { border-color: var(--ref-green); color: var(--ref-green); }
+    .money-col-hdr.cwsf { border-color: var(--ref-cw); color: var(--ref-cw); }
+    .money-label {
+      font-size: .75rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: .2rem;
+      margin-top: .65rem;
+    }
+    .money-label:first-of-type { margin-top: 0; }
+    .money-value {
+      font-size: .85rem;
+      color: var(--ink-2);
+      line-height: 1.4;
+    }
+
+    /* ---- reference tables ---- */
+    .ref-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .875rem;
+    }
+    .ref-table th {
+      background: var(--surface);
+      text-align: left;
+      padding: .55rem .8rem;
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      border-bottom: 2px solid var(--border);
+    }
+    .ref-table td {
+      padding: .6rem .8rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--ink-2);
+      vertical-align: top;
+      line-height: 1.45;
+    }
+    .ref-table td:first-child {
+      font-weight: 500;
+      color: var(--ink);
+      width: 28%;
+    }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-table tr.section-row td {
+      background: var(--surface);
+      font-family: 'DM Mono', monospace;
+      font-size: .68rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      padding: .35rem .8rem;
+      border-bottom: 1px solid var(--border);
+      font-weight: 400;
+    }
+
+    /* ---- fiscal year timeline ---- */
+    .fy-timeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .fy-phase {
+      background: var(--surface);
+      padding: .9rem 1rem;
+    }
+    .fy-phase-hdr {
+      font-family: 'DM Mono', monospace;
+      font-size: .68rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .5rem;
+    }
+    .fy-phase-period {
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: .4rem;
+    }
+    .fy-phase-desc {
+      font-size: .8rem;
+      color: var(--ink-2);
+      line-height: 1.45;
+    }
+
+    /* ---- callout notes ---- */
+    .ref-note {
+      display: flex;
+      gap: .65rem;
+      background: var(--alert-bg);
+      border-left: 3px solid var(--alert-border);
+      border-radius: 0 5px 5px 0;
+      padding: .75rem 1rem;
+      margin-top: 1rem;
+      margin-bottom: .5rem;
+    }
+    .ref-note-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: .65rem;
+      letter-spacing: .1em;
+      font-weight: 500;
+      color: var(--gold);
+      white-space: nowrap;
+      padding-top: .1rem;
+    }
+    .ref-note-text {
+      font-size: .85rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+    .ref-note-text strong { color: var(--ink); }
+
+    /* ---- scenario table ---- */
+    .scenario-table td:first-child {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink-3);
+      width: 35%;
+    }
+
+    /* ---- quick rules strip ---- */
+    .rules-strip { display: flex; flex-direction: column; gap: .5rem; }
+    .rule-row {
+      display: flex;
+      align-items: baseline;
+      gap: .75rem;
+      padding: .55rem .8rem;
+      background: var(--surface);
+      border-radius: 5px;
+      border-left: 3px solid var(--gold);
+    }
+    .rule-num {
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      font-weight: 500;
+      color: var(--gold);
+      min-width: 1.4rem;
+    }
+    .rule-text {
+      font-size: .875rem;
+      color: var(--ink-2);
+      line-height: 1.45;
+    }
+    .rule-text strong { color: var(--ink); font-weight: 600; }
+
+    /* ---- glossary ---- */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+    }
+    .gloss-item {
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: .65rem .85rem;
+    }
+    .gloss-term {
+      font-family: 'DM Mono', monospace;
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: .03em;
+      margin-bottom: .2rem;
+    }
+    .gloss-def {
+      font-size: .82rem;
+      color: var(--ink-2);
+      line-height: 1.4;
+    }
+
+    @media (max-width: 680px) {
+      .money-grid { grid-template-columns: 1fr; }
+      .fy-timeline { grid-template-columns: 1fr; }
+      .glossary-grid { grid-template-columns: 1fr; }
+      .ref-table td:first-child { width: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="back-link">&#8592; Course Home</a>
+    <span class="topbar-sep">|</span>
+    <span class="topbar-logo">PROSPECT 355</span>
+    <span class="topbar-sep">|</span>
+    <span class="topbar-title">Reference Document</span>
+  </div>
+  <div class="topbar-right">
+    <button class="ctrl-btn" onclick="toggleTheme()">Light / Dark</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Reference</div>
+    <div class="hero-title">Funding and Appropriations for the USACE PM</div>
+    <div class="hero-sub">Color of money, fiscal year rules, appropriation boundaries, and what to do when a scope change crosses a funding line. Covers Civil Works and Military Programs.</div>
+    <div class="authority-banner">
+      <strong>The Foundational Rule</strong>
+      <p>Federal appropriations are not just budget lines. They are legal authorities to obligate funds for specific purposes, amounts, and time periods. Spending money outside the purpose, amount, or time period of its appropriation is a violation of the Antideficiency Act -- a federal law with criminal penalties. The PM is not the budget officer, but the PM's decisions create obligations. You need to understand the rules.</p>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ====== Section 1: Color of Money ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">Color of Money -- The Three Streams</div>
+    <p class="ref-body-text">USACE projects are funded through different appropriation accounts depending on mission area. Each account has its own rules about what it can fund. Mixing them -- even accidentally -- is a legal problem. Know which color your project is working under before you make any spending decision.</p>
+    <div class="money-grid">
+      <div class="money-col">
+        <div class="money-col-hdr milcon">MILCON <span style="font-weight:400;font-size:.65rem;">Military Programs</span></div>
+        <div class="money-label">Full name</div>
+        <div class="money-value">Military Construction</div>
+        <div class="money-label">Used for</div>
+        <div class="money-value">New construction, major renovation, and real property acquisition for DoD installations. Single project, single purpose.</div>
+        <div class="money-label">Fiscal year</div>
+        <div class="money-value">5-year availability. Obligated within 5 years; cancels after.</div>
+        <div class="money-label">Key limit</div>
+        <div class="money-value">Scope is locked at Congressional authorization. Changes that exceed the approved scope require reprogramming approval.</div>
+      </div>
+      <div class="money-col">
+        <div class="money-col-hdr om">O&amp;M <span style="font-weight:400;font-size:.65rem;">Military Programs</span></div>
+        <div class="money-col-hdr om" style="border:none;padding:0;margin-top:.4rem;">also RCM / SRM</div>
+        <div class="money-label">Full name</div>
+        <div class="money-value">Operations and Maintenance; Restoration, Modernization; Sustainment, Restoration and Modernization</div>
+        <div class="money-label">Used for</div>
+        <div class="money-value">Repair, maintenance, and minor construction below the MILCON threshold. Does not fund new missions or increase square footage.</div>
+        <div class="money-label">Fiscal year</div>
+        <div class="money-value">1-year availability. Must be obligated in the fiscal year appropriated.</div>
+        <div class="money-label">Key limit</div>
+        <div class="money-value">Projects at or below $2M may be funded with O&amp;M. Projects above $2M and up to $6M (the unspecified minor construction ceiling under 10 USC 2805) require MILCON with congressional notification. Projects above $6M require a full MILCON appropriation.</div>
+      </div>
+      <div class="money-col">
+        <div class="money-col-hdr cwsf">CWSF <span style="font-weight:400;font-size:.65rem;">Civil Works</span></div>
+        <div class="money-label">Full name</div>
+        <div class="money-value">Civil Works Special Funds (and project-specific appropriations)</div>
+        <div class="money-label">Used for</div>
+        <div class="money-value">Construction, Operation and Maintenance, Flood Control and Coastal Emergencies, and Investigations -- each is a separate account with separate rules.</div>
+        <div class="money-label">Fiscal year</div>
+        <div class="money-value">Varies by account. Construction funds are multi-year; O&amp;M is annual. Check the specific appropriation.</div>
+        <div class="money-label">Key limit</div>
+        <div class="money-value">Civil Works projects are authorized by Congress individually. Work outside the authorized project scope requires a new authorization or a Section 902 modification.</div>
+      </div>
+    </div>
+    <div class="ref-note">
+      <div class="ref-note-tag">NOTE</div>
+      <div class="ref-note-text">The PM does not choose the appropriation. That decision happens at the programming level, long before the PM arrives. What the PM must do is <strong>recognize when a decision they are about to make -- a scope change, a delay, a work-around -- might push work into a different appropriation or a different fiscal year.</strong> That is the moment to call the budget officer and the KO together.</div>
+    </div>
+  </div>
+
+  <!-- ====== Section 2: Fiscal Year Rules ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">Fiscal Year Rules -- When Money Dies</div>
+    <p class="ref-body-text">Federal funds have a lifespan. A PM who does not understand this will make commitments the government cannot legally honor. The rules differ by appropriation type.</p>
+    <div class="fy-timeline">
+      <div class="fy-phase">
+        <div class="fy-phase-hdr">Active</div>
+        <div class="fy-phase-period">Year 1 (and beyond, for multi-year funds)</div>
+        <div class="fy-phase-desc">Funds can be obligated for new commitments and adjusted. This is the normal operating window. For 1-year O&amp;M funds, this window closes September 30.</div>
+      </div>
+      <div class="fy-phase">
+        <div class="fy-phase-hdr">Expired</div>
+        <div class="fy-phase-period">Years 2 through 5 (after obligation period)</div>
+        <div class="fy-phase-desc">Funds cannot be used for new obligations but can still pay legitimate bills on existing contracts. The PM can still process invoices; they cannot authorize new work against expired funds.</div>
+      </div>
+      <div class="fy-phase">
+        <div class="fy-phase-hdr">Cancelled</div>
+        <div class="fy-phase-period">Year 6 and beyond</div>
+        <div class="fy-phase-desc">Funds are returned to Treasury and are gone. A bill that arrives after cancellation must be paid from current-year funds -- a violation of the Antideficiency Act if done without authority. This is a serious problem.</div>
+      </div>
+    </div>
+    <div class="ref-note">
+      <div class="ref-note-tag">CRITICAL</div>
+      <div class="ref-note-text">A contractor who finishes work in one fiscal year but does not invoice until the next one can create a cancelled-funds problem. <strong>The PM should ensure the contractor submits invoices promptly and that the government processes them before funds expire.</strong> "We ran out of time" is not an Antideficiency Act defense.</div>
+    </div>
+    <div class="ref-table-wrap" style="margin-top:1rem;">
+      <table class="ref-table">
+        <tr>
+          <th>Appropriation Type</th>
+          <th>Obligation Period</th>
+          <th>Expired Period</th>
+          <th>Cancels After</th>
+        </tr>
+        <tr>
+          <td>O&amp;M (Military) <span class="tag tag-mp">MP</span></td>
+          <td>1 year (Oct 1 -- Sep 30)</td>
+          <td>5 years</td>
+          <td>6 years from appropriation</td>
+        </tr>
+        <tr>
+          <td>MILCON <span class="tag tag-mp">MP</span></td>
+          <td>5 years</td>
+          <td>5 years after obligation period</td>
+          <td>10 years from appropriation</td>
+        </tr>
+        <tr>
+          <td>CW Construction <span class="tag tag-cw">CW</span></td>
+          <td>Varies; often multi-year until project complete</td>
+          <td>5 years after obligation period closes</td>
+          <td>Check the specific appropriation language</td>
+        </tr>
+        <tr>
+          <td>CW O&amp;M <span class="tag tag-cw">CW</span></td>
+          <td>1 year (Oct 1 -- Sep 30)</td>
+          <td>5 years</td>
+          <td>6 years from appropriation</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ====== Section 3: Appropriation Boundaries ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">When a Decision Crosses an Appropriation Boundary</div>
+    <p class="ref-body-text">Most of the situations where a PM inadvertently creates a funding violation happen because a scope change, a delay, or a work-around moves work across one of three lines: purpose, amount, or time. The PM does not always see the line until it is crossed.</p>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <tr>
+          <th>The Three Limits</th>
+          <th>What It Means</th>
+          <th>PM Decision Point</th>
+        </tr>
+        <tr>
+          <td>Purpose</td>
+          <td>Funds appropriated for one purpose cannot be used for another. MILCON funds cannot pay for operational expenses. O&amp;M funds cannot fund new construction above the threshold.</td>
+          <td>When a scope change adds work that looks like a different mission or a different category of work, stop and ask the budget officer whether the appropriation still covers it.</td>
+        </tr>
+        <tr>
+          <td>Amount</td>
+          <td>The government cannot obligate more than Congress appropriated for the project. For MILCON, the project is individually authorized at a specific dollar amount.</td>
+          <td>When the project estimate exceeds the authorized amount, the PM cannot simply approve more work. Reprogramming or a new authorization is required.</td>
+        </tr>
+        <tr>
+          <td>Time</td>
+          <td>Funds cannot be obligated outside their availability period, and cannot be used to meet obligations incurred before or after that period.</td>
+          <td>When a delay pushes work into a new fiscal year, check whether the funds are still available. A contract modification that carries work into the next FY may need to be funded from a new appropriation.</td>
+        </tr>
+      </table>
+    </div>
+    <div class="ref-note">
+      <div class="ref-note-tag">NOTE</div>
+      <div class="ref-note-text">For Civil Works projects, there is a <strong>Section 902 limit</strong>: the total cost of a project cannot exceed the congressionally authorized amount by more than 20% without new Congressional authorization. The PM should know what the Section 902 ceiling is for their project and flag the KO and the budget officer when estimates approach it.</div>
+    </div>
+  </div>
+
+  <!-- ====== Section 4: Reprogramming ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">Reprogramming and Reallocation -- Who Can Move Money</div>
+    <p class="ref-body-text">When a project needs more funding than was programmed, or when money needs to move between projects, that is a reprogramming action. The PM does not initiate reprogramming. The PM's role is to identify the need, document it accurately, and escalate it promptly so the people with authority can act.</p>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <tr>
+          <th>Action</th>
+          <th>Who Has Authority</th>
+          <th>PM's Role</th>
+        </tr>
+        <tr>
+          <td>Minor reprogramming within an account</td>
+          <td>District or Division commander, within delegated limits</td>
+          <td>Identify the need, quantify it, and bring it to the budget officer. Document the reason -- a reprogramming request needs a clear justification.</td>
+        </tr>
+        <tr>
+          <td>Reprogramming above the delegated threshold</td>
+          <td>ASA(CW) or ASA(IE&amp;E) depending on mission area</td>
+          <td>Same as above. The PM's documentation feeds the formal request package. The PM should not promise the customer that reprogramming will be approved.</td>
+        </tr>
+        <tr>
+          <td>Congressional notification / prior approval</td>
+          <td>Congress, for transfers above statutory thresholds</td>
+          <td>Notify the sponsor. This is a significant delay. The PM should surface this risk early, not after the threshold is crossed.</td>
+        </tr>
+        <tr>
+          <td>MILCON scope increase beyond original Congressional authorization</td>
+          <td><span class="tag tag-mp">MP</span> Requires new or amended Congressional authorization</td>
+          <td>Stop. Brief the district and division. Do not proceed with additional scope until authority is confirmed.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ====== Section 5: POM Cycle ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">Where Funding Comes From -- The POM Cycle</div>
+    <p class="ref-body-text">New PMs often ask "can't we just get more money?" The answer is almost always no, and understanding why requires understanding the budget cycle. By the time a PM is managing a project, the funding for that project was requested and approved 2 to 3 years earlier.</p>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <tr>
+          <th>Step</th>
+          <th>What Happens</th>
+          <th>When</th>
+        </tr>
+        <tr>
+          <td>Program Objective Memorandum (POM)</td>
+          <td>USACE submits its funding requirements for future years to the DoD budget process. Individual projects are listed and justified. <span class="tag tag-mp">MP</span></td>
+          <td>About 2 years before the fiscal year being programmed</td>
+        </tr>
+        <tr>
+          <td>President's Budget Request</td>
+          <td>DoD submits the consolidated budget request to Congress. Projects included here have survived internal DoD review. <span class="tag tag-both">Both</span></td>
+          <td>February of the year before the FY begins</td>
+        </tr>
+        <tr>
+          <td>Congressional Authorization and Appropriation</td>
+          <td>Congress authorizes projects (what can be done) and appropriates funds (actual money). For Civil Works, the Energy and Water Development bill. For Military, the NDAA and MILCON Appropriations Act. <span class="tag tag-both">Both</span></td>
+          <td>Ideally by October 1; often later</td>
+        </tr>
+        <tr>
+          <td>Apportionment and Allotment</td>
+          <td>OMB apportions funds; the Army distributes allotments to commands. The PM's project receives its funding through this chain. <span class="tag tag-both">Both</span></td>
+          <td>After appropriation is enacted</td>
+        </tr>
+        <tr>
+          <td>Obligation</td>
+          <td>The KO awards a contract or issues a modification. Funds are legally committed. The PM's work scope is now a legal obligation of the government. <span class="tag tag-both">Both</span></td>
+          <td>After allotment is received</td>
+        </tr>
+      </table>
+    </div>
+    <div class="ref-note">
+      <div class="ref-note-tag">NOTE</div>
+      <div class="ref-note-text">If Congress has not passed an appropriations bill by October 1, the government operates under a Continuing Resolution (CR). Under a CR, agencies typically can only spend at the prior year's rate and cannot start new projects. A PM whose project was counting on new-start funding in October may face a delay of weeks or months. <strong>Know whether your project depends on a new appropriation and plan accordingly.</strong></div>
+    </div>
+  </div>
+
+  <!-- ====== Section 6: Day-to-Day Scenarios ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">Day-to-Day: What the PM Does and Does Not Do</div>
+    <div class="ref-table-wrap">
+      <table class="ref-table scenario-table">
+        <tr>
+          <th>Situation</th>
+          <th>PM Action</th>
+        </tr>
+        <tr>
+          <td>Contractor submits a change proposal that would increase the project cost above the authorized amount</td>
+          <td>Documents the change, estimates the total impact, and immediately flags the budget officer and KO. Does not authorize the change. Informs the sponsor that a reprogramming action may be required before the change can proceed.</td>
+        </tr>
+        <tr>
+          <td>Project is running behind schedule and may not obligate all funds before September 30</td>
+          <td>Raises the risk immediately -- not in the next monthly report, this week. Works with the KO to determine whether funds can be obligated on contract modifications or task orders to preserve them. The budget officer decides whether an obligation strategy is available.</td>
+        </tr>
+        <tr>
+          <td>A scope addition is requested that looks like a different mission than the one the project was funded for</td>
+          <td>Does not agree to the addition informally. Routes it to the budget officer and KO with a question: does the current appropriation cover this work? Gets the answer in writing before proceeding.</td>
+        </tr>
+        <tr>
+          <td>The sponsor asks the PM to use project funds to buy equipment or furniture for the building</td>
+          <td>Checks the appropriation. MILCON can fund installed equipment; it typically cannot fund loose furniture or operational equipment. O&amp;M rules differ. Route the question to the budget officer before telling the sponsor yes or no.</td>
+        </tr>
+        <tr>
+          <td>The PM receives a contractor invoice after the funds have expired</td>
+          <td>Does not simply reject the invoice. Contacts the budget officer immediately. Legitimate invoices for work performed during the obligation period can still be paid from expired funds in the unexpired window. After cancellation, it is a much harder problem.</td>
+        </tr>
+        <tr>
+          <td>The PM is told "we have leftover money at the end of the year -- use it"</td>
+          <td>Proceeds carefully. End-of-year spending must still be for a legitimate government need within the purpose of the appropriation. "Use it or lose it" spending on items not related to the project is an Antideficiency Act violation.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ====== Section 7: Quick Rules ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">Quick Rules</div>
+    <div class="rules-strip">
+      <div class="rule-row">
+        <span class="rule-num">01</span>
+        <span class="rule-text"><strong>Know what color your money is.</strong> Before any spending decision, confirm the appropriation: purpose, amount, and time period. If you are not sure, ask the budget officer. This is not optional.</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-num">02</span>
+        <span class="rule-text"><strong>The obligation period ends September 30 for 1-year funds.</strong> Anything that depends on those funds must be obligated on contract before midnight. Work that starts in October against expired funds is a violation.</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-num">03</span>
+        <span class="rule-text"><strong>You cannot move money. You can only document the need and escalate promptly.</strong> Reprogramming authority sits above the PM at every level. Surface funding problems early -- the people who can act need time to act.</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-num">04</span>
+        <span class="rule-text"><strong>A scope change that costs money is also a funding action.</strong> It is not just a contract modification. Before agreeing to anything that changes the cost, check whether the appropriation covers it and whether the authorized amount still holds.</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-num">05</span>
+        <span class="rule-text"><strong>"We have money left over" is not a purchasing authority.</strong> End-of-year funds must still be obligated for legitimate purposes within the appropriation's scope. Spending money just to avoid returning it is a violation.</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-num">06</span>
+        <span class="rule-text"><strong>The POM cycle runs 2 to 3 years ahead of execution.</strong> If your project does not have enough funding, the window to fix that through the budget process has likely already passed. Document, escalate, and manage expectations with your sponsor -- not promises you cannot keep.</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-num">07</span>
+        <span class="rule-text"><strong>Antideficiency Act violations have criminal penalties.</strong> The PM is not the accountable official -- but the PM's decisions create the facts. Document your questions and the answers you received. If something looks wrong, it probably is.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 8: Key Terms ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">Key Terms</div>
+    <div class="glossary-grid">
+      <div class="gloss-item">
+        <div class="gloss-term">Antideficiency Act (ADA)</div>
+        <div class="gloss-def">Federal law prohibiting agencies from obligating or spending funds in excess of, or in advance of, an appropriation. Violations can result in administrative and criminal penalties.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Obligation</div>
+        <div class="gloss-def">A legally binding commitment of government funds -- typically a contract award or modification. Once obligated, the government must pay if the contractor performs.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Appropriation</div>
+        <div class="gloss-def">A Congressional act that authorizes an agency to incur obligations and make payments for specific purposes, up to a specified amount, during a specified time period.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Color of Money</div>
+        <div class="gloss-def">Informal term for the appropriation type and its associated restrictions. "What color is this money?" means "which appropriation is funding this and what are its rules?"</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Reprogramming</div>
+        <div class="gloss-def">Moving funds from one project or program to another within the same appropriation account. Requires authority at some level depending on the amount and type.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Continuing Resolution (CR)</div>
+        <div class="gloss-def">Temporary funding legislation that allows the government to operate when a new appropriations bill has not been passed by October 1. Generally prohibits new starts and limits spending to prior-year rates.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Section 902 Limit <span class="tag tag-cw">CW</span></div>
+        <div class="gloss-def">Statutory cap on cost growth for Civil Works projects (33 USC 2280). Total cost cannot exceed the congressionally authorized amount by more than 20% without new Congressional authorization. The PM must know the project's Section 902 ceiling and flag the budget officer when estimates approach it.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Minor Construction Threshold <span class="tag tag-mp">MP</span></div>
+        <div class="gloss-def">Under 10 USC 2805, the ceiling for unspecified minor construction is $6M. Projects at or below $2M may be funded with O&amp;M appropriations. Projects between $2M and $6M use MILCON authority with congressional notification. Projects above $6M require a full MILCON appropriation.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  }
+</script>
+
+</body>
+</html>

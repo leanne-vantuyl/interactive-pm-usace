@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Project Management Plan &mdash; CW Example</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;
+  --army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;
+  --white:#F5F2EB;--white-dim:#C8C4B8;
+  --accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;
+  --border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);
+  --cw-navy:#1B3A6B;--cw-navy-light:#3a64a8;
+  --body-bg:var(--army-dark);--body-surface:var(--army-mid);
+  --text-main:var(--white);--text-dim:var(--white-dim);
+  --tbl-even:rgba(27,58,107,0.15);--tbl-odd:rgba(27,58,107,0.05);
+  --font-scale:1;
+}
+[data-theme="light"]{
+  --body-bg:#F0EDE5;--body-surface:#FDFAF4;
+  --text-main:#1A1F14;--text-dim:#4A4A40;
+  --border:rgba(139,114,53,0.25);--border-strong:rgba(139,114,53,0.5);
+  --tbl-even:#EEF3FA;--tbl-odd:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--body-bg);color:var(--text-main);font-family:'Inter',sans-serif;font-size:calc(15px * var(--font-scale));line-height:1.65;min-height:100vh;}
+
+.topbar{position:sticky;top:0;z-index:100;background:var(--army-dark);border-bottom:1px solid var(--border);padding:0 1.5rem;height:52px;display:flex;align-items:center;justify-content:space-between;}
+.brand{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+.logo-seal{font-size:1.4rem}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--gold);letter-spacing:.03em}
+.logo-sub{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--white-dim);letter-spacing:.08em;text-transform:uppercase}
+.topbar-controls{display:flex;align-items:center;gap:.5rem}
+.back-link{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.06em;color:var(--gold-dim);text-decoration:none;padding:.3rem .6rem;border:1px solid var(--border);border-radius:4px;transition:color .15s,border-color .15s;}
+.back-link:hover{color:var(--gold);border-color:var(--border-strong)}
+.theme-toggle,.font-toggle{background:none;border:1px solid var(--border);border-radius:4px;color:var(--text-dim);cursor:pointer;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.05em;padding:.3rem .55rem;transition:all .15s;}
+.theme-toggle:hover,.font-toggle:hover{color:var(--gold);border-color:var(--border-strong)}
+
+.page-wrap{max-width:900px;margin:0 auto;padding:2.5rem 1rem 5rem}
+
+/* COVER BLOCK */
+.cover{border:2px solid var(--cw-navy);border-radius:8px;padding:2rem 2rem 1.5rem;margin-bottom:3rem;position:relative;overflow:hidden;}
+.cover::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--cw-navy);}
+.cover-program{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cw-navy-light);margin-bottom:.5rem;}
+.cover-title{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold);line-height:1.2;margin-bottom:.5rem;}
+.cover-subtitle{font-family:'DM Mono',monospace;font-size:.78rem;letter-spacing:.06em;color:var(--white-dim);margin-bottom:1.5rem;}
+.cover-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem 2rem;font-size:.83rem;}
+.cover-field{display:flex;flex-direction:column;gap:.2rem;padding:.4rem 0;border-bottom:1px solid var(--border);}
+.cover-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);}
+.cover-value{color:var(--text-main);font-weight:500;}
+.cover-badge{display:inline-flex;align-items:center;gap:.4rem;margin-top:1.25rem;background:rgba(27,58,107,0.2);border:1px solid rgba(27,58,107,0.4);border-radius:4px;padding:.35rem .75rem;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.08em;color:var(--cw-navy-light);}
+
+/* TOC */
+.toc{margin-bottom:2.5rem;padding:1rem 1.25rem;border:1px solid var(--border);border-radius:6px;background:var(--body-surface);}
+.toc-title{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:.75rem;}
+.toc-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:.3rem;}
+.toc-list a{font-size:.83rem;color:var(--text-dim);text-decoration:none;display:flex;align-items:baseline;gap:.5rem;}
+.toc-list a:hover{color:var(--gold)}
+.toc-num{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--gold-dim);flex-shrink:0;}
+
+/* SECTIONS */
+.pmp-section{margin-bottom:3rem;scroll-margin-top:64px;}
+.section-hdr{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;padding-bottom:.6rem;border-bottom:2px solid var(--cw-navy);}
+.section-num{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.1em;color:var(--cw-navy-light);background:rgba(27,58,107,0.15);border:1px solid rgba(27,58,107,0.3);border-radius:3px;padding:.2rem .5rem;white-space:nowrap;}
+.section-title{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--gold);}
+
+.subsection{margin:1.25rem 0;}
+.sub-title{font-family:'Inter',sans-serif;font-weight:600;font-size:.9rem;color:var(--gold-light);margin-bottom:.5rem;letter-spacing:.01em;}
+.pmp-p{font-size:.88rem;color:var(--text-main);line-height:1.75;margin-bottom:.65rem;}
+.pmp-ul{margin:.4rem 0 .75rem 1.25rem;}
+.pmp-ul li{font-size:.88rem;color:var(--text-main);line-height:1.65;margin-bottom:.35rem;}
+
+/* TABLES */
+.pmp-table{width:100%;border-collapse:collapse;margin:.75rem 0 1.25rem;font-size:.84rem;}
+.pmp-table th{background:var(--cw-navy);color:#fff;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;padding:.5rem .75rem;text-align:left;}
+.pmp-table tr:nth-child(odd) td{background:var(--tbl-even);}
+.pmp-table tr:nth-child(even) td{background:var(--tbl-odd);}
+.pmp-table td{padding:.55rem .75rem;vertical-align:top;line-height:1.55;border-bottom:1px solid var(--border);}
+.pmp-table td:first-child{font-weight:600;color:var(--gold-light);}
+
+/* CALLOUT */
+.callout{margin:1rem 0;padding:.75rem 1rem;border-left:3px solid var(--cw-navy-light);background:rgba(27,58,107,0.08);border-radius:0 4px 4px 0;font-size:.84rem;color:var(--text-dim);line-height:1.65;}
+.callout strong{color:var(--gold-light);}
+
+/* APPROVAL */
+.approval-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1rem;}
+.approval-box{border:1px solid var(--border);border-radius:6px;padding:1rem;}
+.approval-role{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:.4rem;}
+.approval-name{font-size:.9rem;font-weight:600;color:var(--text-main);margin-bottom:.2rem;}
+.approval-title{font-size:.78rem;color:var(--text-dim);margin-bottom:.8rem;}
+.sig-line{border-top:1px solid var(--border-strong);margin-top:1rem;padding-top:.3rem;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:var(--gold-dim);display:flex;justify-content:space-between;}
+
+/* DIFF BANNER */
+.diff-banner{background:rgba(200,168,75,0.07);border:1px solid rgba(200,168,75,0.25);border-radius:6px;padding:.75rem 1rem;margin-bottom:2.5rem;font-size:.82rem;color:var(--text-dim);}
+.diff-banner strong{color:var(--gold-light);display:block;margin-bottom:.4rem;font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;}
+
+@media(max-width:640px){
+  .cover-grid{grid-template-columns:1fr;}
+  .toc-list{grid-template-columns:1fr;}
+  .approval-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a class="brand" href="index.html">
+    <span class="logo-seal">⚙</span>
+    <div>
+      <div class="logo-primary">PROSPECT 355</div>
+      <div class="logo-sub">Interactive Course &middot; USACE KMP-PPM</div>
+    </div>
+  </a>
+  <div class="topbar-controls">
+    <a class="back-link" href="index.html">&#8592; Home</a>
+    <button class="theme-toggle" onclick="toggleTheme()">◑</button>
+    <button class="font-toggle" onclick="cycleFont()">Aa</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-program">Civil Works &mdash; O&amp;M Funded &mdash; Example Document</div>
+    <div class="cover-title">Project Management Plan</div>
+    <div class="cover-subtitle">Riverside District Operations Center Renovation &mdash; Building 412</div>
+    <div class="cover-grid">
+      <div class="cover-field"><span class="cover-label">Project Number</span><span class="cover-value">OMP-2025-412 / P2 No. 789012</span></div>
+      <div class="cover-field"><span class="cover-label">Appropriation</span><span class="cover-value">O&amp;M, Civil Works (FY25)</span></div>
+      <div class="cover-field"><span class="cover-label">Program Area</span><span class="cover-value">Civil Works / Operations &amp; Maintenance</span></div>
+      <div class="cover-field"><span class="cover-label">Non-Federal Sponsor</span><span class="cover-value">N/A -- District-funded; no sponsor cost-share</span></div>
+      <div class="cover-field"><span class="cover-label">Project Manager</span><span class="cover-value">Maria Chen, PMP</span></div>
+      <div class="cover-field"><span class="cover-label">District</span><span class="cover-value">USACE Riverside District</span></div>
+      <div class="cover-field"><span class="cover-label">Programmed Amount</span><span class="cover-value">$4,850,000</span></div>
+      <div class="cover-field"><span class="cover-label">PMP Version</span><span class="cover-value">1.0 &mdash; Approved 20 Jan 2025</span></div>
+    </div>
+    <div class="cover-badge">&#9632; FOR OFFICIAL TRAINING USE ONLY &mdash; EXAMPLE DOCUMENT</div>
+  </div>
+
+  <!-- COMPARE BANNER -->
+  <div class="diff-banner">
+    <strong>CW vs. MP &mdash; Key Differences in This Document</strong>
+    This is an O&amp;M-funded Civil Works project. Compare it to the Military Programs (MILCON) example to see how the same PMP structure adapts across programs: funding source and appropriation authority, the absence of a non-federal sponsor cost-share obligation, the approval chain (no KO for design; in-house design option), and closeout differences (no DD1354; real property records updated through Civil Works channels). The project management framework is identical -- the PDBP governs both.
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <li><a href="#s1"><span class="toc-num">1</span>Project Overview</a></li>
+      <li><a href="#s2"><span class="toc-num">2</span>Scope Baseline</a></li>
+      <li><a href="#s3"><span class="toc-num">3</span>Schedule Baseline</a></li>
+      <li><a href="#s4"><span class="toc-num">4</span>Cost Baseline</a></li>
+      <li><a href="#s5"><span class="toc-num">5</span>Risk Management</a></li>
+      <li><a href="#s6"><span class="toc-num">6</span>Communication Plan</a></li>
+      <li><a href="#s7"><span class="toc-num">7</span>Change Management</a></li>
+      <li><a href="#s8"><span class="toc-num">8</span>PDT Roles &amp; Responsibilities</a></li>
+      <li><a href="#s9"><span class="toc-num">9</span>Closeout Requirements</a></li>
+      <li><a href="#s10"><span class="toc-num">10</span>Approval &amp; Signatures</a></li>
+    </ul>
+  </div>
+
+  <!-- S1: PROJECT OVERVIEW -->
+  <div class="pmp-section" id="s1">
+    <div class="section-hdr"><span class="section-num">Section 1</span><span class="section-title">Project Overview</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">1.1 Purpose and Authority</div>
+      <p class="pmp-p">This Project Management Plan (PMP) establishes the management framework for the renovation of Building 412, the Riverside District Operations Center, funded under Operations and Maintenance, Civil Works (O&amp;M, CW) appropriations. The project is managed by the USACE Riverside District and governed by the Project Delivery Business Process (PDBP) as codified in EM 5-1-11.</p>
+      <p class="pmp-p">This project is O&amp;M funded, meaning the district is both the program manager and the facility owner. There is no non-federal sponsor and no cost-share obligation. Funding is subject to annual apportionment and cannot be obligated beyond the appropriation period without explicit authority.</p>
+      <div class="callout"><strong>O&amp;M vs. MILCON:</strong> Unlike MILCON projects, O&amp;M-funded projects do not require Congressional authorization beyond the appropriation itself. However, they are subject to the single-year obligation rule: O&amp;M funds must be obligated in the fiscal year appropriated (with limited exceptions under the bona fide need rule). This shapes the schedule's procurement milestone more tightly than a MILCON project would be.</div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">1.2 Project Background</div>
+      <p class="pmp-p">Building 412 houses the Riverside District's operations center, including the Emergency Operations Center (EOC), the Real Estate field office, and the District Operations section. The building was last renovated in 1998. A facility assessment completed in August 2024 identified structural deficiencies in the mezzanine floor system, inadequate HVAC capacity for the current equipment load in the EOC, and accessibility gaps under the current ADA standard. The District Commander authorized O&amp;M programming in September 2024 for a phased renovation addressing all three deficiencies.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">1.3 Project Objectives</div>
+      <ul class="pmp-ul">
+        <li>Complete all structural, HVAC, and accessibility work by 30 September 2026 (end of FY2026) to align with the O&amp;M obligation authority</li>
+        <li>Maintain EOC operational capability throughout construction -- EOC downtime not to exceed 72 consecutive hours at any point</li>
+        <li>Bring all areas into ADA compliance per the current standard (ABA Accessibility Standards, 2017)</li>
+        <li>Complete within the $4,850,000 programmed O&amp;M amount</li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">1.4 PDBP Phase Status</div>
+      <table class="pmp-table">
+        <tr><th>Phase</th><th>Status</th><th>Key Milestone</th><th>Date</th></tr>
+        <tr><td>Initiation (PROC1000)</td><td>Complete</td><td>District Commander authorization memo</td><td>15 Sep 2024</td></tr>
+        <tr><td>Planning (PROC2000 series)</td><td>Complete</td><td>PMP approved / baselines set</td><td>20 Jan 2025</td></tr>
+        <tr><td>Execution (PROC3000 series)</td><td>In Progress</td><td>Design NTP issued (in-house)</td><td>27 Jan 2025</td></tr>
+        <tr><td>Closeout (PROC4000)</td><td>Not Started</td><td>Construction completion cert</td><td>TBD</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- S2: SCOPE -->
+  <div class="pmp-section" id="s2">
+    <div class="section-hdr"><span class="section-num">Section 2</span><span class="section-title">Scope Baseline</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">2.1 Product Scope</div>
+      <p class="pmp-p">The renovation of Building 412 encompasses three work packages, each tied to a deficiency identified in the August 2024 facility assessment:</p>
+      <ul class="pmp-ul">
+        <li><strong>Work Package A -- Structural:</strong> Repair and reinforce the mezzanine floor system per the structural engineer's design. Install temporary shoring as required during construction. No change to gross square footage.</li>
+        <li><strong>Work Package B -- HVAC:</strong> Replace the EOC HVAC system with a dedicated precision cooling unit sized for current equipment load. Reroute supply and return ductwork. Decommission the legacy unit.</li>
+        <li><strong>Work Package C -- Accessibility:</strong> Reconfigure the main entrance vestibule, install a compliant accessible route from the parking area, and upgrade two restrooms to current ABA standard.</li>
+      </ul>
+      <p class="pmp-p">All three work packages will be bid as a single contract with separate line items, allowing the district to exercise or defer individual packages if funding is reduced.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">2.2 Scope Exclusions</div>
+      <ul class="pmp-ul">
+        <li>Roof replacement (deferred to FY2027 O&amp;M programming)</li>
+        <li>Interior painting beyond construction-disturbed surfaces</li>
+        <li>Furniture replacement or reconfiguration</li>
+        <li>IT/AV infrastructure beyond conduit rough-in associated with Work Package B</li>
+        <li>Work on Building 411 (separate project, separate funding)</li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">2.3 Work Breakdown Structure Summary</div>
+      <table class="pmp-table">
+        <tr><th>WBS Element</th><th>Description</th><th>Responsible Party</th></tr>
+        <tr><td>1.0 Project Management</td><td>PM oversight, reporting, meetings, change management</td><td>Maria Chen / PDT</td></tr>
+        <tr><td>2.0 Planning</td><td>Scope, schedule, cost estimate, PMP</td><td>PDT</td></tr>
+        <tr><td>3.0 Design</td><td>Structural, mechanical, accessibility -- in-house design</td><td>District Engineering</td></tr>
+        <tr><td>3.1 Structural Design</td><td>Mezzanine repair drawings and specifications</td><td>Structural Section</td></tr>
+        <tr><td>3.2 HVAC Design</td><td>EOC precision cooling design and specs</td><td>Mechanical Section</td></tr>
+        <tr><td>3.3 Accessibility Design</td><td>Entrance, route, and restroom ABA compliance drawings</td><td>Architectural Section</td></tr>
+        <tr><td>4.0 Procurement</td><td>Solicitation, evaluation, award (simplified acquisition threshold applies)</td><td>KO / PM</td></tr>
+        <tr><td>5.0 Construction -- WP-A</td><td>Mezzanine structural repair</td><td>Prime Contractor</td></tr>
+        <tr><td>5.0 Construction -- WP-B</td><td>EOC HVAC replacement</td><td>Prime Contractor</td></tr>
+        <tr><td>5.0 Construction -- WP-C</td><td>Accessibility improvements</td><td>Prime Contractor</td></tr>
+        <tr><td>6.0 Closeout</td><td>As-builts, real property records update, financial closeout, AAR</td><td>PM / Real Estate</td></tr>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">2.4 Key Assumptions</div>
+      <table class="pmp-table">
+        <tr><th>Assumption</th><th>If Wrong</th><th>Owner</th></tr>
+        <tr><td>Structural assessment findings are representative of full mezzanine condition (no hidden deterioration)</td><td>Additional scope in WP-A; cost impact up to $150K; schedule impact 3-4 weeks</td><td>Structural Eng</td></tr>
+        <tr><td>EOC can be relocated to Building 411 during WP-B (72-hour max downtime assumption)</td><td>Phased construction required for WP-B; schedule extended 6-8 weeks</td><td>PM / District Ops</td></tr>
+        <tr><td>O&amp;M funds remain available through FY2026 without rescission</td><td>Scope reduction required; work packages may be deferred to next FY</td><td>Resource Mgmt</td></tr>
+        <tr><td>In-house design can support all three work packages concurrently within existing section capacity</td><td>A-E procurement required; schedule extended 6-8 weeks, cost increased $80K-$150K</td><td>PM / Engineering</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- S3: SCHEDULE -->
+  <div class="pmp-section" id="s3">
+    <div class="section-hdr"><span class="section-num">Section 3</span><span class="section-title">Schedule Baseline</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">3.1 Master Schedule Summary</div>
+      <table class="pmp-table">
+        <tr><th>Milestone</th><th>Baseline Date</th><th>Float</th><th>Notes</th></tr>
+        <tr><td>PMP Approved / Baselines Set</td><td>20 Jan 2025</td><td>N/A</td><td>Planning phase complete</td></tr>
+        <tr><td>In-House Design NTP</td><td>27 Jan 2025</td><td>0 days</td><td>Critical path start</td></tr>
+        <tr><td>Design Complete (all WPs)</td><td>04 Apr 2025</td><td>0 days</td><td>Critical path; 10-week design</td></tr>
+        <tr><td>Solicitation Published</td><td>11 Apr 2025</td><td>0 days</td><td>Critical path</td></tr>
+        <tr><td>Construction Contract Award</td><td>23 May 2025</td><td>0 days</td><td>Critical path; 42-day procurement</td></tr>
+        <tr><td>Construction NTP</td><td>02 Jun 2025</td><td>0 days</td><td>Critical path</td></tr>
+        <tr><td>WP-A Complete (Structural)</td><td>18 Jul 2025</td><td>5 days</td><td>46-day duration; concurrent with WP-C</td></tr>
+        <tr><td>WP-C Complete (Accessibility)</td><td>25 Jul 2025</td><td>0 days</td><td>53-day duration; critical path through EOC window</td></tr>
+        <tr><td>EOC Relocation Window Opens</td><td>28 Jul 2025</td><td>0 days</td><td>Coordinated with District Ops; 72-hour max</td></tr>
+        <tr><td>WP-B Complete (HVAC)</td><td>26 Sep 2025</td><td>0 days</td><td>60-day duration; critical path</td></tr>
+        <tr><td>Substantial Completion</td><td>10 Oct 2025</td><td>0 days</td><td>Critical path</td></tr>
+        <tr><td>Final Acceptance</td><td>07 Nov 2025</td><td>0 days</td><td>28-day punch list period</td></tr>
+      </table>
+      <div class="callout"><strong>O&amp;M Obligation Deadline:</strong> All construction work must be substantially complete and accepted by 30 September 2026 to ensure final voucher processing within the O&amp;M appropriation period. The baseline schedule achieves substantial completion by 10 October 2025, providing a 355-day buffer against the FY2026 obligation deadline. The PM will flag any schedule slip exceeding 90 days as a potential obligation risk.</div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">3.2 Schedule Basis of Estimate</div>
+      <p class="pmp-p">Design durations are based on confirmed resource commitments from the structural, mechanical, and architectural section chiefs (letters of record, 15 January 2025). Construction durations are based on RS Means unit cost data adjusted for the local market, vendor input from an industry day held 10 December 2024, and comparison to three similar O&amp;M renovation projects completed by the district in FY2021-2023. Procurement duration reflects the simplified acquisition procedures available for contracts below $7.5M and assumes award within 42 calendar days of solicitation publication.</p>
+    </div>
+  </div>
+
+  <!-- S4: COST -->
+  <div class="pmp-section" id="s4">
+    <div class="section-hdr"><span class="section-num">Section 4</span><span class="section-title">Cost Baseline</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">4.1 Approved Budget Summary</div>
+      <table class="pmp-table">
+        <tr><th>Cost Element</th><th>Amount</th><th>% of Total</th></tr>
+        <tr><td>In-House Design (labor / overhead)</td><td>$185,000</td><td>3.8%</td></tr>
+        <tr><td>Construction -- WP-A (Structural)</td><td>$1,420,000</td><td>29.3%</td></tr>
+        <tr><td>Construction -- WP-B (HVAC)</td><td>$1,780,000</td><td>36.7%</td></tr>
+        <tr><td>Construction -- WP-C (Accessibility)</td><td>$620,000</td><td>12.8%</td></tr>
+        <tr><td>Construction Contingency (8%)</td><td>$305,600</td><td>6.3%</td></tr>
+        <tr><td>SIOH (6.5% of construction)</td><td>$247,000</td><td>5.1%</td></tr>
+        <tr><td>Project Management / Other</td><td>$292,400</td><td>6.0%</td></tr>
+        <tr><td><strong>Total Programmed Amount</strong></td><td><strong>$4,850,000</strong></td><td><strong>100%</strong></td></tr>
+      </table>
+      <div class="callout"><strong>Higher Contingency Rate:</strong> Construction contingency is set at 8% (vs. 5% in the MILCON example) to account for the higher uncertainty associated with renovation work in an occupied building with a 1998-era construction record. Renovation projects consistently carry higher unknown conditions risk than new construction of equivalent scope.</div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">4.2 In-House Design Cost Accounting</div>
+      <p class="pmp-p">Design is performed in-house by the district's structural, mechanical, and architectural sections. Design costs are captured as direct labor charges to the project P2 number. Section chiefs have confirmed resource availability for the 10-week design period. If design scope or duration expands beyond the baseline, the PM will assess whether A-E support is required and present a cost impact analysis to the DPM.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">4.3 Contingency Management and Funding Gap Protocol</div>
+      <p class="pmp-p">If the construction IGE (produced at 100% design) exceeds the available construction budget by more than 5%, the PM will present a written gap analysis to the DPM within 10 business days. The three authorized responses are scope reduction (defer one or more work packages to FY2027), funding increase request (supplemental O&amp;M reprogramming), or contingency reduction with documented risk acceptance. The PM will state a recommendation. All three options will be presented regardless of which the PM recommends.</p>
+    </div>
+  </div>
+
+  <!-- S5: RISK -->
+  <div class="pmp-section" id="s5">
+    <div class="section-hdr"><span class="section-num">Section 5</span><span class="section-title">Risk Management</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">5.1 Risk Register Summary (Planning Phase)</div>
+      <table class="pmp-table">
+        <tr><th>Risk</th><th>Prob</th><th>Impact</th><th>Owner</th><th>Strategy</th><th>Trigger</th></tr>
+        <tr><td>Hidden mezzanine deterioration beyond structural assessment findings</td><td>Medium</td><td>High -- scope addition $100K-$150K; 3-4 week delay</td><td>Structural Eng</td><td>MITIGATE</td><td>Contractor exposes additional deterioration during demo; structural eng assessment within 48 hours</td></tr>
+        <tr><td>EOC cannot be relocated within 72-hour downtime limit</td><td>Low</td><td>High -- WP-B must be phased; 6-8 week schedule impact</td><td>PM / District Ops</td><td>AVOID</td><td>District Ops written confirmation of Building 411 availability not received by 15 March 2025</td></tr>
+        <tr><td>HVAC precision cooling unit lead time exceeds schedule allowance</td><td>High</td><td>Medium -- 45-60 day delay to substantial completion</td><td>COR</td><td>MITIGATE</td><td>Contractor submittals show equipment delivery beyond Week 12 of construction</td></tr>
+        <tr><td>O&amp;M funds rescinded or reprogrammed before obligation</td><td>Low</td><td>High -- project paused; reschedule to next FY</td><td>Resource Mgmt</td><td>ACCEPT</td><td>Apportionment notice or District budget guidance indicating reduced O&amp;M allocation</td></tr>
+        <tr><td>In-house design section overcommitted (competing priorities)</td><td>Medium</td><td>Medium -- A-E procurement required; 6-8 week delay, $80K-$150K cost</td><td>PM</td><td>MITIGATE</td><td>Section chief reports design behind baseline by more than 5 days at Week 4 checkpoint</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- S6: COMMUNICATIONS -->
+  <div class="pmp-section" id="s6">
+    <div class="section-hdr"><span class="section-num">Section 6</span><span class="section-title">Communication Plan</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">6.1 Stakeholder Communication Matrix</div>
+      <table class="pmp-table">
+        <tr><th>Audience</th><th>Format</th><th>Frequency</th><th>Owner</th></tr>
+        <tr><td>PDT (internal)</td><td>PDT meeting -- agenda, notes, action items per PROC3000</td><td>Bi-weekly (design); Weekly (construction)</td><td>PM</td></tr>
+        <tr><td>District PM (DPM)</td><td>Monthly program review -- schedule status, cost, risk, EVM (construction phase)</td><td>Monthly</td><td>PM</td></tr>
+        <tr><td>District Commander</td><td>Written summary if baseline change or funding gap arises; otherwise no standing report</td><td>As needed</td><td>DPM</td></tr>
+        <tr><td>District Operations Section</td><td>EOC coordination meetings; written notification 30 days before EOC downtime window</td><td>Monthly + milestone</td><td>PM</td></tr>
+        <tr><td>Real Estate Section</td><td>Coordination on real property records update at closeout</td><td>At closeout</td><td>PM</td></tr>
+      </table>
+      <div class="callout"><strong>No Sponsor Communication Required:</strong> This is a district-funded O&amp;M project with no non-federal sponsor. There is no sponsor coordination, cost-share reporting, or sponsor sign-off obligation. This is a key difference from Civil Works projects with a non-federal sponsor (e.g., ecosystem restoration or flood risk management projects under WRDA authority), where sponsor communication is a formal PDBP requirement.</div>
+    </div>
+  </div>
+
+  <!-- S7: CHANGE MANAGEMENT -->
+  <div class="pmp-section" id="s7">
+    <div class="section-hdr"><span class="section-num">Section 7</span><span class="section-title">Change Management</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">7.1 Change Authority Matrix</div>
+      <table class="pmp-table">
+        <tr><th>Change Type</th><th>Threshold</th><th>Approving Authority</th><th>Process</th></tr>
+        <tr><td>Design clarification (no cost or schedule impact)</td><td>Any</td><td>PM (documented)</td><td>PM documents in project record</td></tr>
+        <tr><td>Construction modification (&lt;$50K, &lt;10 days)</td><td>&lt;$50K / &lt;10 days</td><td>DPM approval; KO action</td><td>PM initiates; DPM approves; KO modifies</td></tr>
+        <tr><td>Work package addition or deferral</td><td>Any</td><td>DPM; District Commander if &gt;$500K</td><td>PM submits scope change with cost and schedule impact; DPM approves; PMP updated</td></tr>
+        <tr><td>O&amp;M obligation authority at risk</td><td>Any schedule slip threatening 30 Sep 2026 deadline</td><td>DPM; notification to Resource Mgmt</td><td>PM raises immediately in writing; DPM determines whether to accelerate, defer, or seek authority extension</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- S8: PDT ROLES -->
+  <div class="pmp-section" id="s8">
+    <div class="section-hdr"><span class="section-num">Section 8</span><span class="section-title">PDT Roles &amp; Responsibilities</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">8.1 Project Delivery Team</div>
+      <table class="pmp-table">
+        <tr><th>Role</th><th>Name / Organization</th><th>Responsibilities</th></tr>
+        <tr><td>Project Manager</td><td>Maria Chen, PMP -- Riverside District (PM Branch)</td><td>Overall delivery; scope, schedule, cost, and risk management; O&amp;M obligation tracking; DPM interface; PMP maintenance</td></tr>
+        <tr><td>Deputy PM (DPM)</td><td>Elena Vasquez -- Riverside District</td><td>Baseline change approval (within authority); program review chair; escalation point; District Commander briefings</td></tr>
+        <tr><td>Contracting Officer (KO)</td><td>Sarah Okafor, 1102 -- Contracting Division</td><td>Sole obligation authority; solicitation; award and modifications; price reasonableness</td></tr>
+        <tr><td>Contracting Officer's Rep (COR)</td><td>Marcus Rivera -- Engineering Division</td><td>Day-to-day contractor oversight; inspection; submittal review; payment recommendation</td></tr>
+        <tr><td>Structural Engineer (In-House Design)</td><td>Kevin Park -- Structural Section</td><td>WP-A design; structural assessment interpretation; construction oversight for WP-A</td></tr>
+        <tr><td>Mechanical Engineer (In-House Design)</td><td>Priya Anand -- Mechanical Section</td><td>WP-B design; HVAC sizing; commissioning oversight</td></tr>
+        <tr><td>Architect (In-House Design)</td><td>TBD -- Architectural Section</td><td>WP-C design; ABA compliance determination; coordination with structural for vestibule work</td></tr>
+        <tr><td>Cost Engineer</td><td>David Thornton -- Cost Engineering</td><td>IGE at 100% design; EVM data validation during construction</td></tr>
+        <tr><td>District Operations Representative</td><td>Col. (Ret.) James Whitfield -- District Ops</td><td>EOC downtime coordination; temporary relocation planning; facility acceptance</td></tr>
+        <tr><td>Real Estate Specialist</td><td>TBD -- Real Estate Division</td><td>Real property records update at closeout</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- S9: CLOSEOUT -->
+  <div class="pmp-section" id="s9">
+    <div class="section-hdr"><span class="section-num">Section 9</span><span class="section-title">Closeout Requirements</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">9.1 Civil Works O&amp;M Closeout Checklist</div>
+      <table class="pmp-table">
+        <tr><th>Deliverable</th><th>Owner</th><th>Deadline</th><th>Notes</th></tr>
+        <tr><td>Construction completion certification</td><td>COR / PM</td><td>At final acceptance</td><td>Required before final voucher processing</td></tr>
+        <tr><td>As-built drawings (accepted)</td><td>COR</td><td>Before final voucher</td><td>In-house design team certifies as-built against contractor red-lines</td></tr>
+        <tr><td>O&amp;M manuals</td><td>COR</td><td>At substantial completion</td><td>Transmitted to District Ops facility manager; HVAC commissioning report included</td></tr>
+        <tr><td>Real property records update</td><td>PM / Real Estate</td><td>Within 30 days of final acceptance</td><td>No DD1354 -- Civil Works real property updated through Real Estate Division; floor plan and system updates documented</td></tr>
+        <tr><td>Financial closeout (O&amp;M)</td><td>PM / Resource Mgmt</td><td>Before end of obligation period</td><td>All O&amp;M funds obligated and liquidated; no unliquidated obligations carried forward</td></tr>
+        <tr><td>Contractor Performance Assessment (CPARS)</td><td>COR / PM</td><td>Within 60 days of contract completion</td><td>Required under FAR regardless of contract size</td></tr>
+        <tr><td>After Action Review</td><td>PM</td><td>Within 30 days of project completion</td><td>Four-question format; lessons submitted to district database</td></tr>
+      </table>
+      <div class="callout"><strong>No DD1354 for O&amp;M Projects:</strong> A DD Form 1354 (Transfer of Real Property) is a MILCON-specific document used to transfer a new facility from USACE construction authority to the installation. It does not apply to O&amp;M renovation projects where USACE is both the program manager and the facility owner. Real property records are updated through the district's Real Estate Division using standard Civil Works procedures.</div>
+    </div>
+  </div>
+
+  <!-- S10: APPROVALS -->
+  <div class="pmp-section" id="s10">
+    <div class="section-hdr"><span class="section-num">Section 10</span><span class="section-title">Approval &amp; Signatures</span></div>
+    <p class="pmp-p">By signing below, each party acknowledges that they have reviewed this Project Management Plan, agree to the baselines established herein, and commit to the roles and responsibilities assigned in Section 8.</p>
+
+    <div class="approval-grid">
+      <div class="approval-box">
+        <div class="approval-role">Project Manager</div>
+        <div class="approval-name">Maria Chen, PMP</div>
+        <div class="approval-title">Project Manager, Riverside District</div>
+        <div class="sig-line"><span>Signature</span><span>Date</span></div>
+      </div>
+      <div class="approval-box">
+        <div class="approval-role">Deputy PM / Approving Authority</div>
+        <div class="approval-name">Elena Vasquez</div>
+        <div class="approval-title">Deputy PM, Riverside District</div>
+        <div class="sig-line"><span>Signature</span><span>Date</span></div>
+      </div>
+      <div class="approval-box">
+        <div class="approval-role">Contracting Officer</div>
+        <div class="approval-name">Sarah Okafor</div>
+        <div class="approval-title">Contracting Officer, Contracting Division</div>
+        <div class="sig-line"><span>Signature</span><span>Date</span></div>
+      </div>
+      <div class="approval-box">
+        <div class="approval-role">District Operations Representative</div>
+        <div class="approval-name">Col. (Ret.) James Whitfield</div>
+        <div class="approval-title">Chief, District Operations Section</div>
+        <div class="sig-line"><span>Signature</span><span>Date</span></div>
+      </div>
+    </div>
+
+    <p class="pmp-p" style="margin-top:2rem;font-size:.78rem;color:var(--text-dim);text-align:center;">USACE KMP-PPM &nbsp;|&nbsp; FOR OFFICIAL TRAINING USE ONLY &nbsp;|&nbsp; PROSPECT 355 Example Document</p>
+  </div>
+
+</div>
+
+<script>
+function toggleTheme(){const h=document.documentElement;h.setAttribute('data-theme',h.getAttribute('data-theme')==='light'?'dark':'light');try{localStorage.setItem('pmp-theme',h.getAttribute('data-theme'))}catch(e){}}
+function cycleFont(){const r=document.documentElement;const c=parseFloat(r.style.getPropertyValue('--font-scale')||'1');const n=c>=1.2?0.9:c+0.15;r.style.setProperty('--font-scale',n.toFixed(2));try{localStorage.setItem('pmp-font',n.toFixed(2))}catch(e){}}
+(function(){try{const t=localStorage.getItem('pmp-theme');if(t)document.documentElement.setAttribute('data-theme',t);const f=localStorage.getItem('pmp-font');if(f)document.documentElement.style.setProperty('--font-scale',f)}catch(e){}})();
+</script>
+</body>
+</html>

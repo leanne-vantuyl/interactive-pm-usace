@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Project Management Plan &mdash; MP Example</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;
+  --army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;
+  --white:#F5F2EB;--white-dim:#C8C4B8;
+  --accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;
+  --border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);
+  --mp-green:#1B5C2A;--mp-green-light:#2d8a42;
+  --body-bg:var(--army-dark);--body-surface:var(--army-mid);
+  --text-main:var(--white);--text-dim:var(--white-dim);
+  --tbl-even:rgba(27,92,42,0.12);--tbl-odd:rgba(27,92,42,0.05);
+  --font-scale:1;
+}
+[data-theme="light"]{
+  --body-bg:#F0EDE5;--body-surface:#FDFAF4;
+  --text-main:#1A1F14;--text-dim:#4A4A40;
+  --border:rgba(139,114,53,0.25);--border-strong:rgba(139,114,53,0.5);
+  --tbl-even:#EEF7F0;--tbl-odd:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--body-bg);color:var(--text-main);font-family:'Inter',sans-serif;font-size:calc(15px * var(--font-scale));line-height:1.65;min-height:100vh;}
+
+.topbar{position:sticky;top:0;z-index:100;background:var(--army-dark);border-bottom:1px solid var(--border);padding:0 1.5rem;height:52px;display:flex;align-items:center;justify-content:space-between;}
+.brand{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+.logo-seal{font-size:1.4rem}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--gold);letter-spacing:.03em}
+.logo-sub{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--white-dim);letter-spacing:.08em;text-transform:uppercase}
+.topbar-controls{display:flex;align-items:center;gap:.5rem}
+.back-link{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.06em;color:var(--gold-dim);text-decoration:none;padding:.3rem .6rem;border:1px solid var(--border);border-radius:4px;transition:color .15s,border-color .15s;}
+.back-link:hover{color:var(--gold);border-color:var(--border-strong)}
+.theme-toggle,.font-toggle{background:none;border:1px solid var(--border);border-radius:4px;color:var(--text-dim);cursor:pointer;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.05em;padding:.3rem .55rem;transition:all .15s;}
+.theme-toggle:hover,.font-toggle:hover{color:var(--gold);border-color:var(--border-strong)}
+
+.page-wrap{max-width:900px;margin:0 auto;padding:2.5rem 1rem 5rem}
+
+/* COVER BLOCK */
+.cover{border:2px solid var(--mp-green);border-radius:8px;padding:2rem 2rem 1.5rem;margin-bottom:3rem;position:relative;overflow:hidden;}
+.cover::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--mp-green);}
+.cover-program{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mp-green-light);margin-bottom:.5rem;}
+.cover-title{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold);line-height:1.2;margin-bottom:.5rem;}
+.cover-subtitle{font-family:'DM Mono',monospace;font-size:.78rem;letter-spacing:.06em;color:var(--white-dim);margin-bottom:1.5rem;}
+.cover-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem 2rem;font-size:.83rem;}
+.cover-field{display:flex;flex-direction:column;gap:.2rem;padding:.4rem 0;border-bottom:1px solid var(--border);}
+.cover-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);}
+.cover-value{color:var(--text-main);font-weight:500;}
+.cover-badge{display:inline-flex;align-items:center;gap:.4rem;margin-top:1.25rem;background:rgba(27,92,42,0.2);border:1px solid rgba(27,92,42,0.4);border-radius:4px;padding:.35rem .75rem;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.08em;color:var(--mp-green-light);}
+
+/* SECTION NAVIGATION */
+.toc{margin-bottom:2.5rem;padding:1rem 1.25rem;border:1px solid var(--border);border-radius:6px;background:var(--body-surface);}
+.toc-title{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:.75rem;}
+.toc-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:.3rem;}
+.toc-list a{font-size:.83rem;color:var(--text-dim);text-decoration:none;display:flex;align-items:baseline;gap:.5rem;}
+.toc-list a:hover{color:var(--gold)}
+.toc-num{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--gold-dim);flex-shrink:0;}
+
+/* SECTIONS */
+.pmp-section{margin-bottom:3rem;scroll-margin-top:64px;}
+.section-hdr{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;padding-bottom:.6rem;border-bottom:2px solid var(--mp-green);}
+.section-num{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.1em;color:var(--mp-green-light);background:rgba(27,92,42,0.15);border:1px solid rgba(27,92,42,0.3);border-radius:3px;padding:.2rem .5rem;white-space:nowrap;}
+.section-title{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--gold);}
+
+.subsection{margin:1.25rem 0;}
+.sub-title{font-family:'Inter',sans-serif;font-weight:600;font-size:.9rem;color:var(--gold-light);margin-bottom:.5rem;letter-spacing:.01em;}
+.pmp-p{font-size:.88rem;color:var(--text-main);line-height:1.75;margin-bottom:.65rem;}
+.pmp-ul{margin:.4rem 0 .75rem 1.25rem;}
+.pmp-ul li{font-size:.88rem;color:var(--text-main);line-height:1.65;margin-bottom:.35rem;}
+
+/* TABLES */
+.pmp-table{width:100%;border-collapse:collapse;margin:.75rem 0 1.25rem;font-size:.84rem;}
+.pmp-table th{background:var(--mp-green);color:#fff;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;padding:.5rem .75rem;text-align:left;}
+.pmp-table tr:nth-child(odd) td{background:var(--tbl-even);}
+.pmp-table tr:nth-child(even) td{background:var(--tbl-odd);}
+.pmp-table td{padding:.55rem .75rem;vertical-align:top;line-height:1.55;border-bottom:1px solid var(--border);}
+.pmp-table td:first-child{font-weight:600;color:var(--gold-light);}
+
+/* CALLOUT */
+.callout{margin:1rem 0;padding:.75rem 1rem;border-left:3px solid var(--mp-green);background:rgba(27,92,42,0.08);border-radius:0 4px 4px 0;font-size:.84rem;color:var(--text-dim);line-height:1.65;}
+.callout strong{color:var(--gold-light);}
+
+/* APPROVAL BLOCK */
+.approval-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1rem;}
+.approval-box{border:1px solid var(--border);border-radius:6px;padding:1rem;}
+.approval-role{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:.4rem;}
+.approval-name{font-size:.9rem;font-weight:600;color:var(--text-main);margin-bottom:.2rem;}
+.approval-title{font-size:.78rem;color:var(--text-dim);margin-bottom:.8rem;}
+.sig-line{border-top:1px solid var(--border-strong);margin-top:1rem;padding-top:.3rem;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:var(--gold-dim);display:flex;justify-content:space-between;}
+
+@media(max-width:640px){
+  .cover-grid{grid-template-columns:1fr;}
+  .toc-list{grid-template-columns:1fr;}
+  .approval-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a class="brand" href="index.html">
+    <span class="logo-seal">⚙</span>
+    <div>
+      <div class="logo-primary">PROSPECT 355</div>
+      <div class="logo-sub">Interactive Course &middot; USACE KMP-PPM</div>
+    </div>
+  </a>
+  <div class="topbar-controls">
+    <a class="back-link" href="index.html">&#8592; Home</a>
+    <button class="theme-toggle" onclick="toggleTheme()">◑</button>
+    <button class="font-toggle" onclick="cycleFont()">Aa</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-program">Military Programs &mdash; MILCON &mdash; Example Document</div>
+    <div class="cover-title">Project Management Plan</div>
+    <div class="cover-subtitle">District Administrative Office Complex &mdash; Building 2247 Replacement</div>
+    <div class="cover-grid">
+      <div class="cover-field"><span class="cover-label">Project Number</span><span class="cover-value">P2 No. 123456 / PROJ-AO-2247</span></div>
+      <div class="cover-field"><span class="cover-label">Appropriation</span><span class="cover-value">MILCON, Army (FY25)</span></div>
+      <div class="cover-field"><span class="cover-label">Program Area</span><span class="cover-value">Military Programs</span></div>
+      <div class="cover-field"><span class="cover-label">Installation Customer</span><span class="cover-value">Fort Marcus, Directorate of Public Works</span></div>
+      <div class="cover-field"><span class="cover-label">Project Manager</span><span class="cover-value">Maria Chen, PMP</span></div>
+      <div class="cover-field"><span class="cover-label">District</span><span class="cover-value">USACE Riverside District</span></div>
+      <div class="cover-field"><span class="cover-label">Programmed Amount</span><span class="cover-value">$14,200,000</span></div>
+      <div class="cover-field"><span class="cover-label">PMP Version</span><span class="cover-value">1.0 &mdash; Approved 15 Jan 2025</span></div>
+    </div>
+    <div class="cover-badge">&#9632; FOR OFFICIAL TRAINING USE ONLY &mdash; EXAMPLE DOCUMENT</div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <li><a href="#s1"><span class="toc-num">1</span>Project Overview</a></li>
+      <li><a href="#s2"><span class="toc-num">2</span>Scope Baseline</a></li>
+      <li><a href="#s3"><span class="toc-num">3</span>Schedule Baseline</a></li>
+      <li><a href="#s4"><span class="toc-num">4</span>Cost Baseline</a></li>
+      <li><a href="#s5"><span class="toc-num">5</span>Risk Management</a></li>
+      <li><a href="#s6"><span class="toc-num">6</span>Communication Plan</a></li>
+      <li><a href="#s7"><span class="toc-num">7</span>Change Management</a></li>
+      <li><a href="#s8"><span class="toc-num">8</span>PDT Roles &amp; Responsibilities</a></li>
+      <li><a href="#s9"><span class="toc-num">9</span>Closeout Requirements</a></li>
+      <li><a href="#s10"><span class="toc-num">10</span>Approval &amp; Signatures</a></li>
+    </ul>
+  </div>
+
+  <!-- S1: PROJECT OVERVIEW -->
+  <div class="pmp-section" id="s1">
+    <div class="section-hdr"><span class="section-num">Section 1</span><span class="section-title">Project Overview</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">1.1 Purpose and Authority</div>
+      <p class="pmp-p">This Project Management Plan (PMP) establishes the management framework for the replacement of Building 2247 at Fort Marcus, to be delivered by the USACE Riverside District under Military Programs. The project is authorized under the FY2025 Military Construction (MILCON), Army appropriation and governed by the Project Delivery Business Process (PDBP) as codified in EM 5-1-11.</p>
+      <p class="pmp-p">This PMP is a living document. It is baselined at the close of the planning phase and updated through the change management process (PROC3010) when scope, schedule, or cost baselines are revised. All PDT members are responsible for knowing and working within the framework it establishes.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">1.2 Project Background</div>
+      <p class="pmp-p">Building 2247 is the primary administrative facility for the Fort Marcus garrison headquarters. The existing structure, constructed in 1971, has reached the end of its serviceable life. A Facility Condition Assessment completed in October 2023 rated the building at a Facility Condition Index (FCI) of 0.62, below the Army threshold for renovation. The garrison commander and DPW requested MILCON replacement programming in FY2023; the project was included in the FY2025 MILCON program at $14.2M.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">1.3 Project Objectives</div>
+      <p class="pmp-p">The project will deliver a new 28,000 gross square foot administrative office complex meeting current UFC standards, providing consolidated workspace for 185 garrison headquarters personnel currently split across three buildings. Specific objectives:</p>
+      <ul class="pmp-ul">
+        <li>Deliver a fully operational facility by 15 October 2026, enabling garrison HQ consolidation before the start of FY2027</li>
+        <li>Meet all applicable UFC 4-010-01 (DoD Minimum Antiterrorism Standards for Buildings) requirements</li>
+        <li>Achieve LEED Silver certification per DoD policy</li>
+        <li>Complete within the $14,200,000 programmed amount, including SIOH</li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">1.4 PDBP Phase Status</div>
+      <table class="pmp-table">
+        <tr><th>Phase</th><th>Status</th><th>Key Milestone</th><th>Date</th></tr>
+        <tr><td>Initiation (PROC1000)</td><td>Complete</td><td>Project initiation memo signed</td><td>03 Sep 2024</td></tr>
+        <tr><td>Planning (PROC2000 series)</td><td>Complete</td><td>PMP approved / baselines set</td><td>15 Jan 2025</td></tr>
+        <tr><td>Execution (PROC3000 series)</td><td>In Progress</td><td>Design NTP issued</td><td>20 Jan 2025</td></tr>
+        <tr><td>Closeout (PROC4000)</td><td>Not Started</td><td>Construction completion cert</td><td>TBD</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- S2: SCOPE -->
+  <div class="pmp-section" id="s2">
+    <div class="section-hdr"><span class="section-num">Section 2</span><span class="section-title">Scope Baseline</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">2.1 Product Scope</div>
+      <p class="pmp-p">The project will construct a new two-story administrative office building of approximately 28,000 gross square feet on the existing Building 2247 footprint following demolition of the existing structure. The facility will include open office space, private offices, conference rooms, a secure communications room, accessible restrooms, a building entrance vestibule meeting UFC 4-010-01 standoff requirements, and full mechanical, electrical, and plumbing systems.</p>
+      <p class="pmp-p">Demolition of the existing Building 2247 is within scope. Site work within the fenced project boundary is within scope. Utility connections to the existing distribution systems at the property line are within scope.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">2.2 Scope Exclusions</div>
+      <p class="pmp-p">The following items are explicitly outside this project's scope and are the responsibility of the installation or other programs:</p>
+      <ul class="pmp-ul">
+        <li>Furniture, fixtures, and equipment (FF&amp;E) -- funded separately by the installation under O&amp;M</li>
+        <li>IT infrastructure and cabling beyond conduit rough-in -- coordinated with DOIM</li>
+        <li>Upgrades to utility distribution systems beyond the property line connection point</li>
+        <li>Relocation of garrison HQ personnel during construction -- DPW responsibility</li>
+        <li>Demolition of Buildings 2248 and 2249 (addressed in a separate project)</li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">2.3 Work Breakdown Structure Summary</div>
+      <table class="pmp-table">
+        <tr><th>WBS Element</th><th>Description</th><th>Responsible Party</th></tr>
+        <tr><td>1.0 Project Management</td><td>PM oversight, reporting, change management, meetings</td><td>Maria Chen / PDT</td></tr>
+        <tr><td>2.0 Planning</td><td>Scope development, cost estimate, schedule baseline, PMP</td><td>PDT</td></tr>
+        <tr><td>3.0 Design</td><td>Architectural, structural, MEP, civil, antiterrorism review</td><td>A-E Contractor</td></tr>
+        <tr><td>3.1 Design -- 35%</td><td>Preliminary design documents and cost estimate</td><td>A-E Contractor</td></tr>
+        <tr><td>3.2 Design -- 65%</td><td>Intermediate design and independent government estimate update</td><td>A-E / Cost Eng</td></tr>
+        <tr><td>3.3 Design -- 100%</td><td>Final construction documents, specifications</td><td>A-E Contractor</td></tr>
+        <tr><td>4.0 Procurement</td><td>Solicitation, evaluation, award, post-award orientation</td><td>KO / PM</td></tr>
+        <tr><td>5.0 Construction</td><td>Demolition, sitework, building construction, commissioning</td><td>Prime Contractor</td></tr>
+        <tr><td>5.1 Demolition</td><td>Abatement, structural demolition, debris removal</td><td>Prime Contractor</td></tr>
+        <tr><td>5.2 Site Work</td><td>Grading, utilities, parking, landscaping</td><td>Prime Contractor</td></tr>
+        <tr><td>5.3 Building Construction</td><td>Foundation through finish; all trades</td><td>Prime Contractor</td></tr>
+        <tr><td>5.4 Commissioning</td><td>Systems testing, balancing, O&amp;M manual development</td><td>Prime / COR</td></tr>
+        <tr><td>6.0 Closeout</td><td>As-builts, DD1354, CPARS, financial closeout</td><td>PM / KO</td></tr>
+      </table>
+      <div class="callout"><strong>Scope Change:</strong> Any modification to the approved scope baseline requires a formal change action through the KO under PROC3010. The PM does not have authority to authorize scope changes. Verbal direction from the installation customer does not constitute a scope change.</div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">2.4 Key Assumptions</div>
+      <table class="pmp-table">
+        <tr><th>Assumption</th><th>If Wrong</th><th>Owner</th></tr>
+        <tr><td>No hazardous materials (asbestos, lead) beyond standard abatement scope</td><td>Schedule impact 30&ndash;60 days; cost impact $200K&ndash;$500K</td><td>Environmental Eng</td></tr>
+        <tr><td>Existing utility connections at property line are adequate for new load</td><td>Utility upgrade scope addition; potential funding gap</td><td>Mechanical Eng</td></tr>
+        <tr><td>Installation will provide temporary workspace for 185 personnel during construction</td><td>Phased construction required; schedule extended 4&ndash;6 months</td><td>DPW / PM</td></tr>
+        <tr><td>LEED Silver achievable within programmed amount</td><td>Scope reduction required or DPW absorbs LEED premium</td><td>A-E / PM</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- S3: SCHEDULE -->
+  <div class="pmp-section" id="s3">
+    <div class="section-hdr"><span class="section-num">Section 3</span><span class="section-title">Schedule Baseline</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">3.1 Master Schedule Summary</div>
+      <table class="pmp-table">
+        <tr><th>Milestone</th><th>Baseline Date</th><th>Float</th><th>Notes</th></tr>
+        <tr><td>PMP Approved / Baselines Set</td><td>15 Jan 2025</td><td>N/A</td><td>Planning phase complete</td></tr>
+        <tr><td>A-E NTP Issued</td><td>20 Jan 2025</td><td>0 days</td><td>Critical path start</td></tr>
+        <tr><td>35% Design Complete</td><td>28 Mar 2025</td><td>0 days</td><td>PDT review; updated IGE</td></tr>
+        <tr><td>65% Design Complete</td><td>13 Jun 2025</td><td>5 days</td><td>AT review submittal required</td></tr>
+        <tr><td>100% Design / Solicitation Ready</td><td>05 Sep 2025</td><td>0 days</td><td>Critical path</td></tr>
+        <tr><td>Solicitation Published</td><td>12 Sep 2025</td><td>0 days</td><td>Critical path</td></tr>
+        <tr><td>Construction Contract Award</td><td>14 Nov 2025</td><td>0 days</td><td>Critical path; 63-day procurement</td></tr>
+        <tr><td>Construction NTP</td><td>01 Dec 2025</td><td>0 days</td><td>Critical path</td></tr>
+        <tr><td>Demolition Complete</td><td>06 Feb 2026</td><td>3 days</td><td>Hazmat abatement must precede</td></tr>
+        <tr><td>Substantial Completion</td><td>18 Sep 2026</td><td>0 days</td><td>Critical path; 292-day construction</td></tr>
+        <tr><td>Final Completion / Acceptance</td><td>15 Oct 2026</td><td>0 days</td><td>27-day punch list period</td></tr>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">3.2 Schedule Basis of Estimate</div>
+      <p class="pmp-p">Schedule durations are based on historical performance data from three comparable MILCON administrative facility projects completed by the Riverside District (FY2019, FY2021, FY2022), vendor input from the pre-solicitation industry day held 18 November 2024, and expert judgment from the A-E project manager (letter of record, 10 January 2025). Design durations reflect resource loading at 80% availability for each technical discipline.</p>
+      <div class="callout"><strong>Critical Path:</strong> A-E NTP &rarr; 35% Design &rarr; 100% Design &rarr; Solicitation &rarr; Award &rarr; Construction NTP &rarr; Substantial Completion &rarr; Final Acceptance. Any delay on a critical path activity delays the project end date. The critical path has zero total float. Near-critical activities (5 days or fewer) are flagged in the project schedule and reviewed weekly.</div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">3.3 Schedule Update Cadence</div>
+      <p class="pmp-p">The project schedule is updated monthly during design and bi-weekly during construction. The PM reviews schedule status at each PDT meeting. Variance from baseline of more than 10 calendar days on any critical path activity triggers a written variance narrative (bottom line, cause, recovery) within 5 business days. Schedule baseline changes require a formal change action under PROC3010.</p>
+    </div>
+  </div>
+
+  <!-- S4: COST -->
+  <div class="pmp-section" id="s4">
+    <div class="section-hdr"><span class="section-num">Section 4</span><span class="section-title">Cost Baseline</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">4.1 Approved Budget Summary</div>
+      <table class="pmp-table">
+        <tr><th>Cost Element</th><th>Amount</th><th>% of Total</th></tr>
+        <tr><td>Design (A-E Contract)</td><td>$710,000</td><td>5.0%</td></tr>
+        <tr><td>Construction (Contract)</td><td>$11,480,000</td><td>80.8%</td></tr>
+        <tr><td>Construction Contingency (5%)</td><td>$574,000</td><td>4.0%</td></tr>
+        <tr><td>SIOH (6.5% of construction)</td><td>$746,000</td><td>5.3%</td></tr>
+        <tr><td>Project Management / Other</td><td>$690,000</td><td>4.9%</td></tr>
+        <tr><td><strong>Total Programmed Amount</strong></td><td><strong>$14,200,000</strong></td><td><strong>100%</strong></td></tr>
+      </table>
+      <div class="callout"><strong>SIOH:</strong> Supervision, Inspection, and Overhead at 6.5% is a mandatory component of the project cost and is drawn from the same MILCON appropriation as construction. It is not an add-on and cannot be waived.</div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">4.2 Contingency Management</div>
+      <p class="pmp-p">Construction contingency of $574,000 (5% of construction cost) is held in reserve for unknowns that materialize during construction. Use of contingency requires a documented change action identifying the specific condition triggering the draw. Contingency is not project margin and is not available for scope additions. The PM will report contingency balance at each monthly program review.</p>
+      <p class="pmp-p">At 35% design, a revised IGE will be produced. If the IGE exceeds the programmed amount by more than 5%, the PM will present a written gap analysis to the DPM within 10 business days using the Data-Options-Recommendation framework, identifying the three authorized responses: scope reduction, funding increase request, or contingency reduction with documented risk acceptance.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">4.3 Earned Value Reporting</div>
+      <p class="pmp-p">EVM is applied during the construction phase per PROC3000. The PM reports Schedule Performance Index (SPI), Cost Performance Index (CPI), Schedule Variance (SV), and Cost Variance (CV) at each monthly program review. A CPI below 0.90 or SPI below 0.85 triggers a written variance narrative within 5 business days. EV data is sourced from the contractor's monthly schedule update and certified payment requests.</p>
+    </div>
+  </div>
+
+  <!-- S5: RISK -->
+  <div class="pmp-section" id="s5">
+    <div class="section-hdr"><span class="section-num">Section 5</span><span class="section-title">Risk Management</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">5.1 Risk Management Approach</div>
+      <p class="pmp-p">Risk management for this project follows REF8007G. The Risk Register is maintained in the project SharePoint folder and reviewed at each PDT meeting during design and bi-weekly during construction. Each entry requires all eight REF8007G fields: description, category, probability, impact, owner, trigger, response strategy, and response action. The PM is responsible for ensuring entries are current and triggers are monitored.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">5.2 Risk Register Summary (Planning Phase)</div>
+      <table class="pmp-table">
+        <tr><th>Risk</th><th>Prob</th><th>Impact</th><th>Owner</th><th>Strategy</th><th>Trigger</th></tr>
+        <tr><td>Hazardous materials beyond initial abatement scope</td><td>Medium</td><td>High -- 30-60 day delay, $200K-500K cost</td><td>Environmental Eng</td><td>MITIGATE</td><td>Phase I ESA findings; abatement contractor air monitoring exceedance</td></tr>
+        <tr><td>Antiterrorism review results in standoff requirement change</td><td>Low</td><td>High -- redesign at 65%; 45-day delay</td><td>AT Engineer</td><td>MITIGATE</td><td>AT waiver not approved by 65% design milestone</td></tr>
+        <tr><td>Single qualified bidder (thin market for MILCON in region)</td><td>Medium</td><td>Medium -- award above IGE; potential scope reduction</td><td>KO</td><td>MITIGATE</td><td>Fewer than 3 responsive proposals received</td></tr>
+        <tr><td>HVAC equipment lead times exceed schedule allowance</td><td>High</td><td>Medium -- 45-90 day delay to substantial completion</td><td>COR</td><td>MITIGATE</td><td>Contractor submittals show equipment delivery beyond Week 20</td></tr>
+        <tr><td>Installation unable to provide swing space for 185 personnel</td><td>Low</td><td>High -- phased construction; schedule extended 4-6 months</td><td>PM / DPW</td><td>AVOID</td><td>DPW written confirmation not received by 100% design milestone</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- S6: COMMUNICATIONS -->
+  <div class="pmp-section" id="s6">
+    <div class="section-hdr"><span class="section-num">Section 6</span><span class="section-title">Communication Plan</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">6.1 Stakeholder Communication Matrix</div>
+      <table class="pmp-table">
+        <tr><th>Audience</th><th>Format</th><th>Frequency</th><th>Owner</th></tr>
+        <tr><td>PDT (internal)</td><td>PDT meeting -- agenda, notes, action items</td><td>Bi-weekly (design); Weekly (construction)</td><td>PM</td></tr>
+        <tr><td>District PM (DPM)</td><td>Monthly program review -- EVM, risk, cost, schedule status</td><td>Monthly</td><td>PM</td></tr>
+        <tr><td>Installation Customer (DPW)</td><td>Design review meetings at 35%, 65%, 100%; monthly construction update</td><td>Per milestone</td><td>PM</td></tr>
+        <tr><td>Contracting Officer (KO)</td><td>Weekly coordination call during procurement; bi-weekly during construction</td><td>Weekly / Bi-weekly</td><td>PM</td></tr>
+        <tr><td>Division / HQ</td><td>Program status report (standard MILCON format)</td><td>Quarterly</td><td>DPM</td></tr>
+      </table>
+      <div class="callout"><strong>Verbal Approvals:</strong> Verbal direction does not constitute an approval for any action affecting scope, schedule, or cost. The PM will confirm all material decisions in writing within 24 hours: "Per our conversation on [date], we are proceeding with [action]. Please confirm." The confirmation email is the official record.</div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">6.2 PDT Meeting Norms</div>
+      <p class="pmp-p">PDT meeting agendas are distributed 24 hours in advance. Agendas follow the PROC3000 priority sequence: decision items first, time-sensitive items second, informational items last. Notes including decisions made, action items with owners and due dates, and parking lot disposition are distributed within 24 hours of each meeting.</p>
+    </div>
+  </div>
+
+  <!-- S7: CHANGE MANAGEMENT -->
+  <div class="pmp-section" id="s7">
+    <div class="section-hdr"><span class="section-num">Section 7</span><span class="section-title">Change Management</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">7.1 Change Authority Matrix</div>
+      <table class="pmp-table">
+        <tr><th>Change Type</th><th>Threshold</th><th>Approving Authority</th><th>Process</th></tr>
+        <tr><td>Minor scope clarification (no cost/schedule impact)</td><td>Any</td><td>PM (documented)</td><td>PM documents in project record; no formal change action required</td></tr>
+        <tr><td>Design change (cost impact &lt; $50K, schedule &lt; 10 days)</td><td>&lt;$50K / &lt;10 days</td><td>DPM approval; KO action</td><td>PM submits change request; DPM approves; KO issues modification</td></tr>
+        <tr><td>Construction modification (any cost impact)</td><td>Any</td><td>KO</td><td>PM initiates; KO negotiates and executes contract modification; DPM notified</td></tr>
+        <tr><td>Baseline change (scope, schedule, or cost baseline revision)</td><td>Any</td><td>DPM approval; HQ notification if &gt;$500K</td><td>PM submits change request with impact analysis; DPM approves revised baseline; PMP updated</td></tr>
+      </table>
+      <div class="callout"><strong>Contractor Substitutions:</strong> A contractor proposing to substitute a specified material or system is proposing a change. Equivalency is an engineering determination, not a PM determination. The PM routes substitution requests to the A-E and COR for technical review before any approval. No substitution is approved verbally.</div>
+    </div>
+  </div>
+
+  <!-- S8: PDT ROLES -->
+  <div class="pmp-section" id="s8">
+    <div class="section-hdr"><span class="section-num">Section 8</span><span class="section-title">PDT Roles &amp; Responsibilities</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">8.1 Project Delivery Team</div>
+      <table class="pmp-table">
+        <tr><th>Role</th><th>Name / Organization</th><th>Responsibilities</th></tr>
+        <tr><td>Project Manager</td><td>Maria Chen, PMP -- Riverside District (PM Branch)</td><td>Overall project delivery; scope, schedule, cost, and risk management; DPM and customer interface; PMP maintenance; change action initiation</td></tr>
+        <tr><td>Deputy PM (DPM)</td><td>Lt. Col. James Whitfield -- Riverside District</td><td>Baseline change approval (within authority); program review chair; escalation point for issues beyond PM authority</td></tr>
+        <tr><td>Contracting Officer (KO)</td><td>Sarah Okafor, 1102 -- Contracting Division</td><td>Sole authority to obligate government funds; contract award and modifications; price reasonableness determination</td></tr>
+        <tr><td>Contracting Officer's Rep (COR)</td><td>Marcus Rivera -- Engineering Division</td><td>Day-to-day contractor oversight; inspection; submittal review; payment recommendation</td></tr>
+        <tr><td>Cost Engineer</td><td>Priya Anand -- Cost Engineering Branch</td><td>IGE development; cost estimate updates at design milestones; EVM data validation</td></tr>
+        <tr><td>A-E Project Manager</td><td>David Thornton -- Apex Engineering Group</td><td>Design delivery per contract; coordination of design disciplines; design milestone deliverables</td></tr>
+        <tr><td>Antiterrorism Engineer</td><td>TBD -- Safety/AT Office</td><td>AT/FP compliance review; waiver coordination; UFC 4-010-01 interpretation</td></tr>
+        <tr><td>Environmental Engineer</td><td>TBD -- Environmental Branch</td><td>Phase I/II ESA oversight; abatement specification review; regulatory coordination</td></tr>
+        <tr><td>Installation Customer (DPW)</td><td>Col. Patricia Nguyen -- Fort Marcus DPW</td><td>Requirements owner; FF&amp;E and IT coordination; occupancy planning; O&amp;M handoff acceptance</td></tr>
+      </table>
+      <div class="callout"><strong>Authority Boundary:</strong> The PM integrates and manages the PDT but does not have supervisory authority over most PDT members. Performance issues are addressed through documented feedback, escalation to the appropriate section chief, and, if project risk warrants, escalation to the DPM. The PM cannot unilaterally remove a PDT member.</div>
+    </div>
+  </div>
+
+  <!-- S9: CLOSEOUT -->
+  <div class="pmp-section" id="s9">
+    <div class="section-hdr"><span class="section-num">Section 9</span><span class="section-title">Closeout Requirements</span></div>
+
+    <div class="subsection">
+      <div class="sub-title">9.1 MILCON Closeout Checklist</div>
+      <table class="pmp-table">
+        <tr><th>Deliverable</th><th>Owner</th><th>Deadline</th><th>Notes</th></tr>
+        <tr><td>Construction completion certification</td><td>COR / PM</td><td>At final acceptance</td><td>Required before final voucher processing</td></tr>
+        <tr><td>As-built drawings (accepted)</td><td>COR / A-E</td><td>Before final voucher</td><td>Contractor submits; A-E certifies; COR accepts</td></tr>
+        <tr><td>O&amp;M manuals</td><td>COR</td><td>At substantial completion</td><td>Transmitted to DPW facilities manager</td></tr>
+        <tr><td>DD Form 1354 (Transfer of Real Property)</td><td>PM / Real Estate</td><td>Within 30 days of final acceptance</td><td>Transfers facility to installation; real property records updated</td></tr>
+        <tr><td>Financial closeout</td><td>PM / Resource Mgmt</td><td>Within 90 days of final acceptance</td><td>All obligations liquidated; unliquidated obligations resolved</td></tr>
+        <tr><td>Contractor Performance Assessment (CPARS)</td><td>COR / PM</td><td>Within 60 days of contract completion</td><td>Required under FAR; affects future source selections</td></tr>
+        <tr><td>After Action Review</td><td>PM</td><td>Within 30 days of project completion</td><td>Four-question format; lessons submitted to district database</td></tr>
+      </table>
+      <div class="callout"><strong>Closeout Planning:</strong> The closeout schedule is developed and baselined no later than 90 days before the projected substantial completion date. The PM assigns an owner and deadline to each deliverable at that time. Closeout is not begun after the team disperses -- it is planned while the team is still intact.</div>
+    </div>
+  </div>
+
+  <!-- S10: APPROVALS -->
+  <div class="pmp-section" id="s10">
+    <div class="section-hdr"><span class="section-num">Section 10</span><span class="section-title">Approval &amp; Signatures</span></div>
+    <p class="pmp-p">By signing below, each party acknowledges that they have reviewed this Project Management Plan, agree to the baselines established herein, and commit to the roles and responsibilities assigned in Section 8.</p>
+
+    <div class="approval-grid">
+      <div class="approval-box">
+        <div class="approval-role">Project Manager</div>
+        <div class="approval-name">Maria Chen, PMP</div>
+        <div class="approval-title">Project Manager, Riverside District</div>
+        <div class="sig-line"><span>Signature</span><span>Date</span></div>
+      </div>
+      <div class="approval-box">
+        <div class="approval-role">Deputy PM / Approving Authority</div>
+        <div class="approval-name">Lt. Col. James Whitfield</div>
+        <div class="approval-title">Deputy PM, Riverside District</div>
+        <div class="sig-line"><span>Signature</span><span>Date</span></div>
+      </div>
+      <div class="approval-box">
+        <div class="approval-role">Contracting Officer</div>
+        <div class="approval-name">Sarah Okafor</div>
+        <div class="approval-title">Contracting Officer, Contracting Division</div>
+        <div class="sig-line"><span>Signature</span><span>Date</span></div>
+      </div>
+      <div class="approval-box">
+        <div class="approval-role">Installation Customer</div>
+        <div class="approval-name">Col. Patricia Nguyen</div>
+        <div class="approval-title">Director of Public Works, Fort Marcus</div>
+        <div class="sig-line"><span>Signature</span><span>Date</span></div>
+      </div>
+    </div>
+
+    <p class="pmp-p" style="margin-top:2rem;font-size:.78rem;color:var(--text-dim);text-align:center;">USACE KMP-PPM &nbsp;|&nbsp; FOR OFFICIAL TRAINING USE ONLY &nbsp;|&nbsp; PROSPECT 355 Example Document</p>
+  </div>
+
+</div>
+
+<script>
+function toggleTheme(){const h=document.documentElement;h.setAttribute('data-theme',h.getAttribute('data-theme')==='light'?'dark':'light');try{localStorage.setItem('pmp-theme',h.getAttribute('data-theme'))}catch(e){}}
+function cycleFont(){const r=document.documentElement;const c=parseFloat(r.style.getPropertyValue('--font-scale')||'1');const n=c>=1.2?0.9:c+0.15;r.style.setProperty('--font-scale',n.toFixed(2));try{localStorage.setItem('pmp-font',n.toFixed(2))}catch(e){}}
+(function(){try{const t=localStorage.getItem('pmp-theme');if(t)document.documentElement.setAttribute('data-theme',t);const f=localStorage.getItem('pmp-font');if(f)document.documentElement.style.setProperty('--font-scale',f)}catch(e){}})();
+</script>
+</body>
+</html>

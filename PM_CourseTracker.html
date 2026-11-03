@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PM in USACE — Course Response Tracker</title>
+<title>PM in USACE -- Course Response Tracker</title>
 <style>
 :root {
   --dark:#1A1A2E;--navy:#2C3E6B;--gold:#8B6914;--gold-lt:#C49A2A;
@@ -94,7 +94,7 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
 
 <div class="header">
   <div>
-    <div class="header h1">PM in USACE — Course Response Tracker</div>
+    <div class="header h1">PM in USACE -- Course Response Tracker</div>
     <div class="header-sub">Decision votes · Knowledge Check scores · Pre/Post comparison · Supabase-powered</div>
   </div>
   <div class="cohort-row">
@@ -116,11 +116,11 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
   <div id="status-line" class="status"></div>
 
   <div class="summary-row" id="summary-row" style="display:none">
-    <div class="scard"><div class="val" id="s-n">—</div><div class="lbl">Participants</div></div>
-    <div class="scard"><div class="val" id="s-cfs">—</div><div class="lbl">Avg CFs Done</div><div class="sub">per participant</div></div>
-    <div class="scard"><div class="val" id="s-kc">—</div><div class="lbl">Avg KC Score</div></div>
-    <div class="scard"><div class="val" id="s-pre">—</div><div class="lbl">Avg Pretest</div></div>
-    <div class="scard"><div class="val" id="s-post">—</div><div class="lbl">Avg Posttest</div><div class="sub" id="s-delta"></div></div>
+    <div class="scard"><div class="val" id="s-n">--</div><div class="lbl">Participants</div></div>
+    <div class="scard"><div class="val" id="s-cfs">--</div><div class="lbl">Avg CFs Done</div><div class="sub">per participant</div></div>
+    <div class="scard"><div class="val" id="s-kc">--</div><div class="lbl">Avg KC Score</div></div>
+    <div class="scard"><div class="val" id="s-pre">--</div><div class="lbl">Avg Pretest</div></div>
+    <div class="scard"><div class="val" id="s-post">--</div><div class="lbl">Avg Posttest</div><div class="sub" id="s-delta"></div></div>
   </div>
 
   <div id="tab-decisions">
@@ -129,7 +129,7 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
   </div>
 
   <div id="tab-kc" style="display:none">
-    <div class="section-hdr">KNOWLEDGE CHECK — % CORRECT BY QUESTION</div>
+    <div class="section-hdr">KNOWLEDGE CHECK -- % CORRECT BY QUESTION</div>
     <div id="kc-grid" class="cf-grid"><div class="loading">Select a cohort to load data.</div></div>
   </div>
 
@@ -148,8 +148,8 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
     <div class="section-hdr" style="margin-top:24px;">COHORT CODE FOR PARTICIPANTS</div>
     <div class="export-card">
       <p>Share this code with participants at the start of class. They enter it on the course home page before starting Case File 01. All their responses will be tagged to this cohort.</p>
-      <div class="code-display" id="code-display">—</div>
-      <p style="font-size:.75rem;color:var(--gray-dk)">Each participant gets an anonymous random ID — no names are collected.</p>
+      <div class="code-display" id="code-display">--</div>
+      <p style="font-size:.75rem;color:var(--gray-dk)">Each participant gets an anonymous random ID -- no names are collected.</p>
     </div>
 
     <div class="section-hdr" style="margin-top:24px;">DATABASE SETUP STATUS</div>
@@ -162,7 +162,7 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
 <div class="modal-bg" id="modal">
   <div class="modal">
     <h3>Create New Cohort</h3>
-    <p>Use a code like <strong>USACE-2026-09-FTW</strong> — year, month, location. This is what participants type in to tag their responses.</p>
+    <p>Use a code like <strong>USACE-2026-09-FTW</strong> -- year, month, location. This is what participants type in to tag their responses.</p>
     <input id="m-code" placeholder="Cohort code (e.g. USACE-2026-09-FTW)" maxlength="40"/>
     <input id="m-name" placeholder="Friendly name (e.g. Fort Worth Sept 2026)" maxlength="80"/>
     <div class="modal-btns">
@@ -254,7 +254,7 @@ async function init() {
 function populateCohortSelect(cohorts) {
   const sel = document.getElementById('cohort-sel');
   const cur = sel.value;
-  sel.innerHTML = '<option value="">— select cohort —</option>';
+  sel.innerHTML = '<option value="">-- select cohort --</option>';
   cohorts.forEach(c => {
     const o = document.createElement('option');
     o.value = c.code;
@@ -288,7 +288,7 @@ async function createCohort() {
 // ── LOAD COHORT DATA ──────────────────────────────────────────────────────────
 async function loadCohort() {
   currentCohort = document.getElementById('cohort-sel').value;
-  document.getElementById('code-display').textContent = currentCohort || '—';
+  document.getElementById('code-display').textContent = currentCohort || '--';
 
   if (!currentCohort) {
     document.getElementById('summary-row').style.display = 'none';
@@ -324,10 +324,10 @@ function renderAll() {
 function updateSummary() {
   const sessions = [...new Set(allResponses.map(r=>r.session_id))];
   const n = sessions.length;
-  document.getElementById('s-n').textContent = n || '—';
+  document.getElementById('s-n').textContent = n || '--';
 
   if (!n) {
-    ['s-cfs','s-kc','s-pre','s-post'].forEach(id=>document.getElementById(id).textContent='—');
+    ['s-cfs','s-kc','s-pre','s-post'].forEach(id=>document.getElementById(id).textContent='--');
     document.getElementById('s-delta').textContent='';
     return;
   }
@@ -338,7 +338,7 @@ function updateSummary() {
 
   // Avg KC score
   const kcs = allResponses.filter(r=>r.kc_score!=null).map(r=>r.kc_score);
-  document.getElementById('s-kc').textContent = kcs.length ? Math.round(kcs.reduce((a,b)=>a+b,0)/kcs.length*100)+'%' : '—';
+  document.getElementById('s-kc').textContent = kcs.length ? Math.round(kcs.reduce((a,b)=>a+b,0)/kcs.length*100)+'%' : '--';
 
   // Pre/post
   const pres = allTestScores.filter(t=>t.test_type==='pretest').map(t=>t.score);
@@ -346,8 +346,8 @@ function updateSummary() {
   const preAvg = pres.length ? pres.reduce((a,b)=>a+b,0)/pres.length : null;
   const postAvg = posts.length ? posts.reduce((a,b)=>a+b,0)/posts.length : null;
 
-  document.getElementById('s-pre').textContent = preAvg!==null ? Math.round(preAvg)+'%' : '—';
-  document.getElementById('s-post').textContent = postAvg!==null ? Math.round(postAvg)+'%' : '—';
+  document.getElementById('s-pre').textContent = preAvg!==null ? Math.round(preAvg)+'%' : '--';
+  document.getElementById('s-post').textContent = postAvg!==null ? Math.round(postAvg)+'%' : '--';
   if (preAvg!==null && postAvg!==null) {
     const d = Math.round(postAvg-preAvg);
     const el = document.getElementById('s-delta');
@@ -422,7 +422,7 @@ function renderKC() {
       return `<div class="kc-row">
         <div class="kc-q">Q${qi+1}</div>
         <div class="kc-bar-wrap"><div class="kc-bar ${cls}" style="width:${pct}%"></div></div>
-        <div class="kc-pct">${totals[qi]?pct+'%':'—'}</div>
+        <div class="kc-pct">${totals[qi]?pct+'%':'--'}</div>
       </div>`;
     }).join('');
 
@@ -436,7 +436,7 @@ function renderKC() {
       </div>
       <div class="cf-body">
         <div class="kc-section">
-          <div class="d-label" style="margin-bottom:7px">% Correct — avg ${avg!==null?avg+'%':'—'}</div>
+          <div class="d-label" style="margin-bottom:7px">% Correct -- avg ${avg!==null?avg+'%':'--'}</div>
           ${kcHTML}
         </div>
       </div>
@@ -460,10 +460,10 @@ function renderPrePost() {
 
   container.innerHTML = `
     <div class="prepost-grid">
-      <div class="pp-card"><div class="pp-val">${preAvg!==null?Math.round(preAvg)+'%':'—'}</div><div class="pp-lbl">Avg Pretest (n=${pres.length})</div></div>
+      <div class="pp-card"><div class="pp-val">${preAvg!==null?Math.round(preAvg)+'%':'--'}</div><div class="pp-lbl">Avg Pretest (n=${pres.length})</div></div>
       <div class="pp-card"><div class="pp-val ${delta!==null?(delta>=0?'gain':'loss'):''}">
-        ${delta!==null?(delta>=0?'+':'')+Math.round(delta)+'%':'—'}</div><div class="pp-lbl">Avg Gain</div></div>
-      <div class="pp-card"><div class="pp-val">${postAvg!==null?Math.round(postAvg)+'%':'—'}</div><div class="pp-lbl">Avg Posttest (n=${posts.length})</div></div>
+        ${delta!==null?(delta>=0?'+':'')+Math.round(delta)+'%':'--'}</div><div class="pp-lbl">Avg Gain</div></div>
+      <div class="pp-card"><div class="pp-val">${postAvg!==null?Math.round(postAvg)+'%':'--'}</div><div class="pp-lbl">Avg Posttest (n=${posts.length})</div></div>
     </div>
     <table class="prepost-table">
       <thead><tr><th>#</th><th>Pretest</th><th>Posttest</th><th>Gain</th></tr></thead>
@@ -473,9 +473,9 @@ function renderPrePost() {
         const d = pre&&post?post.score-pre.score:null;
         return `<tr>
           <td style="color:var(--gray-dk)">Participant ${i+1}</td>
-          <td>${pre?pre.score+'%':'—'}</td>
-          <td>${post?post.score+'%':'—'}</td>
-          <td class="${d!==null?(d>0?'dp':d<0?'dn':'d0'):'d0'}">${d!==null?(d>=0?'+':'')+d+'%':'—'}</td>
+          <td>${pre?pre.score+'%':'--'}</td>
+          <td>${post?post.score+'%':'--'}</td>
+          <td class="${d!==null?(d>0?'dp':d<0?'dn':'d0'):'d0'}">${d!==null?(d>=0?'+':'')+d+'%':'--'}</td>
         </tr>`;
       }).join('')}</tbody>
     </table>`;

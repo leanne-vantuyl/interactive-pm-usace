@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PM and the Contracting Officer | PROSPECT 355</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #B8972A;
+      --gold-light: #F5EDD4;
+      --army-dark: #1B2B1E;
+      --army-mid: #2E4A34;
+      --army-pale: #F2F5F0;
+      --ink: #1A1A1A;
+      --ink-2: #3D3D3D;
+      --ink-3: #6B6B6B;
+      --border: #D8D8D8;
+      --bg: #FFFFFF;
+      --surface: #F7F7F5;
+      --tag-bg: #EEF0ED;
+      --ref-navy: #1B3A6B;
+      --ref-green: #1B5C2A;
+      --alert-bg: #FEF9EC;
+      --alert-border: #B8972A;
+      --warn-bg: #FDF2F2;
+      --warn-border: #C0392B;
+      --font-scale: 1;
+    }
+    [data-theme="dark"] {
+      --gold: #D4AA3A;
+      --gold-light: #3A2F10;
+      --army-dark: #E8EDE8;
+      --army-mid: #A8C4A8;
+      --army-pale: #1A1E1A;
+      --ink: #EAEAEA;
+      --ink-2: #C4C4C4;
+      --ink-3: #8A8A8A;
+      --border: #3A3A3A;
+      --bg: #121212;
+      --surface: #1E1E1C;
+      --tag-bg: #2A2E2A;
+      --ref-navy: #7AAAD4;
+      --ref-green: #7AC47A;
+      --alert-bg: #2A2410;
+      --alert-border: #D4AA3A;
+      --warn-bg: #2A1A1A;
+      --warn-border: #E07070;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: calc(16px * var(--font-scale)); }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ---- topbar ---- */
+    .topbar {
+      background: var(--army-dark);
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .7rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      gap: 1rem;
+    }
+    .topbar-left { display: flex; align-items: center; gap: .75rem; }
+    .topbar-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: .8rem;
+      letter-spacing: .05em;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+    .topbar-sep { color: rgba(255,255,255,.25); font-size: 1.1rem; }
+    .topbar-title { font-size: .85rem; color: rgba(255,255,255,.8); }
+    .topbar-right { display: flex; align-items: center; gap: .5rem; }
+    .ctrl-btn {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15);
+      color: rgba(255,255,255,.8);
+      border-radius: 4px;
+      padding: .3rem .65rem;
+      font-size: .75rem;
+      cursor: pointer;
+      font-family: 'DM Mono', monospace;
+      white-space: nowrap;
+    }
+    .ctrl-btn:hover { background: rgba(255,255,255,.14); }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      font-size: .8rem;
+      color: var(--gold);
+      text-decoration: none;
+      font-family: 'DM Mono', monospace;
+      white-space: nowrap;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    /* ---- hero ---- */
+    .hero {
+      background: linear-gradient(135deg, var(--army-mid) 0%, var(--army-dark) 100%);
+      color: #FFF;
+      padding: 2.5rem 1.5rem 2rem;
+      border-bottom: 3px solid var(--gold);
+    }
+    .hero-inner { max-width: 860px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      border-radius: 3px;
+      padding: .2rem .55rem;
+      margin-bottom: .85rem;
+    }
+    .hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      line-height: 1.2;
+      margin-bottom: .6rem;
+    }
+    .hero-sub {
+      font-size: .95rem;
+      color: rgba(255,255,255,.75);
+      max-width: 560px;
+      line-height: 1.55;
+    }
+
+    /* ---- authority banner ---- */
+    .authority-banner {
+      background: var(--warn-bg);
+      border-left: 4px solid var(--warn-border);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem auto 0;
+      max-width: 860px;
+      border-radius: 0 4px 4px 0;
+    }
+    .authority-banner strong {
+      display: block;
+      font-size: .8rem;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--warn-border);
+      margin-bottom: .35rem;
+    }
+    .authority-banner p {
+      font-size: .9rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    /* ---- layout ---- */
+    .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    /* ---- section headers ---- */
+    .ref-section {
+      margin-bottom: 2.5rem;
+    }
+    .ref-section-hdr {
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: .4rem;
+      margin-bottom: 1.1rem;
+    }
+    .ref-subsection-hdr {
+      font-size: .8rem;
+      font-weight: 600;
+      font-family: 'DM Mono', monospace;
+      color: var(--ink-2);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin: 1.1rem 0 .5rem;
+    }
+
+    /* ---- authority comparison ---- */
+    .authority-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .authority-col {
+      background: var(--surface);
+      padding: 1.1rem;
+    }
+    .authority-col-hdr {
+      font-family: 'DM Mono', monospace;
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: .75rem;
+      padding-bottom: .4rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .authority-col-hdr.ko { border-color: var(--ref-navy); color: var(--ref-navy); }
+    .authority-col-hdr.pm { border-color: var(--ref-green); color: var(--ref-green); }
+    .authority-list { list-style: none; }
+    .authority-list li {
+      font-size: .85rem;
+      color: var(--ink-2);
+      padding: .3rem 0;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.4;
+    }
+    .authority-list li:last-child { border-bottom: none; }
+    .authority-list li::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: .55rem;
+      vertical-align: middle;
+      background: var(--border);
+    }
+    .authority-col.ko .authority-list li::before { background: var(--ref-navy); }
+    .authority-col.pm .authority-list li::before { background: var(--ref-green); }
+
+    /* ---- reference tables ---- */
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .875rem;
+    }
+    .ref-table th {
+      background: var(--surface);
+      text-align: left;
+      padding: .55rem .8rem;
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      border-bottom: 2px solid var(--border);
+    }
+    .ref-table td {
+      padding: .6rem .8rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--ink-2);
+      vertical-align: top;
+      line-height: 1.45;
+    }
+    .ref-table td:first-child {
+      font-weight: 500;
+      color: var(--ink);
+      white-space: nowrap;
+      width: 30%;
+    }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    /* ---- scenario table ---- */
+    .scenario-table td:first-child {
+      white-space: normal;
+      width: 36%;
+      font-style: italic;
+      color: var(--ink-3);
+      font-weight: 400;
+    }
+    .scenario-table td:last-child {
+      font-weight: 400;
+      color: var(--ink-2);
+    }
+
+    /* ---- callout notes ---- */
+    .ref-note {
+      display: flex;
+      gap: .65rem;
+      background: var(--alert-bg);
+      border-left: 3px solid var(--alert-border);
+      border-radius: 0 5px 5px 0;
+      padding: .75rem 1rem;
+      margin-top: 1rem;
+    }
+    .ref-note-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: .65rem;
+      letter-spacing: .1em;
+      font-weight: 500;
+      color: var(--gold);
+      white-space: nowrap;
+      padding-top: .1rem;
+    }
+    .ref-note-text {
+      font-size: .85rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    /* ---- COR limits chip row ---- */
+    .cor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .75rem;
+    }
+    .cor-card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .cor-card-hdr {
+      padding: .5rem .8rem;
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .cor-card-hdr.can { background: #EAF4EA; color: #1B5C2A; }
+    .cor-card-hdr.cannot { background: #FAEAEA; color: #A02020; }
+    [data-theme="dark"] .cor-card-hdr.can { background: #162616; color: #7AC47A; }
+    [data-theme="dark"] .cor-card-hdr.cannot { background: #2A1616; color: #E07070; }
+    .cor-list { list-style: none; padding: .55rem .8rem; }
+    .cor-list li {
+      font-size: .85rem;
+      color: var(--ink-2);
+      padding: .25rem 0;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.4;
+    }
+    .cor-list li:last-child { border-bottom: none; }
+
+    /* ---- quick rules strip ---- */
+    .rules-strip {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+    .rule-row {
+      display: flex;
+      align-items: baseline;
+      gap: .75rem;
+      padding: .55rem .8rem;
+      background: var(--surface);
+      border-radius: 5px;
+      border-left: 3px solid var(--gold);
+    }
+    .rule-num {
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      font-weight: 500;
+      color: var(--gold);
+      min-width: 1.4rem;
+    }
+    .rule-text {
+      font-size: .875rem;
+      color: var(--ink-2);
+      line-height: 1.45;
+    }
+    .rule-text strong { color: var(--ink); font-weight: 600; }
+
+    @media (max-width: 640px) {
+      .authority-grid { grid-template-columns: 1fr; }
+      .cor-grid { grid-template-columns: 1fr; }
+      .ref-table td:first-child { white-space: normal; width: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="back-link">&#8592; Course Home</a>
+    <span class="topbar-sep">|</span>
+    <span class="topbar-logo">PROSPECT 355</span>
+    <span class="topbar-sep">|</span>
+    <span class="topbar-title">Reference Document</span>
+  </div>
+  <div class="topbar-right">
+    <button class="ctrl-btn" onclick="toggleTheme()">Light / Dark</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Reference</div>
+    <div class="hero-title">PM and the Contracting Officer</div>
+    <div class="hero-sub">Contracting authority, the pre-award process, COR delegation limits, and how the PM-KO relationship works in practice. This is not a lesson -- it runs through every lesson. Keep it handy.</div>
+    <div class="authority-banner">
+      <strong>Authority Boundary</strong>
+      <p>The Contracting Officer is the only government official with legal authority to enter into, administer, or terminate a contract. That authority comes from a warrant. The PM does not have a warrant. The PM does not have contracting authority. These are not the same role.</p>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ====== Section 1: Authority ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">Who Owns What</div>
+    <div class="authority-grid">
+      <div class="authority-col ko">
+        <div class="authority-col-hdr ko">Contracting Officer (KO)</div>
+        <ul class="authority-list">
+          <li>Issue solicitations</li>
+          <li>Evaluate proposals</li>
+          <li>Award contracts</li>
+          <li>Issue contract modifications</li>
+          <li>Authorize contract payments</li>
+          <li>Terminate contracts</li>
+          <li>Respond to contractor claims</li>
+          <li>Issue cure notices and show-cause letters</li>
+        </ul>
+      </div>
+      <div class="authority-col pm">
+        <div class="authority-col-hdr pm">Project Manager (PM)</div>
+        <ul class="authority-list">
+          <li>Define the technical requirement</li>
+          <li>Develop the SOW or PWS</li>
+          <li>Manage project scope and schedule</li>
+          <li>Identify the need for a change</li>
+          <li>Recommend contractor performance ratings</li>
+          <li>Document technical issues</li>
+          <li>Serve on technical evaluation panels</li>
+          <li>Feed information to the KO -- not act on it</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ref-note">
+      <div class="ref-note-tag">CRITICAL</div>
+      <div class="ref-note-text">A PM who directs the contractor directly outside of defined contract channels has potentially created an <strong>unauthorized commitment</strong> -- a legal problem, not a paperwork problem. The government can be bound to pay for work it never formally authorized. The contractor knows this. When in doubt, route it through the KO.</div>
+    </div>
+  </div>
+
+  <!-- ====== Section 2: Pre-Award Process ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">Pre-Award Process</div>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <tr>
+          <th>Phase</th>
+          <th>Who Owns It</th>
+          <th>PM's Role</th>
+        </tr>
+        <tr>
+          <td>Requirements development</td>
+          <td>PM</td>
+          <td>Writes the SOW or PWS, specs, and drawings. This is the PM's technical authority.</td>
+        </tr>
+        <tr>
+          <td>Independent Government Estimate</td>
+          <td>Cost engineer (PM reviews)</td>
+          <td>Reviews the IGE. Used to evaluate whether proposals are fair and reasonable.</td>
+        </tr>
+        <tr>
+          <td>Solicitation</td>
+          <td>KO issues</td>
+          <td>May review the package. Does not sign. All questions from potential contractors route through the KO.</td>
+        </tr>
+        <tr>
+          <td>Source selection</td>
+          <td>KO awards; SSA decides. (The KO is the SSA by default per FAR 15.303. A separate SSA is appointed only for specific acquisitions.)</td>
+          <td>Often serves on technical evaluation panel. No informal contact with offerors during this phase.</td>
+        </tr>
+        <tr>
+          <td>Award and Notice to Proceed</td>
+          <td>KO</td>
+          <td>Cannot direct the contractor to begin work without an NTP. Period.</td>
+        </tr>
+      </table>
+    </div>
+    <div class="ref-note">
+      <div class="ref-note-tag">NOTE</div>
+      <div class="ref-note-text">The most common pre-award mistake: talking to a potential contractor about the upcoming project before award. Even if the conversation is innocent, it can create an appearance of favoritism or trigger an OCI (Organizational Conflict of Interest) allegation. Route all contractor contact through the KO.</div>
+    </div>
+  </div>
+
+  <!-- ====== Section 3: COR Limits ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">The COR and the PM</div>
+    <p style="font-size:.875rem;color:var(--ink-2);margin-bottom:1rem;line-height:1.5;">The Contracting Officer's Representative (COR) monitors day-to-day contractor performance and reports to the KO. The PM and COR may be the same person on a small project. Either way, the COR's authority comes from a <strong>delegation letter</strong> from the KO that specifies exactly what the COR can and cannot do. When in doubt, read the letter.</p>
+    <div class="cor-grid">
+      <div class="cor-card">
+        <div class="cor-card-hdr can">COR Can Do</div>
+        <ul class="cor-list">
+          <li>Monitor contractor performance</li>
+          <li>Document technical issues and deficiencies</li>
+          <li>Verify deliverables</li>
+          <li>Make technical determinations within the delegation letter</li>
+          <li>Certify invoices (if delegated)</li>
+        </ul>
+      </div>
+      <div class="cor-card">
+        <div class="cor-card-hdr cannot">COR Cannot Do</div>
+        <ul class="cor-list">
+          <li>Authorize changes to scope</li>
+          <li>Direct additional work</li>
+          <li>Issue contract modifications</li>
+          <li>Direct the contractor to stop work</li>
+          <li>Grant schedule extensions</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 4: Day-to-Day Scenarios ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">Day-to-Day: What the PM Does and Does Not Do</div>
+    <div class="ref-table-wrap">
+      <table class="ref-table scenario-table">
+        <tr>
+          <th>Situation</th>
+          <th>PM Action</th>
+        </tr>
+        <tr>
+          <td>PM identifies a scope gap</td>
+          <td>Documents it, estimates the impact, brings it to the KO with a modification recommendation. Does not tell the contractor work is authorized.</td>
+        </tr>
+        <tr>
+          <td>Contractor proposes a substitution</td>
+          <td>Routes it to the design engineer for technical review and to the KO for contract action. No action until both have responded.</td>
+        </tr>
+        <tr>
+          <td>Contractor claims an excusable delay</td>
+          <td>Documents the facts and gives them to the KO. The PM does not grant the extension.</td>
+        </tr>
+        <tr>
+          <td>PM needs to address a performance issue</td>
+          <td>Documents the specific deficiency, communicates it through the KO in writing. A verbal conversation on a job site is not a cure notice.</td>
+        </tr>
+        <tr>
+          <td>Contractor asks PM a contract question on site</td>
+          <td>"That's a contracting question -- I'll route it to the KO." Then does exactly that, in writing, the same day.</td>
+        </tr>
+        <tr>
+          <td>PM thinks the contractor is ahead of schedule and could do more</td>
+          <td>Discusses with KO first. Never directs additional work informally.</td>
+        </tr>
+      </table>
+    </div>
+    <div class="ref-note">
+      <div class="ref-note-tag">NOTE</div>
+      <div class="ref-note-text">The KO is not a bottleneck. The KO is the reason the government's commitments have legal force. A PM who tries to work around the KO to move faster will eventually create a problem that moves everything much slower.</div>
+    </div>
+  </div>
+
+  <!-- ====== Section 5: Quick Rules ====== -->
+  <div class="ref-section">
+    <div class="ref-section-hdr">Quick Rules</div>
+    <div class="rules-strip">
+      <div class="rule-row">
+        <span class="rule-num">01</span>
+        <span class="rule-text"><strong>No warrant, no contracting authority.</strong> If you do not have a Contracting Officer's warrant, you cannot bind the government to a contract action. Full stop.</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-num">02</span>
+        <span class="rule-text"><strong>Unauthorized commitments are legal problems.</strong> Directing a contractor informally is not a minor issue. It can bind the government to pay for unauthorized work.</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-num">03</span>
+        <span class="rule-text"><strong>If it is not in the contract, the contractor has no obligation.</strong> "I thought they were supposed to" is never a substitute for a modification.</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-num">04</span>
+        <span class="rule-text"><strong>Read the COR delegation letter.</strong> The COR's authority is exactly what the letter says. Not more. When a proposed action is not in the letter, stop and call the KO.</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-num">05</span>
+        <span class="rule-text"><strong>Never talk to offerors during source selection.</strong> Route everything through the KO. An innocent conversation can trigger an OCI allegation or disqualify a contractor.</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-num">06</span>
+        <span class="rule-text"><strong>Document everything in writing.</strong> A verbal direction on a job site is not a contract action. A verbal cure notice is not a cure notice.</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  }
+</script>
+
+</body>
+</html>

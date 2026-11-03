@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pre-Work Read-Aheads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;
+  --army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;
+  --white:#F5F2EB;--white-dim:#C8C4B8;
+  --accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;
+  --border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);
+  --note-bg:rgba(27,58,107,0.15);--note-border:#1B3A6B;
+  --section-bg:#1B3A6B;
+  --tbl-even:#1e2d3d;--tbl-odd:#16212e;
+  --body-bg:var(--army-dark);--body-surface:var(--army-mid);
+  --text-main:var(--white);--text-dim:var(--white-dim);
+  --font-scale:1;
+}
+[data-theme="light"]{
+  --body-bg:#F0EDE5;--body-surface:#FDFAF4;
+  --text-main:#1A1F14;--text-dim:#4A4A40;
+  --border:rgba(139,114,53,0.25);--border-strong:rgba(139,114,53,0.5);
+  --tbl-even:#EEF3FA;--tbl-odd:#FFFFFF;
+  --note-bg:rgba(27,58,107,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--body-bg);color:var(--text-main);
+  font-family:'Inter',sans-serif;font-size:calc(15px * var(--font-scale));
+  line-height:1.65;min-height:100vh;
+}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:var(--army-dark);border-bottom:1px solid var(--border);
+  padding:0 1.5rem;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.brand{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+.logo-seal{font-size:1.4rem}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--gold);letter-spacing:.03em}
+.logo-sub{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--white-dim);letter-spacing:.08em;text-transform:uppercase}
+.topbar-controls{display:flex;align-items:center;gap:.5rem}
+.back-link{
+  font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.06em;
+  color:var(--gold-dim);text-decoration:none;padding:.3rem .6rem;
+  border:1px solid var(--border);border-radius:4px;
+  transition:color .15s,border-color .15s;
+}
+.back-link:hover{color:var(--gold);border-color:var(--border-strong)}
+.theme-toggle,.font-toggle{
+  background:none;border:1px solid var(--border);border-radius:4px;
+  color:var(--text-dim);cursor:pointer;
+  font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.05em;
+  padding:.3rem .55rem;transition:all .15s;
+}
+.theme-toggle:hover,.font-toggle:hover{color:var(--gold);border-color:var(--border-strong)}
+
+/* PAGE LAYOUT */
+.page-wrap{max-width:860px;margin:0 auto;padding:2.5rem 1rem 4rem}
+
+.page-header{margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.eyebrow{
+  font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--gold-dim);margin-bottom:.5rem;
+}
+.page-title{
+  font-family:'DM Serif Display',serif;font-size:2.2rem;
+  color:var(--gold);line-height:1.2;margin-bottom:.75rem;
+}
+.page-lede{color:var(--text-dim);font-size:.95rem;max-width:640px;line-height:1.7}
+
+/* DAY BLOCKS */
+.day-block{margin-bottom:2.5rem}
+.day-label{
+  font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent);
+  padding:.25rem 0;border-bottom:1px solid var(--border);
+  margin-bottom:1rem;
+}
+
+/* ACCORDION */
+.ra-item{
+  border:1px solid var(--border);border-radius:6px;
+  margin-bottom:.75rem;overflow:hidden;
+  transition:border-color .2s;
+}
+.ra-item:hover{border-color:var(--border-strong)}
+.ra-item.open{border-color:var(--border-strong)}
+
+.ra-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.85rem 1.1rem;cursor:pointer;
+  background:var(--body-surface);
+  user-select:none;gap:1rem;
+}
+.ra-header:hover{background:rgba(200,168,75,0.05)}
+.ra-item.open .ra-header{background:rgba(200,168,75,0.06)}
+
+.ra-meta{display:flex;align-items:baseline;gap:.75rem;min-width:0}
+.ra-number{
+  font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;
+  color:var(--gold-dim);white-space:nowrap;flex-shrink:0;
+}
+.ra-title{
+  font-family:'DM Serif Display',serif;font-size:1.05rem;
+  color:var(--text-main);line-height:1.3;
+}
+.ra-ref{
+  font-family:'DM Mono',monospace;font-size:.65rem;
+  color:var(--white-dim);white-space:nowrap;flex-shrink:0;
+}
+.ra-chevron{
+  font-size:.8rem;color:var(--gold-dim);flex-shrink:0;
+  transition:transform .2s;
+}
+.ra-item.open .ra-chevron{transform:rotate(180deg)}
+
+/* CONTENT BODY */
+.ra-body{
+  display:none;padding:1.5rem 1.4rem;
+  border-top:1px solid var(--border);
+}
+.ra-item.open .ra-body{display:block}
+
+/* INTRO LEDE */
+.ra-lede{
+  font-size:.92rem;color:var(--text-main);
+  line-height:1.7;margin-bottom:1.5rem;
+  padding:.85rem 1rem;
+  background:rgba(200,168,75,0.06);
+  border-left:3px solid var(--gold-dim);
+  border-radius:0 4px 4px 0;
+}
+
+/* SECTION HEADER */
+.ra-section-hdr{
+  background:var(--section-bg);
+  color:#fff;font-family:'DM Mono',monospace;
+  font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.45rem .9rem;margin:1.5rem 0 1rem;
+  border-radius:3px;
+}
+
+/* H2 */
+.ra-h2{
+  font-family:'Inter',sans-serif;font-weight:600;
+  font-size:.88rem;color:var(--gold-light);
+  margin:1.1rem 0 .4rem;letter-spacing:.01em;
+}
+
+/* PARAGRAPH */
+.ra-p{font-size:.88rem;color:var(--text-main);line-height:1.7;margin-bottom:.65rem}
+
+/* BULLET */
+.ra-ul{margin:.4rem 0 .7rem 1.2rem}
+.ra-ul li{font-size:.88rem;color:var(--text-main);line-height:1.65;margin-bottom:.35rem}
+
+/* NOTE BOX */
+.ra-note{
+  display:flex;align-items:stretch;
+  margin:1rem 0;border-radius:4px;overflow:hidden;
+  border:1px solid rgba(27,58,107,0.4);
+}
+.ra-note-tag{
+  background:rgba(27,58,107,0.25);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:.62rem;font-weight:500;
+  letter-spacing:.1em;color:#6B9FD4;
+  padding:.5rem .7rem;min-width:52px;
+  border-right:1px solid rgba(27,58,107,0.3);
+}
+.ra-note-text{
+  background:var(--note-bg);
+  padding:.6rem .85rem;font-size:.83rem;color:var(--text-dim);
+  line-height:1.65;flex:1;
+}
+
+/* TABLE */
+.ra-table{width:100%;border-collapse:collapse;margin:.75rem 0 1rem;font-size:.83rem}
+.ra-table tr:nth-child(odd) td{background:var(--tbl-even)}
+.ra-table tr:nth-child(even) td{background:var(--tbl-odd)}
+.ra-table td{padding:.55rem .75rem;vertical-align:top;line-height:1.55}
+.ra-table td:first-child{
+  font-weight:600;color:var(--gold-light);
+  width:34%;border-right:1px solid rgba(200,168,75,0.1);
+  white-space:normal;
+}
+.ra-table td:last-child{color:var(--text-main)}
+
+/* DIVIDER */
+.ra-divider{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+
+/* PROGRESS BADGE */
+.timing-badge{
+  font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;
+  color:var(--accent);background:rgba(123,160,91,0.1);
+  border:1px solid rgba(123,160,91,0.25);
+  border-radius:3px;padding:.15rem .45rem;white-space:nowrap;flex-shrink:0;
+}
+
+@media(max-width:600px){
+  .page-title{font-size:1.7rem}
+  .ra-meta{flex-wrap:wrap;gap:.4rem}
+  .ra-ref{display:none}
+  .ra-table td:first-child{width:40%}
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a class="brand" href="index.html">
+    <span class="logo-seal">⚙</span>
+    <div>
+      <div class="logo-primary">PROSPECT 355</div>
+      <div class="logo-sub">Interactive Course · USACE KMP-PPM</div>
+    </div>
+  </a>
+  <div class="topbar-controls">
+    <a class="back-link" href="index.html">&#8592; Home</a>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark">◑</button>
+    <button class="font-toggle" onclick="cycleFont()" title="Adjust font size">Aa</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <div class="eyebrow">PROSPECT 355 &middot; Pre-Work</div>
+    <h1 class="page-title">Read-Ahead Cards</h1>
+    <p class="page-lede">One card per lesson. Read each card before the day it belongs to. Class time is reserved entirely for application, judgment, and discussion&mdash;the definitions and doctrine are here. Come in having read them.</p>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- DAY 1: L1 - L6 -->
+  <!-- ======================================================= -->
+  <div class="day-block">
+    <div class="day-label">Day 1 &mdash; Lessons 1 through 6</div>
+
+    <!-- L1 -->
+    <div class="ra-item" id="ra-L1">
+      <div class="ra-header" onclick="toggle('ra-L1')">
+        <div class="ra-meta">
+          <span class="ra-number">L1</span>
+          <span class="ra-title">How This Course Works&mdash;Using the Case Files</span>
+          <span class="ra-ref">Using the Case Files</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 1</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">This card explains how the course works before the course begins. Read it first. Everything else builds on the structure described here.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; The Structure of This Course</div>
+        <div class="ra-h2">Two-Part Design</div>
+        <p class="ra-p">Every lesson in PROSPECT 355 has two parts: a read-ahead and a class session. They are designed to work together and cannot be separated without breaking the design.</p>
+        <table class="ra-table">
+          <tr><td>Read-Ahead (30 min)</td><td>Content and doctrine. Done before class. This is where definitions live, where frameworks are introduced, and where case context is set.</td></tr>
+          <tr><td>Class Session (30 min)</td><td>Application and judgment. No definitions repeated. The lesson picks up where the read-ahead ended and asks you to use what you read.</td></tr>
+          <tr><td>Case File (60 min)</td><td>Structured table discussion on a scenario. Follows the class session. The case file is the majority of the learning.</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 2 &mdash; The Case Files</div>
+        <div class="ra-h2">Meet Maria</div>
+        <p class="ra-p">Every case file follows Maria, a USACE Project Manager managing a construction project across all four phases of delivery. Maria is not a model PM. She is a capable PM under realistic conditions&mdash;which means she faces real constraints, makes real tradeoffs, and sometimes gets things wrong.</p>
+        <div class="ra-h2">What a Case File Looks Like</div>
+        <p class="ra-p">Each case file has three parts: a scenario (1&ndash;2 pages, read at the table before discussion), six discussion questions, and a decision point where the table must take a position before the debrief.</p>
+        <div class="ra-h2">How to Use at Your Table</div>
+        <table class="ra-table">
+          <tr><td>Read (5 min)</td><td>Everyone reads the scenario. Silently. No discussion yet.</td></tr>
+          <tr><td>Discuss (40 min)</td><td>Work through the six questions together. The questions are a structure, not a script&mdash;let the table go where the discussion leads.</td></tr>
+          <tr><td>Debrief (15 min)</td><td>Whole-room debrief. Your table shares its position on the decision point. Other tables share theirs. Instructors add doctrine and context.</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 3 &mdash; What to Bring to Class</div>
+        <p class="ra-p">Bring your experience. The case files are designed to surface the gap between doctrine and reality&mdash;and that gap shows up most clearly when participants bring real examples. Disagreements are productive. Bring those too.</p>
+        <div class="ra-h2">Day Assignments</div>
+        <table class="ra-table">
+          <tr><td>Day 1</td><td>L1 &mdash; L6 read-aheads</td></tr>
+          <tr><td>Day 2</td><td>L7 &mdash; L9 read-aheads</td></tr>
+          <tr><td>Day 3</td><td>L10 &mdash; L12 read-aheads</td></tr>
+          <tr><td>Day 4</td><td>L13 read-ahead</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 4 &mdash; The Knowledge Check</div>
+        <p class="ra-p">There is a knowledge check at the end of the course. It tests whether you can apply the doctrine from the read-aheads&mdash;not whether you memorized definitions. The best preparation is to read each card before the relevant class session and to engage fully with the case files. The knowledge check reflects what you practiced, not what you studied the night before.</p>
+
+        <div class="ra-section-hdr">Section 5 &mdash; One Thing to Do Right Now</div>
+        <p class="ra-p">Before Day 1 begins, do two things:</p>
+        <ul class="ra-ul">
+          <li>Write down one project you are currently managing or supporting. You will use it throughout the week as a reference point for the case file discussions.</li>
+          <li>Write down one thing about that project that you do not fully control but are accountable for. Keep it. You will come back to it on Day 4.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="ra-item" id="ra-L2">
+      <div class="ra-header" onclick="toggle('ra-L2')">
+        <div class="ra-meta">
+          <span class="ra-number">L2</span>
+          <span class="ra-title">The Scope</span>
+          <span class="ra-ref">PROC2010</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 1</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">Lesson 2 is about how scope gets established, documented, and agreed to in USACE project delivery. PROC2010 governs the scope development process. The case file that follows (CF02: Schedule vs. Scope) turns on a scope gap that was visible during planning and not addressed. Read this card before class.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; What Scope Is</div>
+        <div class="ra-h2">The Definition</div>
+        <p class="ra-p">Project scope is the total amount of work required to deliver a project. Scope has two components. Product scope is what the project will produce: a building, a levee, a navigation channel improvement. Project scope is all the work required to produce it: design, surveys, environmental compliance, construction, inspection, and closeout. Both must be defined.</p>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">The most common scope problem in USACE project delivery is not a dramatic change request. It is a gradual accumulation of small additions that were never formally authorized. Each addition is reasonable. The cumulative effect is a project that costs 30 percent more and takes six months longer than the original estimate, with no clear record of why.</div></div>
+        <div class="ra-h2">The Scope Statement</div>
+        <p class="ra-p">The scope statement is the primary document for managing project scope. A complete scope statement includes:</p>
+        <table class="ra-table">
+          <tr><td>Project objectives</td><td>What the project must accomplish, in measurable terms. "Provide 50,000 square feet of administrative space" is an objective. "Build a nice building" is not.</td></tr>
+          <tr><td>Deliverables</td><td>The specific outputs the project will produce. These become the basis for the WBS in L3.</td></tr>
+          <tr><td>Boundaries</td><td>What is explicitly inside the project scope and what is explicitly outside it. The boundaries are where disputes begin when they are not written down.</td></tr>
+          <tr><td>Constraints</td><td>Funding ceiling, schedule limits, regulatory requirements, site conditions. These do not change the scope&mdash;they bound the solution space.</td></tr>
+          <tr><td>Assumptions</td><td>Conditions the project team is treating as true for planning purposes. Every assumption is a risk. If an assumption proves false, the scope statement must be revisited.</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 2 &mdash; PROC2010 and Sponsor Alignment</div>
+        <div class="ra-h2">What PROC2010 Requires</div>
+        <p class="ra-p">To execute PROC2010 well, three questions should be answered in writing before the project moves from initiation to planning. Getting the sponsor's signature on these answers creates a documented baseline that protects the project.</p>
+        <table class="ra-table">
+          <tr><td>Question 1: What does "done" look like?</td><td>The sponsor must describe the project outcome in terms that can be measured. A sponsor who says "I will know it when I see it" has not answered Question 1.</td></tr>
+          <tr><td>Question 2: What is out of scope?</td><td>The sponsor must explicitly agree to what the project will not do. Without this, every omission becomes a potential scope addition.</td></tr>
+          <tr><td>Question 3: What changes your mind?</td><td>The sponsor must identify the conditions under which they would request a scope change. This is a commitment device that surfaces likely change requests before they happen.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">Getting written answers to all three questions does not prevent scope changes. It creates a documented baseline that makes scope changes visible. A project without documented answers to these three questions is a project without a meaningful scope baseline&mdash;any request the sponsor makes can be framed as "that was always part of the project."</div></div>
+
+        <div class="ra-section-hdr">Section 3 &mdash; The PM's Role in Scope Management</div>
+        <div class="ra-h2">Scope Creep vs. Scope Change</div>
+        <p class="ra-p">Scope creep is unauthorized scope addition&mdash;work that gets added to the project without a formal change action. The difference between scope creep and a scope change is documentation.</p>
+        <table class="ra-table">
+          <tr><td>Scope change (correct)</td><td>Sponsor requests the electrical room be expanded. PM documents the request, estimates the impact, routes it through the change process, and updates the baseline.</td></tr>
+          <tr><td>Scope creep (problem)</td><td>Sponsor mentions in a walkthrough that the electrical room "should probably be bigger." The PM notes it, the designer adjusts the drawings, no formal change is processed. Three weeks later the room is 40% larger with no baseline adjustment.</td></tr>
+        </table>
+        <div class="ra-h2">Scope and Sponsor Relationships</div>
+        <p class="ra-p">A PM who accommodates scope additions without formal change actions is not being flexible or customer-focused. They are taking on an obligation they were not authorized to take on, with resources they were not given, toward an outcome that was never agreed to.</p>
+
+        <div class="ra-section-hdr">Section 4 &mdash; Managing the Sponsor Relationship Over Time</div>
+        <div class="ra-h2">Sponsor Engagement Is Not a Milestone Event</div>
+        <p class="ra-p">PROC2010 covers how scope gets established at the start of a project. Managing the sponsor relationship is what happens for the rest of it. A sponsor who was aligned at initiation can become a source of project risk if the PM treats the signed scope statement as the end of that conversation rather than the foundation for an ongoing one.</p>
+        <table class="ra-table">
+          <tr><td>Initiation</td><td>Align on scope, boundaries, and the three PROC2010 questions. Establish communication norms: how often the sponsor expects to hear from you, in what format, and for what decisions they need to be in the room.</td></tr>
+          <tr><td>Planning</td><td>Walk the sponsor through the WBS and schedule before they are baselined. A sponsor who sees the plan for the first time after approval has no sense of ownership over it.</td></tr>
+          <tr><td>Execution</td><td>Communicate variances early. A sponsor who learns about a schedule slip at the quarterly review is a sponsor who has been managing a project they did not know was in trouble. Bring problems with options, not just problems.</td></tr>
+          <tr><td>Closeout</td><td>Confirm deliverables against the scope statement before final transfer. A sponsor who discovers a gap at occupancy is a scope problem that became a relationship problem.</td></tr>
+        </table>
+        <div class="ra-h2">The Three Sponsor Failure Modes</div>
+        <p class="ra-p">New PMs tend to encounter one of three sponsor dynamics. Each requires a different response.</p>
+        <table class="ra-table">
+          <tr><td>The disengaged sponsor</td><td>Does not respond, misses reviews, and delegates to a subordinate who cannot make decisions. The risk is scope drift: the PM starts making scope decisions because no one else is. Document every decision you make in the sponsor's absence. Escalate through your DPM when the sponsor's absence is creating project risk.</td></tr>
+          <tr><td>The over-involved sponsor</td><td>Makes informal requests that bypass the change process, contacts the contractor directly, or attends site visits and gives direction on the spot. The PM's response is documentation and redirection: "I want to make sure that gets captured formally. Let me route it through the change process so the cost and schedule impact can be evaluated."</td></tr>
+          <tr><td>The pressure-applying sponsor</td><td>Tells you to "make it work" when the estimate exceeds the ceiling, or insists the schedule is the schedule when the logic says otherwise. The PM's obligation is to present the options honestly, state your recommendation, and document the decision made. You do not own the decision. You own the quality of the information the sponsor uses to make it.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">The single most effective tool for managing a difficult sponsor relationship is consistent documentation of every material conversation. A sponsor who informally directed a scope change is much easier to redirect when you have a written summary of that conversation that you sent the same day. "Per our walkthrough on Tuesday" is not confrontation. It is project management.</div></div>
+
+        <div class="ra-section-hdr">Section 5 &mdash; The Case File Preview</div>
+        <p class="ra-p">CF02 is called <em>Schedule vs. Scope</em>. The project has a fixed completion date that the sponsor treats as absolute. During planning, the PM identified that meeting the date would require cutting two deliverables from the scope statement. The sponsor has not been told.</p>
+        <p class="ra-p">Before class, think through:</p>
+        <ul class="ra-ul">
+          <li>What are the PM's options when the schedule and scope baseline are in conflict?</li>
+          <li>When should the sponsor be brought into a scope-schedule tension -- at initiation, during planning, or when the problem becomes unavoidable?</li>
+          <li>What does the PROC2010 framework say about who owns the decision when scope and schedule conflict?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- L3 -->
+    <div class="ra-item" id="ra-L3">
+      <div class="ra-header" onclick="toggle('ra-L3')">
+        <div class="ra-meta">
+          <span class="ra-number">L3</span>
+          <span class="ra-title">The Work Breakdown Structure</span>
+          <span class="ra-ref">WBS / Scope Decomposition</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 1</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">Lesson 3 is about the Work Breakdown Structure&mdash;what it is, how it is built, and why it is the foundation for the schedule, cost estimate, and risk register. The case file (CF03: The New Home) turns on a WBS that had a gap. Read this card before class so the discussion can focus on how to find gaps before they matter.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; What the WBS Is</div>
+        <div class="ra-h2">The Definition</div>
+        <p class="ra-p">The Work Breakdown Structure is a hierarchical decomposition of all the work required to deliver the project. It starts at the top with the project itself and breaks down progressively into phases, deliverables, and work packages. It does not show sequence or timing&mdash;that is the schedule's job. It shows what work exists.</p>
+        <p class="ra-p">The WBS is the single most important planning document in a USACE project because everything else is built from it. If a WBS element is missing, none of the other documents will catch it.</p>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">A WBS is not an organization chart and not a schedule. An org chart shows who. A schedule shows when. A WBS shows what. Conflating them produces an incomplete scope picture and a planning foundation that cannot support accurate cost estimating or risk identification.</div></div>
+        <div class="ra-h2">The 100 Percent Rule</div>
+        <p class="ra-p">The WBS must capture 100 percent of the work required to deliver the project&mdash;no more and no less.</p>
+        <table class="ra-table">
+          <tr><td>No orphan work</td><td>Every task the project team will perform must appear in the WBS. Work not in the WBS was never authorized, never estimated, and never scheduled.</td></tr>
+          <tr><td>No phantom work</td><td>The WBS should not include work the project will not actually do. Padding distorts the cost estimate and the schedule.</td></tr>
+          <tr><td>No double-counting</td><td>Each WBS element should appear once. An element in two branches will be estimated twice, scheduled twice, and measured twice.</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 2 &mdash; How the WBS Is Built</div>
+        <div class="ra-h2">Starting Point: Template or Blank Sheet?</div>
+        <p class="ra-p">Most USACE districts maintain WBS templates built from prior projects in the same program type. Using a template is appropriate -- it captures work the team has done before and reduces the chance of omitting a standard deliverable. The PM's job is to treat the template as a starting point, not a final answer. Every template element must be confirmed against this project's actual scope, and every gap between this project and the prior project must be added. A WBS that was right for the last project is not necessarily right for this one.</p>
+        <div class="ra-h2">Top-Down Decomposition</div>
+        <table class="ra-table">
+          <tr><td>Level 1</td><td>The project itself. Single node at the top.</td></tr>
+          <tr><td>Level 2</td><td>Major phases or components. For a USACE building project: Planning, Design, Construction, Closeout.</td></tr>
+          <tr><td>Level 3</td><td>Sub-components. Under Design: Architectural, Structural, Mechanical, Electrical, Civil.</td></tr>
+          <tr><td>Level 4 (work package)</td><td>Individual deliverables. Under Mechanical: HVAC Design Drawings, Plumbing Design Drawings, HVAC Specifications.</td></tr>
+        </table>
+        <div class="ra-h2">The Scope Gap Problem</div>
+        <p class="ra-p">The most common sources of scope gaps:</p>
+        <table class="ra-table">
+          <tr><td>Interface work</td><td>Work that connects two components but belongs to neither. Interface work is often assumed by each party to belong to the other.</td></tr>
+          <tr><td>Regulatory requirements</td><td>Permits, inspections, surveys, environmental compliance. Frequently omitted from WBS templates built without them.</td></tr>
+          <tr><td>Commissioning and testing</td><td>Work required to verify a completed system performs to specification. Requires its own planning, scheduling, and cost estimating.</td></tr>
+          <tr><td>Owner-furnished items</td><td>Equipment or materials the owner provides. The PM owns the coordination work even if they do not own the procurement.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">The best defense against scope gaps is a structured review of the WBS against the scope statement before planning is complete. For every deliverable in the scope statement, ask: is there a WBS element for this? For every WBS element, ask: is there a scope statement requirement it fulfills?</div></div>
+
+        <div class="ra-section-hdr">Section 3 &mdash; The WBS and the PM's Accountability</div>
+        <p class="ra-p">The PM does not build the WBS alone. The technical leads build the technical elements. The PM's job is to make sure the whole WBS is present, that no element is missing, and that the 100 percent rule is applied.</p>
+        <p class="ra-p">The WBS is also how the PM communicates the project's full scope to the sponsor. A sponsor who has reviewed and approved the WBS cannot later claim a deliverable was always part of the project when it does not appear in the WBS.</p>
+
+        <div class="ra-section-hdr">Section 4 &mdash; The Case File Preview</div>
+        <p class="ra-p">CF03 is called <em>The New Home</em>. Maria is managing the relocation of a district operations center. The WBS was built from a template used on a previous project. During a planning review, a team member notices that the IT infrastructure migration does not appear in the WBS or the schedule.</p>
+        <ul class="ra-ul">
+          <li>At what point in planning should a scope gap like this be identified? What would have to be true for it to be found earlier?</li>
+          <li>What is the PM's obligation when a scope gap is found after the schedule is baselined?</li>
+          <li>Who else needs to know, and in what order?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- L4 -->
+    <div class="ra-item" id="ra-L4">
+      <div class="ra-header" onclick="toggle('ra-L4')">
+        <div class="ra-meta">
+          <span class="ra-number">L4</span>
+          <span class="ra-title">The Schedule</span>
+          <span class="ra-ref">PROC2030</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 1</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">Lesson 4 is about the project schedule&mdash;what PROC2030 requires, how to read one, and what questions to ask when a duration does not look right. The case file (CF04: Built to Slip) turns on a duration that was never questioned. Read this card before class so the lesson can stay on the judgment, not the mechanics.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; What a Schedule Is&mdash;and What It Is Not</div>
+        <div class="ra-h2">The Gantt Chart</div>
+        <p class="ra-p">A Gantt chart is a horizontal bar chart where each bar represents an activity. The bar length equals the activity duration. Arrows between bars show dependencies&mdash;which activities must finish before others can start. A Gantt chart is a planning and tracking tool. It does not tell you why something slipped, who is responsible, or whether the durations are realistic. Those judgments belong to the PM.</p>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">A schedule is not a calendar. A calendar shows dates. A schedule shows logic&mdash;the sequence of work and the dependencies between activities.</div></div>
+        <div class="ra-h2">The Critical Path</div>
+        <p class="ra-p">The critical path is the longest sequence of dependent activities in the schedule. It determines the project end date. Any delay on a critical path activity delays the project end date by the same amount.</p>
+        <table class="ra-table">
+          <tr><td>Critical path activity</td><td>Zero float. Any delay on this activity delays the project.</td></tr>
+          <tr><td>Near-critical activity</td><td>Very little float&mdash;often 10 days or fewer. These become critical path activities if they slip slightly.</td></tr>
+          <tr><td>Non-critical activity</td><td>Has float. Can slip without affecting the project end date, up to the amount of its float.</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 2 &mdash; What PROC2030 Requires</div>
+        <table class="ra-table">
+          <tr><td>WBS alignment</td><td>Schedule activities must map to the WBS. If it is in the WBS, it is in the schedule.</td></tr>
+          <tr><td>Logic ties</td><td>Every activity must have at least one predecessor and one successor. Orphan activities are a red flag.</td></tr>
+          <tr><td>Resource loading</td><td>Each activity must have an assigned resource at actual availability, not assumed full-time availability.</td></tr>
+          <tr><td>Basis of estimate</td><td>Every duration must have a documented basis. "We've always done it in five days" is not a basis of estimate. The four accepted basis types are defined in the section below.</td></tr>
+          <tr><td>Baseline</td><td>Once approved, changes to the baseline go through the change management process (PROC3010). The baseline is the measuring stick&mdash;not a document to update to match reality.</td></tr>
+        </table>
+        <div class="ra-h2">The Basis of Estimate</div>
+        <table class="ra-table">
+          <tr><td>Historical data</td><td>Similar activities on prior projects. "The last three HVAC rough-ins on comparable buildings took 12, 14, and 16 days. We estimated 14."</td></tr>
+          <tr><td>Expert judgment</td><td>Input from the person doing the work. "The structural engineer says this specific configuration takes 10 days because of access constraints."</td></tr>
+          <tr><td>Published estimating standards</td><td>RS Means, AFCEC parametric tools, or USACE cost engineering data.</td></tr>
+          <tr><td>Vendor or subcontractor estimates</td><td>Written, signed estimates from the contractor or subcontractor who will perform the work.</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 3 &mdash; Reading a Schedule as a PM</div>
+        <table class="ra-table">
+          <tr><td>Activities with no basis of estimate</td><td>Ask what the duration is based on. If the answer is "the template," that duration needs to be verified against actual scope.</td></tr>
+          <tr><td>Critical path activities with uncertain durations</td><td>Any critical path activity with a shaky basis of estimate is a project risk. Document it in the risk register.</td></tr>
+          <tr><td>Orphan activities</td><td>Activities with no predecessors or successors break the logic of the schedule. Often placeholder activities never connected.</td></tr>
+          <tr><td>Resource conflicts</td><td>One person assigned to two activities running at the same time. The schedule says it is possible. Reality says it is not.</td></tr>
+          <tr><td>Optimistic durations from templates</td><td>District templates use generic durations that may not account for site-specific conditions. Always verify template durations against this project's actual scope.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">In CF04, the HVAC rough-in is listed at 5 days. Based on the building layout, it should be 16. The question is not whether the duration is wrong&mdash;it clearly is. The question is how to raise it without making it a competence challenge.</div></div>
+
+        <div class="ra-section-hdr">Section 4 &mdash; Schedule Baseline and Changes</div>
+        <table class="ra-table">
+          <tr><td>Schedule update</td><td>Adjusting the forecast for remaining work based on actual progress. Does not require a change action if it does not affect the baseline.</td></tr>
+          <tr><td>Baseline change</td><td>Revising an activity that was already baselined. Requires a formal change action under PROC3010.</td></tr>
+          <tr><td>Schedule recovery</td><td>A plan to bring the project back to the baseline after a slip. Requires action, not just documentation. The PM owns this.</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 5 &mdash; The Case File Preview</div>
+        <p class="ra-p">CF04 is called <em>Built to Slip</em>. Priya built the project schedule from a district template. The HVAC rough-in is listed as 5 days. Based on this building's layout, it needs 16. The schedule has already been baselined.</p>
+        <ul class="ra-ul">
+          <li>What questions would you ask to verify the 5-day duration before raising it?</li>
+          <li>What is the difference between saying "that duration is wrong" and asking "what is this based on"?</li>
+          <li>If the schedule is already baselined and the duration is wrong, what are the options? Who needs to know?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="ra-item" id="ra-L5">
+      <div class="ra-header" onclick="toggle('ra-L5')">
+        <div class="ra-meta">
+          <span class="ra-number">L5</span>
+          <span class="ra-title">The Cost Estimate</span>
+          <span class="ra-ref">PROC2040</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 1</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">This card covers cost estimate components, the relationship between the project cost estimate and the funding ceiling, and the framework for presenting a funding gap to leadership. Read it before class. Class time will not be spent defining IGE, SIOH, or contingency types&mdash;that is what this card is for.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; The Cost Estimate Components</div>
+        <div class="ra-h2">The Independent Government Estimate (IGE)</div>
+        <p class="ra-p">The IGE is the government's own estimate of the cost of the work, developed before the solicitation. It is produced by the cost engineer, reviewed by the PM. The IGE exists because the government needs to know what fair and reasonable compensation looks like before receiving contractor proposals. A PM who cannot read and question the IGE is dependent on others to flag problems.</p>
+        <div class="ra-h2">SIOH</div>
+        <p class="ra-p">SIOH stands for Supervision, Inspection, and Overhead. It is not an add-on that can be cut -- it is part of the project cost and comes from the same appropriation as construction. A PM who presents a project budget without SIOH included is presenting an incomplete number. The rate varies by program: 6.5% of construction cost for CONUS Military Programs (MILCON), per OSD guidance. Civil Works projects use a different rate structure. If you are not sure which rate applies to your project, confirm with your cost engineer before presenting a total project cost.</p>
+        <div class="ra-h2">Contingency</div>
+        <table class="ra-table">
+          <tr><td>Design contingency</td><td>Reserve for scope and cost unknowns that will be resolved as design matures. Typically 5&ndash;10% early in design, decreasing as design advances. As unknowns are resolved, design contingency is reduced&mdash;it does not roll over into construction contingency.</td></tr>
+          <tr><td>Construction contingency</td><td>Reserve for unknowns that materialize during construction. Requires documentation to use. It is not a slush fund and not project margin. Using it requires identifying the specific unknown it covers.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">The most common PM error on contingency: treating construction contingency as a cost management tool&mdash;drawing it down to cover a cost overrun without documenting the specific unknown it was intended to address. That creates an audit problem and a closeout problem.</div></div>
+
+        <div class="ra-section-hdr">Section 2 &mdash; Funding Ceiling vs. Project Cost Estimate</div>
+        <div class="ra-h2">These Are Not the Same Number</div>
+        <p class="ra-p">The programmed funding ceiling is the amount of money authorized and appropriated for the project. The project cost estimate is what the PM and cost engineer believe the project will actually cost. When the estimate exceeds the ceiling, the PM has a gap&mdash;not a rounding problem, not a negotiating position. A gap.</p>
+        <div class="ra-h2">The Three Options</div>
+        <p class="ra-p">When the project cost estimate exceeds the programmed ceiling, there are three legitimate options. Only three. A PM who presents fewer is withholding information.</p>
+        <table class="ra-table">
+          <tr><td>Option 1: Scope reduction</td><td>Reduce scope to bring the estimate within the ceiling. Two tools: deferral (remove a deliverable from this project and plan it separately) and value management -- analyzing whether the same function can be achieved at lower cost. Value management thinking is not a discrete study or a one-time gate; it belongs throughout the project lifecycle, from scope definition through design. It is not cutting corners -- it is a discipline of asking whether the design is delivering value proportional to its cost. Either way, the sponsor must be informed and must agree to what changes.</td></tr>
+          <tr><td>Option 2: Funding increase</td><td>Request additional funding to cover the gap. In most programs, this means at least one budget cycle. It is not a fast option.</td></tr>
+          <tr><td>Option 3: Contingency reduction</td><td>Accept a higher level of cost risk by reducing contingency. This is a risk decision, not a cost management decision. It requires the DPM to understand what risk they are accepting.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">What you cannot do: quietly adjust the estimate to match the ceiling without telling anyone. That does not resolve the gap&mdash;it hides it. The problem re-emerges at construction with less time, less money, and less goodwill to solve it.</div></div>
+
+        <div class="ra-section-hdr">Section 3 &mdash; Presenting a Funding Gap</div>
+        <div class="ra-h2">The Framework: Data, Options, Recommendation</div>
+        <table class="ra-table">
+          <tr><td>Data first</td><td>State the gap factually before anything else. "The estimate is $2.3M over the programmed ceiling of $X, a gap of Y%." Numbers and percentages. No softening language.</td></tr>
+          <tr><td>Options second</td><td>Present all three options. For each one: what it is, what it costs the project, and what decision it requires from leadership.</td></tr>
+          <tr><td>Recommendation third</td><td>State which option you recommend and why. Not "I'll do whatever you decide"&mdash;that is not a recommendation.</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 4 &mdash; The Case File Preview</div>
+        <p class="ra-p">CF05 is called <em>The Number Doesn't Fit</em>. Maria's cost estimate has come in $1.9M over the programmed ceiling. Her DPM's response is "make it work." Maria has three legitimate options. She has not yet told the sponsor that any of them involve tradeoffs the sponsor will not like.</p>
+        <p class="ra-p">Before class, think through:</p>
+        <ul class="ra-ul">
+          <li>What does "make it work" actually mean? Which of the three options is the DPM implicitly pointing to, and is that a direction or a decision?</li>
+          <li>At what point does the sponsor need to be in this conversation? What changes if the PM waits until after a decision is made?</li>
+          <li>If Maria's recommendation is scope reduction, what analysis does she need to have ready before she brings it to the sponsor -- and what does good value management thinking look like in that conversation?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- L6 -->
+    <div class="ra-item" id="ra-L6">
+      <div class="ra-header" onclick="toggle('ra-L6')">
+        <div class="ra-meta">
+          <span class="ra-number">L6</span>
+          <span class="ra-title">Leading the Team</span>
+          <span class="ra-ref">PROC2020</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 1</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">Lesson 6 is about how a USACE PM leads a Project Delivery Team without supervisory authority over most of its members. PROC2020 establishes the PM's role in team leadership. The case file (CF06: The Feedback Conversation) turns on a feedback conversation that needed to happen sooner and differently than it did. Read this card before class.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; The PM's Authority Problem</div>
+        <div class="ra-h2">The Structural Reality</div>
+        <p class="ra-p">The USACE PM leads a Project Delivery Team made up of people who do not report to them. The cost engineer reports to the cost engineering section. The environmental specialist reports to the environmental branch. The A-E reports to its own firm. The PM has no supervisory authority over any of them.</p>
+        <p class="ra-p">The PM leads through three tools: the project charter (which defines roles and responsibilities), the work plan (which defines deliverables and timelines), and the relationship (which is the only thing that makes the other two work when conditions change).</p>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">This is not a bug in the system. USACE is structured this way deliberately. Technical leads have technical authorities that the PM should not override. The PM's job is to integrate the technical work, not to perform it. The authority gap is real; the response to it is relationship and clarity, not workarounds.</div></div>
+        <div class="ra-h2">What PROC2020 Establishes</div>
+        <table class="ra-table">
+          <tr><td>Charter the team</td><td>Document roles, responsibilities, and decision rights before work begins. Who makes what decisions. Who needs to be consulted. Who just needs to be informed.</td></tr>
+          <tr><td>Establish communication norms</td><td>How often the team meets, what format, who is expected to attend, what decisions can be made in what forums. These are agreements, not assumptions.</td></tr>
+          <tr><td>Address performance issues</td><td>The PM is responsible for addressing performance issues on the PDT, even without supervisory authority. The mechanism is feedback, documentation, and escalation.</td></tr>
+          <tr><td>Manage workload conflicts</td><td>When a team member is overcommitted, the PM escalates to the section chief or program manager, with documentation.</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 2 &mdash; The SBI Feedback Model</div>
+        <div class="ra-h2">Why Structure Matters in Feedback</div>
+        <p class="ra-p">Feedback conversations on a PDT are harder than feedback conversations between a supervisor and a direct report. The PM has no formal authority. The SBI model (Situation, Behavior, Impact) gives feedback conversations a structure that keeps them factual, specific, and focused on behavior rather than character.</p>
+        <table class="ra-table">
+          <tr><td>Situation</td><td>When and where the behavior occurred. Specific, observable, past tense. "In the PDT meeting on Tuesday"&mdash;not "whenever we have meetings."</td></tr>
+          <tr><td>Behavior</td><td>What the person did or did not do. Observable, not interpretive. "You did not have the cost estimate ready for review"&mdash;not "you were unprepared."</td></tr>
+          <tr><td>Impact</td><td>The effect on the project or the team. Factual, not emotional. "The review had to be postponed, which put the planning milestone at risk."</td></tr>
+          <tr><td>Request</td><td>What you are asking the person to do differently. Specific and actionable. "For the next milestone review, I need the cost estimate ready 48 hours in advance."</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">The Request element is sometimes omitted in descriptions of SBI. Include it. Feedback without a specific request is a complaint. The team member leaves the conversation knowing what they did wrong but not knowing what to do instead.</div></div>
+        <div class="ra-h2">Performance vs. Workload</div>
+        <table class="ra-table">
+          <tr><td>Performance problem</td><td>The person has the capacity and the skill to do the work but is not doing it. SBI feedback is appropriate.</td></tr>
+          <tr><td>Workload problem</td><td>The person does not have the capacity to do the work&mdash;overcommitted across multiple projects. SBI feedback addressed at the wrong problem makes things worse. The PM's response is escalation and resource negotiation.</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 3 &mdash; Feedback Without Authority</div>
+        <p class="ra-p">The PM can document performance issues, request workload relief from the section chief, and escalate to the DPM when a team member's performance is creating project risk. The PM cannot unilaterally remove a team member from the PDT or make performance decisions on behalf of the team member's supervisor.</p>
+        <p class="ra-p">Documentation does three things: creates accountability (the team member knows the PM has documented the issue), enables escalation (documentation makes the conversation credible), and protects the PM (the record shows the PM identified the risk and took appropriate action).</p>
+
+        <div class="ra-section-hdr">Section 4 &mdash; The Case File Preview</div>
+        <p class="ra-p">CF06 is called <em>The Feedback Conversation</em>. Marcus, Maria's structural lead, has missed two consecutive deliverable deadlines. In the conversation Maria finally initiates, she learns that Marcus is not behind because he is overloaded&mdash;he is behind because he disagrees with a design decision that was made without his input and has been slow-rolling his deliverables in response.</p>
+        <ul class="ra-ul">
+          <li>How would you use the SBI model for the initial conversation Maria should have had before the second missed deadline?</li>
+          <li>What changes when you learn the real reason for the slippage? Does the SBI model still apply?</li>
+          <li>What obligation does the PM have when a team member who has no supervisory relationship with the PM expresses a design disagreement through passive non-delivery?</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- end Day 1 -->
+
+  <!-- ======================================================= -->
+  <!-- DAY 2: L7 - L9 -->
+  <!-- ======================================================= -->
+  <div class="day-block">
+    <div class="day-label">Day 2 &mdash; Lessons 7 through 9</div>
+
+    <!-- L7 -->
+    <div class="ra-item" id="ra-L7">
+      <div class="ra-header" onclick="toggle('ra-L7')">
+        <div class="ra-meta">
+          <span class="ra-number">L7</span>
+          <span class="ra-title">Measuring Performance&mdash;EVM</span>
+          <span class="ra-ref">PROC3000 / EVM</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 2</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">This card covers Earned Value Management&mdash;the three input values, the four metrics, and the diagnostic steps for reading a variance. Read it before class. Class time will not be spent defining PV, EV, or AC, or explaining what SPI means&mdash;that is what this card is for.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; The Three EVM Values</div>
+        <table class="ra-table">
+          <tr><td>PV &mdash; Planned Value</td><td>What was planned to be accomplished by today, expressed in dollars. A schedule question: how much work was supposed to be done? Set at baseline.</td></tr>
+          <tr><td>EV &mdash; Earned Value</td><td>What was actually accomplished, expressed in dollars. A performance question: how much work has actually been completed? Based on percent complete applied to budget.</td></tr>
+          <tr><td>AC &mdash; Actual Cost</td><td>What was actually spent to accomplish that work. A cost question: what did it cost to produce what was accomplished?</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">EV is not the same as AC. A project can spend exactly on budget (AC = PV) while accomplishing less work than planned (EV &lt; PV). That is a cost-efficient schedule slip&mdash;and it is invisible unless you separate the three values.</div></div>
+
+        <div class="ra-section-hdr">Section 2 &mdash; The Four Metrics</div>
+        <table class="ra-table">
+          <tr><td>SPI (Schedule Performance Index)</td><td>EV &divide; PV. Below 1.0 = behind schedule. SPI of 0.84 means for every dollar of work planned, only 84 cents of work was accomplished.</td></tr>
+          <tr><td>CPI (Cost Performance Index)</td><td>EV &divide; AC. Below 1.0 = over budget. CPI of 0.93 means for every dollar spent, 93 cents of work was accomplished.</td></tr>
+          <tr><td>SV (Schedule Variance)</td><td>EV minus PV. Negative = behind. Expressed in dollars.</td></tr>
+          <tr><td>CV (Cost Variance)</td><td>EV minus AC. Negative = over budget. Expressed in dollars.</td></tr>
+        </table>
+        <div class="ra-h2">A Worked Example</div>
+        <p class="ra-p">PV = $450,000 &nbsp;|&nbsp; EV = $380,000 &nbsp;|&nbsp; AC = $410,000</p>
+        <table class="ra-table">
+          <tr><td>SPI</td><td>$380K / $450K = 0.84 &mdash; behind schedule</td></tr>
+          <tr><td>CPI</td><td>$380K / $410K = 0.93 &mdash; slightly over budget</td></tr>
+          <tr><td>SV</td><td>$380K &minus; $450K = &minus;$70,000</td></tr>
+          <tr><td>CV</td><td>$380K &minus; $410K = &minus;$30,000</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 3 &mdash; The Phantom Slip Diagnostic</div>
+        <div class="ra-h2">Not Every Variance Is Real</div>
+        <table class="ra-table">
+          <tr><td>Step 1: Verify the data</td><td>When was the schedule last updated? Is the percent complete current? Stale data produces phantom variances.</td></tr>
+          <tr><td>Step 2: Identify the specific activity</td><td>Which activity is driving the variance? The metric is a project-level number&mdash;the cause is an activity-level event.</td></tr>
+          <tr><td>Step 3: Determine root cause</td><td>Why is that activity behind? Resource constraint, external dependency, scope change, or data entry error? The cause determines the recovery path.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">The most dangerous PM move after seeing a variance: explaining it before diagnosing it. State the variance, commit to a diagnosis timeline, and give the explanation after the three steps&mdash;not before.</div></div>
+        <div class="ra-h2">Writing a Variance Narrative</div>
+        <table class="ra-table">
+          <tr><td>Bottom line</td><td>What happened. Factual, specific, no hedging. "The HVAC rough-in started 9 days late due to a permitting delay."</td></tr>
+          <tr><td>Cause</td><td>Why it happened. One sentence. "The permit application was submitted on schedule but the reviewing agency took 14 days longer than historical average."</td></tr>
+          <tr><td>Recovery</td><td>What you are doing about it. Specific, with a date. "We have compressed the follow-on framing activity by 4 days. Current forecast: 2-day delay at completion."</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 4 &mdash; The Case File Preview</div>
+        <p class="ra-p">CF07 is called <em>The Phantom Slip</em>. Maria's monthly EVM report shows an SPI of 0.81 and a CPI of 0.96. Her DPM calls before she has run the diagnostic. The numbers came from a schedule that has not been updated in three weeks.</p>
+        <p class="ra-p">Before class, think through:</p>
+        <ul class="ra-ul">
+          <li>If the data is stale, is the variance real? What would you need to verify before characterizing the project's performance to the DPM?</li>
+          <li>What is the difference between explaining a variance and diagnosing one -- and which do you owe the DPM in the first conversation?</li>
+          <li>If the variance turns out to be real after the data is corrected, what does a credible recovery narrative look like?</li>
+        </ul>
+        <p class="ra-p">Bring a calculator to class. The in-class calculation uses PV=$620K, EV=$540K, AC=$580K. The numbers are not rounded.</p>
+      </div>
+    </div>
+
+    <!-- L8 -->
+    <div class="ra-item" id="ra-L8">
+      <div class="ra-header" onclick="toggle('ra-L8')">
+        <div class="ra-meta">
+          <span class="ra-number">L8</span>
+          <span class="ra-title">Risk Management&mdash;The Risk Register</span>
+          <span class="ra-ref">REF8007G</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 2</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">This card covers the distinction between risks, assumptions, and issues; the required fields for a REF8007G-compliant Risk Register entry; and the two-minute capture technique. Read it before class. Class time will not be spent defining what a risk is or listing the required fields.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; Risks, Assumptions, and Issues</div>
+        <table class="ra-table">
+          <tr><td>Risk</td><td>Uncertain. In the future. Manageable with a response plan. The key word is uncertain&mdash;if it is certain, it is not a risk.</td></tr>
+          <tr><td>Assumption</td><td>Something the project treats as true that has not been verified. That is what makes them dangerous. An assumption that turns out wrong does not trigger a risk response&mdash;it triggers a scope failure, a schedule slip, or a cost overrun.</td></tr>
+          <tr><td>Issue</td><td>A risk that has already materialized. No longer uncertain. Now it requires an incident response, not a risk response.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">The most important reframe in risk management: look at your assumption log with the question "what if this is wrong?" Each assumption that answers that question with a consequential outcome is a risk masquerading as a fact.</div></div>
+
+        <div class="ra-section-hdr">Section 2 &mdash; The REF8007G-Compliant Risk Register Entry</div>
+        <table class="ra-table">
+          <tr><td>Description</td><td>What specifically might happen. Not "schedule risk"&mdash;that is a category. "If the specialty HVAC vendor's current contract extends, they may not be available for mobilization before week 12."</td></tr>
+          <tr><td>Category</td><td>Schedule, Cost, Scope, Technical, Environmental, Political. One primary category per entry.</td></tr>
+          <tr><td>Probability</td><td>High, Medium, or Low. Based on historical data, expert judgment, or documented analysis. Not gut feel.</td></tr>
+          <tr><td>Impact</td><td>What happens to schedule, cost, or scope if this risk materializes. Quantified where possible.</td></tr>
+          <tr><td>Owner</td><td>One named individual. Not "the PDT." Not "PM." A specific person who has decision authority and accountability when the trigger fires.</td></tr>
+          <tr><td>Trigger</td><td>The specific, observable condition that activates the response. Not "when the risk becomes a problem"&mdash;that is too late. "If the permit application has not been approved by Day 45, activate the response plan."</td></tr>
+          <tr><td>Response Strategy</td><td>AVOID, TRANSFER, MITIGATE, or ACCEPT. One strategy per entry.</td></tr>
+          <tr><td>Response Action</td><td>The specific steps that implement the strategy. Tied to the trigger, assigned to the owner, with a timeline.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">The owner and trigger work together. The trigger tells the owner when to act. A risk with an owner but no trigger has someone ready to respond with no signal to respond to. A risk with a trigger but no owner has a signal and no one accountable to receive it.</div></div>
+
+        <div class="ra-section-hdr">Section 3 &mdash; The Two-Minute Capture</div>
+        <p class="ra-p">The most common source of Risk Register gaps is not ignorance&mdash;it is timing. A team member mentions a risk in a hallway conversation, everyone acknowledges it, and then the meeting ends and the risk never makes it into the Register.</p>
+        <table class="ra-table">
+          <tr><td>"Help me put that on the Register."</td><td>Opens the capture without creating a process burden. A request for a 2-minute conversation, not a form to fill out.</td></tr>
+          <tr><td>"What's the probability&mdash;High, Medium, or Low?"</td><td>The first field that requires the team member's judgment. Answering it commits them to the entry.</td></tr>
+          <tr><td>"What would be the trigger&mdash;when would we know this is about to happen?"</td><td>The most important question. The team member who mentioned the risk usually knows the early warning signal.</td></tr>
+          <tr><td>"You're the owner&mdash;confirm?"</td><td>Assigns ownership before the conversation ends.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">The two-minute capture only works if the PM is the one who initiates it. Waiting for the team member to log it themselves produces the gap every time.</div></div>
+
+        <div class="ra-section-hdr">Section 4 &mdash; The Case File Preview</div>
+        <p class="ra-p">CF08 is called <em>The Risk Nobody Tracked</em>. Maria's project has a soil contamination issue that materialized during excavation. Three months earlier, a geotechnical report flagged elevated contamination probability at the site. The PM at the time noted it in a meeting. It never made it into the Risk Register.</p>
+        <p class="ra-p">Before class, think through:</p>
+        <ul class="ra-ul">
+          <li>At what point did this risk become an issue -- and what would have changed if it had been entered in the Register with a trigger and an owner?</li>
+          <li>The prior PM noted the risk verbally. Is that sufficient? What is the difference between awareness and documentation when a risk materializes?</li>
+          <li>Maria inherits the project mid-execution. What does she owe the Register at that point -- and what does she owe the DPM?</li>
+        </ul>
+        <p class="ra-p">Come ready to share a real assumption from your current project. The in-class exercise converts it into a full eight-field Risk Register entry.</p>
+      </div>
+    </div>
+
+    <!-- L9 -->
+    <div class="ra-item" id="ra-L9">
+      <div class="ra-header" onclick="toggle('ra-L9')">
+        <div class="ra-meta">
+          <span class="ra-number">L9</span>
+          <span class="ra-title">Running PDT Meetings</span>
+          <span class="ra-ref">PROC3000</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 2</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">This card covers the USACE doctrine for PDT meeting management&mdash;agenda design, recovery techniques, and post-meeting requirements. Read it before class. Class time will be used to run a meeting recovery role play, not to explain what a parking lot is.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; Agenda Design</div>
+        <div class="ra-h2">The Three Agenda Item Types</div>
+        <table class="ra-table">
+          <tr><td>DECISION</td><td>Must be decided today. Goes first. If the meeting ends early, the decision still happened.</td></tr>
+          <tr><td>TIME-SENSITIVE</td><td>Affects actions that must happen before the next meeting. Goes second. Has a deadline attached.</td></tr>
+          <tr><td>INFORMATIONAL</td><td>Can be handled async. Goes last, or removed from the agenda entirely and sent in a summary.</td></tr>
+        </table>
+        <p class="ra-p">Most PDT meetings fail because they are built backwards: informational items go first, time-sensitive items come second, and the decision item either gets rushed or does not happen at all.</p>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">If a decision item cannot be decided today because key information is missing, do not put it on the agenda as a decision. Identify the missing information, assign someone to get it, and set the real decision date. A decision item with no decision burns time and erodes trust.</div></div>
+
+        <div class="ra-section-hdr">Section 2 &mdash; The Three Recovery Techniques</div>
+        <table class="ra-table">
+          <tr><td>REDIRECT</td><td>Used when a valuable topic is emerging but not on the agenda. "That's important&mdash;can I park it so we can cover the time-sensitive item first?" Acknowledges the topic without surrendering the agenda.</td></tr>
+          <tr><td>PARKING LOT</td><td>A visible list of topics that emerged during the meeting but could not be addressed. Every item must leave the meeting with an owner and a follow-up date. A parking lot without owners is a graveyard.</td></tr>
+          <tr><td>TIME-CHECK</td><td>Used when the agenda and available time are out of alignment. "We have 8 minutes and two items&mdash;which must be decided today?" Returns the prioritization decision to the room.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">The parking lot only works if you review it before the meeting ends. Every item needs an owner and a date. "We will talk about it later" is not a parking lot&mdash;it is a polite way to let a topic die.</div></div>
+
+        <div class="ra-section-hdr">Section 3 &mdash; Post-Meeting Requirements</div>
+        <p class="ra-p">PROC3000 (Execution, Monitor, and Control) requires that meeting outcomes be documented and distributed within 24 hours. The minimum is three items:</p>
+        <table class="ra-table">
+          <tr><td>Decisions made</td><td>Each decision, who made it, and the date.</td></tr>
+          <tr><td>Actions assigned</td><td>Each action item, who owns it, and the due date. No action item without an owner. No owner without a date.</td></tr>
+          <tr><td>Parking lot disposition</td><td>Each parked item: owner, follow-up timeline, or formal disposition (deferred, reassigned, closed).</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 4 &mdash; What to Expect in Class</div>
+        <p class="ra-p">Class time: meeting recovery role play (two volunteers&mdash;come ready to volunteer), and Case File 09 (<em>The Meeting That Got Away</em>). The most useful practice is the uncomfortable version.</p>
+      </div>
+    </div>
+
+  </div><!-- end Day 2 -->
+
+  <!-- ======================================================= -->
+  <!-- DAY 3: L10 - L12 -->
+  <!-- ======================================================= -->
+  <div class="day-block">
+    <div class="day-label">Day 3 &mdash; Lessons 10 through 12</div>
+
+    <!-- L10 -->
+    <div class="ra-item" id="ra-L10">
+      <div class="ra-header" onclick="toggle('ra-L10')">
+        <div class="ra-meta">
+          <span class="ra-number">L10</span>
+          <span class="ra-title">Change Management</span>
+          <span class="ra-ref">PROC3010</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 3</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">This card covers PROC3010&mdash;what constitutes a change in USACE, how the approval chain works, and why verbal approvals are not approvals. Read it before class. Class time will be used to classify an ambiguous change scenario and work through the consequences of getting it wrong.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; What Constitutes a Change (PROC3010)</div>
+        <div class="ra-h2">The Definition</div>
+        <p class="ra-p">PROC3010 defines a change as any modification to the approved scope, schedule, or cost baseline that has not been formally authorized through the appropriate approval process. That includes changes initiated by the contractor, the sponsor, the PM, or anyone else.</p>
+        <table class="ra-table">
+          <tr><td>Scope change</td><td>Any modification to what is being delivered&mdash;specifications, materials, quantities, systems, spaces.</td></tr>
+          <tr><td>Schedule change</td><td>Any modification to the approved baseline schedule that affects milestones or contract delivery dates.</td></tr>
+          <tr><td>Cost change</td><td>Any modification that alters the approved budget or contract value.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">A change that seems small is still a change. A contractor substituting an "equivalent" material is proposing a change to the approved specification. Approving a substitute without documentation is approving a change without authorization.</div></div>
+        <div class="ra-h2">Scope Creep vs. Scope Clarification vs. Sponsor-Directed Change</div>
+        <table class="ra-table">
+          <tr><td>Scope creep</td><td>Informal additions, each appearing minor. No single addition triggers a formal process, but together they can represent 20% of original scope without authorization.</td></tr>
+          <tr><td>Scope clarification</td><td>Was always intended to be included&mdash;the documentation just did not make it explicit. Requires documentation, not formal change approval. But the documentation must happen.</td></tr>
+          <tr><td>Sponsor-directed change</td><td>The sponsor requests a modification. Still requires the formal change process regardless of who asked. Sponsors do not have unilateral authority to modify a contract.</td></tr>
+        </table>
+
+        <div class="ra-section-hdr">Section 2 &mdash; The Approval Chain</div>
+        <p class="ra-p">The PM does not approve changes&mdash;the PM identifies, documents, and routes them.</p>
+        <table class="ra-table">
+          <tr><td>Military Programs</td><td>The KO processes the contract modification. The PM identifies the need, documents it, and coordinates&mdash;but cannot authorize the modification.</td></tr>
+          <tr><td>Civil Works</td><td>Changes affecting the sponsor's cost-share obligations require additional process beyond the District. The sponsor is a party to the agreement, not just a stakeholder.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">Change approval routing varies by program type and district delegation. The table above describes the general doctrine. Before routing a change action, confirm the local change approval matrix with your DPM. Routing to the wrong authority does not stop the clock -- it restarts it.</div></div>
+        <div class="ra-h2">Verbal Approvals Are Not Approvals</div>
+        <p class="ra-p">If someone tells you verbally to proceed with a change, that is not an approval. It is a conversation. The PM's obligation is to confirm in writing within 24 hours: "Per our conversation this morning, we are proceeding with [X]. Please confirm." That email is the paper trail.</p>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">Verbal approvals feel efficient in the moment. They are expensive at closeout. Document every material decision. If it is important enough to act on, it is important enough to write down.</div></div>
+
+        <div class="ra-section-hdr">Section 3 &mdash; Contractor Substitutions</div>
+        <p class="ra-p">A contractor who proposes to substitute Material A with Material B is proposing a change to the specification. The word "equivalent" is the contractor's judgment. Equivalency determination is an engineering function. Until the design engineer reviews and accepts the substitute, it is not equivalent&mdash;it is proposed.</p>
+
+        <div class="ra-section-hdr">Section 4 &mdash; What to Expect in Class</div>
+        <p class="ra-p">Class time: vote on an ambiguous change scenario before the case file, Case File 10 (<em>The Wrong Shade of Gray</em>), and debrief comparing your vote to the outcome and doctrine. Come ready to take a position you might have to defend.</p>
+      </div>
+    </div>
+
+    <!-- L11 -->
+    <div class="ra-item" id="ra-L11">
+      <div class="ra-header" onclick="toggle('ra-L11')">
+        <div class="ra-meta">
+          <span class="ra-number">L11</span>
+          <span class="ra-title">Risk as Opportunity</span>
+          <span class="ra-ref">REF8007G &mdash; Opportunity Management</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 3</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">This card covers the opportunity side of REF8007G&mdash;how USACE doctrine treats favorable uncertainty, and the pre-action check that prevents opportunity capture from creating new risks. Read it before class. Class time will be used to run the pre-action check on a live scenario, not to explain the difference between a threat and an opportunity.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; Opportunity in USACE Risk Doctrine</div>
+        <p class="ra-p">Most teams read REF8007G as a threat management tool. REF8007G covers both sides: risks (unfavorable uncertainty) and opportunities (favorable uncertainty). An opportunity is an uncertain future event that, if it occurs, would have a positive effect on project scope, schedule, or cost.</p>
+        <div class="ra-h2">The Three Opportunity Response Strategies</div>
+        <table class="ra-table">
+          <tr><td>EXPLOIT</td><td>Make the opportunity certain. Eliminate the uncertainty by taking action now. Example: if an early material delivery creates a window to accelerate a subsequent activity, commit the crew before the window closes.</td></tr>
+          <tr><td>ENHANCE</td><td>Increase the probability or impact. Negotiate preferred delivery terms with a vendor to improve the likelihood of early arrival.</td></tr>
+          <tr><td>SHARE</td><td>Bring in a partner who can capture the opportunity more effectively. Bring in a specialty subcontractor who can accelerate work the prime cannot.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">The fourth option&mdash;ACCEPT&mdash;means logging the opportunity and taking no proactive action. Acceptable when the capture effort costs more than the benefit, or when the probability is too low to justify resource commitment.</div></div>
+
+        <div class="ra-section-hdr">Section 2 &mdash; The Pre-Action Check</div>
+        <p class="ra-p">Capturing an opportunity always consumes resources. Resources are always committed to something. Before redirecting a resource, the PM needs four answers:</p>
+        <table class="ra-table">
+          <tr><td>Question 1</td><td>What is this resource currently committed to? Has that commitment been checked&mdash;not assumed?</td></tr>
+          <tr><td>Question 2</td><td>What does the float represent? Float is not buffer. Consuming float to capture an opportunity eliminates the project's ability to absorb delay on that path.</td></tr>
+          <tr><td>Question 3</td><td>What else does this opportunity affect? If the chiller arrives early and the crew is redirected, does that affect the electrical rough-in sequence? The mechanical coordination meeting?</td></tr>
+          <tr><td>Question 4</td><td>If this opportunity disappears tomorrow, what do we lose? If the answer is "not much," the urgency is lower than it feels.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">Float is the amount of time an activity can be delayed without affecting the critical path. It belongs to the schedule logic, not to the PM. Consuming float to capture an opportunity means that if anything goes wrong on that path, there is no slack left to absorb it.</div></div>
+
+        <div class="ra-section-hdr">Section 3 &mdash; Logging Opportunities</div>
+        <p class="ra-p">Opportunities are logged in the same tool as threats&mdash;the Risk Register. The fields are identical. The only difference is the response strategies. Most projects have no entries on the opportunity side of the Register. That does not mean no opportunities exist&mdash;it means no one is looking for them.</p>
+
+        <div class="ra-section-hdr">Section 4 &mdash; What to Expect in Class</div>
+        <p class="ra-p">Class time: pre-action check exercise on the chiller early delivery scenario, and Case File 11 (<em>Two Faces of Risk</em>). Come ready to answer Question 3 specifically: "What else does this opportunity affect?" That is the question most teams skip.</p>
+      </div>
+    </div>
+
+    <!-- L12 -->
+    <div class="ra-item" id="ra-L12">
+      <div class="ra-header" onclick="toggle('ra-L12')">
+        <div class="ra-meta">
+          <span class="ra-number">L12</span>
+          <span class="ra-title">Prioritization</span>
+          <span class="ra-ref">Professional Judgment Framework</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 3</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">This card covers the Eisenhower Matrix and the professional decline. Read it before class. Class time will not be used to explain the four quadrants&mdash;that is what this card is for. Class time will be used to practice writing a professional decline and to work through the scenario where a reasonable request from a valued colleague puts the project at risk.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; The Eisenhower Matrix</div>
+        <div class="ra-h2">The Four Quadrants</div>
+        <table class="ra-table">
+          <tr><td>Q1 &mdash; Urgent + Important</td><td>Crises and deadline failures. The PM who lives in Q1 is reactive, not leading. Every Q1 crisis was a Q2 item that did not get done.</td></tr>
+          <tr><td>Q2 &mdash; Not Urgent + Important</td><td>Prevention, planning, relationship-building, skill development. This is where project health lives. Q2 work almost never has a deadline screaming at you&mdash;which is why it does not get done.</td></tr>
+          <tr><td>Q3 &mdash; Urgent + Not Important</td><td>Interruptions that feel important because they are urgent. Most "favors" land here. The urgency is real. The importance to your priorities is not.</td></tr>
+          <tr><td>Q4 &mdash; Not Urgent + Not Important</td><td>Distractions. Easy to identify and not the main problem.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">A PM who does not have time for Q2 will always have time for Q1, because Q1 is what Q2 becomes when it is ignored.</div></div>
+        <div class="ra-h2">The Favor Trap</div>
+        <p class="ra-p">A favor request from a valued colleague is almost always a Q3 item for the person receiving it. Saying yes to the favor feels like the relational thing to do. But saying yes to a Q3 item means saying no to something on your Q2 list. Not in the abstract&mdash;specifically. There is a risk review this afternoon that needs your attention. The favor competes with it directly.</p>
+
+        <div class="ra-section-hdr">Section 2 &mdash; The Professional Decline</div>
+        <div class="ra-h2">The Acknowledge-Explain-Redirect Structure</div>
+        <table class="ra-table">
+          <tr><td>ACKNOWLEDGE</td><td>Recognize the request and the relationship. "Raj, I appreciate you thinking of me for this." This confirms you heard the request and value the person.</td></tr>
+          <tr><td>EXPLAIN</td><td>Name the constraint, not the competing priority. "I have a risk review this afternoon that I cannot shortchange." Specific is credible. Vague explanations invite negotiation.</td></tr>
+          <tr><td>REDIRECT</td><td>Offer a genuine alternative if one exists. "Can we schedule 30 minutes next week when I can give this real attention?" If no alternative exists: "I hope you find the right reviewer."</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">A decline becomes unprofessional when it is vague ("I'm swamped"), delayed ("let me see what I can do"), or self-deprecating ("I'm not sure I'm the right person anyway"). A clear, specific, timely decline is more respectful than a vague maybe.</div></div>
+
+        <div class="ra-section-hdr">Section 3 &mdash; Prioritization and DPMAP</div>
+        <p class="ra-p">Lesson 12 is paired with Case File 12, which involves Raj making an informal request that puts Maria in the favor trap. The case file also revisits DPMAP -- the Defense Performance Management and Appraisal Program, the federal civilian performance appraisal system: the PM provides informal performance input to Raj's Resource Provider, and that input must be accurate and complete. A PM who cannot protect their own time also tends to underinvest in the relationship management work that performance input requires.</p>
+
+        <div class="ra-section-hdr">Section 4 &mdash; What to Expect in Class</div>
+        <p class="ra-p">Class time: individual writing of a two-sentence professional decline, table share on what made it hard, and Case File 12 (<em>The Favor</em>). Come with a real example in mind: a request you have said yes to in the past that you should have declined. What did it cost you?</p>
+      </div>
+    </div>
+
+  </div><!-- end Day 3 -->
+
+  <!-- ======================================================= -->
+  <!-- DAY 4: L13 -->
+  <!-- ======================================================= -->
+  <div class="day-block">
+    <div class="day-label">Day 4 &mdash; Lesson 13</div>
+
+    <!-- L13 -->
+    <div class="ra-item" id="ra-L13">
+      <div class="ra-header" onclick="toggle('ra-L13')">
+        <div class="ra-meta">
+          <span class="ra-number">L13</span>
+          <span class="ra-title">Closing the Project</span>
+          <span class="ra-ref">PROC4000 / AAR Doctrine</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="timing-badge">Before Day 4</span>
+          <span class="ra-chevron">&#9660;</span>
+        </div>
+      </div>
+      <div class="ra-body">
+        <div class="ra-lede">This card covers the PROC4000 closeout requirements and the four-question After Action Review structure. Read it before class. Class time will not be spent listing closeout deliverables or defining what an AAR is&mdash;that is what this card is for. Class time will be used to run a live AAR on the course itself.</div>
+
+        <div class="ra-section-hdr">Section 1 &mdash; PROC4000 Closeout Requirements</div>
+        <div class="ra-h2">What Must Be Completed Before the Project Closes</div>
+        <p class="ra-p">Closeout is not a formality. Each required deliverable exists because something goes wrong&mdash;legally, financially, or operationally&mdash;if it is not completed. A PM who leaves a project without completing closeout transfers the problem to the next PM, the next program, or the next user.</p>
+        <table class="ra-table">
+          <tr><td>Construction completion certification</td><td>Formal documentation that construction is complete and accepted. Required before final voucher processing.</td></tr>
+          <tr><td>As-built drawings</td><td>Must be accepted before final voucher. Document what was actually constructed, not what was designed. Future modifications and O&amp;M depend on them.</td></tr>
+          <tr><td>O&amp;M manuals</td><td>Operations and maintenance documentation handed to the facility manager. Without them, the facility may be misoperated or inadequately maintained.</td></tr>
+          <tr><td>DD1354 (Military Programs)</td><td>Transfers the facility from construction to the installation. Required for real property records.</td></tr>
+          <tr><td>Financial closeout</td><td>Reconciliation of all funds, obligations, and expenditures. Unliquidated obligations must be resolved.</td></tr>
+          <tr><td>Contractor performance evaluation</td><td>Required under the Federal Acquisition Regulation. Goes into CPARS and affects future source selections.</td></tr>
+        </table>
+        <div class="ra-h2">Civil Works Additions</div>
+        <table class="ra-table">
+          <tr><td>Sponsor handoff documentation</td><td>Formal transfer to the non-federal sponsor, including O&amp;M responsibilities and cost-share reconciliation.</td></tr>
+          <tr><td>Final cost-share reconciliation</td><td>Settlement of the sponsor's cost-share obligation. This is a financial instrument&mdash;errors create legal exposure.</td></tr>
+          <tr><td>Real estate instrument releases</td><td>Easements, licenses, and right-of-entry documents must be formally released when no longer needed.</td></tr>
+        </table>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">The most common closeout failure: the team disperses before closeout is complete. Build the closeout schedule before the end of construction&mdash;not after. The last month of construction is too late to start.</div></div>
+
+        <div class="ra-section-hdr">Section 2 &mdash; The After Action Review</div>
+        <div class="ra-h2">The Four Questions</div>
+        <p class="ra-p">The AAR is a structured debrief. It is not a critique session, a blame assignment, or a celebration. It is a method for extracting transferable lessons from a completed project while the people who know what happened are still in the room.</p>
+        <table class="ra-table">
+          <tr><td>Question 1</td><td>"What was supposed to happen?" Establishes the baseline. What did the plan, the schedule, the charter, and the team's shared expectations say would occur?</td></tr>
+          <tr><td>Question 2</td><td>"What actually happened?" Facts only. Not interpretations, not attributions. What can be documented?</td></tr>
+          <tr><td>Question 3</td><td>"Why was there a difference?" Process gap, resource constraint, communication failure, doctrinal misapplication, or external factor. Identify the actual cause.</td></tr>
+          <tr><td>Question 4</td><td>"What do we sustain&mdash;and what do we improve?" Sustain means continue doing this, intentionally, on the next project. Improve means make a specific change, with an owner and a timeframe.</td></tr>
+        </table>
+        <div class="ra-h2">AAR Principles</div>
+        <table class="ra-table">
+          <tr><td>Leader speaks last</td><td>If the PM or senior leader speaks first, the room hears what the acceptable answer is. They speak last, after everyone else has contributed.</td></tr>
+          <tr><td>Blame is not the point</td><td>The AAR is not a performance evaluation. Attributing a gap to an individual closes the conversation. Identifying the systemic cause opens it.</td></tr>
+          <tr><td>Specifics over generalities</td><td>"Communication was a problem" is not a lesson. "The scope change was verbally approved but not documented, and it caused a conflict at final inspection" is a lesson.</td></tr>
+          <tr><td>Every lesson needs an action, an owner, and a timeframe</td><td>Without all three, it is not a lesson&mdash;it is an observation. Observations do not change behavior on the next project.</td></tr>
+        </table>
+        <div class="ra-h2">What Makes a Lesson Transferable</div>
+        <p class="ra-p">"We should communicate better" is not transferable. "Flag workload conflicts to the DPM within 72 hours of identification, in writing, with the specific resource and the specific competing obligation" is transferable.</p>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">Where lessons go matters as much as how they are written. An AAR that stays in a project folder is not a lesson&mdash;it is a memory. Push the lesson where the next PM can find it: the district lessons-learned database, the new PM's onboarding package, and the next relevant PDT meeting.</div></div>
+
+        <div class="ra-section-hdr">Section 3 &mdash; What to Expect in Class</div>
+        <p class="ra-p">Class time: live AAR on Day 1 of this course (you are a participant, not an observer), table discussion on Maria's final 90 minutes with her PDT, and Case File 13 (<em>Closing Well</em>). The most useful thing you can bring is an honest answer to Question 3&mdash;why was there a difference between what was planned and what happened on Day 1 of this course. The instructors go last.</p>
+        <div class="ra-note"><div class="ra-note-tag">NOTE</div><div class="ra-note-text">Take brief notes during Day 1 -- specifically moments where the plan and reality diverged. You will be asked Question 2 ("What actually happened?") on Day 4. The AAR works better when your answer is based on specific recollection, not a general impression of how the day went.</div></div>
+
+        <div class="ra-section-hdr">Section 4 &mdash; What to Expect in Class</div>
+        <p class="ra-p">Class time: live AAR on this course (you are a participant), table discussion on Maria's final 90 minutes with her PDT, and Case File 13 (<em>Closing Well</em>). Come with an honest answer to Question 3 -- why was there a difference between what was planned and what actually happened during the course. The instructors go last.</p>
+      </div>
+    </div>
+
+  </div><!-- end Day 4 -->
+
+</div><!-- end page-wrap -->
+
+<script>
+function toggle(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('open');
+}
+function toggleTheme(){
+  const html=document.documentElement;
+  html.setAttribute('data-theme',html.getAttribute('data-theme')==='light'?'dark':'light');
+  try{localStorage.setItem('pw-theme',html.getAttribute('data-theme'))}catch(e){}
+}
+function cycleFont(){
+  const root=document.documentElement;
+  const cur=parseFloat(root.style.getPropertyValue('--font-scale')||'1');
+  const next=cur>=1.2?0.9:cur+0.15;
+  root.style.setProperty('--font-scale',next.toFixed(2));
+  try{localStorage.setItem('pw-font',next.toFixed(2))}catch(e){}
+}
+(function(){
+  try{
+    const t=localStorage.getItem('pw-theme');
+    if(t)document.documentElement.setAttribute('data-theme',t);
+    const f=localStorage.getItem('pw-font');
+    if(f)document.documentElement.style.setProperty('--font-scale',f);
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
