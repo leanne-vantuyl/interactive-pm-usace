@@ -42,6 +42,8 @@ body.light-mode .cqn-link:hover{background:#E8E4D9;}
 body.light-mode .cqn-link.current{background:#5A4010;color:#FFFFFF;border-color:#5A4010;}
 body.light-mode .case-badge{color:#111111;border-color:#5A4010;background:#E8E4D9;font-weight:700;}
 .theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;}
+.reset-btn{background:transparent;border:1px solid #8B1A1A;color:#E8A0A0;font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;display:none;}
+body.light-mode .reset-btn{background:#F8ECEC;border:2px solid #8B1A1A;color:#6B1B1B;font-weight:700;}
 body.light-mode .theme-toggle{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
 
 /* PROGRESS */
@@ -280,6 +282,7 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
     <div style="display:flex;align-items:center;gap:10px;">
       <span class="case-badge">PROC3010 &middot; Change Management</span>
       <button class="font-toggle" id="font-toggle" onclick="toggleFontSize()">Text: M</button>
+      <button class="reset-btn" id="reset-btn" onclick="restartCase()" title="Clear your progress and restart this case file">&#8635; Reset</button>
       <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
     </div>
   </div>
@@ -373,6 +376,7 @@ function goSection(s){CS.section=s;saveState();render();}
 function render(){
   var m=document.getElementById('main-content');
   document.getElementById('progress-bar-wrap').style.display=(CS.section==='welcome')?'none':'block';
+  var rb=document.getElementById('reset-btn');if(rb)rb.style.display=(CS.section==='welcome')?'none':'inline-block';
   if(CS.section==='welcome') m.innerHTML=renderWelcome();
   else if(CS.section==='training') m.innerHTML=renderTraining();
   else if(CS.section==='discussion') m.innerHTML=renderDiscussion();
