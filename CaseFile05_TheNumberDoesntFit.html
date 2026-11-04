@@ -716,15 +716,15 @@ var SB_URL='https://uvzgrrypvjuxmzytdyvs.supabase.co';
 var SB_KEY='sb_publishable_3un3K44EQlu3n_1W8TzhpA_laikZo6h';
 var CF_NUMBER='05';
 
-function postCFResponse(kcAnswerBools,kcScore){{
-  try{{
-    var p=getProfile()||{{}};
+function postCFResponse(kcAnswerBools,kcScore){
+  try{
+    var p=getProfile()||{};
     var sessionId=p.sessionId||genUUID();
-    if(!p.sessionId){{saveProfile(p.name,p.themes,p.cohortCode||'');}}
+    if(!p.sessionId){saveProfile(p.name,p.themes,p.cohortCode||'');}
     var decisions=[];
-    var dKeys=Object.keys(CS.decisions).sort(function(a,b){{return a-b;}});
-    dKeys.forEach(function(k){{decisions.push(CS.decisions[k]);}});
-    var payload={{
+    var dKeys=Object.keys(CS.decisions).sort(function(a,b){return a-b;});
+    dKeys.forEach(function(k){decisions.push(CS.decisions[k]);});
+    var payload={
       session_id:sessionId,
       cohort_code:p.cohortCode||'',
       cf_number:CF_NUMBER,
@@ -732,19 +732,19 @@ function postCFResponse(kcAnswerBools,kcScore){{
       kc_score:KC_QUESTIONS.length>0?kcScore/KC_QUESTIONS.length:0,
       kc_answers:kcAnswerBools,
       strength_theme:(p.themes&&p.themes[0]&&p.themes[0]!=='N/A')?p.themes[0]:''
-    }};
-    fetch(SB_URL+'/rest/v1/responses',{{
+    };
+    fetch(SB_URL+'/rest/v1/responses',{
       method:'POST',
-      headers:{{
+      headers:{
         'apikey':SB_KEY,
         'Authorization':'Bearer '+SB_KEY,
         'Content-Type':'application/json',
         'Prefer':'return=minimal'
-      }},
+      },
       body:JSON.stringify(payload)
-    }}).catch(function(){{}});
-  }}catch(e){{}}
-}}
+    }).catch(function(){});
+  }catch(e){}
+}
 
 // ===== KNOWLEDGE CHECK =====
 var KC_QUESTIONS=[
