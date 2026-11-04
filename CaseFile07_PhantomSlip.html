@@ -653,13 +653,25 @@ function renderCaseStudy(){
     +'<div class="scenario-box"><div class="scenario-label">Scenario Setup</div><div class="scenario-text">'+step.text+'</div></div>'
     +'<div class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()">Begin Decision 1 &rarr;</button></div>';
   } else if(step.type==='decision'){
+    var savedLetter=CS.decisions[CASE_STEP]||null;
+    var nextLabel=(CASE_STEP===3)?'Continue to Debrief →':'Continue →';
     html+='<div class="scenario-label" style="margin-bottom:6px;">'+step.label+'</div>'
     +'<div class="decision-prompt">'+step.prompt+'</div>'
     +'<div id="case-options">';
     step.options.forEach(function(opt){
-      html+='<div class="choice-option" onclick="chooseOption(\''+opt.letter+'\')"><span class="choice-letter">'+opt.letter+'.</span>'+opt.text+'</div>';
+      var isChosen=savedLetter===opt.letter;
+      var style=savedLetter?(isChosen?'opacity:1;border-color:var(--gold);':'opacity:.55;pointer-events:none;'):'';
+      html+='<div class="choice-option" onclick="chooseOption(\''+opt.letter+'\')" style="'+style+'"><span class="choice-letter">'+opt.letter+'.</span>'+opt.text+'</div>';
     });
-    html+='</div><div id="case-consequence"></div><div id="case-nav" class="nav-row" style="display:none;"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">Continue &rarr;</button></div>';
+    html+='</div>';
+    if(savedLetter){
+      var c=step.consequences[savedLetter];
+      html+='<div id="case-consequence"><div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+        +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div></div>'
+        +'<div id="case-nav" class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">'+nextLabel+'</button></div>';
+    } else {
+      html+='<div id="case-consequence"></div><div id="case-nav" class="nav-row" style="display:none;"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">Continue →</button></div>';
+    }
   } else if(step.type==='debrief'){
     html+='<h2 class="title-main" style="font-size:1.625rem;">Case Debrief</h2>'
     +'<div class="card people-card"><div class="card-label">What This Email Showed</div>'
