@@ -735,7 +735,8 @@ function postCFResponse(kcAnswerBools,kcScore){
       decisions:decisions,
       kc_score:KC_QUESTIONS.length>0?kcScore/KC_QUESTIONS.length:0,
       kc_answers:kcAnswerBools,
-      strength_theme:(p.themes&&p.themes[0]&&p.themes[0]!=='N/A')?p.themes[0]:''
+      strength_theme:(p.themes&&p.themes[0]&&p.themes[0]!=='N/A')?p.themes[0]:'',
+      strength_themes:p.themes||[]
     };
     fetch(SB_URL+'/rest/v1/responses',{
       method:'POST',

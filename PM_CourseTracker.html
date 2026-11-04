@@ -91,6 +91,29 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
 .status{font-size:.75rem;color:var(--gray-dk);text-align:right;margin-bottom:10px;}
 .status.live{color:var(--green);}
 @media(max-width:700px){.cf-grid{grid-template-columns:1fr;}.summary-row{grid-template-columns:repeat(2,1fr);}.prepost-grid{grid-template-columns:1fr;}}
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:4px;}
+.group-card{border:1px solid #E0E0D8;border-radius:4px;background:#fff;overflow:hidden;}
+.group-card-hdr{background:var(--dark);color:var(--white);padding:8px 12px;font-weight:700;font-size:.82rem;letter-spacing:.04em;display:flex;justify-content:space-between;align-items:center;}
+.group-card-hdr .domain-dots{display:flex;gap:5px;}
+.domain-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.d-ST{background:#5B8DB8;}
+.d-RB{background:#7BA05B;}
+.d-IN{background:#C8A84B;}
+.d-EX{background:#A05B5B;}
+.d-NA{background:#BBBBBB;}
+.group-member{padding:7px 12px;border-bottom:1px solid #F0F0E8;font-size:.82rem;display:flex;align-items:center;gap:8px;}
+.group-member:last-child{border-bottom:none;}
+.member-name{flex:1;color:#222;}
+.member-themes{font-size:.72rem;color:#666;line-height:1.4;}
+.member-theme-pill{display:inline-block;background:#F4F2EA;border:1px solid #DDD;border-radius:10px;padding:1px 7px;font-size:.68rem;margin:1px 2px 1px 0;}
+.member-theme-pill.d-ST{background:#EBF2F8;border-color:#B0C8DC;}
+.member-theme-pill.d-RB{background:#EEF4E9;border-color:#B0C8A0;}
+.member-theme-pill.d-IN{background:#FAF5E4;border-color:#DDD0A0;}
+.member-theme-pill.d-EX{background:#F8EEEE;border-color:#D0A0A0;}
+.group-diversity-bar{padding:6px 12px;background:#FAFAF8;font-size:.72rem;color:#888;display:flex;gap:6px;align-items:center;border-top:1px solid #EEE;}
+.div-label{font-weight:600;color:#555;}
+.groups-no-data{text-align:center;padding:30px;color:var(--gray-dk);font-size:.85rem;}
+.groups-no-data p{margin-top:8px;line-height:1.6;}
 </style>
 </head>
 <body>
@@ -111,6 +134,7 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
   <div class="tab active" onclick="showTab('decisions')">Decision Trends</div>
   <div class="tab" onclick="showTab('kc')">Knowledge Check</div>
   <div class="tab" onclick="showTab('prepost')">Pre / Post Test</div>
+  <div class="tab" onclick="showTab('groups')">Groups</div>
   <div class="tab" onclick="showTab('export')">Export &amp; Setup</div>
 </div>
 
@@ -139,6 +163,21 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
   <div id="tab-prepost" style="display:none">
     <div class="section-hdr">PRE-TEST / POST-TEST COMPARISON</div>
     <div id="prepost-content"><div class="loading">Select a cohort to load data.</div></div>
+  </div>
+
+  <div id="tab-groups" style="display:none">
+    <div class="section-hdr">LEARNING GROUPS -- STRENGTHS DIVERSITY</div>
+    <div id="groups-controls" style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <label style="font-size:.8rem;color:var(--gray-dk);">Group size:</label>
+      <select id="group-size" style="font-size:.8rem;padding:5px 8px;border:1px solid #DDD;border-radius:3px;" onchange="renderGroups()">
+        <option value="4">~4 per group</option>
+        <option value="5" selected>~5 per group</option>
+        <option value="6">~6 per group</option>
+      </select>
+      <button class="btn-navy" onclick="shuffleGroups()" style="font-size:.75rem;padding:6px 14px;">&#8635; Re-shuffle</button>
+      <button class="btn-gold" onclick="copyGroupsText()" style="font-size:.75rem;padding:6px 14px;">&#128203; Copy for Email</button>
+    </div>
+    <div id="groups-content"><div class="loading">Select a cohort to load data.</div></div>
   </div>
 
   <div id="tab-export" style="display:none">
@@ -322,6 +361,7 @@ function renderAll() {
   if (activeTab==='decisions') renderDecisions();
   else if (activeTab==='kc') renderKC();
   else if (activeTab==='prepost') renderPrePost();
+  else if (activeTab==='groups') { currentGroupAssignment = null; renderGroups(); }
 }
 
 function updateSummary() {
@@ -503,7 +543,7 @@ function renderPrePost() {
 }
 
 function renderEmpty() {
-  ['decisions-grid','kc-grid','prepost-content'].forEach(id => {
+  ['decisions-grid','kc-grid','prepost-content','groups-content'].forEach(id => {
     document.getElementById(id).innerHTML = '<div class="loading">Select a cohort to load data.</div>';
   });
 }
@@ -511,10 +551,174 @@ function renderEmpty() {
 // ── TABS ──────────────────────────────────────────────────────────────────────
 function showTab(name) {
   activeTab = name;
-  const names = ['decisions','kc','prepost','export'];
+  const names = ['decisions','kc','prepost','groups','export'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
   names.forEach(n=>document.getElementById('tab-'+n).style.display=n===name?'':'none');
   if (currentCohort && name!=='export') renderAll();
+}
+
+// ── GROUPS ────────────────────────────────────────────────────────────────────
+const DOMAIN_MAP = {
+  'Analytical':'ST','Context':'ST','Futuristic':'ST','Ideation':'ST','Input':'ST','Intellection':'ST','Learner':'ST','Strategic':'ST',
+  'Adaptability':'RB','Connectedness':'RB','Developer':'RB','Empathy':'RB','Harmony':'RB','Includer':'RB','Individualization':'RB','Positivity':'RB','Relator':'RB',
+  'Activator':'IN','Command':'IN','Communication':'IN','Competition':'IN','Maximizer':'IN','Self-Assurance':'IN','Significance':'IN','Woo':'IN',
+  'Achiever':'EX','Arranger':'EX','Belief':'EX','Consistency':'EX','Deliberative':'EX','Discipline':'EX','Focus':'EX','Responsibility':'EX','Restorative':'EX'
+};
+const DOMAIN_LABEL = {ST:'Strategic Thinking',RB:'Relationship Building',IN:'Influencing',EX:'Executing'};
+
+let currentGroupAssignment = null; // cached so re-render doesn't re-shuffle
+
+function getLearnersWithThemes() {
+  // Pull from REGISTRATION rows first; fall back to CF responses for learners with no reg row
+  const regRows = allResponses.filter(r => r.cf_number === 'REGISTRATION');
+  const cfRows  = allResponses.filter(r => r.cf_number !== 'REGISTRATION');
+
+  const bySession = {};
+
+  // Seed from reg rows (most complete)
+  regRows.forEach(r => {
+    if (!r.session_id) return;
+    const themes = Array.isArray(r.strength_themes) ? r.strength_themes.filter(t=>t&&t!=='N/A') : [];
+    bySession[r.session_id] = { name: r.learner_name||r.session_id, themes };
+  });
+
+  // Fill in anyone who skipped registration but completed CFs
+  cfRows.forEach(r => {
+    if (!r.session_id || bySession[r.session_id]) return;
+    const themes = Array.isArray(r.strength_themes) ? r.strength_themes.filter(t=>t&&t!=='N/A')
+                 : (r.strength_theme ? [r.strength_theme] : []);
+    bySession[r.session_id] = { name: r.learner_name||r.session_id, themes };
+  });
+
+  return Object.values(bySession);
+}
+
+function domainSet(themes) {
+  const s = new Set();
+  themes.forEach(t => { const d = DOMAIN_MAP[t]; if(d) s.add(d); });
+  return s;
+}
+
+function diversityScore(group) {
+  // 0-4: how many distinct domains are represented across all members' top-5
+  const all = group.flatMap(m => m.themes);
+  return domainSet(all).size;
+}
+
+function buildGroups(learners, targetSize) {
+  if (!learners.length) return [];
+  const shuffled = [...learners].sort(() => Math.random() - 0.5);
+  const n = shuffled.length;
+  const numGroups = Math.round(n / targetSize);
+  if (numGroups < 1) return [shuffled];
+
+  // Initialize empty groups
+  const groups = Array.from({length: numGroups}, () => []);
+
+  // Greedy assign: each learner goes to the group that gains the most diversity
+  shuffled.forEach(learner => {
+    let best = -1, bestScore = -1;
+    groups.forEach((g, i) => {
+      if (g.length >= targetSize + 1) return; // avoid runaway groups
+      const gain = diversityScore([...g, learner]) - diversityScore(g);
+      // Tie-break by smallest group size
+      if (gain > bestScore || (gain === bestScore && g.length < groups[best]?.length)) {
+        best = i; bestScore = gain;
+      }
+    });
+    if (best === -1) best = groups.reduce((mi,g,i) => g.length < groups[mi].length ? i : mi, 0);
+    groups[best].push(learner);
+  });
+
+  return groups.filter(g => g.length > 0);
+}
+
+function shuffleGroups() {
+  currentGroupAssignment = null; // force rebuild
+  renderGroups();
+}
+
+function renderGroups() {
+  const container = document.getElementById('groups-content');
+  const learners = getLearnersWithThemes();
+
+  if (!learners.length) {
+    container.innerHTML = '<div class="groups-no-data"><strong>No registrations found for this cohort.</strong><p>Once participants complete the registration screen, their names and CliftonStrengths themes will appear here and groups will be generated automatically.</p></div>';
+    return;
+  }
+
+  const targetSize = parseInt(document.getElementById('group-size').value) || 5;
+  if (!currentGroupAssignment) {
+    currentGroupAssignment = buildGroups(learners, targetSize);
+  }
+
+  let html = '<div class="groups-grid">';
+  currentGroupAssignment.forEach((group, gi) => {
+    const allThemes = group.flatMap(m => m.themes);
+    const domains = [...domainSet(allThemes)];
+    const dotsHtml = ['ST','RB','IN','EX'].map(d =>
+      `<span class="domain-dot d-${d}" title="${DOMAIN_LABEL[d]}" style="opacity:${domains.includes(d)?1:.2}"></span>`
+    ).join('');
+
+    html += `<div class="group-card">
+      <div class="group-card-hdr">
+        <span>Group ${gi+1} &middot; ${group.length} members</span>
+        <div class="domain-dots">${dotsHtml}</div>
+      </div>`;
+
+    group.forEach(m => {
+      const pillsHtml = m.themes.length
+        ? m.themes.map(t => {
+            const d = DOMAIN_MAP[t] || 'NA';
+            return `<span class="member-theme-pill d-${d}">${t}</span>`;
+          }).join('')
+        : '<span style="color:#aaa;font-size:.72rem;">No themes on file</span>';
+      html += `<div class="group-member">
+        <div>
+          <div class="member-name">${escHtml(m.name)}</div>
+          <div class="member-themes">${pillsHtml}</div>
+        </div>
+      </div>`;
+    });
+
+    const divScore = diversityScore(group);
+    const divText = ['ST','RB','IN','EX'].filter(d=>domains.includes(d)).map(d=>DOMAIN_LABEL[d]).join(' &middot; ');
+    html += `<div class="group-diversity-bar">
+      <span class="div-label">${divScore}/4 domains:</span>
+      <span>${divText||'None on file'}</span>
+    </div>`;
+    html += '</div>';
+  });
+
+  html += '</div>';
+  html += `<p style="font-size:.72rem;color:#999;margin-top:12px;">Groups built to maximize CliftonStrengths domain diversity. Click Re-shuffle for a different arrangement. ${learners.length} participants, ${currentGroupAssignment.length} groups.</p>`;
+  container.innerHTML = html;
+}
+
+function copyGroupsText() {
+  if (!currentGroupAssignment || !currentGroupAssignment.length) {
+    alert('Generate groups first by selecting a cohort.');
+    return;
+  }
+  let text = `Learning Groups -- ${currentCohort}\n${'='.repeat(40)}\n\n`;
+  currentGroupAssignment.forEach((group, gi) => {
+    text += `GROUP ${gi+1}\n`;
+    group.forEach(m => {
+      const themes = m.themes.length ? m.themes.join(', ') : 'No themes on file';
+      text += `  ${m.name} -- ${themes}\n`;
+    });
+    text += '\n';
+  });
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = orig; }, 1800);
+  }).catch(() => alert('Copy failed -- please select and copy the groups manually.'));
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 // ── EXPORT CSV ────────────────────────────────────────────────────────────────
