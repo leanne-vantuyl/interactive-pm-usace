@@ -71,15 +71,6 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
 .ref-link-title{font-family:'DM Serif Display',serif;font-size:0.9375rem;color:var(--white);margin-bottom:3px;}
 .ref-link-meta{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;}
 
-.cohort-card{border:1px solid var(--border-strong);padding:18px 20px;margin-bottom:28px;background:rgba(200,168,75,0.04);}
-.cohort-card .card-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
-.cohort-input-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.cohort-input{background:transparent;border:1px solid var(--border-strong);color:var(--white);font-family:'DM Mono',monospace;font-size:0.75rem;padding:9px 12px;width:200px;letter-spacing:.06em;text-transform:uppercase;}
-.cohort-input::placeholder{color:var(--gold-dim);text-transform:none;letter-spacing:0;}
-.cohort-btn{background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.08em;text-transform:uppercase;padding:9px 16px;cursor:pointer;}
-.cohort-btn:hover{border-color:var(--gold);color:var(--white);}
-.cohort-status{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--accent);letter-spacing:.08em;}
-.cohort-status.empty{color:var(--white-dim);}
 </style>
 </head>
 <body class="light-mode">
@@ -150,15 +141,6 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
       <div class="ref-link-meta">After Case File 13 &middot; Reflection</div>
     </a>
   </div>
-  <div class="cohort-card" id="cohort-card">
-    <div class="card-label">Your Cohort Code</div>
-    <div class="cohort-input-row">
-      <input class="cohort-input" id="cohort-input" type="text" maxlength="20" placeholder="e.g. NOV2024-WD" autocomplete="off" spellcheck="false"/>
-      <button class="cohort-btn" onclick="saveCohortCode()">Save Code</button>
-      <span class="cohort-status empty" id="cohort-status">Not set &mdash; enter before starting Case File 01</span>
-    </div>
-  </div>
-
   <div class="progress-wrap">
     <div class="progress-bar-outer"><div class="progress-bar-inner" id="overall-bar"></div></div>
     <div class="progress-summary" id="overall-text">Loading progress&hellip;</div>
@@ -282,25 +264,6 @@ function genUUID(){
     return v.toString(16);
   });
 }
-function saveCohortCode(){
-  var val=document.getElementById('cohort-input').value.trim().toUpperCase();
-  if(!val){document.getElementById('cohort-status').textContent='Please enter a cohort code.';document.getElementById('cohort-status').className='cohort-status empty';return;}
-  saveProfile({cohortCode:val});
-  document.getElementById('cohort-status').textContent='Saved: '+val;
-  document.getElementById('cohort-status').className='cohort-status';
-  document.getElementById('cohort-input').value=val;
-}
-(function initCohortCard(){
-  var p=getProfile();
-  var code=p&&p.cohortCode?p.cohortCode:'';
-  var input=document.getElementById('cohort-input');
-  var status=document.getElementById('cohort-status');
-  if(code){
-    input.value=code;
-    status.textContent='Saved: '+code;
-    status.className='cohort-status';
-  }
-})();
 
 function applyTheme(t){
   document.body.className = t;
