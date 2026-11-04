@@ -369,7 +369,11 @@ function renderDecisions() {
     const votes = [{},{},{}];
     cfResps.forEach(r => {
       const decs = r.decisions || [];
-      decs.forEach((choice,di) => { if(choice) votes[di][choice]=(votes[di][choice]||0)+1; });
+      decs.forEach((choice,di) => {
+        if(!choice) return;
+        const letter = typeof choice==='object'?choice.letter:choice;
+        if(letter) votes[di][letter]=(votes[di][letter]||0)+1;
+      });
     });
 
     const decisionsHTML = D_LABELS[ci].map((label,di) => {
@@ -410,13 +414,13 @@ function renderKC() {
 
   grid.innerHTML = CF_META.map(cf => {
     const cfResps = allResponses.filter(r=>r.cf_number===cf.num);
-    const correct=[0,0,0,0,0], totals=[0,0,0,0,0];
+    const correct=[0,0,0,0,0,0], totals=[0,0,0,0,0,0];
     cfResps.forEach(r => {
       const ans = r.kc_answers||[];
       ans.forEach((a,qi) => { if(a!==null&&a!==undefined){totals[qi]++;if(a===true||a===1)correct[qi]++;} });
     });
 
-    const kcHTML = [1,2,3,4,5].map((_,qi) => {
+    const kcHTML = [1,2,3,4,5,6].map((_,qi) => {
       const pct = totals[qi]?Math.round(correct[qi]/totals[qi]*100):0;
       const cls = pct>=80?'green':pct>=60?'amber':'red-bar';
       return `<div class="kc-row">
@@ -472,7 +476,7 @@ function renderPrePost() {
         const post = posts.find(t=>t.session_id===sid);
         const d = pre&&post?post.score-pre.score:null;
         return `<tr>
-          <td style="color:var(--gray-dk)">Participant ${i+1}</td>
+          <td style="color:var(--gray-dk)">${allResponses.find(r=>r.session_id===sid)?.learner_name||'Participant '+(i+1)}</td>
           <td>${pre?pre.score+'%':'--'}</td>
           <td>${post?post.score+'%':'--'}</td>
           <td class="${d!==null?(d>0?'dp':d<0?'dn':'d0'):'d0'}">${d!==null?(d>=0?'+':'')+d+'%':'--'}</td>
@@ -499,17 +503,19 @@ function showTab(name) {
 // ── EXPORT CSV ────────────────────────────────────────────────────────────────
 function exportCSV() {
   if (!currentCohort||!allResponses.length) { alert('No data to export.'); return; }
-  const rows=[['ParticipantID','Cohort','CaseFile','Decision1','Decision2','Decision3','KC1','KC2','KC3','KC4','KC5','KCScore','Pretest','Posttest']];
+  const rows=[['Name','Cohort','CaseFile','Decision1','Decision2','Decision3','KC1','KC2','KC3','KC4','KC5','KC6','KCScore','Pretest','Posttest']];
   const sessions=[...new Set(allResponses.map(r=>r.session_id))];
   sessions.forEach((sid,i) => {
     const myResps = allResponses.filter(r=>r.session_id===sid);
     const pre = allTestScores.find(t=>t.session_id===sid&&t.test_type==='pretest');
     const post = allTestScores.find(t=>t.session_id===sid&&t.test_type==='posttest');
+    const name = myResps[0]?.learner_name||`P${String(i+1).padStart(3,'0')}`;
     myResps.forEach(r => {
+      const decs = (r.decisions||[]).map(d=>typeof d==='object'?d.letter:d);
       rows.push([
-        `P${String(i+1).padStart(3,'0')}`, currentCohort, r.cf_number,
-        ...(r.decisions||['','','']),
-        ...(r.kc_answers||['','','','']).map(a=>a===true?'1':a===false?'0':''),
+        name, currentCohort, r.cf_number,
+        ...[decs[0]||'',decs[1]||'',decs[2]||''],
+        ...(r.kc_answers||[]).slice(0,6).map(a=>a===true?'1':a===false?'0':''),
         r.kc_score!=null?Math.round(r.kc_score*100)+'%':'',
         pre?pre.score+'%':'', post?post.score+'%':'',
       ]);
