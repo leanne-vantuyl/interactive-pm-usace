@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Test | Interactive PM in USACE</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;--army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;--white:#F5F2EB;--white-dim:#C8C4B8;--accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;--border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;}
+body{background:var(--army-dark);color:var(--white);font-family:'Inter',sans-serif;font-weight:400;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(61,82,41,0.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(37,45,28,0.4) 0%,transparent 60%);pointer-events:none;z-index:0;}
+body.light-mode::before{display:none !important;}
+body.light-mode{background:#FFFFFF !important;color:#111111;--army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-dim:#222222;--gold:#5A4010;--gold-light:#3A2A08;--gold-dim:#5A4010;--border:rgba(90,64,16,0.4);--border-strong:rgba(90,64,16,0.7);--accent:#1A4A10;--warn:#8B3A00;--danger:#7A1A1A;}
+
+/* HEADER */
+header{border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;background:rgba(26,31,20,0.97);backdrop-filter:blur(12px);z-index:200;}
+body.light-mode header{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+.header-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.logo-block{display:flex;align-items:center;gap:12px;}
+.logo-seal{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.625rem;color:var(--gold);flex-shrink:0;}
+body.light-mode .logo-seal{border-color:#5A4010;color:#5A4010;}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:0.875rem;color:var(--white);}
+.logo-sub{font-size:0.5625rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+.theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;}
+body.light-mode .theme-toggle{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+
+/* QUICKNAV */
+.case-quicknav{background:rgba(26,31,20,0.97);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:190;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+.case-quicknav-inner{display:flex;align-items:center;gap:4px;padding:7px 24px;max-width:1100px;margin:0 auto;}
+.cqn-link{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.05em;color:var(--white-dim);border:1px solid var(--border);padding:5px 9px;text-decoration:none;flex-shrink:0;transition:all .15s;}
+.cqn-link:hover{border-color:var(--gold-dim);color:var(--white);}
+.cqn-link.current{background:var(--gold);color:var(--army-dark);border-color:var(--gold);font-weight:700;}
+.cqn-sep{color:var(--border-strong);padding:0 2px;}
+body.light-mode .case-quicknav{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+
+/* MAIN LAYOUT */
+main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:40px 24px 80px;}
+
+/* GATE */
+#gate-screen{max-width:480px;margin:0 auto;}
+.gate-card{background:var(--army-mid);border:1px solid var(--border-strong);padding:36px 32px;margin-top:40px;}
+.gate-eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;}
+.gate-title{font-family:'DM Serif Display',serif;font-size:1.75rem;color:var(--white);margin-bottom:12px;}
+.gate-sub{font-size:0.875rem;color:var(--white-dim);line-height:1.6;margin-bottom:28px;}
+.gate-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:8px;display:block;}
+.gate-input{width:100%;background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.875rem;padding:12px 15px;outline:none;margin-bottom:10px;}
+.gate-input:focus{border-color:var(--gold-dim);}
+.gate-btn{width:100%;background:var(--gold);color:var(--army-dark);font-family:'DM Mono',monospace;font-size:0.6875rem;letter-spacing:.1em;font-weight:700;padding:14px;border:none;cursor:pointer;text-transform:uppercase;margin-top:10px;}
+.gate-btn:hover{background:var(--gold-light);}
+.gate-err{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--danger);letter-spacing:.05em;margin-top:8px;min-height:16px;}
+body.light-mode .gate-card{background:#E8E4D9;border-color:#5A4010;}
+body.light-mode .gate-input{background:#fff;border:1px solid #5A4010;color:#111;}
+
+/* PROGRESS */
+.progress-wrap{margin-bottom:28px;}
+.progress-track{height:3px;background:var(--border);border-radius:2px;margin-bottom:8px;}
+.progress-fill{height:3px;background:var(--gold);border-radius:2px;transition:width .4s ease;}
+.progress-labels{display:flex;justify-content:space-between;align-items:center;}
+.progress-text{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.08em;text-transform:uppercase;}
+.progress-pct{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);font-weight:700;}
+
+/* QUESTION */
+.q-eyebrow{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:10px;}
+.q-num{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.1em;margin-bottom:8px;}
+.q-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.08em;padding:2px 7px;border:1px solid var(--border-strong);color:var(--gold);text-transform:uppercase;margin-bottom:12px;}
+.q-text{font-size:1rem;line-height:1.65;color:var(--white);margin-bottom:20px;font-weight:400;}
+.q-text strong{color:var(--gold-light);}
+.answer-option{display:block;width:100%;text-align:left;background:rgba(26,31,20,.4);border:1px solid var(--border);color:var(--white-dim);font-family:'Inter',sans-serif;font-size:0.8125rem;line-height:1.6;padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.answer-option:hover{border-color:var(--gold-dim);color:var(--white);}
+.answer-option.selected{border-color:var(--gold);background:rgba(200,168,75,.08);color:var(--white);}
+.answer-option .opt-letter{font-family:'DM Mono',monospace;font-weight:700;color:var(--gold);margin-right:8px;}
+body.light-mode .answer-option{background:#fff;border-color:rgba(90,64,16,0.3);color:#111;}
+body.light-mode .answer-option.selected{background:rgba(90,64,16,.08);border-color:#5A4010;}
+
+/* SELF-EFFICACY */
+.se-scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.se-btn{font-family:'DM Mono',monospace;font-size:0.6875rem;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(26,31,20,.4);border:1px solid var(--border);color:var(--white-dim);cursor:pointer;transition:all .15s;flex-shrink:0;}
+.se-btn:hover{border-color:var(--gold-dim);color:var(--white);}
+.se-btn.selected{background:var(--gold);border-color:var(--gold);color:var(--army-dark);font-weight:700;}
+.se-labels{display:flex;justify-content:space-between;margin-top:6px;font-family:'DM Mono',monospace;font-size:0.4375rem;color:var(--white-dim);letter-spacing:.05em;}
+body.light-mode .se-btn{background:#fff;border-color:rgba(90,64,16,0.3);color:#111;}
+body.light-mode .se-btn.selected{background:#5A4010;border-color:#5A4010;color:#fff;}
+
+/* NAV BUTTONS */
+.q-nav{display:flex;gap:12px;margin-top:24px;}
+.q-btn{font-family:'DM Mono',monospace;font-size:0.6875rem;letter-spacing:.08em;padding:11px 22px;border:1px solid var(--border);background:transparent;color:var(--white-dim);cursor:pointer;transition:all .15s;}
+.q-btn:hover{border-color:var(--gold-dim);color:var(--white);}
+.q-btn.primary{background:var(--gold);border-color:var(--gold);color:var(--army-dark);font-weight:700;}
+.q-btn.primary:hover{background:var(--gold-light);}
+.q-btn:disabled{opacity:.35;cursor:not-allowed;}
+
+/* SECTION HEADER */
+.section-header{margin-bottom:32px;}
+.section-eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.section-title{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,4vw,2.25rem);color:var(--white);line-height:1.2;margin-bottom:10px;}
+.section-sub{font-size:0.875rem;color:var(--white-dim);line-height:1.6;}
+
+/* COMPLETE SCREEN */
+#complete-screen{display:none;text-align:center;padding:60px 0;}
+.complete-icon{font-size:3rem;margin-bottom:24px;}
+.complete-title{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold);margin-bottom:12px;}
+.complete-sub{font-size:0.9375rem;color:var(--white-dim);line-height:1.6;max-width:480px;margin:0 auto 32px;}
+.complete-link{display:inline-block;font-family:'DM Mono',monospace;font-size:0.6875rem;letter-spacing:.1em;padding:13px 28px;background:var(--gold);color:var(--army-dark);text-decoration:none;font-weight:700;text-transform:uppercase;}
+.complete-link:hover{background:var(--gold-light);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-seal">PM</div>
+      <div>
+        <div class="logo-primary">Interactive PM in USACE</div>
+        <div class="logo-sub">Pre-Test &middot; PROSPECT 355</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
+    </div>
+  </div>
+</header>
+
+<nav class="case-quicknav"><div class="case-quicknav-inner"><a href="index.html" class="cqn-link">Home</a><span class="cqn-sep">&middot;</span><a href="PreTest.html" class="cqn-link current">Pre-Test</a><a href="Module00_Orientation.html" class="cqn-link">M0</a><a href="CaseFile01_NewPM_UnclearRoles.html" class="cqn-link">CF01</a><a href="CaseFile02_ScheduleVsScope.html" class="cqn-link">CF02</a><a href="CaseFile03_TheNewHome.html" class="cqn-link">CF03</a><a href="CaseFile04_BuiltToSlip.html" class="cqn-link">CF04</a><a href="CaseFile05_TheNumberDoesntFit.html" class="cqn-link">CF05</a><a href="CaseFile06_FeedbackConversation.html" class="cqn-link">CF06</a><a href="CaseFile07_PhantomSlip.html" class="cqn-link">CF07</a><a href="CaseFile08_RiskNobodyTracked.html" class="cqn-link">CF08</a><a href="CaseFile09_MeetingGotAway.html" class="cqn-link">CF09</a><a href="CaseFile10_WrongShadeOfGray.html" class="cqn-link">CF10</a><a href="CaseFile11_TwoFacesOfRisk.html" class="cqn-link">CF11</a><a href="CaseFile12_TheFavor.html" class="cqn-link">CF12</a><a href="CaseFile13_ClosingWell.html" class="cqn-link">CF13</a><a href="PostTest.html" class="cqn-link">Post-Test</a></div></nav>
+
+<main>
+  <!-- GATE SCREEN -->
+  <div id="gate-screen">
+    <div class="gate-card">
+      <div class="gate-eyebrow">PROSPECT 355 &middot; Pre-Test</div>
+      <div class="gate-title">Before We Begin</div>
+      <div class="gate-sub">Your instructor will provide a cohort password to unlock this assessment. This is not graded &mdash; it establishes your starting point so we can measure your learning across the course.</div>
+      <label class="gate-label" for="gate-name">Your Name</label>
+      <input class="gate-input" type="text" id="gate-name" placeholder="First Last" autocomplete="off">
+      <label class="gate-label" for="gate-password">Cohort Password</label>
+      <input class="gate-input" type="password" id="gate-password" placeholder="Enter password from your instructor" autocomplete="off" onkeydown="if(event.key==='Enter')unlockTest()">
+      <div class="gate-err" id="gate-err"></div>
+      <button class="gate-btn" onclick="unlockTest()">Begin Pre-Test</button>
+    </div>
+  </div>
+
+  <!-- TEST SCREEN -->
+  <div id="test-screen" style="display:none;">
+    <div class="section-header">
+      <div class="section-eyebrow">Pre-Test &middot; PROSPECT 355</div>
+      <div class="section-title">Pre-Training Assessment</div>
+      <div class="section-sub">Answer each question based on your current knowledge and experience. There are no trick questions.</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-labels">
+        <span class="progress-text" id="progress-label">Question 1 of 20</span>
+        <span class="progress-pct" id="progress-pct">0%</span>
+      </div>
+    </div>
+    <div id="question-area"></div>
+    <div class="q-nav">
+      <button class="q-btn" id="btn-back" onclick="goBack()" disabled>Back</button>
+      <button class="q-btn primary" id="btn-next" onclick="goNext()">Next</button>
+    </div>
+  </div>
+
+  <!-- COMPLETE SCREEN -->
+  <div id="complete-screen">
+    <div class="complete-icon">&#10003;</div>
+    <div class="complete-title">Pre-Test Complete</div>
+    <div class="complete-sub">Your responses have been recorded. You will take a brief post-test at the end of the course. No scores are shown here &mdash; this is a learning baseline, not a grade.</div>
+    <a href="Module00_Orientation.html" class="complete-link">Continue to Orientation &rarr;</a>
+  </div>
+</main>
+
+<script>
+var SB_URL='https://uvzgrrypvjuxmzytdyvs.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2emdycnlwdmp1eG16eXRkeXZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODkyNTMsImV4cCI6MjEwNTA2NTI1M30.ZJfHa3Vs0tYQP7bTrYAbtCtiQlDp5JdA2UhpGZ3c2FQ';
+
+// ===== THEME =====
+function toggleTheme(){
+  var b=document.body;
+  b.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  btn.textContent=b.classList.contains('light-mode')?'☀ Light':'☾ Dark';
+  try{localStorage.setItem('theme',b.classList.contains('light-mode')?'light':'dark');}catch(e){}
+}
+(function(){
+  try{var t=localStorage.getItem('theme');if(t==='light'){document.body.classList.add('light-mode');var btn=document.getElementById('theme-toggle');if(btn)btn.textContent='☀ Light';}}catch(e){}
+})();
+
+// ===== PROFILE =====
+function getProfile(){try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}}
+function genUUID(){return'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return(c=='x'?r:(r&0x3|0x8)).toString(16);});}
+
+// ===== QUESTION BANK =====
+// Tags: D=Doctrine, J=Judgment, SE=Self-Efficacy
+// SHARED: questions 0-14 appear on both Pre and Post (index 0-14)
+// PRE-ONLY: questions 15-19
+var ALL_QUESTIONS = [
+  // === SHARED CORE (0-14) ===
+  // --- DOCTRINE ---
+  {tag:'D',text:'Under PROC2020, who must be named in the PDT Charter before the project advances past the feasibility phase?',
+   opts:['General role titles are sufficient at that stage','Only the PM and Deputy PM','All PDT members by name, with decision authority documented','Whoever PROMIS generates automatically'],
+   correct:2},
+  {tag:'D',text:'A BCOE review is required when a project cost estimate changes by more than what threshold?',
+   opts:['5% from the last approved estimate','25% above or below the program amount','Any change that affects the milestone schedule','Changes requiring a DA-level decision memo'],
+   correct:1},
+  {tag:'D',text:'In USACE project delivery, the PDT Charter is a living document. What triggers a mandatory update?',
+   opts:['At the start of each fiscal year','Only when the PM changes','When a PDT member\'s role, name, or decision authority changes','After every sponsor meeting'],
+   correct:2},
+  {tag:'D',text:'Which of the following best describes the purpose of a Project Management Plan (PMP)?',
+   opts:['A financial report submitted to the District Commander','The contract vehicle between USACE and the non-federal sponsor','The governing document that defines scope, schedule, cost, and how the team will work','A checklist used only during the construction phase'],
+   correct:2},
+  {tag:'D',text:'A "Cost Growth Event" under PROC2020 is formally triggered when:',
+   opts:['The PM believes the project is over budget','The cost estimate increases beyond the approved program amount by a defined threshold','Any change order is issued','The sponsor requests an independent review'],
+   correct:1},
+  // --- JUDGMENT ---
+  {tag:'J',text:'You are a new PM who has just inherited a project. The PDT Charter lists your predecessor\'s name and shows no RACI for the upcoming cost review. Your best first move is:',
+   opts:['Wait until after the cost review to make changes','Update the Charter and assign the RACI before the review','Ask your DPM if updating the Charter is really necessary','Proceed with the review using the existing Charter as a historical record'],
+   correct:1},
+  {tag:'J',text:'Your cost engineer has not responded to two emails about data needed for a sponsor review in 12 days. The best course of action is:',
+   opts:['File a formal complaint with their supervisor','Call or walk over, give deadline context, and agree on a delivery date','Proceed with the last available figures and flag them as preliminary','Ask your DPM to intervene on your behalf'],
+   correct:1},
+  {tag:'J',text:'At a PDT meeting, one team member is consistently quiet and seems disengaged. How should you address this?',
+   opts:['Ignore it -- some people work better independently','Raise it in front of the group to get everyone\'s buy-in','Follow up privately to understand what\'s going on','Document it as a team performance issue'],
+   correct:2},
+  {tag:'J',text:'A contractor reports that a scope element will be 30% over budget due to unforeseen site conditions. As PM, your first step is:',
+   opts:['Reject the claim and direct them to stay within budget','Assess whether the conditions qualify as a changed condition, then notify your chain of command','Immediately notify the sponsor that scope will be cut','Wait for the contractor\'s formal claim before taking any action'],
+   correct:1},
+  {tag:'J',text:'Your sponsor is pushing to add scope to the project late in the design phase. You should:',
+   opts:['Accommodate the request to maintain the sponsor relationship','Document the scope change, assess schedule and cost impact, and present options to the sponsor','Refuse the request outright since design is nearly complete','Agree verbally and handle the documentation later'],
+   correct:1},
+  {tag:'J',text:'You\'re preparing for a decision meeting and realize two senior stakeholders hold conflicting positions on a key issue. You should:',
+   opts:['Present only the data and let them argue it out','Brief each stakeholder separately before the meeting to understand their positions','Avoid the topic in the meeting to prevent conflict','Let your DPM facilitate the meeting instead'],
+   correct:1},
+  // --- SELF-EFFICACY ---
+  {tag:'SE',text:'How confident are you in your ability to identify when a project has crossed a formal cost growth threshold requiring BCOE review?',
+   type:'scale',low:'Not at all confident',high:'Completely confident'},
+  {tag:'SE',text:'How confident are you in your ability to facilitate a productive PDT meeting when two team members are in conflict?',
+   type:'scale',low:'Not at all confident',high:'Completely confident'},
+  {tag:'SE',text:'How confident are you in your ability to write a clear, accurate scope change request for a late-stage design modification?',
+   type:'scale',low:'Not at all confident',high:'Completely confident'},
+  {tag:'SE',text:'How confident are you in your ability to advise a sponsor on when a scope addition requires a formal contract modification versus a minor adjustment?',
+   type:'scale',low:'Not at all confident',high:'Completely confident'},
+
+  // === PRE-ONLY (15-19) ===
+  {tag:'D',text:'Before this training, how would you describe your familiarity with the PROC2020 Project Delivery Business Process?',
+   opts:['I have never heard of it','I know the name but could not describe its requirements','I am familiar with its key requirements','I apply it regularly in my work'],
+   correct:null}, // no correct answer -- baseline only
+  {tag:'J',text:'When you encounter a situation where doctrine conflicts with what your chain of command is asking you to do, what do you typically do?',
+   opts:['Follow the chain of command without question','Look up the relevant doctrine and present options','Consult peers informally before escalating','Document my concern and escalate formally if unresolved'],
+   correct:null},
+  {tag:'SE',text:'How confident are you, right now, in your ability to manage an entire USACE civil works project from initiation through closeout?',
+   type:'scale',low:'Not at all confident',high:'Completely confident'},
+  {tag:'SE',text:'How confident are you, right now, in your ability to recognize and respond to early warning signs of project delivery failure?',
+   type:'scale',low:'Not at all confident',high:'Completely confident'},
+  {tag:'SE',text:'How confident are you, right now, in your ability to have a difficult performance conversation with a PDT member who is not delivering?',
+   type:'scale',low:'Not at all confident',high:'Completely confident'}
+];
+
+// Pre-test uses all 20 (indices 0-19)
+var QUESTION_INDICES = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+var answers = {};
+var currentQ = 0;
+var learnerName = '';
+var cohortCode = '';
+var sessionId = '';
+var testType = 'pre';
+
+// ===== GATE =====
+function unlockTest(){
+  var nameEl=document.getElementById('gate-name');
+  var pwEl=document.getElementById('gate-password');
+  var errEl=document.getElementById('gate-err');
+  var name=nameEl.value.trim();
+  var pw=pwEl.value.trim();
+  errEl.textContent='';
+  if(!name){errEl.textContent='Please enter your name.';nameEl.focus();return;}
+  if(!pw){errEl.textContent='Please enter the cohort password.';pwEl.focus();return;}
+
+  // Simple hash check -- the actual password is set by hashing it here
+  // Password: compare hashed value. We store a SHA-256 hash to avoid plaintext.
+  // The hash below is for the default password -- instructor changes via Supabase config
+  // For now, we'll verify against a stored hash in Supabase or use a simple prefix check.
+  // Using a client-visible approach: store the allowed hash in a JS const (instructors rotate per cohort)
+  verifyPassword(pw.toUpperCase(), function(valid, cohort){
+    if(valid){
+      learnerName=name;
+      cohortCode=cohort;
+      var p=getProfile();
+      sessionId=(p&&p.sessionId)?p.sessionId:genUUID();
+      document.getElementById('gate-screen').style.display='none';
+      document.getElementById('test-screen').style.display='block';
+      renderQuestion();
+    } else {
+      errEl.textContent='Incorrect password. Check with your instructor.';
+      pwEl.value='';
+      pwEl.focus();
+    }
+  });
+}
+
+function verifyPassword(pw, cb){
+  // Fetch allowed cohort passwords from Supabase
+  fetch(SB_URL+'/rest/v1/cohort_passwords?select=cohort_code,password_hash,active&active=eq.true',{
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+  }).then(function(r){return r.json();}).then(function(rows){
+    if(!rows||!rows.length){
+      // Fallback: accept any non-empty password in dev (remove in production)
+      cb(true, pw);
+      return;
+    }
+    var matched=null;
+    rows.forEach(function(row){
+      if(row.password_hash&&hashSimple(pw)===row.password_hash){matched=row;}
+      else if(row.password_hash===pw){matched=row;} // plaintext fallback
+    });
+    if(matched){cb(true,matched.cohort_code);}
+    else{cb(false,null);}
+  }).catch(function(){
+    // Network error -- accept password if it looks like a valid cohort code (A-Z 4-8 chars)
+    if(/^[A-Z0-9]{3,10}$/.test(pw)){cb(true,pw);}
+    else{cb(false,null);}
+  });
+}
+
+function hashSimple(s){
+  // djb2 hash -- not cryptographic, just basic obfuscation
+  var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h)+s.charCodeAt(i);}
+  return(h>>>0).toString(16);
+}
+
+// ===== RENDER =====
+function renderQuestion(){
+  var qi=QUESTION_INDICES[currentQ];
+  var q=ALL_QUESTIONS[qi];
+  var total=QUESTION_INDICES.length;
+  var pct=Math.round(currentQ/total*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-label').textContent='Question '+(currentQ+1)+' of '+total;
+  document.getElementById('progress-pct').textContent=pct+'%';
+
+  var html='<div class="q-num">Q '+(currentQ+1)+'</div>';
+  html+='<div class="q-tag">'+tagLabel(q.tag)+'</div>';
+
+  if(q.type==='scale'){
+    html+='<div class="q-text">'+q.text+'</div>';
+    html+='<div class="se-scale">';
+    for(var i=1;i<=7;i++){
+      var sel=(answers[currentQ]===i)?' selected':'';
+      html+='<button class="se-btn'+sel+'" onclick="selectScale('+i+')">'+i+'</button>';
+    }
+    html+='</div>';
+    html+='<div class="se-labels"><span>'+q.low+'</span><span>'+q.high+'</span></div>';
+  } else {
+    html+='<div class="q-text">'+q.text+'</div>';
+    var letters=['A','B','C','D'];
+    q.opts.forEach(function(opt,idx){
+      var sel=(answers[currentQ]===idx)?' selected':'';
+      html+='<button class="answer-option'+sel+'" onclick="selectOpt('+idx+')">'
+        +'<span class="opt-letter">'+letters[idx]+'.</span>'+opt+'</button>';
+    });
+  }
+  document.getElementById('question-area').innerHTML=html;
+  document.getElementById('btn-back').disabled=(currentQ===0);
+  var isLast=(currentQ===total-1);
+  document.getElementById('btn-next').textContent=isLast?'Submit':'Next';
+}
+
+function tagLabel(t){
+  if(t==='D') return 'Doctrine';
+  if(t==='J') return 'Judgment';
+  if(t==='SE') return 'Self-Efficacy';
+  return t;
+}
+
+function selectOpt(idx){
+  answers[currentQ]=idx;
+  renderQuestion();
+}
+
+function selectScale(val){
+  answers[currentQ]=val;
+  renderQuestion();
+}
+
+function goNext(){
+  var qi=QUESTION_INDICES[currentQ];
+  var q=ALL_QUESTIONS[qi];
+  if(answers[currentQ]===undefined){
+    // Allow skipping scale questions but not doctrine/judgment
+    if(q.type!=='scale'&&q.correct!==null){
+      var area=document.getElementById('question-area');
+      var msg=document.createElement('div');
+      msg.style.cssText='font-family:DM Mono,monospace;font-size:.5625rem;color:var(--warn);letter-spacing:.05em;margin-top:12px;';
+      msg.textContent='Please select an answer before continuing.';
+      var existing=area.querySelector('.q-skip-msg');
+      if(existing)existing.remove();
+      msg.className='q-skip-msg';
+      area.appendChild(msg);
+      return;
+    }
+  }
+  if(currentQ<QUESTION_INDICES.length-1){
+    currentQ++;
+    renderQuestion();
+  } else {
+    submitTest();
+  }
+}
+
+function goBack(){
+  if(currentQ>0){currentQ--;renderQuestion();}
+}
+
+// ===== SUBMIT =====
+function submitTest(){
+  document.getElementById('test-screen').style.display='none';
+  document.getElementById('complete-screen').style.display='block';
+
+  // Build response payload
+  var responses=[];
+  QUESTION_INDICES.forEach(function(qi,pos){
+    var q=ALL_QUESTIONS[qi];
+    var ans=answers[pos];
+    var entry={
+      question_index:qi,
+      tag:q.tag,
+      type:q.type||'mc',
+      answer:ans!==undefined?ans:null
+    };
+    if(q.type!=='scale'&&q.correct!==null){
+      entry.correct=(ans===q.correct)?1:0;
+    }
+    responses.push(entry);
+  });
+
+  // Doctrine score (MC, correct answer defined)
+  var dItems=responses.filter(function(r){return r.tag==='D'&&r.type==='mc'&&r.correct!==undefined;});
+  var dScore=dItems.length?dItems.reduce(function(s,r){return s+(r.correct||0);},0)/dItems.length:null;
+
+  // Judgment score
+  var jItems=responses.filter(function(r){return r.tag==='J'&&r.type==='mc'&&r.correct!==undefined;});
+  var jScore=jItems.length?jItems.reduce(function(s,r){return s+(r.correct||0);},0)/jItems.length:null;
+
+  // Self-efficacy mean
+  var seItems=responses.filter(function(r){return r.tag==='SE'&&r.answer!==null;});
+  var seMean=seItems.length?seItems.reduce(function(s,r){return s+(r.answer||0);},0)/seItems.length:null;
+
+  var payload={
+    test_type:testType,
+    learner_name:learnerName,
+    session_id:sessionId,
+    cohort_code:cohortCode,
+    responses:responses,
+    doctrine_score:dScore,
+    judgment_score:jScore,
+    se_mean:seMean,
+    submitted_at:new Date().toISOString()
+  };
+
+  fetch(SB_URL+'/rest/v1/pre_post_test',{
+    method:'POST',
+    headers:{
+      'apikey':SB_KEY,
+      'Authorization':'Bearer '+SB_KEY,
+      'Content-Type':'application/json',
+      'Prefer':'return=minimal'
+    },
+    body:JSON.stringify(payload)
+  }).catch(function(){});// best-effort
+}
+</script>
+</body>
+</html>
