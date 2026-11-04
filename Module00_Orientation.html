@@ -215,6 +215,11 @@ body.light-mode .kc-explain strong{color:#5A4010;}
 body.light-mode .kc-feedback.pass{background:#D8F0D8;border:2px solid #1A4A10;color:#0A3A0A;font-weight:600;font-size:0.875rem;}
 .kc-feedback.fail{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);color:#E07C73;}
 body.light-mode .kc-feedback.fail{background:#F8D8D8;border:2px solid #7A1A1A;color:#5A0A0A;font-weight:600;font-size:0.875rem;}
+.vignette-feedback{display:none;margin-top:10px;padding:12px 14px;border-left:3px solid var(--gold-dim);background:rgba(200,168,75,.06);font-size:0.78rem;line-height:1.75;color:var(--white-dim);}
+.vignette-feedback.show{display:block;}
+body.light-mode .vignette-feedback{background:#FFFDF0;border-left:4px solid #8B6010;color:#333;}
+.vignette-feedback-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:6px;}
+body.light-mode .vignette-feedback-label{color:#8B6010;font-weight:700;}
 .kc-score{font-family:'DM Mono',monospace;font-size:1.375rem;font-weight:700;margin-bottom:4px;}
 .kc-score.pass{color:var(--accent);}
 body.light-mode .kc-score.pass{color:#1A4A10;}
@@ -396,11 +401,31 @@ body.light-mode .selected .answer-radio{border-color:#5A4010;background:#5A4010;
 </footer>
 <script>
 var VIGNETTES=[
-  {id:'v1',prompt:'Five minutes before your PDT meeting starts, the Chief of Engineering &amp; Construction stops by and asks for a quick update on a contract-award deadline -- something that isn\'t on today\'s agenda.',options:['Give the Chief a few minutes now, even if the PDT meeting starts late.','Briefly acknowledge the Chief, say you\'ll follow up right after the meeting, and start the PDT meeting on time.','Ask someone else on the team to brief the Chief while you start the meeting.','Send a quick message to the PDT that the meeting will start a few minutes late, and give the Chief your attention.']},
-  {id:'v2',prompt:'A friend who manages a different team asks you, informally, how one of their employees -- currently on your project team -- has been doing, ahead of that employee\'s upcoming performance appraisal.',options:['Share your honest impressions right away, since it\'s a quick favor for a friend.','Let your friend know you\'re happy to help, and follow up with specific, complete input once you have a moment to think it through.','Tell your friend you\'d rather not comment, to avoid any appearance of bias.','Suggest your friend ask someone else on the team instead.']},
-  {id:'v3',prompt:'The design team made an error that will require rework. The customer wants to discuss who will cover the additional cost.',options:['Have the discussion as soon as the customer raises it, even before you\'ve confirmed the cost impact internally.','Acknowledge the issue with the customer right away, and set up a follow-up conversation once you have the cost details.','Let the design team lead handle the conversation with the customer directly, since it was their error.','Wait until the cost impact is fully resolved before saying anything to the customer.']},
-  {id:'v4',prompt:'Your technical lead wants to schedule a brainstorming session about a potential deficiency in a levee floodwall -- nothing urgent yet, but worth exploring.',options:['Schedule it this week, ahead of other planned work.','Add it to the calendar a few weeks out, once the team has more capacity.','Ask the technical lead to gather a bit more information first, then revisit scheduling.','Suggest it wait until the next regularly scheduled PDT meeting.']},
-  {id:'v5',prompt:'Your calendar is fully booked today with back-to-back meetings. Midway through the morning, you get a call: your child is sick at school and needs to be picked up.',options:['Step out to handle it, and have someone else cover or reschedule your meetings.','Finish your current meeting, then immediately rearrange the rest of the day.','Ask a family member or backup contact to help if possible, and continue your day as planned.','Wait until a natural break in your schedule before responding.']},
+  {id:'v1',
+   prompt:'Five minutes before your PDT meeting starts, the Chief of Engineering &amp; Construction stops by and asks for a quick update on a contract-award deadline -- something that isn\'t on today\'s agenda.',
+   options:['Give the Chief a few minutes now, even if the PDT meeting starts late.','Briefly acknowledge the Chief, say you\'ll follow up right after the meeting, and start the PDT meeting on time.','Ask someone else on the team to brief the Chief while you start the meeting.','Send a quick message to the PDT that the meeting will start a few minutes late, and give the Chief your attention.'],
+   feedback:['This protects the relationship with leadership, and that matters. The cost is a signal to your PDT that outside interruptions can move the schedule -- worth watching over time.','You\'re managing up and protecting your team\'s time at once. The follow-up has to actually happen and be timely, or the trust you just built starts to erode.','Delegating the brief can work if someone on the team has the full picture. If they don\'t, the Chief may walk away with partial information.','Letting the PDT know keeps everyone informed, and it signals that you take senior relationships seriously. You\'ll want to make sure this stays the exception, not the pattern.']
+  },
+  {id:'v2',
+   prompt:'A friend who manages a different team asks you, informally, how one of their employees -- currently on your project team -- has been doing, ahead of that employee\'s upcoming performance appraisal.',
+   options:['Share your honest impressions right away, since it\'s a quick favor for a friend.','Let your friend know you\'re happy to help, and follow up with specific, complete input once you have a moment to think it through.','Tell your friend you\'d rather not comment, to avoid any appearance of bias.','Suggest your friend ask someone else on the team instead.'],
+   feedback:['Responsiveness matters, and your impressions are real data. The risk is that off-the-cuff feedback can be incomplete or harder to walk back if challenged later.','Taking time to give complete, considered feedback protects everyone -- the employee, your friend, and you. The key is actually following through before the appraisal window closes.','Opting out is clean from a bias standpoint. The tradeoff is that your direct observation goes unused, which may not serve the employee well if yours was the best-informed view.','Redirecting lets someone with a different vantage point contribute. Worth asking yourself whether your perspective was actually the most relevant one here.']
+  },
+  {id:'v3',
+   prompt:'The design team made an error that will require rework. The customer wants to discuss who will cover the additional cost.',
+   options:['Have the discussion as soon as the customer raises it, even before you\'ve confirmed the cost impact internally.','Acknowledge the issue with the customer right away, and set up a follow-up conversation once you have the cost details.','Let the design team lead handle the conversation with the customer directly, since it was their error.','Wait until the cost impact is fully resolved before saying anything to the customer.'],
+   feedback:['Engaging quickly shows you\'re not avoiding the issue -- that\'s worth something with customers. Without confirmed cost figures, though, the conversation can go sideways fast.','Acknowledging the issue without committing to numbers keeps the customer informed and gives you time to get it right. This is usually the harder move in the moment and usually the right one.','The design team lead may have the technical context, but the PM owns the customer relationship. Fully delegating this risks the customer feeling like they\'re not talking to the person in charge.','Waiting until everything is resolved can feel like avoidance to a customer who is already watching. Silence on a known issue is rarely neutral.']
+  },
+  {id:'v4',
+   prompt:'Your technical lead wants to schedule a brainstorming session about a potential deficiency in a levee floodwall -- nothing urgent yet, but worth exploring.',
+   options:['Schedule it this week, ahead of other planned work.','Add it to the calendar a few weeks out, once the team has more capacity.','Ask the technical lead to gather a bit more information first, then revisit scheduling.','Suggest it wait until the next regularly scheduled PDT meeting.'],
+   feedback:['Moving quickly on a potential structural concern signals that you take safety and risk seriously, even under uncertainty. The cost is displaced work -- manageable if you\'re deliberate about it.','Waiting a few weeks is reasonable if the team\'s workload is genuinely constrained. The question to hold: what would change in those weeks, and would you feel comfortable with the delay if the deficiency turns out to be real?','Asking for more information before scheduling is a reasonable instinct. The key is making sure "more information" has a clear owner and timeline, so the issue doesn\'t quietly fall off the radar.','The PDT meeting is a logical forum -- and if it\'s coming up soon, this may be entirely appropriate. If it\'s weeks away, that\'s a different call.']
+  },
+  {id:'v5',
+   prompt:'Your calendar is fully booked today with back-to-back meetings. Midway through the morning, you get a call: your child is sick at school and needs to be picked up.',
+   options:['Step out to handle it, and have someone else cover or reschedule your meetings.','Finish your current meeting, then immediately rearrange the rest of the day.','Ask a family member or backup contact to help if possible, and continue your day as planned.','Wait until a natural break in your schedule before responding.'],
+   feedback:['Stepping away models something important: that leaders make real-time decisions about competing priorities, and that personal emergencies are legitimate ones. Your team is watching how you handle this.','Finishing the current meeting first may be the right call depending on what\'s happening in that room. It becomes harder to defend the longer the meeting runs.','Calling in a backup is a reasonable option when it\'s genuinely available -- and knowing your backup options before you need them is part of leading sustainably.','Waiting for a natural break can be appropriate in some situations. How long is too long depends on your child\'s situation and your own read of the room.']
+  },
 ];
 
 function getProfile(){
@@ -430,6 +455,10 @@ function renderVignettes(){
       html+='<div class="answer-option" id="vopt-'+vi+'-'+oi+'" onclick="selectAnswer('+vi+','+oi+')">'
         +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+opt+'</div>';
     });
+    html+='<div class="vignette-feedback" id="vfb-'+vi+'">'
+      +'<div class="vignette-feedback-label">Something to consider</div>'
+      +'<span id="vfb-text-'+vi+'"></span>'
+      +'</div>';
     html+='</div>';
   });
   document.getElementById('vignette-container').innerHTML=html;
@@ -441,6 +470,14 @@ function selectAnswer(vi,oi){
     if(el)el.classList.remove('selected');
   }
   document.getElementById('vopt-'+vi+'-'+oi).classList.add('selected');
+  // Show feedback for this scenario
+  var fbEl=document.getElementById('vfb-'+vi);
+  var fbText=document.getElementById('vfb-text-'+vi);
+  var v=VIGNETTES[vi];
+  if(fbEl&&fbText&&v.feedback&&v.feedback[oi]){
+    fbText.textContent=v.feedback[oi];
+    fbEl.classList.add('show');
+  }
   if(Object.keys(answers).length===VIGNETTES.length){
     document.getElementById('submit-btn').disabled=false;
   }
