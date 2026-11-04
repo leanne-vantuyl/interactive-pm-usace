@@ -266,6 +266,10 @@ body.light-mode .footer-doc{color:#444;opacity:1;}
 
 .font-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;margin-right:8px;}
 body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
+
+.strengths-lens-box{background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.35);border-radius:6px;padding:12px 14px;margin:12px 0 8px;}
+.strengths-lens-label{font-size:.6875rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.strengths-lens-text{font-size:.875rem;line-height:1.55;color:var(--white);}
 </style>
 </head>
 <body class="light-mode">
@@ -388,6 +392,37 @@ function render(){
 }
 
 var THEME_DOMAIN={'Analytical':'Strategic Thinking','Context':'Strategic Thinking','Futuristic':'Strategic Thinking','Ideation':'Strategic Thinking','Input':'Strategic Thinking','Intellection':'Strategic Thinking','Learner':'Strategic Thinking','Strategic':'Strategic Thinking','Adaptability':'Relationship Building','Connectedness':'Relationship Building','Developer':'Relationship Building','Empathy':'Relationship Building','Harmony':'Relationship Building','Includer':'Relationship Building','Individualization':'Relationship Building','Positivity':'Relationship Building','Relator':'Relationship Building','Activator':'Influencing','Command':'Influencing','Communication':'Influencing','Competition':'Influencing','Maximizer':'Influencing','Self-Assurance':'Influencing','Significance':'Influencing','Woo':'Influencing','Achiever':'Executing','Arranger':'Executing','Belief':'Executing','Consistency':'Executing','Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'};
+var CF_STRENGTHS_LENS={
+  1:{
+    ST:'Your Strategic Thinking strengths likely recognized that "it\'s been informally tracked" is a phrase that should trigger a question, not just a note. What is the downstream risk of a risk that is known but not documented?',
+    RB:'Relationship Building strengths tend to think about Marcus\'s experience of this moment -- he is raising something he has been managing informally, and how you receive it determines whether the next informal observation ever gets surfaced. What did your response signal about what it means to bring something to the PM?',
+    IN:'Your Influencing strengths may have recognized that this is a norm-setting moment -- the whole PDT is watching how you handle a risk that was "known" but not in the register. What standard did your response establish?',
+    EX:'Your Executing strengths wanted the item in the register, with an owner and a trigger, before the meeting ended. Did that happen -- and if not, what follow-up did you establish?'
+  },
+  2:{
+    ST:'Your Strategic Thinking strengths likely recognized that the gap is not just this one risk -- it is the process by which risks move from "informally known" to "formally tracked." What systemic fix addresses that, beyond entering this single item?',
+    RB:'Relationship Building strengths tend to think about how to enter this risk in a way that does not implicitly blame Marcus for not having done it earlier. How do you close the gap without creating a narrative of failure?',
+    IN:'Your Influencing strengths may have recognized that how you handle this entry -- publicly, in the PDT meeting, or privately with the register owner -- shapes the PDT\'s relationship with the risk management process going forward.',
+    EX:'Your Executing strengths wanted the item documented accurately: threat description, likelihood, impact, trigger, owner, response type. Is the entry you made or proposed complete enough to actually drive action if the trigger fires?'
+  },
+  3:{
+    ST:'Your Strategic Thinking strengths likely recognized that the chiller delay is a data point about a pattern -- risks that exist informally inside the PDT but never make it into the register. What does that pattern tell you about the team\'s relationship with the risk management process?',
+    RB:'Relationship Building strengths tend to hear the AAR conversation carefully -- this is not just a process retrospective, it is a team conversation about how they communicate with each other under uncertainty. How do you make that conversation productive rather than defensive?',
+    IN:'Your Influencing strengths may have recognized that the PDT\'s willingness to change how they manage risk depends on whether this conversation feels like accountability or improvement. How do you frame it?',
+    EX:'Your Executing strengths wanted a concrete change to the process -- not just a discussion, but a decision about how risks get surfaced, by whom, and in what forum. Did the PDT end this conversation with that kind of clarity?'
+  }
+};
+
+function getTopDomain(){
+  var p=getProfile();
+  if(!p||!p.themes||!p.themes.length) return null;
+  for(var i=0;i<p.themes.length;i++){
+    var t=p.themes[i];
+    if(t&&t!=='N/A'&&THEME_DOMAIN[t]) return {theme:t,domain:THEME_DOMAIN[t]};
+  }
+  return null;
+}
+
 var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N/A">N/A / Not sure</option><optgroup label="Strategic Thinking"><option value="Analytical">Analytical</option><option value="Context">Context</option><option value="Futuristic">Futuristic</option><option value="Ideation">Ideation</option><option value="Input">Input</option><option value="Intellection">Intellection</option><option value="Learner">Learner</option><option value="Strategic">Strategic</option></optgroup><optgroup label="Relationship Building"><option value="Adaptability">Adaptability</option><option value="Connectedness">Connectedness</option><option value="Developer">Developer</option><option value="Empathy">Empathy</option><option value="Harmony">Harmony</option><option value="Includer">Includer</option><option value="Individualization">Individualization</option><option value="Positivity">Positivity</option><option value="Relator">Relator</option></optgroup><optgroup label="Influencing"><option value="Activator">Activator</option><option value="Command">Command</option><option value="Communication">Communication</option><option value="Competition">Competition</option><option value="Maximizer">Maximizer</option><option value="Self-Assurance">Self-Assurance</option><option value="Significance">Significance</option><option value="Woo">Woo</option></optgroup><optgroup label="Executing"><option value="Achiever">Achiever</option><option value="Arranger">Arranger</option><option value="Belief">Belief</option><option value="Consistency">Consistency</option><option value="Deliberative">Deliberative</option><option value="Discipline">Discipline</option><option value="Focus">Focus</option><option value="Responsibility">Responsibility</option><option value="Restorative">Restorative</option></optgroup>';
 
 function getProfile(){
@@ -665,7 +700,13 @@ function renderCaseStudy(){
     html+='</div>';
     if(savedLetter){
       var c=step.consequences[savedLetter];
+      var rLensHtml='';
+      var rTd=getTopDomain();
+      if(rTd&&CF_STRENGTHS_LENS[CASE_STEP]&&CF_STRENGTHS_LENS[CASE_STEP][rTd.domain]){
+        rLensHtml='<div class="strengths-lens-box"><div class="strengths-lens-label">Through your '+rTd.theme+' lens</div><div class="strengths-lens-text">'+CF_STRENGTHS_LENS[CASE_STEP][rTd.domain]+'</div></div>';
+      }
       html+='<div id="case-consequence"><div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+        +rLensHtml
         +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div></div>'
         +'<div id="case-nav" class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">'+nextLabel+'</button></div>';
     } else {
@@ -702,8 +743,14 @@ function chooseOption(letter){
   var chosen=Array.from(document.querySelectorAll('.choice-option')).find(function(el){return el.textContent.trim().indexOf(letter+'.')===0;});
   if(chosen){chosen.style.opacity='1';chosen.style.borderColor='var(--gold)';}
   var c=step.consequences[letter];
+  var lensHtml='';
+  var td=getTopDomain();
+  if(td&&CF_STRENGTHS_LENS[CASE_STEP]&&CF_STRENGTHS_LENS[CASE_STEP][td.domain]){
+    lensHtml='<div class="strengths-lens-box"><div class="strengths-lens-label">Through your '+td.theme+' lens</div><div class="strengths-lens-text">'+CF_STRENGTHS_LENS[CASE_STEP][td.domain]+'</div></div>';
+  }
   document.getElementById('case-consequence').innerHTML=
     '<div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+    +lensHtml
     +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div>';
   document.getElementById('case-nav').style.display='flex';
   var nextBtn=document.getElementById('case-next-btn');

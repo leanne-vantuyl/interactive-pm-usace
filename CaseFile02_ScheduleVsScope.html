@@ -266,6 +266,10 @@ body.light-mode .footer-doc{color:#444;opacity:1;}
 
 .font-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;margin-right:8px;}
 body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
+
+.strengths-lens-box{background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.35);border-radius:6px;padding:12px 14px;margin:12px 0 8px;}
+.strengths-lens-label{font-size:.6875rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.strengths-lens-text{font-size:.875rem;line-height:1.55;color:var(--white);}
 </style>
 </head>
 <body class="light-mode">
@@ -388,6 +392,37 @@ function render(){
 }
 
 var THEME_DOMAIN={'Analytical':'Strategic Thinking','Context':'Strategic Thinking','Futuristic':'Strategic Thinking','Ideation':'Strategic Thinking','Input':'Strategic Thinking','Intellection':'Strategic Thinking','Learner':'Strategic Thinking','Strategic':'Strategic Thinking','Adaptability':'Relationship Building','Connectedness':'Relationship Building','Developer':'Relationship Building','Empathy':'Relationship Building','Harmony':'Relationship Building','Includer':'Relationship Building','Individualization':'Relationship Building','Positivity':'Relationship Building','Relator':'Relationship Building','Activator':'Influencing','Command':'Influencing','Communication':'Influencing','Competition':'Influencing','Maximizer':'Influencing','Self-Assurance':'Influencing','Significance':'Influencing','Woo':'Influencing','Achiever':'Executing','Arranger':'Executing','Belief':'Executing','Consistency':'Executing','Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'};
+var CF_STRENGTHS_LENS={
+  1:{
+    ST:'Your Strategic Thinking strengths likely saw the system-level problem immediately: Dana and Marcus are not actually disagreeing about the same thing. How quickly did you identify that the conflict had two separate root causes?',
+    RB:'Relationship Building strengths tend to feel the interpersonal heat in a room before the technical issues are even on the table. How did that sensitivity shape what you thought the PDT needed first?',
+    IN:'Your Influencing strengths may have recognized that this was a credibility moment -- your first real test as a leader in front of the full PDT. Which move felt like it would give you the most standing to lead the conversation forward?',
+    EX:'Your Executing strengths wanted the conflict resolved and the work moving again. Notice whether the fastest path to resolution was also the most durable one -- or whether speed left something unaddressed.'
+  },
+  2:{
+    ST:'Your Strategic Thinking strengths recognized that you are not just solving a scheduling problem -- you are rebuilding a shared picture of reality between two people who were arguing from different facts. What did you do to make sure both of them saw the same picture?',
+    RB:'Relationship Building strengths tend to focus on the relationship underneath the conflict. Dana and Marcus will work together for the rest of this project -- how much of your decision here was about the work, and how much was about keeping that relationship intact?',
+    IN:'Your Influencing strengths may have been thinking about how to frame the conversation so that neither Dana nor Marcus felt they had lost. How did you structure the re-engagement to give both of them a path to yes?',
+    EX:'Your Executing strengths wanted a resolution that stuck -- a clear decision, documented, so this same tension could not resurface two weeks later. Did the approach you took produce that kind of closure?'
+  },
+  3:{
+    ST:'Your Strategic Thinking strengths recognize that the real fix here is structural -- not a conversation, but a standing mechanism. What would prevent this same dynamic from appearing in the next phase?',
+    RB:'Relationship Building strengths tend to invest in the relational infrastructure that keeps conflict from becoming personal. What did you do to make sure Dana and Marcus left this meeting with a working relationship, not just a resolved task?',
+    IN:'Your Influencing strengths may have recognized this as a moment to establish norms -- the kind of precedent that shapes how the PDT handles disagreement for the rest of the project. What norm did your choice establish?',
+    EX:'Your Executing strengths wanted a process answer -- something that could be tracked and held to. Did the mechanism you proposed have a clear owner and a clear trigger, or was it more aspirational?'
+  }
+};
+
+function getTopDomain(){
+  var p=getProfile();
+  if(!p||!p.themes||!p.themes.length) return null;
+  for(var i=0;i<p.themes.length;i++){
+    var t=p.themes[i];
+    if(t&&t!=='N/A'&&THEME_DOMAIN[t]) return {theme:t,domain:THEME_DOMAIN[t]};
+  }
+  return null;
+}
+
 var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N/A">N/A / Not sure</option><optgroup label="Strategic Thinking"><option value="Analytical">Analytical</option><option value="Context">Context</option><option value="Futuristic">Futuristic</option><option value="Ideation">Ideation</option><option value="Input">Input</option><option value="Intellection">Intellection</option><option value="Learner">Learner</option><option value="Strategic">Strategic</option></optgroup><optgroup label="Relationship Building"><option value="Adaptability">Adaptability</option><option value="Connectedness">Connectedness</option><option value="Developer">Developer</option><option value="Empathy">Empathy</option><option value="Harmony">Harmony</option><option value="Includer">Includer</option><option value="Individualization">Individualization</option><option value="Positivity">Positivity</option><option value="Relator">Relator</option></optgroup><optgroup label="Influencing"><option value="Activator">Activator</option><option value="Command">Command</option><option value="Communication">Communication</option><option value="Competition">Competition</option><option value="Maximizer">Maximizer</option><option value="Self-Assurance">Self-Assurance</option><option value="Significance">Significance</option><option value="Woo">Woo</option></optgroup><optgroup label="Executing"><option value="Achiever">Achiever</option><option value="Arranger">Arranger</option><option value="Belief">Belief</option><option value="Consistency">Consistency</option><option value="Deliberative">Deliberative</option><option value="Discipline">Discipline</option><option value="Focus">Focus</option><option value="Responsibility">Responsibility</option><option value="Restorative">Restorative</option></optgroup>';
 
 function getProfile(){
@@ -665,7 +700,13 @@ function renderCaseStudy(){
     html+='</div>';
     if(savedLetter){
       var c=step.consequences[savedLetter];
+      var rLensHtml='';
+      var rTd=getTopDomain();
+      if(rTd&&CF_STRENGTHS_LENS[CASE_STEP]&&CF_STRENGTHS_LENS[CASE_STEP][rTd.domain]){
+        rLensHtml='<div class="strengths-lens-box"><div class="strengths-lens-label">Through your '+rTd.theme+' lens</div><div class="strengths-lens-text">'+CF_STRENGTHS_LENS[CASE_STEP][rTd.domain]+'</div></div>';
+      }
       html+='<div id="case-consequence"><div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+        +rLensHtml
         +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div></div>'
         +'<div id="case-nav" class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">'+nextLabel+'</button></div>';
     } else {
@@ -701,8 +742,14 @@ function chooseOption(letter){
   var chosen=Array.from(document.querySelectorAll('.choice-option')).find(function(el){return el.textContent.trim().indexOf(letter+'.')===0;});
   if(chosen){chosen.style.opacity='1';chosen.style.borderColor='var(--gold)';}
   var c=step.consequences[letter];
+  var lensHtml='';
+  var td=getTopDomain();
+  if(td&&CF_STRENGTHS_LENS[CASE_STEP]&&CF_STRENGTHS_LENS[CASE_STEP][td.domain]){
+    lensHtml='<div class="strengths-lens-box"><div class="strengths-lens-label">Through your '+td.theme+' lens</div><div class="strengths-lens-text">'+CF_STRENGTHS_LENS[CASE_STEP][td.domain]+'</div></div>';
+  }
   document.getElementById('case-consequence').innerHTML=
     '<div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+    +lensHtml
     +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div>';
   document.getElementById('case-nav').style.display='flex';
   var nextBtn=document.getElementById('case-next-btn');

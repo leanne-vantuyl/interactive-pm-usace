@@ -266,6 +266,10 @@ body.light-mode .footer-doc{color:#444;opacity:1;}
 
 .font-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;margin-right:8px;}
 body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
+
+.strengths-lens-box{background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.35);border-radius:6px;padding:12px 14px;margin:12px 0 8px;}
+.strengths-lens-label{font-size:.6875rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.strengths-lens-text{font-size:.875rem;line-height:1.55;color:var(--white);}
 </style>
 </head>
 <body class="light-mode">
@@ -388,6 +392,37 @@ function render(){
 }
 
 var THEME_DOMAIN={'Analytical':'Strategic Thinking','Context':'Strategic Thinking','Futuristic':'Strategic Thinking','Ideation':'Strategic Thinking','Input':'Strategic Thinking','Intellection':'Strategic Thinking','Learner':'Strategic Thinking','Strategic':'Strategic Thinking','Adaptability':'Relationship Building','Connectedness':'Relationship Building','Developer':'Relationship Building','Empathy':'Relationship Building','Harmony':'Relationship Building','Includer':'Relationship Building','Individualization':'Relationship Building','Positivity':'Relationship Building','Relator':'Relationship Building','Activator':'Influencing','Command':'Influencing','Communication':'Influencing','Competition':'Influencing','Maximizer':'Influencing','Self-Assurance':'Influencing','Significance':'Influencing','Woo':'Influencing','Achiever':'Executing','Arranger':'Executing','Belief':'Executing','Consistency':'Executing','Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'};
+var CF_STRENGTHS_LENS={
+  1:{
+    ST:'Your Strategic Thinking strengths likely ran the downstream scenario: a flawed baseline locks in a flawed schedule, and recovering from that is far more expensive than a one-day delay to get the number right. How clearly did you see that tradeoff the moment you found the gap?',
+    RB:'Relationship Building strengths tend to think about Priya before the problem -- she made the estimate, and how you raise this matters as much as whether you raise it. What did you want the working relationship with Priya to look like after this conversation?',
+    IN:'Your Influencing strengths may have recognized that raising a technical concern the night before a baseline meeting is a credibility test -- not just with Priya, but with leadership. How you handle this shapes how the PDT reads you as a PM.',
+    EX:'Your Executing strengths wanted the baseline to be right, not just on time. Notice whether the approach you took protected the accuracy of the schedule -- and what it cost in terms of the meeting timeline.'
+  },
+  2:{
+    ST:'Your Strategic Thinking strengths likely recognized that "we always use this duration" is not a basis for a baseline -- it is a heuristic masquerading as an estimate. What question did you ask, or could you have asked, to get underneath the template?',
+    RB:'Relationship Building strengths tend to hear the defensiveness in "that is what we always use" as information about Priya, not just about the estimate. What did you do to make it safe for her to revise her own number?',
+    IN:'Your Influencing strengths may have recognized that this conversation is not really about the HVAC duration -- it is about whether Priya will trust your technical judgment enough to revisit her own. How did you approach that?',
+    EX:'Your Executing strengths wanted a revised number, documented, with a basis. Did the conversation end with that? Or did it end with an agreement to revisit -- which is not the same thing.'
+  },
+  3:{
+    ST:'Your Strategic Thinking strengths recognize that locking a flawed baseline to protect a downstream date is a risk transfer, not a risk resolution -- the schedule problem does not disappear, it just moves. How did you weigh that tradeoff in the meeting?',
+    RB:'Relationship Building strengths tend to feel the pressure from multiple directions in this moment -- Marcus wants to protect the execution authorization timeline, Priya revised her number in good faith. How did you hold the interests of both while making the right call?',
+    IN:'Your Influencing strengths may have recognized that your credibility in this meeting -- and in every baseline meeting after it -- depends on whether you hold the standard or yield to timeline pressure. What did that moment ask of you?',
+    EX:'Your Executing strengths wanted the baseline to be both right and on time. When those two things are in tension, your domain tends to reach for a path that satisfies both -- even if it requires more work. Did you find one here?'
+  }
+};
+
+function getTopDomain(){
+  var p=getProfile();
+  if(!p||!p.themes||!p.themes.length) return null;
+  for(var i=0;i<p.themes.length;i++){
+    var t=p.themes[i];
+    if(t&&t!=='N/A'&&THEME_DOMAIN[t]) return {theme:t,domain:THEME_DOMAIN[t]};
+  }
+  return null;
+}
+
 var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N/A">N/A / Not sure</option><optgroup label="Strategic Thinking"><option value="Analytical">Analytical</option><option value="Context">Context</option><option value="Futuristic">Futuristic</option><option value="Ideation">Ideation</option><option value="Input">Input</option><option value="Intellection">Intellection</option><option value="Learner">Learner</option><option value="Strategic">Strategic</option></optgroup><optgroup label="Relationship Building"><option value="Adaptability">Adaptability</option><option value="Connectedness">Connectedness</option><option value="Developer">Developer</option><option value="Empathy">Empathy</option><option value="Harmony">Harmony</option><option value="Includer">Includer</option><option value="Individualization">Individualization</option><option value="Positivity">Positivity</option><option value="Relator">Relator</option></optgroup><optgroup label="Influencing"><option value="Activator">Activator</option><option value="Command">Command</option><option value="Communication">Communication</option><option value="Competition">Competition</option><option value="Maximizer">Maximizer</option><option value="Self-Assurance">Self-Assurance</option><option value="Significance">Significance</option><option value="Woo">Woo</option></optgroup><optgroup label="Executing"><option value="Achiever">Achiever</option><option value="Arranger">Arranger</option><option value="Belief">Belief</option><option value="Consistency">Consistency</option><option value="Deliberative">Deliberative</option><option value="Discipline">Discipline</option><option value="Focus">Focus</option><option value="Responsibility">Responsibility</option><option value="Restorative">Restorative</option></optgroup>';
 
 function getProfile(){
@@ -666,7 +701,13 @@ function renderCaseStudy(){
     html+='</div>';
     if(savedLetter){
       var c=step.consequences[savedLetter];
+      var rLensHtml='';
+      var rTd=getTopDomain();
+      if(rTd&&CF_STRENGTHS_LENS[CASE_STEP]&&CF_STRENGTHS_LENS[CASE_STEP][rTd.domain]){
+        rLensHtml='<div class="strengths-lens-box"><div class="strengths-lens-label">Through your '+rTd.theme+' lens</div><div class="strengths-lens-text">'+CF_STRENGTHS_LENS[CASE_STEP][rTd.domain]+'</div></div>';
+      }
       html+='<div id="case-consequence"><div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+        +rLensHtml
         +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div></div>'
         +'<div id="case-nav" class="nav-row"><span></span><button class="btn-primary" onclick="caseNext()" id="case-next-btn">'+nextLabel+'</button></div>';
     } else {
@@ -704,8 +745,14 @@ function chooseOption(letter){
   var chosen=Array.from(document.querySelectorAll('.choice-option')).find(function(el){return el.textContent.trim().indexOf(letter+'.')===0;});
   if(chosen){chosen.style.opacity='1';chosen.style.borderColor='var(--gold)';}
   var c=step.consequences[letter];
+  var lensHtml='';
+  var td=getTopDomain();
+  if(td&&CF_STRENGTHS_LENS[CASE_STEP]&&CF_STRENGTHS_LENS[CASE_STEP][td.domain]){
+    lensHtml='<div class="strengths-lens-box"><div class="strengths-lens-label">Through your '+td.theme+' lens</div><div class="strengths-lens-text">'+CF_STRENGTHS_LENS[CASE_STEP][td.domain]+'</div></div>';
+  }
   document.getElementById('case-consequence').innerHTML=
     '<div class="consequence-box"><div class="consequence-label">What Happens</div><div class="consequence-text">'+c.text+'</div>'
+    +lensHtml
     +'<div class="insight-box"><div class="insight-label">Insight</div><div class="insight-text">'+c.insight+'</div></div></div>';
   document.getElementById('case-nav').style.display='flex';
   var nextBtn=document.getElementById('case-next-btn');
