@@ -726,7 +726,12 @@ function postCFResponse(kcAnswerBools,kcScore){
     if(!p.sessionId){saveProfile(p.name,p.themes,p.cohortCode||'');}
     var decisions=[];
     var dKeys=Object.keys(CS.decisions).sort(function(a,b){return a-b;});
-    dKeys.forEach(function(k){decisions.push(CS.decisions[k]);});
+    dKeys.forEach(function(k){
+      var letter=CS.decisions[k];
+      var step=CASE_STEPS[parseInt(k)];
+      var optObj=step?step.options.find(function(o){return o.letter===letter;}):null;
+      decisions.push({letter:letter,text:optObj?optObj.text:''});
+    });
     var payload={
       session_id:sessionId,
       cohort_code:p.cohortCode||'',
