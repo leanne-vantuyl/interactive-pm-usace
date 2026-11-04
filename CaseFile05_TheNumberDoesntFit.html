@@ -730,6 +730,7 @@ function postCFResponse(kcAnswerBools,kcScore){
       decisions.push({letter:letter,text:optObj?optObj.text:''});
     });
     var payload={
+      learner_name:p.name||'',
       session_id:sessionId,
       cohort_code:p.cohortCode||'',
       cf_number:CF_NUMBER,
