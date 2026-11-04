@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Interactive PM in USACE -- Welcome</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --dark:#1A1F14;--navy:#1B2E1A;--gold:#C8A84B;--gold-dim:#8A7035;
+  --accent:#7BA05B;--white:#F5F2EB;--white-dim:rgba(245,242,235,.65);
+  --border:rgba(200,168,75,.22);--border-strong:rgba(200,168,75,.45);
+  --bg:#12160E;--card:rgba(26,31,20,.7);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--white);min-height:100vh;display:flex;flex-direction:column;}
+body.light-mode{--dark:#F5F2EB;--bg:#F0EDE4;--card:#FFFFFF;--white:#111111;--white-dim:#444;--border:rgba(90,64,16,.25);--border-strong:rgba(90,64,16,.5);--gold:#8B6010;--gold-dim:#5A4010;--accent:#2A6B1A;--navy:#1B3A1A;}
+
+header{background:rgba(18,22,14,.95);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.logo{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--white);}
+.logo-sub{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-top:2px;}
+.theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;}
+
+.wrap{max-width:680px;margin:0 auto;padding:40px 24px 60px;}
+
+.welcome-card{border:1px solid var(--border);padding:32px 36px;margin-bottom:36px;background:var(--card);}
+.welcome-eyebrow{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;}
+.welcome-title{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,4vw,2rem);line-height:1.2;color:var(--white);margin-bottom:20px;}
+.welcome-body{font-size:0.875rem;color:var(--white-dim);line-height:1.8;}
+.welcome-body p{margin-bottom:14px;}
+.welcome-body p:last-child{margin-bottom:0;}
+.welcome-body strong{color:var(--white);}
+.welcome-sig{margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
+.welcome-sig-name{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--white);}
+.welcome-sig-title{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.08em;color:var(--gold-dim);text-transform:uppercase;margin-top:4px;}
+
+.reg-card{border:1px solid var(--border-strong);padding:28px 32px;background:var(--card);}
+.reg-title{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
+
+.path-toggle{display:flex;gap:0;margin-bottom:28px;border:1px solid var(--border-strong);border-radius:3px;overflow:hidden;}
+.path-btn{flex:1;padding:11px 10px;font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.06em;text-transform:uppercase;background:transparent;border:none;color:var(--white-dim);cursor:pointer;transition:background .2s,color .2s;text-align:center;}
+.path-btn.active{background:var(--gold);color:var(--dark);font-weight:700;}
+.path-btn:not(.active):hover{background:rgba(200,168,75,.1);color:var(--white);}
+
+.path-note{font-size:0.75rem;color:var(--white-dim);line-height:1.6;margin-bottom:22px;padding:10px 14px;border-left:3px solid var(--gold-dim);}
+
+.field-group{margin-bottom:20px;}
+.field-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:7px;display:block;}
+body.light-mode .field-label{color:#5A4010;font-weight:700;}
+.required-mark{color:var(--gold);}
+.text-input{background:rgba(26,31,20,.5);border:1px solid var(--border-strong);color:var(--white);font-family:'Inter',sans-serif;font-size:0.875rem;padding:11px 14px;outline:none;width:100%;}
+body.light-mode .text-input{background:#FFFFFF;border:2px solid #5A4010;color:#111111;}
+.text-input::placeholder{color:var(--white-dim);opacity:.4;}
+body.light-mode .text-input::placeholder{color:#888;opacity:1;}
+.text-input:focus{border-color:var(--gold);}
+
+.theme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;}
+.theme-item label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:5px;display:block;}
+body.light-mode .theme-item label{color:#5A4010;font-weight:700;}
+.theme-select{background:rgba(26,31,20,.5);border:1px solid var(--border-strong);color:var(--white);font-family:'Inter',sans-serif;font-size:0.8125rem;padding:10px 12px;outline:none;width:100%;}
+body.light-mode .theme-select{background:#FFFFFF;border:2px solid #5A4010;color:#111111;}
+.theme-select:focus{border-color:var(--gold);}
+.theme-hint{font-size:0.72rem;color:var(--white-dim);margin-top:8px;line-height:1.5;}
+
+.btn-primary{background:var(--gold);border:none;color:var(--dark);font-family:'DM Mono',monospace;font-size:0.6875rem;letter-spacing:.08em;text-transform:uppercase;padding:14px 28px;cursor:pointer;font-weight:700;width:100%;margin-top:8px;}
+.btn-primary:hover{background:var(--accent);color:var(--white);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+
+.status-msg{display:none;margin-top:14px;font-size:0.75rem;line-height:1.6;padding:10px 14px;border:1px solid var(--border);}
+.status-msg.success{color:var(--accent);border-color:var(--accent);}
+.status-msg.error{color:#C46A6A;border-color:#C46A6A;}
+
+footer{margin-top:auto;padding:16px 28px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.08em;color:var(--gold-dim);text-transform:uppercase;flex-wrap:wrap;gap:8px;}
+</style>
+</head>
+<body class="light-mode">
+<header>
+  <div>
+    <div class="logo">Interactive PM in USACE</div>
+    <div class="logo-sub">PROSPECT 355 &middot; Course Registration</div>
+  </div>
+  <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
+</header>
+
+<div class="wrap">
+
+  <div class="welcome-card">
+    <div class="welcome-eyebrow">A message from your instructor</div>
+    <h1 class="welcome-title">Welcome to Interactive PM in USACE.</h1>
+    <div class="welcome-body">
+      <p>Project management in USACE is both a science and an art. The science is learnable -- the PDBP lifecycle, PROC references, earned value, risk registers, change control. We can teach you the thresholds, the reporting requirements, the decision gates. That part has a right answer.</p>
+      <p>The art is harder. It is the judgment call at 4:45 on a Friday. It is knowing when to push back and when to hold. It is reading a room, managing up, and keeping a PDT moving when the schedule slips and the customer is watching. That part cannot be taught from a slide -- it has to be practiced.</p>
+      <p>This course gives you <strong>thirteen decisions</strong>. Each one is grounded in USACE doctrine. Each one is also a moment where the science alone will not be enough. Work through them honestly -- not to find the "right" answer, but to find <em>your</em> answer, and then to understand why it matters.</p>
+    </div>
+    <div class="welcome-sig">
+      <div class="welcome-sig-name">Leanne Van Tuyl, PMP</div>
+      <div class="welcome-sig-title">PPM Community of Practice &middot; HQ USACE</div>
+    </div>
+  </div>
+
+  <div class="reg-card">
+    <div class="reg-title">Before You Begin</div>
+
+    <div class="path-toggle">
+      <button class="path-btn active" id="btn-prospect" onclick="setPath('prospect')">PROSPECT 355 Participant</button>
+      <button class="path-btn" id="btn-selfpaced" onclick="setPath('selfpaced')">Self-Paced Learner</button>
+    </div>
+
+    <div id="note-prospect" class="path-note">Your instructor will provide a cohort code. Enter it below so your responses are linked to your class section and your instructor can build learning groups before Day 1.</div>
+    <div id="note-selfpaced" class="path-note" style="display:none;">No cohort code needed. Complete the course at your own pace as a refresher or independent study.</div>
+
+    <div class="field-group" id="cohort-field">
+      <label class="field-label">Cohort Code <span class="required-mark">*</span></label>
+      <input class="text-input" id="cohort-input" type="text" maxlength="30" placeholder="e.g. USACE2700" autocomplete="off" spellcheck="false"/>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Your Name <span class="required-mark">*</span></label>
+      <input class="text-input" id="name-input" type="text" maxlength="60" placeholder="First Last"/>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>
+      <p class="theme-hint" style="margin-bottom:10px;">Enter them in ranked order as they appear on your Gallup results report -- your #1 theme first. Select N/A if you do not have your results.</p>
+      <div class="theme-grid" id="theme-grid"></div>
+      <p class="theme-hint">Your top theme is used to personalize reflections throughout the course. All five are used to build balanced learning groups.</p>
+    </div>
+
+    <button class="btn-primary" id="reg-btn" onclick="submitReg()">Save &amp; Enter Course &rarr;</button>
+    <div class="status-msg" id="status-msg"></div>
+  </div>
+
+</div>
+
+<footer>
+  <span>EM 5-1-11 &middot; PROSPECT 355 &middot; Registration v2026.11.04</span>
+  <span>Interactive PM in USACE</span>
+</footer>
+
+<script>
+var SB_URL='https://uvzgrrypvjuxmzytdyvs.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2emdycnlwdmp1eG16eXRkeXZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODkyNTMsImV4cCI6MjEwNTA2NTI1M30.ZJfHa3Vs0tYQP7bTrYAbtCtiQlDp5JdA2UhpGZ3c2FQ';
+
+var THEME_DOMAIN={
+  'Analytical':'Strategic Thinking','Context':'Strategic Thinking','Futuristic':'Strategic Thinking',
+  'Ideation':'Strategic Thinking','Input':'Strategic Thinking','Intellection':'Strategic Thinking',
+  'Learner':'Strategic Thinking','Strategic':'Strategic Thinking',
+  'Adaptability':'Relationship Building','Connectedness':'Relationship Building','Developer':'Relationship Building',
+  'Empathy':'Relationship Building','Harmony':'Relationship Building','Includer':'Relationship Building',
+  'Individualization':'Relationship Building','Positivity':'Relationship Building','Relator':'Relationship Building',
+  'Activator':'Influencing','Command':'Influencing','Communication':'Influencing','Competition':'Influencing',
+  'Maximizer':'Influencing','Self-Assurance':'Influencing','Significance':'Influencing','Woo':'Influencing',
+  'Achiever':'Executing','Arranger':'Executing','Belief':'Executing','Consistency':'Executing',
+  'Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'
+};
+
+var THEME_OPTIONS_HTML='<option value="">-- Select --</option><option value="N/A">N/A / Not sure</option>'
+  +'<optgroup label="Strategic Thinking"><option>Analytical</option><option>Context</option><option>Futuristic</option><option>Ideation</option><option>Input</option><option>Intellection</option><option>Learner</option><option>Strategic</option></optgroup>'
+  +'<optgroup label="Relationship Building"><option>Adaptability</option><option>Connectedness</option><option>Developer</option><option>Empathy</option><option>Harmony</option><option>Includer</option><option>Individualization</option><option>Positivity</option><option>Relator</option></optgroup>'
+  +'<optgroup label="Influencing"><option>Activator</option><option>Command</option><option>Communication</option><option>Competition</option><option>Maximizer</option><option>Self-Assurance</option><option>Significance</option><option>Woo</option></optgroup>'
+  +'<optgroup label="Executing"><option>Achiever</option><option>Arranger</option><option>Belief</option><option>Consistency</option><option>Deliberative</option><option>Discipline</option><option>Focus</option><option>Responsibility</option><option>Restorative</option></optgroup>';
+
+var ordinals=['1st','2nd','3rd','4th','5th'];
+var currentPath='prospect';
+
+function buildThemeGrid(){
+  var html='';
+  for(var i=1;i<=5;i++){
+    html+='<div class="theme-item"><label>'+ordinals[i-1]+' Theme'+(i===1?' <span class="required-mark">*</span>':'')+'</label>'
+      +'<select class="theme-select" id="theme-'+i+'">'+THEME_OPTIONS_HTML+'</select></div>';
+  }
+  document.getElementById('theme-grid').innerHTML=html;
+}
+
+function setPath(path){
+  currentPath=path;
+  document.getElementById('btn-prospect').className='path-btn'+(path==='prospect'?' active':'');
+  document.getElementById('btn-selfpaced').className='path-btn'+(path==='selfpaced'?' active':'');
+  document.getElementById('note-prospect').style.display=path==='prospect'?'':'none';
+  document.getElementById('note-selfpaced').style.display=path==='selfpaced'?'':'none';
+  document.getElementById('cohort-field').style.display=path==='prospect'?'':'none';
+}
+
+function getProfile(){
+  try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
+}
+function saveProfile(data){
+  try{
+    var p=getProfile()||{};
+    Object.keys(data).forEach(function(k){p[k]=data[k];});
+    p.savedAt=new Date().toISOString();
+    if(!p.sessionId)p.sessionId=genUUID();
+    localStorage.setItem('pm-learner-profile',JSON.stringify(p));
+    return p;
+  }catch(e){return data;}
+}
+function genUUID(){
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
+    var r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16);
+  });
+}
+
+function submitReg(){
+  var name=document.getElementById('name-input').value.trim();
+  var cohortCode=currentPath==='prospect'?(document.getElementById('cohort-input').value.trim().toUpperCase()):'SELF-PACED';
+  var t1=document.getElementById('theme-1').value;
+
+  if(!name){showStatus('Please enter your name.','error');return;}
+  if(currentPath==='prospect'&&!cohortCode){showStatus('Please enter your cohort code.','error');return;}
+  if(!t1){showStatus('Please select at least your #1 CliftonStrengths theme, or N/A.','error');return;}
+
+  var themes=[];
+  for(var i=1;i<=5;i++){
+    var v=document.getElementById('theme-'+i).value;
+    if(v&&v!=='')themes.push(v);
+  }
+  if(themes.length===0)themes=['N/A'];
+
+  var p=saveProfile({name:name,themes:themes,cohortCode:cohortCode,registeredAs:currentPath});
+
+  // Post registration to Supabase best-effort (uses responses table, cf_number='REGISTRATION')
+  try{
+    fetch(SB_URL+'/rest/v1/responses',{
+      method:'POST',
+      headers:{
+        'apikey':SB_KEY,
+        'Authorization':'Bearer '+SB_KEY,
+        'Content-Type':'application/json',
+        'Prefer':'return=minimal'
+      },
+      body:JSON.stringify({
+        learner_name:name,
+        session_id:p.sessionId,
+        cohort_code:cohortCode,
+        cf_number:'REGISTRATION',
+        strength_themes:themes,
+        strength_theme:themes[0]!=='N/A'?themes[0]:''
+      })
+    }).catch(function(){});
+  }catch(e){}
+
+  document.getElementById('reg-btn').disabled=true;
+  showStatus('Welcome, '+name+'. Redirecting to course...','success');
+  setTimeout(function(){window.location.href='index.html';},1400);
+}
+
+function showStatus(msg,type){
+  var el=document.getElementById('status-msg');
+  el.textContent=msg;
+  el.className='status-msg '+type;
+  el.style.display='block';
+}
+
+function toggleTheme(){
+  var isDark=document.body.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  if(isDark){btn.innerHTML='&#9790; Dark';try{localStorage.setItem('pm-course-theme','light');}catch(e){}}
+  else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
+}
+
+buildThemeGrid();
+
+// Pre-fill if already registered
+(function(){
+  var p=getProfile();
+  if(p&&p.name){
+    document.getElementById('name-input').value=p.name;
+    if(p.cohortCode&&p.cohortCode!=='SELF-PACED'){
+      document.getElementById('cohort-input').value=p.cohortCode;
+      setPath('prospect');
+    } else if(p.cohortCode==='SELF-PACED'){
+      setPath('selfpaced');
+    }
+    if(p.themes&&p.themes.length){
+      p.themes.forEach(function(t,i){
+        var sel=document.getElementById('theme-'+(i+1));
+        if(sel)sel.value=t;
+      });
+    }
+  }
+  try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');document.getElementById('theme-toggle').innerHTML='&#9788; Light';}}catch(e){}
+})();
+</script>
+</body>
+</html>
