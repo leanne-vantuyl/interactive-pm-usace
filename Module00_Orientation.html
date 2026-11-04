@@ -538,15 +538,20 @@ var STRENGTHS_LENS=[
      EX:'Your Executing strengths recognize the value of not disrupting a running meeting. Worth asking: at what point does waiting become its own kind of problem?'}
   ]
 ];
+var M0_SCENARIO_DOMAINS={0:'ST',1:'IN',2:'RB',3:'EX',4:'ST'};
 
-function getTopDomain(){
+function getThemeForDomain(preferredDomain){
   var p=getProfile();
   if(!p||!p.themes||!p.themes.length) return null;
+  var firstValid=null;
   for(var i=0;i<p.themes.length;i++){
     var t=p.themes[i];
-    if(t&&t!=='N/A'&&THEME_DOMAIN[t]) return {theme:t, domain:THEME_DOMAIN[t]};
+    if(!t||t==='N/A'||!THEME_DOMAIN[t]) continue;
+    var dom=THEME_DOMAIN[t];
+    if(!firstValid) firstValid={theme:t,domain:dom};
+    if(preferredDomain && dom===preferredDomain) return {theme:t,domain:dom};
   }
-  return null;
+  return firstValid;
 }
 function saveProfile(name,strengths){
   try{
@@ -593,7 +598,7 @@ function selectAnswer(vi,oi){
   var fbText=document.getElementById('vfb-text-'+vi);
   var v=VIGNETTES[vi];
   if(fbEl&&fbText&&v.feedback&&v.feedback[oi]){
-    var topDomain=getTopDomain();
+    var topDomain=getThemeForDomain(M0_SCENARIO_DOMAINS[vi]);
     var lensLine='';
     if(topDomain && STRENGTHS_LENS[vi] && STRENGTHS_LENS[vi][oi] && STRENGTHS_LENS[vi][oi][topDomain.domain]){
       lensLine=STRENGTHS_LENS[vi][oi][topDomain.domain]+' ';

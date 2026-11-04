@@ -412,20 +412,25 @@ var CF_STRENGTHS_LENS={
     EX:'Your Executing strengths wanted a clear path forward -- the PROC1020 issue needs to be formally closed, and the feedback conversation still needs a resolution. How do you get both done without letting one collapse into the other?'
   }
 };
+var CF_DECISION_DOMAINS={1:'ST',2:'RB',3:'RB'};
 
-function getTopDomain(){
+function getThemeForDomain(preferredDomain){
   var ABBREV={'Strategic Thinking':'ST','Relationship Building':'RB','Influencing':'IN','Executing':'EX',
               'ST':'ST','RB':'RB','IN':'IN','EX':'EX'};
   var p=getProfile();
   if(!p||!p.themes||!p.themes.length) return null;
-  for(var i=0;i<p.themes.length;i++){
-    var t=p.themes[i];
-    if(t&&t!=='N/A'&&THEME_DOMAIN[t]){
-      var dom=ABBREV[THEME_DOMAIN[t]]||THEME_DOMAIN[t];
-      return {theme:t,domain:dom};
-    }
+  var themes=p.themes;
+  var firstValid=null;
+  // First pass: find highest-ranked theme matching preferredDomain
+  for(var i=0;i<themes.length;i++){
+    var t=themes[i];
+    if(!t||t==='N/A'||!THEME_DOMAIN[t]) continue;
+    var dom=ABBREV[THEME_DOMAIN[t]]||THEME_DOMAIN[t];
+    if(!firstValid) firstValid={theme:t,domain:dom};
+    if(preferredDomain && dom===preferredDomain) return {theme:t,domain:dom};
   }
-  return null;
+  // Fallback: return top valid theme
+  return firstValid;
 }
 
 var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N/A">N/A / Not sure</option><optgroup label="Strategic Thinking"><option value="Analytical">Analytical</option><option value="Context">Context</option><option value="Futuristic">Futuristic</option><option value="Ideation">Ideation</option><option value="Input">Input</option><option value="Intellection">Intellection</option><option value="Learner">Learner</option><option value="Strategic">Strategic</option></optgroup><optgroup label="Relationship Building"><option value="Adaptability">Adaptability</option><option value="Connectedness">Connectedness</option><option value="Developer">Developer</option><option value="Empathy">Empathy</option><option value="Harmony">Harmony</option><option value="Includer">Includer</option><option value="Individualization">Individualization</option><option value="Positivity">Positivity</option><option value="Relator">Relator</option></optgroup><optgroup label="Influencing"><option value="Activator">Activator</option><option value="Command">Command</option><option value="Communication">Communication</option><option value="Competition">Competition</option><option value="Maximizer">Maximizer</option><option value="Self-Assurance">Self-Assurance</option><option value="Significance">Significance</option><option value="Woo">Woo</option></optgroup><optgroup label="Executing"><option value="Achiever">Achiever</option><option value="Arranger">Arranger</option><option value="Belief">Belief</option><option value="Consistency">Consistency</option><option value="Deliberative">Deliberative</option><option value="Discipline">Discipline</option><option value="Focus">Focus</option><option value="Responsibility">Responsibility</option><option value="Restorative">Restorative</option></optgroup>';
@@ -710,7 +715,7 @@ function renderCaseStudy(){
     if(savedLetter){
       var c=step.consequences[savedLetter];
       var rLensHtml='';
-      var rTd=getTopDomain();
+      var rTd=getThemeForDomain(CF_DECISION_DOMAINS[CASE_STEP]);
       if(rTd&&CF_STRENGTHS_LENS[CASE_STEP]&&CF_STRENGTHS_LENS[CASE_STEP][rTd.domain]){
         rLensHtml='<div class="strengths-lens-box"><div class="strengths-lens-label">Through your '+rTd.theme+' lens</div><div class="strengths-lens-text">'+CF_STRENGTHS_LENS[CASE_STEP][rTd.domain]+'</div></div>';
       }
@@ -753,7 +758,7 @@ function chooseOption(letter){
   if(chosen){chosen.style.opacity='1';chosen.style.borderColor='var(--gold)';}
   var c=step.consequences[letter];
   var lensHtml='';
-  var td=getTopDomain();
+  var td=getThemeForDomain(CF_DECISION_DOMAINS[CASE_STEP]);
   if(td&&CF_STRENGTHS_LENS[CASE_STEP]&&CF_STRENGTHS_LENS[CASE_STEP][td.domain]){
     lensHtml='<div class="strengths-lens-box"><div class="strengths-lens-label">Through your '+td.theme+' lens</div><div class="strengths-lens-text">'+CF_STRENGTHS_LENS[CASE_STEP][td.domain]+'</div></div>';
   }
