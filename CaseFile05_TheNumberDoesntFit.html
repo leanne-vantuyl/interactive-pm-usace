@@ -414,11 +414,16 @@ var CF_STRENGTHS_LENS={
 };
 
 function getTopDomain(){
+  var ABBREV={'Strategic Thinking':'ST','Relationship Building':'RB','Influencing':'IN','Executing':'EX',
+              'ST':'ST','RB':'RB','IN':'IN','EX':'EX'};
   var p=getProfile();
   if(!p||!p.themes||!p.themes.length) return null;
   for(var i=0;i<p.themes.length;i++){
     var t=p.themes[i];
-    if(t&&t!=='N/A'&&THEME_DOMAIN[t]) return {theme:t,domain:THEME_DOMAIN[t]};
+    if(t&&t!=='N/A'&&THEME_DOMAIN[t]){
+      var dom=ABBREV[THEME_DOMAIN[t]]||THEME_DOMAIN[t];
+      return {theme:t,domain:dom};
+    }
   }
   return null;
 }
