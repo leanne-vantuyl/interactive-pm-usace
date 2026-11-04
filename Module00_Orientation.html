@@ -431,6 +431,123 @@ var VIGNETTES=[
 function getProfile(){
   try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
 }
+
+var THEME_DOMAIN={
+  'Analytical':'ST','Context':'ST','Futuristic':'ST','Ideation':'ST','Input':'ST','Intellection':'ST','Learner':'ST','Strategic':'ST',
+  'Adaptability':'RB','Connectedness':'RB','Developer':'RB','Empathy':'RB','Harmony':'RB','Includer':'RB','Individualization':'RB','Positivity':'RB','Relator':'RB',
+  'Activator':'IN','Command':'IN','Communication':'IN','Competition':'IN','Maximizer':'IN','Self-Assurance':'IN','Significance':'IN','Woo':'IN',
+  'Achiever':'EX','Arranger':'EX','Belief':'EX','Consistency':'EX','Deliberative':'EX','Discipline':'EX','Focus':'EX','Responsibility':'EX','Restorative':'EX'
+};
+
+// Per-option strengths lens: one opener per domain (ST / RB / IN / EX), keyed by [scenario][option]
+// Format: {ST:'...', RB:'...', IN:'...', EX:'...'}
+var STRENGTHS_LENS=[
+  // Scenario 1 -- The Chief stops by before the PDT meeting
+  [
+    {ST:'Your Strategic Thinking instinct may be reading the downstream value of this relationship -- that makes this an easy call for you, even at some cost to the schedule.',
+     RB:'Your Relationship Building strengths make it natural to give the Chief your full attention. That relational instinct is real and worth trusting here.',
+     IN:'Your Influencing strengths likely made this feel obvious -- the Chief is a key stakeholder, and you read that immediately.',
+     EX:'Your Executing strengths may feel the tension here. Saying yes to the Chief means absorbing the schedule hit on the backend -- something worth tracking.'},
+    {ST:'You saw the whole picture: the PDT\'s time, the relationship with the Chief, the follow-up. That kind of systems view is a Strategic Thinking hallmark.',
+     RB:'Balancing two relationships at once -- honoring the Chief without leaving your PDT hanging -- reflects the kind of thoughtfulness that defines your domain.',
+     IN:'You protected your position and kept the meeting on track. That\'s an Influencing move: you gave the Chief a clear, confident answer without ceding control of your day.',
+     EX:'This option keeps both commitments intact. Your Executing strengths likely felt that immediately -- minimize disruption, follow through cleanly.'},
+    {ST:'Delegating is a viable strategy when you\'ve thought through who can handle it. Your Strategic Thinking strengths are worth asking: is this person actually positioned to represent the project well?',
+     RB:'Your Relationship Building strengths may flag a risk here -- the Chief came to you, specifically. Consider whether the delegation lands as well as a direct conversation would have.',
+     IN:'Delegation can be an Influencing move -- you\'re multiplying your team\'s capability. It works best when the person you\'re delegating to carries credibility with the Chief.',
+     EX:'For your Executing strengths, the question is clean handoff -- does the person briefing the Chief actually have what they need to do it accurately?'},
+    {ST:'Communicating the delay to the PDT before it happens shows foresight -- a Strategic Thinking move that keeps everyone oriented.',
+     RB:'Giving the Chief your full attention, with the PDT informed rather than simply waiting, reflects genuine care for both relationships.',
+     IN:'You\'re making a visible choice that signals senior relationships matter. That can be a credibility move -- and it\'s worth making sure the PDT reads it that way too.',
+     EX:'Your Executing strengths may appreciate the transparency here. Everyone knows what\'s happening and why -- that keeps the system clean.'}
+  ],
+  // Scenario 2 -- Informal performance feedback request
+  [
+    {ST:'Quick responsiveness has real value. Your Strategic Thinking strengths might also ask: is this the most complete picture I can give, or just the most available one?',
+     RB:'Your instinct to help a friend is real. The Relationship Building risk is that incomplete feedback, given quickly, can affect someone\'s trajectory in ways that are hard to undo.',
+     IN:'Speed and honesty are Influencing strengths. The watch-out: informal feedback can carry formal weight in appraisal contexts without you intending it to.',
+     EX:'Your Executing strengths value getting it done. Worth pausing to ask whether the value here is speed, or accuracy -- and which one matters more to the employee.'},
+    {ST:'Taking time to give complete, accurate input is exactly what your Strategic Thinking strengths support -- you\'re thinking about the full picture, not just the immediate ask.',
+     RB:'This is a Relationship Building response at its best: you\'re honoring the ask, protecting the employee, and giving your friend something they can actually use.',
+     IN:'You\'re turning a quick informal ask into something with real value. That\'s an Influencing move -- you\'re raising the quality of the outcome, not just responding to it.',
+     EX:'Your Executing strengths recognize that doing this well takes a little more time -- and that the follow-through is what actually makes it count.'},
+    {ST:'Opting out protects consistency and analytical integrity. Your Strategic Thinking strengths might ask: does the employee benefit from having your direct observation excluded?',
+     RB:'Your Relationship Building instincts may feel this one both ways -- protecting the relationship from bias, but also wondering whether the employee loses something if your view isn\'t heard.',
+     IN:'Declining has an Influencing dimension: it signals that you hold a clear standard around fairness. Worth being sure that\'s the signal the friend actually receives.',
+     EX:'For Executing strengths, opting out is clean and defensible. The tradeoff is that your direct working knowledge -- often the most useful input -- goes unused.'},
+    {ST:'Redirecting makes sense if someone else has a more direct or complete view. Your Strategic Thinking strengths might ask whether that\'s actually true in this case.',
+     RB:'Your Relationship Building strengths may notice that this passes the responsibility without fully examining whether you are, in fact, the right person.',
+     IN:'For Influencing strengths, the question is whether this reads as thoughtful redirection or as stepping back from something you could have shaped.',
+     EX:'Your Executing strengths might flag the follow-up risk here -- once you redirect, the quality of the input is out of your hands.'}
+  ],
+  // Scenario 3 -- Design error, customer wants to discuss cost
+  [
+    {ST:'Your Strategic Thinking strengths might feel the tension: transparency is valuable, but a conversation without confirmed data can open more questions than it closes.',
+     RB:'Your Relationship Building instincts are right that the customer needs to hear from you quickly. The risk is that engaging before you have the facts can feel reactive rather than in control.',
+     IN:'Engaging early shows confidence and ownership -- Influencing strengths often lead with that. The discipline is making sure the conversation doesn\'t outrun your actual knowledge.',
+     EX:'Your Executing strengths likely want to close this loop fast. Worth asking: does closing it fast mean closing it well, or does it mean reopening it again once you have the numbers?'},
+    {ST:'Acknowledging and setting a structured follow-up is a Strategic Thinking move -- you\'re managing the information flow, not just reacting to the customer\'s timeline.',
+     RB:'This option protects the relationship and the customer\'s trust at the same time. Your Relationship Building strengths recognize that how you show up here matters as much as what you say.',
+     IN:'You\'re staying in control of the conversation while keeping the customer informed. That\'s an Influencing move: you\'re shaping the narrative rather than ceding it.',
+     EX:'For Executing strengths, this is the clean path -- acknowledge, confirm scope, follow through. Each step is bounded and trackable.'},
+    {ST:'Delegation can be strategically right if the design lead has the best information. Your Strategic Thinking strengths might ask: does this protect the customer relationship, or complicate it?',
+     RB:'Your Relationship Building strengths may flag that the customer came to you as PM. Routing them to the design team can feel like a hand-off when they expected ownership.',
+     IN:'For Influencing strengths, this is a positioning question. Delegating the conversation may read as distancing yourself from accountability at exactly the wrong moment.',
+     EX:'Your Executing strengths may recognize a risk here: the design lead has the technical knowledge, but do they have the customer context to handle the conversation at the right level?'},
+    {ST:'Waiting until everything is resolved can feel like sound information management. The Strategic Thinking caution: silence on a known issue shapes how the customer interprets your responsiveness.',
+     RB:'Your Relationship Building strengths may feel the tension -- you\'re protecting the customer from incomplete information, but silence can register as avoidance.',
+     IN:'For Influencing strengths, the question is what narrative fills the vacuum while you\'re waiting. Customers rarely assume the best when they\'re not hearing from the PM.',
+     EX:'Your Executing strengths might weigh the efficiency here: waiting to communicate saves one conversation now, but may require more difficult conversations later.'}
+  ],
+  // Scenario 4 -- Levee floodwall potential deficiency
+  [
+    {ST:'Your Strategic Thinking strengths may have already run the scenario forward: if this is real, what are the downstream consequences of a two-week delay in surfacing it?',
+     RB:'Your Relationship Building strengths likely trust your technical lead\'s instinct here. Acting on that trust quickly is part of what makes those relationships productive.',
+     IN:'Your Influencing strengths read the urgency signal in the ask itself -- the technical lead didn\'t wait for a PDT meeting to raise it, and that matters.',
+     EX:'Your Executing strengths recognize that early action on a potential deficiency is almost always less expensive than late action. Scheduling it now is the lower-risk move.'},
+    {ST:'Waiting is defensible if the team is genuinely constrained. Your Strategic Thinking strengths might ask: what changes in a few weeks that makes this conversation better then than now?',
+     RB:'Your Relationship Building strengths may notice the signal embedded in the technical lead\'s request -- they surfaced this now, not later. Deferring may feel like the concern wasn\'t heard.',
+     IN:'For Influencing strengths, timing matters. A potential structural deficiency that waits a few weeks to get attention can become a credibility issue if it turns out to be real.',
+     EX:'Your Executing strengths might weigh the risk calculus here: the cost of an unnecessary meeting is recoverable. The cost of a missed deficiency is not.'},
+    {ST:'Asking for more information before scheduling is a sound instinct from a Strategic Thinking standpoint -- you\'re scoping before committing. The key is building in a clear deadline for the information.',
+     RB:'Your Relationship Building strengths might notice that asking for more data before you schedule can feel like a gatekeeping move to a technical lead who already felt ready to flag it.',
+     IN:'For Influencing strengths, this is a judgment call about how much runway to give the concern. More data is valuable; more delay may not be.',
+     EX:'Your Executing strengths will want a firm follow-up date attached to this ask -- otherwise "gather more information first" can quietly become "indefinitely deferred."'},
+    {ST:'Routing to the PDT meeting makes strategic sense if that\'s the right decision-making forum. Your Strategic Thinking strengths might ask: how far out is it, and is that forum actually the right one for this kind of exploratory discussion?',
+     RB:'Your Relationship Building strengths may notice that how the technical lead receives this matters. Deferring to the next scheduled meeting can land as either appropriate process or not-quite-urgent-enough.',
+     IN:'For Influencing strengths, the PDT forum gives this concern a broader audience -- which can be valuable if the issue turns out to be real.',
+     EX:'Your Executing strengths likely want to know the PDT meeting date before committing to this option. If it\'s more than a week or two out, the calculus changes.'}
+  ],
+  // Scenario 5 -- Child sick at school
+  [
+    {ST:'Your Strategic Thinking strengths may have already assessed the meeting room and determined what can be covered without you. That read is worth trusting.',
+     RB:'Your Relationship Building strengths recognize that how you handle this in front of your team -- without drama, without over-explanation -- models something about what sustainable leadership looks like.',
+     IN:'Your Influencing strengths may notice that leaders who step out when it matters, without apology, often earn more credibility, not less.',
+     EX:'Your Executing strengths will want a clean handoff. Who covers, what gets rescheduled, what gets communicated to whom -- those details matter and you probably already have them mapped.'},
+    {ST:'Finishing the current meeting first is a reasonable position to take -- if the meeting is nearly over and your child\'s situation can tolerate a short wait.',
+     RB:'Your Relationship Building strengths are probably calibrating how your child is likely feeling right now. That input is real data, not a distraction.',
+     IN:'For Influencing strengths: how long is too long? The answer to that question determines whether this reads as professional discipline or misplaced priority.',
+     EX:'Your Executing strengths want to close out the current commitment cleanly before shifting. That\'s sound -- just make sure the next step is as deliberate as the current one.'},
+    {ST:'Your Strategic Thinking strengths are good at assessing whether a backup option is genuinely viable -- or whether it\'s a workaround that creates a different problem.',
+     RB:'Your Relationship Building strengths may feel this one clearly: your child called for you specifically. Using a backup is sometimes the right answer, but it\'s worth asking what that decision communicates.',
+     IN:'For Influencing strengths: continuing your day as planned is a viable option when the backup is fully capable and your child is safe. The key is making sure both are actually true.',
+     EX:'Your Executing strengths may appreciate having a backup plan in place. The watch-out: relying on it in this situation may set a pattern that\'s harder to maintain than it looks today.'},
+    {ST:'Your Strategic Thinking strengths may be scanning for the natural break point. The question is whether the situation on your child\'s end will wait for a schedule that wasn\'t designed around it.',
+     RB:'Your Relationship Building strengths are likely feeling the pull in two directions. How you read that tension is itself useful information.',
+     IN:'For Influencing strengths, waiting too long can shift the story -- from "handled it professionally" to "priorities were unclear." Timing matters here.',
+     EX:'Your Executing strengths recognize the value of not disrupting a running meeting. Worth asking: at what point does waiting become its own kind of problem?'}
+  ]
+];
+
+function getTopDomain(){
+  var p=getProfile();
+  if(!p||!p.themes||!p.themes.length) return null;
+  for(var i=0;i<p.themes.length;i++){
+    var t=p.themes[i];
+    if(t&&t!=='N/A'&&THEME_DOMAIN[t]) return {theme:t, domain:THEME_DOMAIN[t]};
+  }
+  return null;
+}
 function saveProfile(name,strengths){
   try{
     var p=getProfile()||{};
@@ -456,7 +573,7 @@ function renderVignettes(){
         +'<div class="answer-radio"><div class="answer-radio-dot"></div></div>'+opt+'</div>';
     });
     html+='<div class="vignette-feedback" id="vfb-'+vi+'">'
-      +'<div class="vignette-feedback-label">Something to consider</div>'
+      +'<div class="vignette-feedback-label" id="vfb-label-'+vi+'">Something to consider</div>'
       +'<span id="vfb-text-'+vi+'"></span>'
       +'</div>';
     html+='</div>';
@@ -470,12 +587,21 @@ function selectAnswer(vi,oi){
     if(el)el.classList.remove('selected');
   }
   document.getElementById('vopt-'+vi+'-'+oi).classList.add('selected');
-  // Show feedback for this scenario
+
   var fbEl=document.getElementById('vfb-'+vi);
+  var fbLabel=document.getElementById('vfb-label-'+vi);
   var fbText=document.getElementById('vfb-text-'+vi);
   var v=VIGNETTES[vi];
   if(fbEl&&fbText&&v.feedback&&v.feedback[oi]){
-    fbText.textContent=v.feedback[oi];
+    var topDomain=getTopDomain();
+    var lensLine='';
+    if(topDomain && STRENGTHS_LENS[vi] && STRENGTHS_LENS[vi][oi] && STRENGTHS_LENS[vi][oi][topDomain.domain]){
+      lensLine=STRENGTHS_LENS[vi][oi][topDomain.domain]+' ';
+      if(fbLabel) fbLabel.textContent='A lens from your '+topDomain.theme+' strength';
+    } else {
+      if(fbLabel) fbLabel.textContent='Something to consider';
+    }
+    fbText.textContent=lensLine+v.feedback[oi];
     fbEl.classList.add('show');
   }
   if(Object.keys(answers).length===VIGNETTES.length){
