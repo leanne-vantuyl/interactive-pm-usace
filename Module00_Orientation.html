@@ -381,8 +381,6 @@ body.light-mode .selected .answer-radio{border-color:#5A4010;background:#5A4010;
 
 <div id="vignette-container"></div>
 
-<div id="profile-fields-container"></div>
-
 <div class="btn-row">
 <button class="btn-primary" id="submit-btn" onclick="submitPre()" disabled>Save &amp; Begin Case File 01 &rarr;</button>
 <a href="CaseFile01_NewPM_UnclearRoles.html" style="align-self:center;font-size:0.6875rem;color:var(--white-dim);text-decoration:underline;">Skip this check-in</a>
@@ -409,36 +407,16 @@ function getProfile(){
   try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
 }
 function saveProfile(name,strengths){
-  try{localStorage.setItem('pm-learner-profile',JSON.stringify({name:name,strengths:strengths,savedAt:new Date().toISOString()}));}catch(e){}
+  try{
+    var p=getProfile()||{};
+    if(name)p.name=name;
+    if(strengths)p.strengths=strengths;
+    p.savedAt=new Date().toISOString();
+    localStorage.setItem('pm-learner-profile',JSON.stringify(p));
+  }catch(e){}
 }
 function clearProfile(){
   try{localStorage.removeItem('pm-learner-profile');}catch(e){}
-}
-function clearProfileAndReload(){
-  clearProfile();
-  renderProfileSection();
-  return false;
-}
-function renderProfileSection(){
-  var p=getProfile();
-  var html;
-  if(p&&p.name){
-    html='<div class="profile-display">'
-      +'<div class="profile-row"><span class="field-label">Learner</span><div class="profile-value">'+p.name+'</div></div>'
-      +'<div class="profile-row"><span class="field-label">Top 5 CliftonStrengths (or N/A)</span><div class="profile-value">'+p.strengths+'</div></div>'
-      +'<p class="profile-clear"><a onclick="return clearProfileAndReload()">Not '+p.name+'? Clear saved name &amp; strengths</a></p>'
-      +'</div>';
-  }else{
-    html='<div style="margin-bottom:18px;">'
-      +'<label class="field-label">Your Name <span class="required-mark">*</span></label>'
-      +'<input class="name-input" id="name-input" type="text" placeholder="First Last"/>'
-      +'</div>'
-      +'<div style="margin-bottom:18px;">'
-      +'<label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>'
-      +'<input class="strength-input" id="strength-input" type="text" placeholder="e.g. Achiever, Strategic, Relator, Responsibility, Analytical \u2014 or N/A if not available"/>'
-      +'</div>';
-  }
-  document.getElementById('profile-fields-container').innerHTML=html;
 }
 
 var answers={};
@@ -468,14 +446,6 @@ function selectAnswer(vi,oi){
   }
 }
 function submitPre(){
-  var p=getProfile();
-  if(!(p&&p.name)){
-    var name=document.getElementById('name-input').value.trim();
-    var strengths=document.getElementById('strength-input').value.trim();
-    if(!name){alert('Please enter your name to continue.');return;}
-    if(!strengths){alert('Please enter your top 5 CliftonStrengths, or N/A if not available.');return;}
-    saveProfile(name,strengths);
-  }
   var record={};
   VIGNETTES.forEach(function(v,vi){record[v.id]=answers[vi];});
   var data={pre:record, preDate:new Date().toISOString()};
@@ -492,7 +462,6 @@ function submitPre(){
   setTimeout(function(){window.location.href='CaseFile01_NewPM_UnclearRoles.html';}, 1200);
 }
 renderVignettes();
-renderProfileSection();
 function toggleTheme(){
   var isDark=document.body.classList.toggle('light-mode');
   var btn=document.getElementById('theme-toggle');
