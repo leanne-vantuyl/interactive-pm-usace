@@ -848,7 +848,7 @@ function submitKC(){
   });
   CS.kcScore=correct;
   var pct=Math.round((correct/KC_QUESTIONS.length)*100);
-  var passed=pct>=50;
+  var passed=pct>=67;
   var fb=document.getElementById('kc-feedback');
   fb.className='kc-feedback show '+(passed?'pass':'fail');
   fb.innerHTML='<div class="kc-score '+(passed?'pass':'fail')+'">'+correct+'/'+KC_QUESTIONS.length+'</div>'
