@@ -746,7 +746,9 @@ function postCFResponse(kcAnswerBools,kcScore){
       },
       body:JSON.stringify(payload)
     }).then(function(r){
-      try{localStorage.setItem('sb_debug_last','HTTP '+r.status+' '+r.statusText);}catch(x){}
+      return r.text().then(function(body){
+        try{localStorage.setItem('sb_debug_last','HTTP '+r.status+' | '+body.slice(0,200));}catch(x){}
+      });
     }).catch(function(err){
       try{localStorage.setItem('sb_debug_last','fetch error: '+err);}catch(x){}
     });
