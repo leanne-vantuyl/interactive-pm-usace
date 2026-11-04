@@ -393,8 +393,19 @@ var THEME_OPTIONS_HTML='<option value="">— Select —</option><option value="N
 function getProfile(){
   try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}
 }
-function saveProfile(name,themes){
-  try{localStorage.setItem('pm-learner-profile',JSON.stringify({name:name,themes:themes,savedAt:new Date().toISOString()}));}catch(e){}
+function saveProfile(name,themes,cohortCode){
+  var p=getProfile()||{};
+  p.name=name;p.themes=themes;
+  if(cohortCode!==undefined)p.cohortCode=cohortCode;
+  if(!p.sessionId)p.sessionId=genUUID();
+  p.savedAt=new Date().toISOString();
+  try{localStorage.setItem('pm-learner-profile',JSON.stringify(p));}catch(e){}
+}
+function genUUID(){
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
+    var r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);
+    return v.toString(16);
+  });
 }
 function clearProfile(){
   try{localStorage.removeItem('pm-learner-profile');}catch(e){}
@@ -418,6 +429,9 @@ function renderProfileFields(){
     return '<div class="profile-display">'
       +'<div class="profile-row"><span class="field-label">Learner</span><div class="profile-value">'+p.name+'</div></div>'
       +'<div class="profile-row"><span class="field-label">Top 5 CliftonStrengths</span><div class="profile-value">'+themesDisplay+'</div></div>'
+      +(!p.cohortCode?'<div class="profile-row"><span class="field-label">Cohort Code</span>'
+      +'<div class="profile-value"><input style="background:transparent;border:1px solid var(--border-strong);color:var(--white);font-family:inherit;font-size:0.75rem;padding:5px 8px;width:160px;text-transform:uppercase;letter-spacing:.06em;" id="cohort-input-cf" placeholder="e.g. NOV2024-WD" maxlength="20"/>'
+      +' <span style="font-size:0.6875rem;color:var(--white-dim);">(optional \u2014 enter if you have a class code)</span></div></div>':'')
       +'<p class="profile-clear"><a onclick="return clearProfileAndReload()">Not '+p.name+'? Clear saved name &amp; strengths</a></p>'
       +'</div>';
   }
@@ -460,9 +474,11 @@ function renderWelcome(){
 }
 function startCase(){
   var p=getProfile();
-  var name,themes;
+  var name,themes,cohortCode;
   if(p&&p.name){
-    name=p.name;themes=p.themes;
+    name=p.name;themes=p.themes;cohortCode=p.cohortCode||'';
+    var cfInput=document.getElementById('cohort-input-cf');
+    if(cfInput&&cfInput.value.trim())cohortCode=cfInput.value.trim().toUpperCase();
   }else{
     name=document.getElementById('name-input').value.trim();
     if(!name){alert('Please enter your name to continue.');return;}
@@ -477,8 +493,12 @@ function startCase(){
         themes.push(v);
       }
     }
-    saveProfile(name,themes);
+    cohortCode='';
+    var cfInput2=document.getElementById('cohort-input-cf');
+    if(cfInput2&&cfInput2.value.trim())cohortCode=cfInput2.value.trim().toUpperCase();
+    saveProfile(name,themes,cohortCode);
   }
+  if(cohortCode)saveProfile(name,themes,cohortCode);
   CS.name=name;
   CS.themes=themes;
   CS.section='training';
@@ -677,6 +697,41 @@ function chooseOption(letter){
   if(CASE_STEP===3){nextBtn.textContent='Continue to Debrief \u2192';}
 }
 
+// ===== SUPABASE =====
+var SB_URL='https://uvzgrrypvjuxmzytdyvs.supabase.co';
+var SB_KEY='sb_publishable_3un3K44EQlu3n_1W8TzhpA_laikZo6h';
+var CF_NUMBER='05';
+
+function postCFResponse(kcAnswerBools,kcScore){{
+  try{{
+    var p=getProfile()||{{}};
+    var sessionId=p.sessionId||genUUID();
+    if(!p.sessionId){{saveProfile(p.name,p.themes,p.cohortCode||'');}}
+    var decisions=[];
+    var dKeys=Object.keys(CS.decisions).sort(function(a,b){{return a-b;}});
+    dKeys.forEach(function(k){{decisions.push(CS.decisions[k]);}});
+    var payload={{
+      session_id:sessionId,
+      cohort_code:p.cohortCode||'',
+      cf_number:CF_NUMBER,
+      decisions:decisions,
+      kc_score:KC_QUESTIONS.length>0?kcScore/KC_QUESTIONS.length:0,
+      kc_answers:kcAnswerBools,
+      strength_theme:(p.themes&&p.themes[0]&&p.themes[0]!=='N/A')?p.themes[0]:''
+    }};
+    fetch(SB_URL+'/rest/v1/responses',{{
+      method:'POST',
+      headers:{{
+        'apikey':SB_KEY,
+        'Authorization':'Bearer '+SB_KEY,
+        'Content-Type':'application/json',
+        'Prefer':'return=minimal'
+      }},
+      body:JSON.stringify(payload)
+    }}).catch(function(){{}});
+  }}catch(e){{}}
+}}
+
 // ===== KNOWLEDGE CHECK =====
 var KC_QUESTIONS=[
   {tag:'Doctrine',text:'A PROC2040 Resource Estimate that comes in above the funding ceiling set under PROC1040 most accurately indicates:',
@@ -760,6 +815,7 @@ function selectKCAnswer(qi,oi){
 
 function submitKC(){
   var correct=0;
+  var kcAnswerBools=[];
   KC_QUESTIONS.forEach(function(q,qi){
     var order=kcOrder[qi];
     var selPos=kcAnswers[qi];
@@ -767,6 +823,7 @@ function submitKC(){
     var correctPos=order.indexOf(q.correct);
     var isCorrect=selOrigIdx===q.correct;
     if(isCorrect)correct++;
+    kcAnswerBools.push(isCorrect);
     document.querySelectorAll('[id^="kc-opt-'+qi+'-"]').forEach(function(el){el.classList.remove('selected');});
     document.getElementById('kc-opt-'+qi+'-'+selPos).classList.add(isCorrect?'correct':'incorrect');
     if(!isCorrect)document.getElementById('kc-opt-'+qi+'-'+correctPos).classList.add('correct');
@@ -782,6 +839,7 @@ function submitKC(){
   var btnRow=document.getElementById('kc-btn-row');
   if(passed){
     CS.sectionsComplete.kc=true;saveState();
+    postCFResponse(kcAnswerBools,correct);
     btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'complete\')">Finish Case File &rarr;</button>';
   } else {
     btnRow.innerHTML='<button class="btn-primary" onclick="retakeKC()">Retake Knowledge Check</button>';
