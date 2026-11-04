@@ -745,8 +745,17 @@ function postCFResponse(kcAnswerBools,kcScore){
         'Prefer':'return=minimal'
       },
       body:JSON.stringify(payload)
-    }).catch(function(){});// best-effort, never blocks learner
-  }catch(e){}
+    }).then(function(r){
+      var dbg=document.getElementById('sb-debug');
+      if(dbg)dbg.textContent='Supabase: HTTP '+r.status+' '+r.statusText;
+    }).catch(function(err){
+      var dbg=document.getElementById('sb-debug');
+      if(dbg)dbg.textContent='Supabase fetch error: '+err;
+    });
+  }catch(e){
+    var dbg=document.getElementById('sb-debug');
+    if(dbg)dbg.textContent='Supabase exception: '+e;
+  }
 }
 
 // ===== KNOWLEDGE CHECK =====
@@ -857,7 +866,7 @@ function submitKC(){
   if(passed){
     CS.sectionsComplete.kc=true;saveState();
     postCFResponse(kcAnswerBools,correct);
-    btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'complete\')">Finish Case File &rarr;</button>';
+    btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'complete\')">Finish Case File &rarr;</button><div id="sb-debug" style="margin-top:8px;font-family:monospace;font-size:0.75rem;color:var(--gold-dim);"></div>';
   } else {
     btnRow.innerHTML='<button class="btn-primary" onclick="retakeKC()">Retake Knowledge Check</button>';
   }
