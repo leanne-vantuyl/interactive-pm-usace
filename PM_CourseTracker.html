@@ -46,6 +46,9 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
 .bar-fill{height:100%;border-radius:2px;transition:width .4s;background:var(--navy);}
 .ch-pct{font-size:.7rem;color:var(--gray-dk);width:30px;text-align:right;flex-shrink:0;}
 .n-lbl{font-size:.67rem;color:var(--gray-dk);margin-top:1px;}
+.ch-row{position:relative;}
+.ch-row .tip{display:none;position:absolute;left:0;top:calc(100% + 4px);background:var(--dark);color:var(--white);font-size:.72rem;padding:5px 8px;border-radius:3px;white-space:normal;max-width:260px;line-height:1.4;z-index:50;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.35);}
+.ch-row:hover .tip{display:block;}
 .kc-section{margin-top:10px;padding-top:9px;border-top:1px solid #EEE;}
 .kc-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
 .kc-q{font-size:.7rem;color:var(--gray-dk);width:20px;flex-shrink:0;}
@@ -376,6 +379,17 @@ function renderDecisions() {
       });
     });
 
+    // Build option-text lookup from stored {letter,text} decision objects
+    const optTexts = [{},{},{}];
+    cfResps.forEach(r => {
+      const decs = r.decisions || [];
+      decs.forEach((choice,di) => {
+        if(!choice || typeof choice !== 'object') return;
+        const {letter, text} = choice;
+        if(letter && text && !optTexts[di][letter]) optTexts[di][letter] = text;
+      });
+    });
+
     const decisionsHTML = D_LABELS[ci].map((label,di) => {
       const total = Object.values(votes[di]).reduce((a,b)=>a+b,0)||1;
       const n = Object.values(votes[di]).reduce((a,b)=>a+b,0);
@@ -384,10 +398,13 @@ function renderDecisions() {
         ${['A','B','C'].map(c=>{
           const cnt = votes[di][c]||0;
           const pct = Math.round(cnt/total*100);
+          const tipText = optTexts[di][c] ? optTexts[di][c].replace(/"/g,'&quot;') : '';
+          const tipHtml = tipText ? `<div class="tip"><strong>${c}.</strong> ${tipText}</div>` : '';
           return `<div class="ch-row">
             <div class="ch-lbl">${c}</div>
             <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
             <div class="ch-pct">${pct}%</div>
+            ${tipHtml}
           </div>`;
         }).join('')}
         <div class="n-lbl">n = ${n}</div>
