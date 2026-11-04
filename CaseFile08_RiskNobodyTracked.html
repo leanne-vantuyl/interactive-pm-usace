@@ -436,8 +436,9 @@ function renderProfileFields(){
       +'</div>';
   }
   var grid='<div class="theme-select-grid" id="theme-select-grid">';
+  var ordinals=['#1 Strength','#2 Strength','#3 Strength','#4 Strength','#5 Strength'];
   for(var i=1;i<=5;i++){
-    grid+='<div class="theme-select-item"><label>Theme '+i+' <span class="required-mark">*</span></label>'
+    grid+='<div class="theme-select-item"><label>'+ordinals[i-1]+' <span class="required-mark">*</span></label>'
       +'<select class="theme-select" id="theme-select-'+i+'">'+THEME_OPTIONS_HTML+'</select></div>';
   }
   grid+='</div>';
@@ -445,9 +446,10 @@ function renderProfileFields(){
     +'<label class="field-label">Your Name <span class="required-mark">*</span></label>'
     +'<input class="name-input" id="name-input" type="text" placeholder="First Last"/>'
     +'</div>'
-    +'<div style="margin-bottom:8px;">'
+    +'<div style="margin-bottom:4px;">'
     +'<label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>'
     +'</div>'
+    +'<p style="font-size:0.75rem;color:var(--white-dim);line-height:1.6;margin-bottom:8px;">Enter them <strong style="color:var(--white);">in ranked order</strong> as they appear on your Gallup results report &mdash; your #1 is your dominant theme.</p>'
     +'<label class="na-checkbox-row" for="na-checkbox"><input type="checkbox" id="na-checkbox" onchange="toggleNAThemes()"/>I do not know my CliftonStrengths (select N/A)</label>'
     +grid;
 }
