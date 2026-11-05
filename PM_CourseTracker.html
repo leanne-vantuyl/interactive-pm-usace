@@ -279,6 +279,74 @@ const PHASE_PILL = {
   'INITIATION':'p-init','PLANNING':'p-plan','EXEC / M&C':'p-exec','CLOSEOUT':'p-close'
 };
 
+// Canonical option text for tooltips -- sourced directly from case files
+const CF_OPTIONS = {
+  '01': [
+    {'A':"Send a calendar invite for a full PDT meeting this afternoon — introduce yourself and ask each member to bring their latest deliverable status.",'B':"Spend the morning reviewing the PMP, PDT Charter, and PROMIS data, then reach out to each PDT member individually.",'C':"Email your DPM first and ask for a briefing on the team and project history before reaching out to anyone."},
+    {'A':"Email your DPM and ask them to direct Raj to respond — you do not want this to slip further.",'B':"Call or walk over to Raj directly. Give him context on the deadline, ask what he needs to get you the numbers.",'C':"Proceed with the cost figures from the last PMP update and flag the estimate as preliminary."},
+    {'A':"Ask Pat directly, in front of the group: \"Pat, what is your take on the schedule status?\"",'B':"Continue the meeting, but follow up with Pat one-on-one afterward to ask how things are going.",'C':"Say nothing — not everyone needs to speak in every meeting, and you do not want to put Pat on the spot."},
+  ],
+  '02': [
+    {'A':"Step in immediately: \"Let us pause here. I want to understand both sides before we decide.\"",'B':"Let them work it out — stay quiet for a moment and see if Dana and Marcus resolve it themselves.",'C':"Make a call on the spot: \"Marcus, we lock the schedule today. Dana, you will have to validate the cost estimate with what we have.\""},
+    {'A':"Tell them both your decision: the schedule locks today with a flagged placeholder, to be resolved within 48 hours.",'B':"Avoid bringing them back together at all — handle the schedule and the cost estimate separately, through separate conversations.",'C':"Bring them back together and reframe the problem out loud: \"It sounds like we do not actually agree on the scope. Let us fix that first.\""},
+    {'A':"Quietly schedule Dana and Marcus's planning work so they rarely have to be in the same meeting at the same time.",'B':"Propose a simple working agreement: when PROC2030 and PROC2040 conflict, flagged placeholders and 48-hour resolution windows are the standard response.",'C':"Nothing further — it was a one-time scheduling pressure issue and does not need a process change."},
+  ],
+  '03': [
+    {'A':"\"Of course — that is a great idea. We can fold that in, it should not be a big deal.\"",'B':"\"I do not think we can fit that in — we are too close to PROC2070 to add anything new.\"",'C':"\"That is a great idea, sir. Let us capture it in the requirements register so we can scope and schedule it properly.\""},
+    {'A':"Pause the walkthrough briefly: \"Sir, I want to make sure all three of these great ideas get a fair look — can we capture them together before we go further?\"",'B':"Continue handling each request the same way, one at a time, as they come up — it is working so far.",'C':"Mention to Col. Ashford that he is asking for \"a lot of extra things today\" and that you are concerned about scope."},
+    {'A':"Wait until the next scheduled PDT meeting to mention the requests — no need to do anything today.",'B':"Log all three requests in the Stakeholder Requirements Register today, with source, date, and status: Under Review.",'C':"Quietly decide internally which of the three \"make sense\" and start incorporating those into the design — the others you will let drop."},
+  ],
+  '04': [
+    {'A':"Say nothing — Priya is the mechanical expert, and questioning her number is not really your place.",'B':"Message Priya tonight: \"Quick question on the HVAC rough-in duration — can you walk me through the basis for 10 days?\"",'C':"Quietly change the duration to 15 days in the draft yourself before the meeting, so it does not come up."},
+    {'A':"\"I understand it is the template default, but I think it is too short — we should change it.\"",'B':"\"Okay, no problem — if that is the standard, let us leave it as is.\"",'C':"\"That makes sense as a starting point — does the template account for the ductwork density in this design? Can we verify before we baseline?\""},
+    {'A':"Support locking the schedule today with the revised 16-day duration — and ask Marcus to flag it in the schedule notes.",'B':"Ask Marcus to delay the baseline by a day so the team can review whether any other durations need a similar check.",'C':"Lock the schedule today with the revised number, and move on — the immediate issue is resolved."},
+  ],
+  '05': [
+    {'A':"Email your DPM right away: \"We have a problem — our revised estimate is 8% over the funding ceiling.\"",'B':"Hold off mentioning it for now — maybe it will resolve itself as design finalizes, or costs come down.",'C':"Set up time with Dana to walk through where the 8% comes from and what realistic options exist before escalating."},
+    {'A':"\"Our revised PROC2040 estimate is 8% over the funding ceiling, driven mainly by the corrected soil remediation scope. We have three paths forward.\"",'B':"\"We are 8% over the funding ceiling. What do you want to do?\"",'C':"\"There is a small gap in the estimate — probably nothing, but wanted to flag it just in case.\""},
+    {'A':"\"Understood — we will make it work within the ceiling. I will let you know once it is handled.\"",'B':"\"Understood. The value-engineering option gets us part of the way — about 3%. For the remainder, we will need a decision on scope.\"",'C':"\"We cannot just make the numbers fit — if the ceiling does not cover the estimate, the ceiling needs to change or the scope needs to change.\""},
+  ],
+  '06': [
+    {'A':"Send a reminder to the whole PDT about double-checking schedule updates before submission — do not name Pat specifically.",'B':"Write down the specific examples — which activities, which update, what it caused — and schedule a one-on-one with Pat.",'C':"Mention it briefly to Pat in passing during the next PDT meeting — \"hey, just double-check your actuals before you submit.\""},
+    {'A':"\"In the last two schedule updates, the actual-start dates for three activities were not entered correctly. That pushed the critical path out and affected the cost forecast. I need that to not happen again.\"",'B':"\"Your recent updates have been pretty sloppy — you need to be more careful with the schedule.\"",'C':"\"It is totally fine — I will just double-check everything myself from now on before it goes to the DPM.\""},
+    {'A':"\"I understand that is frustrating, but the schedule updates still need to be accurate regardless of what else is on your plate. Let us figure out what support you need.\"",'B':"\"That makes total sense, then — do not worry about the recent errors, I get it.\"",'C':"\"That explains a lot — and it means there are two things to fix. I am going to formally flag a resource constraint with your functional chief.\""},
+  ],
+  '07': [
+    {'A':"Reply right away: \"I think there may be some confusion — EVM data can be misleading early in a reporting period. I will send a clarification.\"",'B':"Forward the email to Marcus and Dana: \"Can one of you respond to Col. Ashford on this? I am tied up.\"",'C':"Reply that you will look into the data and follow up shortly — then immediately pull the EVM report and run the three-step diagnostic."},
+    {'A':"\"This appears to be a data artifact related to how the portfolio rollup calculates SV early in the reporting period — not a real schedule variance on this project. Here is the actual status.\""},
+    {'A':"Propose a short, informal PDT check-in every two weeks specifically to review SV/SPI trends before they appear in the portfolio rollup.",'B':"Continue with the existing monthly EVM reporting cadence — this was a one-time situation and does not need a process change.",'C':"Ask Marcus, informally, to smooth future SPI calculations slightly so swings are less likely to trigger questions from above."},
+  ],
+  '08': [
+    {'A':"\"Good to know — thanks,\" and move on with the meeting. It is useful context, but not something for the Register.",'B':"\"Wait — is that something that is in our Risk Register for this project? If not, let us make sure it gets logged today.\"",'C':"\"Got it, I will keep an eye on that,\" and make a mental note to ask about the chiller delivery schedule at a future meeting."},
+    {'A':"Formally add it to the Risk Register now: likelihood (based on Marcus's prior experience), impact, trigger (delivery confirmation date), and owner.",'B':"Decide it is probably fine — the project has not needed the chiller yet, so there is time to watch and see.",'C':"Note it in your own personal project notebook so you remember to ask about it at a future PDT meeting."},
+  ],
+  '09': [
+    {'A':"Let it continue — Dana and Priya are engaged, and interrupting might feel disruptive. The agenda is flexible.",'B':"Interrupt firmly: \"Okay, that is not relevant to today — let us get back to the agenda.\"",'C':"\"This sounds like a really useful conversation — can we park it for after the meeting or add it as a standing agenda item?\""},
+    {'A':"Address all three items in the remaining time, dividing it roughly evenly — about 6-7 minutes each.",'B':"Give item 3 the time it actually needs (12-15 minutes) for a real discussion and decision — skip items 1 and 2 if needed.",'C':"Skip item 3 this week since there is not enough time to do it justice — revisit it next week."},
+    {'A':"Before next week's meeting, send a brief agenda that flags which items are time-sensitive decisions vs. informational updates.",'B':"Mention to the PDT generally that everyone should \"try to stay on topic\" in future meetings.",'C':"Reduce the meeting from 45 to 30 minutes, on the theory that a shorter meeting will naturally keep things focused."},
+  ],
+  '10': [
+    {'A':"Tell Mr. Alvarez you need to step away and make a call — you will come find him once you have talked to the team.",'B':"Tell him right away, confidently: \"This is wrong — we are not accepting this. The contractor needs to redo the wall.\"",'C':"Acknowledge it with him on the spot — \"you are right, that is not the color we approved\" — and tell him you will find out what happened and get back to him."},
+    {'A':"\"We are going to have this remade correctly — that is what was approved, and we want the user to have what was approved.\"",'B':"Take the two options to your leadership and the contractor, decide internally which makes more sense, then come back to Mr. Alvarez with the team's recommendation.",'C':"Lay out both real options plainly to Mr. Alvarez — remake (10 more weeks, correct color) or as-built deviation (proceed now, document the variance) — and ask which he prefers."},
+    {'A':"Move forward — the team is happy, occupancy proceeds on schedule, no harm done. No need to document.",'B':"Document the as-built deviation under PROC3010: approved submittal specified Slate Gray, installed color is Pewter, user accepted as-built condition.",'C':"Document the deviation under PROC3010 as in B — AND flag the root cause: the color discrepancy was present in the submittal but not caught during review."},
+  ],
+  '11': [
+    {'A':"\"Oh, that is great — one less thing to worry about,\" and move on with the meeting. Good news is good news.",'B':"\"Wait — two weeks early? Are we sure that is right? Let us double-check the delivery paperwork.\"",'C':"\"Two weeks early — does that change anything for us? Let me check whether HVAC installation can start sooner.\""},
+    {'A':"Talk to Marcus and the electrical subcontractor's lead together: confirm electrical rough-in can safely advance, and direct them to reprioritize this zone.",'B':"Do not change anything proactively — if electrical rough-in happens to finish early on its own, great. Otherwise, the original schedule holds.",'C':"Direct the electrical crew to prioritize this zone starting today, to capture the opportunity before the window closes."},
+    {'A':"Add an entry to the Risk Register documenting the captured opportunity (Enhance response, REF8007G) and the action taken.",'B':"Do not document it — opportunities are nice, but the Risk Register is for things that might go wrong.",'C':"Send an informal note to leadership highlighting the schedule gain as a PDT win — good news is worth sharing."},
+  ],
+  '12': [
+    {'A':"Set the CCB package aside and write up your thoughts on Priya now — it is for a friend, and that matters.",'B':"Send a quick, warm reply now — \"happy to help, let me get back to you properly after I finish what I am working on.\"",'C':"Do not respond yet — it is not really PDT business, and the CCB package is what actually has a deadline."},
+    {'A':"\"Priya has been great — the HVAC sequencing has gone smoothly the whole project. Really solid work.\"",'B':"Tell the full story: the original HVAC duration needed correcting early on, Priya took it well and delivered strong. That is the complete picture.",'C':"Lead with the HVAC estimate issue — \"I want to be objective, so I should mention there was an early scheduling question\" — before saying anything positive."},
+    {'A':"Suggest to Frank — and note for yourself — that PM input on PDT member performance could be formalized through PROC1020 so it is not ad hoc next time.",'B':"Nothing — this exchange went well, Frank got what he needed, and Priya benefits. No need to institutionalize it.",'C':"Decide that, going forward, you will decline ALL informal requests like this — to avoid any appearance of favoritism."},
+  ],
+  '13': [
+    {'A':"Open with \"let us start with what did not go well, so we can get that out of the way\" — then move to what went well.",'B':"Open with \"what went well,\" then \"what did not go as planned,\" then \"what would we do differently\" — standard AAR structure.",'C':"Skip the group discussion — ask each person to send you their thoughts individually, and you will compile the AAR yourself."},
+    {'A':"Document it as a process lesson: \"A workload conflict was raised early but not formally escalated under PROC1020, which created delays. Lesson: raise resourcing conflicts formally.\"",'B':"Leave it out of the written AAR — it was resolved, the project succeeded, and revisiting it in a written record could damage a relationship that ended well."},
+    {'A':"The full AAR notes, as written — unedited, so leadership has the complete picture.",'B':"A summary that focuses only on successes — the project finished, the funding gap was resolved, and the team delivered.",'C':"A concise summary: key outcomes, 2-3 standout lessons (including the PROC1020 escalation lesson), and what the team would do differently."},
+  ],
+};
+
 const D_LABELS = [
   ['Charter Update','PDT Engagement','DPM Communication'],
   ['Mediation Approach','Documentation','Escalation'],
@@ -480,7 +548,8 @@ function renderDecisions() {
         ${['A','B','C'].map(c=>{
           const cnt = votes[di][c]||0;
           const pct = Math.round(cnt/total*100);
-          const tipText = optTexts[di][c] ? optTexts[di][c].replace(/"/g,'&quot;') : '';
+          const fallbackTip = (CF_OPTIONS[cf.num] && CF_OPTIONS[cf.num][di] && CF_OPTIONS[cf.num][di][c]) || '';
+          const tipText = (optTexts[di][c] || fallbackTip).replace(/"/g,'&quot;');
           const tipHtml = tipText ? `<div class="tip"><strong>${c}.</strong> ${tipText}</div>` : '';
           return `<div class="ch-row">
             <div class="ch-lbl">${c}</div>
