@@ -301,7 +301,7 @@ function unlockTest(){
 
 function verifyPassword(pw, cb){
   // Fetch allowed cohort passwords from Supabase
-  fetch(SB_URL+'/rest/v1/cohort_passwords?select=cohort_code,password_hash,active&active=eq.true',{
+  fetch(SB_URL+'/rest/v1/cohort_passwords?select=cohort_code,password_hash,active&active=eq.true&test_type=eq.pre',{
     headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
   }).then(function(r){return r.json();}).then(function(rows){
     if(!rows||!rows.length){
