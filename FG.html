@@ -6,6 +6,12 @@
 <title>Facilitator Guide | Interactive PM in USACE</title>
 <style>
 :root{
+  --bg:#F5F2EB;--surface:#EDEAE0;--surface2:#E4E0D4;--border:#C8C0A8;
+  --gold:#7A5810;--green:#1A4A10;--navy:#1B3A6B;--red:#7A1A1A;
+  --text:#1A1A1A;--muted:#4A5568;--dim:#8A8A7A;
+  --tag-init:#1A4A10;--tag-plan:#1B3A6B;--tag-exec:#6B3A1B;--tag-close:#4A1B6B;
+}
+:root[data-theme="dark"]{
   --bg:#0D1117;--surface:#151C26;--surface2:#1C2535;--border:#2A3550;
   --gold:#C9A44A;--green:#1B6B3A;--navy:#1B3A6B;--red:#8B1A1A;
   --text:#E8E0D0;--muted:#8A9BB5;--dim:#5A6882;
@@ -165,14 +171,17 @@ main{max-width:1100px;margin:0 auto;padding:1.5rem;}
   display:inline-flex;align-items:center;justify-content:center;
   width:16px;height:16px;border-radius:50%;font-size:0.5rem;font-weight:700;
 }
-.move-1 .move-num{background:var(--gold);color:#111;}
-.move-2 .move-num{background:var(--navy);color:#C8D8F0;}
-.move-3 .move-num{background:var(--green);color:#C8F0D8;}
-.move-4 .move-num{background:var(--red);color:#F0C8C8;}
+.move-1 .move-num{background:var(--gold);color:#fff;}
+.move-2 .move-num{background:var(--navy);color:#fff;}
+.move-3 .move-num{background:var(--green);color:#fff;}
+.move-4 .move-num{background:var(--red);color:#fff;}
 .move-1 .move-label-text{color:var(--gold);}
-.move-2 .move-label-text{color:#7BAEE8;}
-.move-3 .move-label-text{color:#5DBF8A;}
-.move-4 .move-label-text{color:#E87B7B;}
+.move-2 .move-label-text{color:var(--navy);}
+.move-3 .move-label-text{color:var(--green);}
+.move-4 .move-label-text{color:var(--red);}
+:root[data-theme="dark"] .move-2 .move-label-text{color:#7BAEE8;}
+:root[data-theme="dark"] .move-3 .move-label-text{color:#5DBF8A;}
+:root[data-theme="dark"] .move-4 .move-label-text{color:#E87B7B;}
 .move-time{font-size:0.5rem;color:var(--muted);letter-spacing:.06em;}
 .move-heading{
   font-size:0.6875rem;font-weight:500;color:var(--text);
@@ -244,6 +253,7 @@ main{max-width:1100px;margin:0 auto;padding:1.5rem;}
         <button class="view-btn" id="btn-lessons" onclick="setView('lessons')">Lessons</button>
       </div>
     </div>
+    <button class="print-btn" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
     <button class="print-btn" onclick="window.print()">&#9113; Print</button>
   </div>
 </header>
@@ -267,6 +277,27 @@ main{max-width:1100px;margin:0 auto;padding:1.5rem;}
 </main>
 
 <script>
+// ── Theme ──────────────────────────────────────────────────────────────
+(function(){
+  try{var t=localStorage.getItem('fg-theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}
+})();
+function toggleTheme(){
+  var html=document.documentElement;
+  var isDark=html.getAttribute('data-theme')==='dark';
+  if(isDark){html.removeAttribute('data-theme');}else{html.setAttribute('data-theme','dark');}
+  var btn=document.getElementById('theme-toggle');
+  if(btn)btn.textContent=isDark?'☾ Dark':'☀ Light';
+  try{localStorage.setItem('fg-theme',isDark?'light':'dark');}catch(e){}
+}
+// Set initial button label after DOM ready
+document.addEventListener('DOMContentLoaded',function(){
+  var btn=document.getElementById('theme-toggle');
+  if(btn){
+    var isDark=document.documentElement.getAttribute('data-theme')==='dark';
+    btn.textContent=isDark?'☀ Light':'☾ Dark';
+  }
+});
+
 // ── Case file metadata ──────────────────────────────────────────────────
 const CF_META = [
   {num:'01',title:"New PM, Unclear Roles",phase:"Initiation",slug:"Initiation Phase"},
