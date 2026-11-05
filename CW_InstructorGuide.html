@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CW Instructor Guide | Interactive PM in USACE</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap">
+<style>
+:root{
+  --bg:#F5F2EB;--surface:#EDEAE0;--surface2:#E4E0D4;--border:#C8C0A8;
+  --gold:#7A5810;--green:#1A4A10;--navy:#1B3A6B;--red:#7A1A1A;
+  --text:#1A1A1A;--muted:#4A5568;--dim:#8A8A7A;
+  --cw:#1A4A10;--cw-bg:rgba(26,74,16,0.08);--cw-border:rgba(26,74,16,0.3);
+}
+:root[data-theme="dark"]{
+  --bg:#0D1117;--surface:#151C26;--surface2:#1C2535;--border:#2A3550;
+  --gold:#C9A44A;--green:#1B6B3A;--navy:#1B3A6B;--red:#8B1A1A;
+  --text:#E8E0D0;--muted:#8A9BB5;--dim:#5A6882;
+  --cw:#1B6B3A;--cw-bg:rgba(27,107,58,0.12);--cw-border:rgba(27,107,58,0.35);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1117;--surface:#151C26;--surface2:#1C2535;--border:#2A3550;
+  --gold:#C9A44A;--green:#1B6B3A;--navy:#1B3A6B;--red:#8B1A1A;
+  --text:#E8E0D0;--muted:#8A9BB5;--dim:#5A6882;
+  --cw:#1B6B3A;--cw-bg:rgba(27,107,58,0.12);--cw-border:rgba(27,107,58,0.35);
+}}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:.875rem;line-height:1.65;}
+
+/* header */
+.site-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.logo-mark{font-size:.5625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cw);font-weight:500;}
+.logo-title{font-size:.75rem;color:var(--text);font-weight:500;margin-top:1px;}
+.header-controls{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;}
+.print-btn{background:transparent;border:1px solid var(--dim);color:var(--muted);font-family:'DM Mono',monospace;font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;cursor:pointer;}
+.print-btn:hover{border-color:var(--cw);color:var(--cw);}
+
+/* layout */
+main{max-width:900px;margin:0 auto;padding:1.5rem;}
+
+/* day tabs */
+.day-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:1.5rem;overflow-x:auto;}
+.day-tab{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Mono',monospace;font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem 1rem;cursor:pointer;white-space:nowrap;}
+.day-tab.active{color:var(--cw);border-bottom-color:var(--cw);}
+.day-tab:hover:not(.active){color:var(--text);}
+
+/* day panel */
+.day-panel{display:none;}
+.day-panel.active{display:block;}
+
+/* day header */
+.day-header{margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);}
+.day-header h2{font-size:.875rem;font-weight:500;color:var(--cw);letter-spacing:.08em;text-transform:uppercase;}
+.day-header p{font-size:.75rem;color:var(--muted);margin-top:.25rem;}
+
+/* lesson block */
+.lesson{border:1px solid var(--border);margin-bottom:1rem;}
+.lesson-header{padding:.6rem .875rem;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:.5rem;}
+.lesson-header:hover{background:var(--surface2);}
+.lesson-num{font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+.lesson-title{font-size:.8125rem;font-weight:500;color:var(--text);}
+.lesson-meta{font-size:.5625rem;color:var(--dim);text-align:right;white-space:nowrap;}
+.chevron{font-size:.5rem;color:var(--dim);transition:transform .2s;}
+.chevron.open{transform:rotate(180deg);}
+.lesson-body{padding:.875rem;display:none;}
+.lesson-body.open{display:block;}
+
+/* CW badge on lesson lead */
+.cw-badge{display:inline-block;font-size:.45rem;letter-spacing:.12em;text-transform:uppercase;padding:2px 7px;background:var(--cw-bg);border:1px solid var(--cw-border);color:var(--cw);font-weight:500;vertical-align:middle;}
+
+/* move cards */
+.moves{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.5rem;margin-bottom:.875rem;}
+.move-card{border:1px solid var(--border);padding:.5rem .625rem;}
+.move-label{font-size:.45rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem;}
+.move-title{font-size:.6875rem;color:var(--text);font-weight:500;}
+.move-time{font-size:.5rem;color:var(--dim);margin-top:1px;}
+.move-lead{font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:var(--cw);margin-top:3px;}
+
+/* section labels */
+.section-label{font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;margin-top:.875rem;}
+.section-label:first-child{margin-top:0;}
+
+/* CW call-out */
+.cw-line{background:var(--cw-bg);border-left:3px solid var(--cw);padding:.5rem .75rem;margin:.4rem 0;font-size:.8125rem;color:var(--text);}
+.cw-label{font-size:.45rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cw);display:block;margin-bottom:.2rem;font-weight:500;}
+
+/* say/watch/if blocks */
+.say-block{background:var(--surface);border:1px solid var(--border);padding:.5rem .75rem;margin:.35rem 0;font-size:.8rem;line-height:1.6;}
+.watch-block{background:transparent;border:1px dashed var(--border);padding:.45rem .625rem;margin:.35rem 0;font-size:.75rem;color:var(--muted);}
+.if-block{background:transparent;border-left:2px solid var(--gold);padding:.35rem .625rem;margin:.35rem 0;font-size:.75rem;color:var(--muted);}
+.block-label{font-size:.45rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;display:block;margin-bottom:.2rem;}
+.say-block .block-label{color:var(--navy);}
+.watch-block .block-label{color:var(--gold);}
+.if-block .block-label{color:var(--gold);}
+
+/* move-on row */
+.moveon{font-size:.7rem;color:var(--dim);border-top:1px solid var(--border);padding-top:.35rem;margin-top:.5rem;}
+.moveon span{color:var(--muted);font-weight:500;}
+
+/* phase chip */
+.phase-chip{font-size:.45rem;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border:1px solid;display:inline-block;}
+.phase-init{color:#1A4A10;border-color:#1A4A10;}
+.phase-plan{color:#1B3A6B;border-color:#1B3A6B;}
+.phase-exec{color:#6B3A1B;border-color:#6B3A1B;}
+.phase-mnc{color:#4A1B6B;border-color:#4A1B6B;}
+.phase-close{color:#7A1A1A;border-color:#7A1A1A;}
+.phase-all{color:#555;border-color:#999;}
+
+/* CF block */
+.cf-block{border:1px solid var(--border);margin-top:.875rem;}
+.cf-header{background:var(--surface2);padding:.45rem .75rem;font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.cf-title{font-size:.8125rem;font-weight:500;color:var(--text);}
+.cf-body{padding:.6rem .75rem;}
+
+/* strengths note */
+.strengths-note{border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem;font-size:.75rem;color:var(--dim);}
+.strengths-note strong{color:var(--text);}
+
+/* footer nav */
+.footer-nav{display:flex;justify-content:space-between;margin-top:2rem;padding-top:.875rem;border-top:1px solid var(--border);}
+.footer-nav a{font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;}
+.footer-nav a:hover{color:var(--cw);}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div>
+    <div class="logo-mark">Civil Works Instructor Guide</div>
+    <div class="logo-title">PM in USACE — PROSPECT 355 / Course 229-ULC-355</div>
+  </div>
+  <div class="header-controls">
+    <button class="print-btn" onclick="window.print()">&#9113; Print</button>
+    <button class="print-btn" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
+    <a href="IG.html" class="print-btn" style="text-decoration:none;">&#8592; IG Home</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- Day tabs -->
+  <div class="day-tabs">
+    <button class="day-tab active" onclick="showDay(0)">Day 1 — Initiation</button>
+    <button class="day-tab" onclick="showDay(1)">Day 2 — Planning</button>
+    <button class="day-tab" onclick="showDay(2)">Day 3 — Execution</button>
+    <button class="day-tab" onclick="showDay(3)">Day 4 — Closeout</button>
+  </div>
+
+  <!-- ═══════════════════ DAY 1 ═══════════════════ -->
+  <div class="day-panel active" id="day-0">
+    <div class="day-header">
+      <h2>Day 1 — Who and Where You Are</h2>
+      <p>Foundation Block (60 min) + Lessons 1–3 + Case Files CF01–CF03 · All in Initiation Phase · PROC2020</p>
+    </div>
+
+    <!-- Foundation Block -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Foundation Block · 60 min · All Instructors</div>
+          <div class="lesson-title">USACE and the PDBP <span class="cw-badge">CW Shares</span></div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-all">All Phases</span></div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="moves">
+          <div class="move-card"><div class="move-label">Topic 1</div><div class="move-title">What is USACE?</div><div class="move-time">Mission, programs, scale</div></div>
+          <div class="move-card"><div class="move-label">Topic 2</div><div class="move-title">What is the PDBP?</div><div class="move-time">ER 5-1-11 — 5 Operating + 3 Project Imperatives</div></div>
+          <div class="move-card"><div class="move-label">Topic 3</div><div class="move-title">What is a Project?</div><div class="move-time">ER 5-1-11 definition</div></div>
+          <div class="move-card"><div class="move-label">Topic 4</div><div class="move-title">USACE Org Structure</div><div class="move-time">HQ → MSC → District → PDT matrix</div></div>
+          <div class="move-card"><div class="move-label">Topic 5</div><div class="move-title">The PDBP Lifecycle Map</div><div class="move-time">Post on wall — point all week</div></div>
+          <div class="move-card"><div class="move-label">Topic 6</div><div class="move-title">What the PM Owns</div><div class="move-time">Scope/schedule/cost/risk/team/comms</div></div>
+          <div class="move-card"><div class="move-label">Topic 7</div><div class="move-title">The PMP</div><div class="move-time">Living document, not a filing artifact</div></div>
+        </div>
+
+        <div class="section-label">Facilitation Notes</div>
+        <div class="say-block"><span class="block-label">SAY</span>"This is the only time this week we teach comprehensively. 60 minutes. Seven topics. All three instructors. By the end of this block, you'll have a map of the PDBP lifecycle posted on the wall — and we'll point to it all week." Two rules: ask questions as we go, and when we get to the lifecycle map, mark where your current project sits.</div>
+        <div class="watch-block"><span class="block-label">WATCH FOR</span>Participants who already know this material — they may disengage. Acknowledge early: "If you've been in USACE for years, some of this is review. What we're doing is making sure everyone in this room is working from the same map before we go into the case files."</div>
+
+        <div class="section-label">CW Voice — What the PM Owns (Topic 6)</div>
+        <div class="cw-line"><span class="cw-label">CW Covers</span>IF a Civil Works PM asks about the DPM's role: The DPM sits between the PM and the district management structure. The PM owns the project execution; the DPM owns portfolio integration and resource allocation decisions.</div>
+
+        <div class="section-label">Lifecycle Map — Check-in</div>
+        <div class="say-block"><span class="block-label">SAY — Lifecycle Map</span>"Now — look at your current project. Which phase is it in? Call it out." Go around the room. Write them on a whiteboard if possible — this creates immediate relevance. Walk each phase: "Initiation — PROC2020 — charter, PDT, scope. Planning — PROC2030/2040 — schedule, cost, team. Design — PROC2050 — A-E, drawings, specs. Execution — PROC3000 — construction, EVM. M&C — same PROC, different emphasis — risk, change, reports. Closeout — PROC4000 — as-builts, AAR, financial."</div>
+        <div class="if-block"><span class="block-label">IF</span>Participant doesn't know their phase: "Finding out is your first action item when you get back." Note that openly — it creates accountability.</div>
+      </div>
+    </div>
+
+    <!-- Lesson 1 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 1 · 30 min · CW + MP Lead</div>
+          <div class="lesson-title">The PDT and the Charter <span class="cw-badge">CW Leads Concept</span></div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-init">Initiation</span> · PROC2020</div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="moves">
+          <div class="move-card"><div class="move-label">Move 1</div><div class="move-title">The Situation</div><div class="move-time">5 min · SF leads</div></div>
+          <div class="move-card"><div class="move-label">Move 2</div><div class="move-title">The Concept</div><div class="move-time">10 min · CW + MP</div><div class="move-lead">CW delivers Part B line</div></div>
+          <div class="move-card"><div class="move-label">Move 3</div><div class="move-title">The Skill</div><div class="move-time">10 min · All three</div></div>
+          <div class="move-card"><div class="move-label">Move 4</div><div class="move-title">The Question</div><div class="move-time">5 min · SF leads</div></div>
+        </div>
+
+        <div class="section-label">Situation Setup</div>
+        <div class="say-block"><span class="block-label">SAY</span>Read slowly: "Maria has just been assigned to a project already underway. The charter lists the previous PM's name. A cost review is in 10 days. She has not yet met most of her PDT." Pause after the last sentence. "Before we look at what PROC2020 requires — what's your first instinct? What do you do first?"</div>
+        <div class="watch-block"><span class="block-label">WATCH FOR</span>"Call the DPM" — note it. "Find the charter" — reinforce it. "Meet the PDT" — acknowledge it. All three are defensible. The case file will test them.</div>
+
+        <div class="section-label">Concept Part A — What PROC2020 Requires</div>
+        <div class="say-block"><span class="block-label">SAY</span>Work each bullet with a brief example. "Named individuals — not 'the structural engineer,' not 'TBD.' A name. Because when the project is in trouble at 4pm Friday, you need to know whose phone to call." "Decision authority thresholds — the specific dollar amount beyond which someone needs higher approval. Without it, every decision is either over-cleared or under-cleared." "Functional chief confirmation — the formal commitment that this person is available for the duration." "RACI — if you ask three people who owns a decision and get three different answers, you have a RACI problem."</div>
+        <div class="watch-block"><span class="block-label">WATCH FOR</span>Participants writing — they're mapping this to their own project. Participants who look uncomfortable — they don't have these documented.</div>
+
+        <div class="section-label">Concept Part B — CW Specific</div>
+        <div class="cw-line"><span class="cw-label">CW Delivers</span>"In Civil Works, the sponsor is often on the PDT with formal cost-share obligations in the PPA." Personalize from your own experience — the slide gives the framework; you give the credibility.</div>
+        <div class="say-block"><span class="block-label">SAY — Both Instructors</span>"The Two Accountables problem — raise your hand if you've been in a meeting where two people both thought they owned a decision. That's a charter problem. Not a personality problem. A documentation problem." Then: "The simplest advice in this course: read the charter. If there isn't one, or if it hasn't been updated since the previous PM — that is your first action item. Not second. First."</div>
+        <div class="if-block"><span class="block-label">IF</span>Someone says "we don't really use charters in our district": "Then this lesson is especially for you. PROC2020 requires it. The question is whether you're getting the benefit of it."</div>
+
+        <div class="section-label">The Skill — Read a Charter</div>
+        <div class="say-block"><span class="block-label">SAY</span>"Handouts face-down until now. Flip them over. Sample charter, one page. Five minutes. Work through the five steps on screen. I want to hear what you'd update first." Go quiet. Let them work. At 3 minutes: "One more minute." At 5 minutes: "Table 1 — what's the first thing you'd fix?"</div>
+        <div class="watch-block"><span class="block-label">WATCH FOR</span>Someone who identifies a missing decision authority threshold — that's the key insight. If someone says the charter looks fine: "Walk me through what you saw. What's in the PM field? What's the decision threshold?" They'll find the gap.</div>
+
+        <div class="cf-block">
+          <div class="cf-header">Case File 01 — After Lesson 1</div>
+          <div class="cf-body">
+            <div class="cf-title">New PM, Unclear Roles</div>
+            <div class="say-block" style="margin-top:.5rem;"><span class="block-label">SAY — CF01 Debrief (CW Voice)</span>After the StrengthsFinder debrief, SF will invite CW and MP to add what they've seen in the field. Share a brief real example of a charter gap that created a decision authority problem in a Civil Works context. Keep it to 60 seconds.</div>
+          </div>
+        </div>
+        <div class="moveon"><span>MOVE ON WHEN:</span> Two or three tables have shared the charter skill. No need for consensus. Exactly 10 minutes on the skill.</div>
+      </div>
+    </div>
+
+    <!-- Lesson 2 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 2 · 30 min · CW + MP Support</div>
+          <div class="lesson-title">Scope and Sponsor Alignment <span class="cw-badge">CW Delivers Concept B</span></div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-init">Initiation</span> · PROC2010</div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="moves">
+          <div class="move-card"><div class="move-label">Move 1</div><div class="move-title">The Situation</div><div class="move-time">5 min · SF leads</div></div>
+          <div class="move-card"><div class="move-label">Move 2</div><div class="move-title">The Concept</div><div class="move-time">10 min · CW + MP</div><div class="move-lead">CW delivers agreement line</div></div>
+          <div class="move-card"><div class="move-label">Move 3</div><div class="move-title">The Skill</div><div class="move-time">10 min · All three</div></div>
+          <div class="move-card"><div class="move-label">Move 4</div><div class="move-title">The Question</div><div class="move-time">5 min · SF leads</div></div>
+        </div>
+
+        <div class="section-label">Concept — CW Specific</div>
+        <div class="cw-line"><span class="cw-label">CW Delivers</span>"The sponsor reads the project summary in the agreement. The PM reads the full scope statement. They often describe the same project differently." This is the Civil Works-specific gap. Personalize it — you've seen this.</div>
+        <div class="say-block"><span class="block-label">SAY — Scope Statement</span>"Scope statement is not a project description. The description says what you're building. The scope statement defines what IS and IS NOT included. Two different documents with two different jobs."</div>
+        <div class="say-block"><span class="block-label">SAY — Three Questions</span>"Three questions that change conversations: 'What's included in this scope?' 'What's explicitly excluded?' 'What happens if we find out later that X was not included?' These questions surface assumptions before they become disputes."</div>
+
+        <div class="cf-block">
+          <div class="cf-header">Case File 02 — After Lesson 2</div>
+          <div class="cf-body">
+            <div class="cf-title">Schedule vs. Scope</div>
+            <div class="say-block" style="margin-top:.5rem;"><span class="block-label">SAY — CF02 Debrief (CW Voice)</span>CW adds examples: times when program differences created scope-schedule tension in Civil Works — particularly when sponsor cost-share agreements had a fixed program year that couldn't absorb a scope change without a new PPA negotiation.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lesson 3 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 3 · 30 min · CW + MP Support</div>
+          <div class="lesson-title">The WBS and Scope in Practice</div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-init">Initiation</span> · PROC2020</div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">SAY</span>"WBS stands for Work Breakdown Structure. It is not a schedule. It is not a task list. It is a hierarchical decomposition of scope into deliverable components." "Without the WBS, scope lives in documents. With it, scope lives in the work breakdown — where it can be scheduled, resourced, and tracked."</div>
+        <div class="watch-block"><span class="block-label">WATCH FOR</span>Participants who say their project "doesn't have a WBS" — that means their schedule is built on assumptions they can't see. Don't correct harshly; acknowledge that the WBS is often skipped under pressure. The case file shows what that costs.</div>
+
+        <div class="cf-block">
+          <div class="cf-header">Case File 03 — After Lesson 3</div>
+          <div class="cf-body">
+            <div class="cf-title">The New Home</div>
+            <div class="say-block" style="margin-top:.5rem;"><span class="block-label">SAY — CF03 Debrief (CW Voice)</span>The gap was always there — nobody caught it. In Civil Works, the sponsor relationship makes this especially costly: a scope gap discovered during design triggers sponsor notification, possible PPA amendment, and cost-share renegotiation. What's the earliest catch point in a Civil Works project?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 1 Wrap -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">End of Day 1</div>
+          <div class="lesson-title">Day 1 Wrap + Tonight's Action</div>
+        </div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">SAY</span>"Tonight — look at your current project charter. One thing: is the PM field current? Does the decision authority threshold exist? If you can't answer yes to both in 30 seconds, you found your first action item."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ DAY 2 ═══════════════════ -->
+  <div class="day-panel" id="day-1">
+    <div class="day-header">
+      <h2>Day 2 — What Do We Promise?</h2>
+      <p>Lessons 4–6 + Case Files CF04–CF06 · Planning Phase · PROC2030/2040/1020</p>
+    </div>
+
+    <!-- L4 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 4 · 30 min · CW + MP Support</div>
+          <div class="lesson-title">The Schedule <span class="cw-badge">CW Adds CF04 Debrief</span></div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-plan">Planning</span> · PROC2030</div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">SAY</span>"We're not building a schedule today — PROSPECT 143 goes deep on scheduling tools. What we're doing is making sure you can read one, challenge one, and ask the question that the data doesn't answer."</div>
+        <div class="say-block"><span class="block-label">SAY — Resource Loading</span>"Resource loading matters because a schedule without resources isn't a plan — it's a wish. Every significant activity needs an assigned resource, and the schedule needs to reflect that person's actual availability."</div>
+
+        <div class="cf-block">
+          <div class="cf-header">Case File 04 — After Lesson 4</div>
+          <div class="cf-body">
+            <div class="cf-title">Built to Slip</div>
+            <div class="cw-line" style="margin-top:.5rem;"><span class="cw-label">CW Debrief Add</span>CW adds: how the "built to slip" problem plays out differently in Civil Works schedule reviews — particularly in projects where district schedule reviews are tied to cost-share reporting periods. When the schedule slips, it's not just a PM problem — it triggers sponsor communication requirements.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 5 · 30 min · CW + MP Co-Lead</div>
+          <div class="lesson-title">The Cost Estimate <span class="cw-badge">CW Leads Budget Context</span></div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-plan">Planning</span> · PROC2040</div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">SAY</span>"Three things you need to know before you can have an informed conversation about money on your project: where the number came from, what's in it, and what your options are when it doesn't fit the ceiling."</div>
+        <div class="say-block"><span class="block-label">SAY — Funding Ceiling vs. Project Cost</span>"Funding ceiling vs. project cost. These are not the same number. The ceiling is what was programmed. The project cost is what it actually takes to deliver the scope. When those diverge — you have decisions to make."</div>
+
+        <div class="cw-line"><span class="cw-label">CW Delivers — Budget Cycle Context</span>Deliver the Civil Works budget cycle context: the multi-year congressional appropriation cycle, how cost increases require supplemental budget requests, the CWIS and budget year submission implications, and what it means when a project "breaks" its programmed cost. This is genuinely different from MP — CW participants need to hear their own program's reality. Personalize from your experience.</div>
+        <div class="watch-block"><span class="block-label">WATCH FOR</span>CW participants who have faced this exact situation — "$2.3M over ceiling, make it work." They'll nod or share. Let one go briefly. "That's exactly what CF05 is about."</div>
+
+        <div class="cf-block">
+          <div class="cf-header">Case File 05 — After Lesson 5</div>
+          <div class="cf-body">
+            <div class="cf-title">The Number Doesn't Fit</div>
+            <div class="say-block" style="margin-top:.5rem;"><span class="block-label">SAY — Integration Note</span>"Notice the connection to CF04. The schedule problem from yesterday became today's cost problem. That's not a coincidence — that's the integration chain." In Civil Works: when cost breaks the ceiling, what are the actual options? Supplemental? Descope? Phasing?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L6 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 6 · 30 min · SF Leads · CW + MP Support</div>
+          <div class="lesson-title">Leading the Team</div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-plan">Planning</span> · PROC1020</div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">SAY</span>"The PM leads without supervising. That is a genuine tension, and PROC1020 is where the doctrine addresses it." "PROC1020 is clear: the PM observes, documents, and communicates to the appropriate functional supervisor when necessary. The PM does not supervise PDT members."</div>
+        <div class="say-block"><span class="block-label">SAY — Performance vs. Workload</span>"Performance vs. workload. The most common PM mistake is treating a workload problem as a performance problem. They look the same from a distance. They require completely different responses."</div>
+
+        <div class="cf-block">
+          <div class="cf-header">Case File 06 — After Lesson 6</div>
+          <div class="cf-body">
+            <div class="cf-title">The Feedback Conversation</div>
+            <div class="cw-line" style="margin-top:.5rem;"><span class="cw-label">CW Debrief Add</span>CW adds: how the performance vs. workload distinction plays out differently when the resourcing conflict involves a functional chief from another office — a common Civil Works dynamic where the PM has no leverage over the functional chief's workload decisions. What's the PM's move when the functional chief is the bottleneck?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ DAY 3 ═══════════════════ -->
+  <div class="day-panel" id="day-2">
+    <div class="day-header">
+      <h2>Day 3 — How Do We Deliver?</h2>
+      <p>Lessons 7–10 + Case Files CF07–CF10 · Execution + M&C Phases · PROC3000/3010/REF8007G</p>
+    </div>
+
+    <!-- L7 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 7 · 30 min · MP Leads · CW Support</div>
+          <div class="lesson-title">Measuring Performance — EVM</div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-exec">Execution</span> · PROC3000</div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">ROLE NOTE</span>MP leads this lesson. CW supports and adds context as needed during the concept phase. Focus on being available for Civil Works-specific questions about EVM reporting requirements in the district portfolio review context.</div>
+        <div class="say-block"><span class="block-label">SAY — Your Role in EVM Discussions</span>"We're not making you EVM experts today. We're making sure you can read the numbers, explain what they mean, and have an informed conversation when the portfolio review happens."</div>
+      </div>
+    </div>
+
+    <!-- L8 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 8 · 30 min · CW Leads</div>
+          <div class="lesson-title">Risk Management — The Risk Register <span class="cw-badge">CW Leads</span></div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-exec">Execution</span> · REF8007G</div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">SAY — Lesson Open</span>"REF8007G is the governing reference. We're going to look at every required field in the Risk Register and practice the fastest way to capture a risk before it walks out of the room."</div>
+        <div class="say-block"><span class="block-label">SAY — Three Categories</span>"Three categories first — Risk, Assumption, Issue. Getting these right matters because they require different responses. A risk has probability and impact. An assumption is something you're treating as true without verification. An issue is a risk that's already happened."</div>
+        <div class="say-block"><span class="block-label">SAY — The Trigger Field</span>"The trigger is the most neglected field in most Risk Registers. Without a trigger, a risk sits on the Register being 'monitored' — which means nothing is happening. A trigger is a specific, observable event that tells you the risk is materializing. It converts passive monitoring into active watching."</div>
+
+        <div class="cw-line"><span class="cw-label">CW Delivers — Specialty Item Risk</span>"Vendor delivery risk on specialty items is one of the most common unlogged risks in Civil Works projects. It lives in someone's head until it doesn't — until the specialty mechanical unit that has a 14-week lead time is ordered in week 10 of a 16-week execution window." This is specific and it's recognized immediately by Civil Works PMs.</div>
+        <div class="watch-block"><span class="block-label">WATCH FOR</span>Participants who start writing risk entries for their current project during the skill exercise. That's the goal. Someone who re-frames an assumption as a risk — "I assumed the contractor would have the form-work crew — that's actually a risk" — name that publicly.</div>
+
+        <div class="cf-block">
+          <div class="cf-header">Case File 08 — After Lesson 8</div>
+          <div class="cf-body">
+            <div class="cf-title">The Risk Nobody Tracked</div>
+            <div class="say-block" style="margin-top:.5rem;"><span class="block-label">SAY</span>"Marcus gave the warning. The system didn't catch it. Watch for the decision point — when did the two-minute capture need to happen?" In Civil Works: what's the institutional mechanism for surfacing verbal risk warnings? PDT meeting? Risk register review? Or just the PM's attention?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L9 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 9 · 30 min · SF Leads · CW Support</div>
+          <div class="lesson-title">Running PDT Meetings</div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-exec">Execution</span></div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">ROLE NOTE</span>SF leads this lesson. CW and MP support. Be ready to add context from your program's meeting culture when SF invites it during the debrief.</div>
+        <div class="say-block"><span class="block-label">SAY — Meeting Types</span>"Three types of agenda items. Decision — must be decided today. Time-sensitive — affects actions before the next meeting. Informational — context-setting only." The key insight: informational items go last or get cut. They are never worth running over for.</div>
+      </div>
+    </div>
+
+    <!-- L10 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 10 · 30 min · MP Leads · CW Delivers Key Line</div>
+          <div class="lesson-title">Change Management <span class="cw-badge">CW — Cost-Share Changes</span></div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-mnc">M&amp;C</span> · PROC3010</div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">ROLE NOTE</span>MP leads this lesson. CW delivers the Civil Works cost-share change line in Concept Part B. This is a genuinely different process from MP — be specific.</div>
+        <div class="cw-line"><span class="cw-label">CW Delivers — Concept Part B</span>"In Civil Works, changes affecting the sponsor's cost-share obligations require additional process beyond the district. Know before you act." Explain: a scope change that bumps the total project cost triggers a cost-share recalculation. The sponsor has to agree. If the PPA doesn't cover it, you need an amendment. This is not just a paperwork step — it can delay execution by weeks. MP PMs don't deal with this. Civil Works PMs do, every time.</div>
+        <div class="watch-block"><span class="block-label">WATCH FOR</span>Civil Works participants nodding — they've been here. If someone shares a story about an unauthorized change that created a sponsor problem, let them go for 60 seconds then: "That's exactly the gap CF10 explores."</div>
+
+        <div class="cf-block">
+          <div class="cf-header">Case File 10 — After Lesson 10</div>
+          <div class="cf-body">
+            <div class="cf-title">The Wrong Shade of Gray</div>
+            <div class="say-block" style="margin-top:.5rem;"><span class="block-label">SAY — CF10 Civil Works Dimension</span>In Civil Works, "is this a change?" has a second question attached: "Does this affect the cost-share obligation?" A material substitution that is technically equivalent but costs more than the contractor's original bid — does the sponsor's cost share go up? The PM cannot answer that alone.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ DAY 4 ═══════════════════ -->
+  <div class="day-panel" id="day-3">
+    <div class="day-header">
+      <h2>Day 4 — Finish Well</h2>
+      <p>Lessons 11–13 + Case Files CF11–CF13 · M&C → Closeout · REF8007G + PROC4000</p>
+    </div>
+
+    <!-- L11 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 11 · 30 min · CW Leads</div>
+          <div class="lesson-title">Risk as Opportunity — REF8007G <span class="cw-badge">CW Leads</span></div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-mnc">M&amp;C</span> · REF8007G</div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">SAY — Lesson Open</span>"The other half of REF8007G. Most teams log threats. Few log opportunities. Same tool, different orientation. Thirty minutes on opportunity management and the one check that prevents an opportunity from becoming its own problem."</div>
+        <div class="say-block"><span class="block-label">SAY — Opportunity Register</span>"Most Risk Registers have threats. REF8007G requires both. The tool is the same — the same fields, the same process. What changes is the orientation and the response strategies." Response strategies for opportunities: exploit, enhance, share, accept.</div>
+        <div class="say-block"><span class="block-label">SAY — Second-Order Check</span>"Second-order check: 'What else does this affect?' One question. Thirty seconds. Sometimes saves three weeks." This is the key behavioral habit — before acting on an opportunity, run the check.</div>
+
+        <div class="cw-line"><span class="cw-label">CW Delivers — Early Sponsor Sign-Off</span>"In Civil Works, early sponsor sign-off is an opportunity that requires immediate action — the sponsor's availability windows are narrow." If the sponsor can get to the site for a final acceptance inspection two weeks early, that's real schedule recovery — but it requires immediate coordination, not a standing agenda item. This is a recognized situation. Personalize it.</div>
+        <div class="watch-block"><span class="block-label">WATCH FOR</span>Participants who have experienced a "windfall opportunity" — a bid that came in well under estimate, early contractor availability — and didn't know how to run it through the change process. "That's a gift from the project, but it's still a change."</div>
+
+        <div class="cf-block">
+          <div class="cf-header">Case File 11 — After Lesson 11</div>
+          <div class="cf-body">
+            <div class="cf-title">Two Faces of Risk</div>
+            <div class="say-block" style="margin-top:.5rem;"><span class="block-label">SAY</span>"The parallel to CF08 is explicit. Same person. Same kind of comment. Different type of risk. Watch for whether Maria runs the pre-action check before she acts." In Civil Works: when an opportunity comes in through informal channels (a contractor call, a sponsor availability window), what's the documentation path?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L12 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 12 · 30 min · SF Leads · CW + MP Support</div>
+          <div class="lesson-title">Prioritization — The Eisenhower Matrix</div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-mnc">M&amp;C</span></div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">ROLE NOTE</span>SF leads this lesson. CW and MP support. Be ready during the debrief to describe the favor trap in your program context — when in Civil Works does "being a good colleague" cost the project?</div>
+        <div class="say-block"><span class="block-label">SAY — Favor Trap</span>"Saying yes feels like the relational thing to do. And it is — in the moment. But saying yes to the favor means saying no to something on your project. The problem is you usually don't know what you said no to until it's too late."</div>
+      </div>
+    </div>
+
+    <!-- L13 -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">Lesson 13 · 30 min · CW + MP Co-Lead</div>
+          <div class="lesson-title">Closing the Project — PROC4000 and the AAR <span class="cw-badge">CW Co-Leads</span></div>
+        </div>
+        <div class="lesson-meta"><span class="phase-chip phase-close">Closeout</span> · PROC4000</div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">SAY — Lesson Open</span>"The last lesson. PROC4000 and the AAR. Two things that often get rushed or skipped — and both of them are what the next team inherits."</div>
+        <div class="say-block"><span class="block-label">SAY — Situation Setup</span>Read slowly: "This is the last hour they will all be in the same room." Pause. That landing is intentional.</div>
+
+        <div class="cw-line"><span class="cw-label">CW Delivers — PROC4000 Checklist</span>Walk the Civil Works-specific closeout items: sponsor handoff documentation, cost-share reconciliation (final cost vs. programmed cost, any supplemental billing), real estate instrument releases if applicable, and sponsor acceptance of completed work. Each one has a counterpart in the sponsor relationship. The handoff to the sponsor is a formal event — not just a walkthrough.</div>
+        <div class="say-block"><span class="block-label">SAY — AAR Principles</span>"Leader speaks last — so they don't anchor the discussion before it starts. Blame is not the point — the point is transferable learning. Specifics over generalities — 'we should communicate better' is not a lesson. 'We need a standing agenda item for scope questions in every PDT meeting' is a lesson."</div>
+
+        <div class="cw-line"><span class="cw-label">CW Live AAR Participation</span>SF facilitates the live AAR on Day 1 of the course. CW and MP participate honestly — not as instructors, as participants who lived Day 1. Rules: leader speaks last, no blame, specifics only, every lesson needs an owner and a timeframe. After the debrief on the AAR process, CW adds: what does closing well look like in Civil Works? What's the one thing most often rushed in a Civil Works project closeout? Answer honestly.</div>
+
+        <div class="cf-block">
+          <div class="cf-header">Case File 13 — After Lesson 13</div>
+          <div class="cf-body">
+            <div class="cf-title">Closing Well</div>
+            <div class="say-block" style="margin-top:.5rem;"><span class="block-label">SAY — CF13 Debrief</span>"Last debrief of the week." CW adds: in Civil Works, what does "closing well" look like from the sponsor's perspective? What's the sponsor looking for at handoff that most PMs underestimate? This is your most experienced room reflection — make it count.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- End of course -->
+    <div class="lesson">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <div>
+          <div class="lesson-num">End of Course — Day 4</div>
+          <div class="lesson-title">Action Planning + PostTest</div>
+        </div>
+        <div class="chevron">&#9650;</div>
+      </div>
+      <div class="lesson-body open">
+        <div class="say-block"><span class="block-label">SAY — PDBP Map Revisited</span>"We've been pointing to this map all week. Let's walk it one more time — together." Walk from Initiation through Closeout. Ask participants to name the PROC reference for each phase without looking. By Day 4, most can.</div>
+        <div class="say-block"><span class="block-label">SAY — Three Commitments</span>SF leads. CW and MP are present. "Three commitments. Not aspirations. Not general intentions. Commitments — with a specific action, a specific date, and after today, a specific person who knows you made them." Your job here: be present and affirming. These are real people making real commitments about real projects. That matters.</div>
+        <div class="say-block"><span class="block-label">SAY — PostTest</span>"Individual written assessment. Same format as the pretest you completed before you arrived. Work independently — no discussion. Thirty minutes."</div>
+      </div>
+    </div>
+
+  </div><!-- end day-3 panel -->
+
+  <div class="footer-nav">
+    <a href="IG.html">&#8592; Back to Instructor Hub</a>
+    <a href="MP_InstructorGuide.html">MP Instructor Guide &#8594;</a>
+  </div>
+
+</main>
+
+<script>
+(function(){
+  try{var t=localStorage.getItem('cw-ig-theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}
+})();
+
+function toggleTheme(){
+  var html=document.documentElement;
+  var isDark=html.getAttribute('data-theme')==='dark';
+  if(isDark){html.removeAttribute('data-theme');}else{html.setAttribute('data-theme','dark');}
+  var btn=document.getElementById('theme-toggle');
+  if(btn)btn.textContent=isDark?'☾ Dark':'☀ Light';
+  try{localStorage.setItem('cw-ig-theme',isDark?'light':'dark');}catch(e){}
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  var btn=document.getElementById('theme-toggle');
+  if(btn){
+    var isDark=document.documentElement.getAttribute('data-theme')==='dark';
+    btn.textContent=isDark?'☀ Light':'☾ Dark';
+  }
+  // Open all lesson bodies initially visible
+});
+
+function showDay(idx){
+  document.querySelectorAll('.day-panel').forEach(function(p,i){p.classList.toggle('active',i===idx);});
+  document.querySelectorAll('.day-tab').forEach(function(t,i){t.classList.toggle('active',i===idx);});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function toggleLesson(header){
+  var body=header.nextElementSibling;
+  var chev=header.querySelector('.chevron');
+  var open=body.classList.toggle('open');
+  if(chev)chev.classList.toggle('open',open);
+}
+</script>
+</body>
+</html>
