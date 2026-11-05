@@ -136,6 +136,70 @@ main{max-width:1100px;margin:0 auto;padding:1.5rem;}
   color:var(--muted);text-transform:uppercase;
 }
 
+/* ── Lesson view ── */
+.lesson-card{
+  border:1px solid var(--border);margin-bottom:1.5rem;
+}
+.lesson-card-header{
+  display:flex;align-items:center;gap:0.75rem;padding:0.625rem 0.875rem;
+  background:var(--surface);border-bottom:1px solid var(--border);
+}
+.lesson-num{font-size:0.5625rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;white-space:nowrap;}
+.lesson-title{font-size:0.875rem;font-weight:500;color:var(--text);}
+.lesson-cf-tag{
+  margin-left:auto;font-size:0.5rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:2px 8px;border:1px solid var(--border);color:var(--muted);white-space:nowrap;
+}
+.lesson-moves{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+@media(max-width:700px){.lesson-moves{grid-template-columns:1fr;}}
+.move{
+  padding:0.875rem 1rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.move:nth-child(2n){border-right:none;}
+.move:nth-child(3),.move:nth-child(4){border-bottom:none;}
+.move-label{
+  font-size:0.5rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+  margin-bottom:0.375rem;display:flex;align-items:center;gap:0.5rem;
+}
+.move-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:16px;height:16px;border-radius:50%;font-size:0.5rem;font-weight:700;
+}
+.move-1 .move-num{background:var(--gold);color:#111;}
+.move-2 .move-num{background:var(--navy);color:#C8D8F0;}
+.move-3 .move-num{background:var(--green);color:#C8F0D8;}
+.move-4 .move-num{background:var(--red);color:#F0C8C8;}
+.move-1 .move-label-text{color:var(--gold);}
+.move-2 .move-label-text{color:#7BAEE8;}
+.move-3 .move-label-text{color:#5DBF8A;}
+.move-4 .move-label-text{color:#E87B7B;}
+.move-time{font-size:0.5rem;color:var(--muted);letter-spacing:.06em;}
+.move-heading{
+  font-size:0.6875rem;font-weight:500;color:var(--text);
+  margin:0.5rem 0 0.375rem;line-height:1.5;
+}
+.move-body{font-size:0.75rem;color:var(--muted);line-height:1.65;}
+.move-body p{margin-bottom:0.375rem;}
+.move-body p:last-child{margin-bottom:0;}
+.move-cue{
+  margin-top:0.5rem;padding:0.375rem 0.5rem;
+  border-left:2px solid var(--border);font-size:0.6875rem;color:var(--dim);
+  font-style:italic;line-height:1.5;
+}
+.move-1 .move-cue{border-left-color:var(--gold);}
+.move-2 .move-cue{border-left-color:#1B3A6B;}
+.move-3 .move-cue{border-left-color:var(--green);}
+.move-4 .move-cue{border-left-color:var(--red);}
+.lesson-read-ahead{
+  padding:0.5rem 1rem;background:rgba(201,164,74,0.06);
+  border-top:1px solid var(--border);font-size:0.6875rem;color:var(--muted);
+  display:flex;gap:0.5rem;align-items:baseline;
+}
+.ra-label{
+  font-size:0.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);
+  white-space:nowrap;font-weight:600;
+}
+
 /* ── Print ── */
 @media print{
   .site-header,.cf-index,.stats-bar{display:none!important;}
@@ -147,6 +211,8 @@ main{max-width:1100px;margin:0 auto;padding:1.5rem;}
   .theme-header{background:#f5f5f5;}
   .hidden{display:none!important;}
   .phase-tag{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .lesson-card{break-inside:avoid;}
+  .lesson-card-header,.move{background:#f5f5f5;}
 }
 </style>
 </head>
@@ -175,6 +241,7 @@ main{max-width:1100px;margin:0 auto;padding:1.5rem;}
       <div style="display:flex;gap:4px;">
         <button class="view-btn active" id="btn-bycf" onclick="setView('bycf')">By Case File</button>
         <button class="view-btn" id="btn-bytheme" onclick="setView('bytheme')">By Theme</button>
+        <button class="view-btn" id="btn-lessons" onclick="setView('lessons')">Lessons</button>
       </div>
     </div>
     <button class="print-btn" onclick="window.print()">&#9113; Print</button>
@@ -193,6 +260,9 @@ main{max-width:1100px;margin:0 auto;padding:1.5rem;}
 
 <!-- View: By Theme -->
 <div id="view-bytheme" style="display:none;"></div>
+
+<!-- View: Lessons -->
+<div id="view-lessons" style="display:none;"></div>
 
 </main>
 
@@ -340,15 +410,472 @@ THEMES.forEach(t => {
   viewByTheme.appendChild(sec);
 });
 
+// ── Lesson data ─────────────────────────────────────────────────────────
+const LESSON_DATA = [
+  {
+    num:'01', title:'Who Does What and Why It Matters',
+    cf:'01', phase:'Initiation',
+    readAhead:'PDT Charter, PROC2020 role definitions, RACI fundamentals',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'Maria arrives Monday. What must exist in writing before she issues her first directive?',
+        body:'Cold call to one table: "Before Maria can formally direct anyone on this project, three things must exist in writing. Without looking anything up -- name them. You have 60 seconds." After responses: probe the gap between what they said and what PROC2020 actually requires. If they named the right things, ask: "What happens if one of those three documents doesn\'t exist yet -- not missing, but genuinely not drafted?"',
+        cue:'The read-ahead covers PROC2020 Section 3 role documentation requirements. If a table can\'t name the PDT Charter, the PMP designation memo, and the RACI matrix, they didn\'t do the reading. That\'s the data. Use it.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'Role clarity is not a soft skill. It is a doctrine requirement.',
+        body:'The concept: PROC2020 distinguishes between who is authorized to direct, who is authorized to decide, and who is authorized to sign. These are not the same person in every situation, and conflating them is how scope disputes and rework happen. Walk the three-tier structure: PM authority, PDT member authority, contracting officer authority. Each has a lane. Crossing lanes without documentation is not initiative -- it is a records problem waiting to surface.',
+        cue:'Slide deck: Lesson 1, slides 3-8. The key visual is the authority matrix. Spend the most time on the difference between "responsible" and "accountable" in a RACI -- most students treat them as synonyms.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'Build the first three lines of Maria\'s RACI for the site investigation task.',
+        body:'Individual: Each student drafts three RACI rows for a site investigation task -- one row each for PM, A/E lead, and contracting officer. Two minutes. Table: Compare. Where did you diverge on who is Accountable vs Responsible for the deliverable sign-off? Three minutes. Full room: Pull one table\'s answer and project it. Walk the class through one specific cell that is likely wrong. Ask: "What is the downstream consequence if this cell is wrong and no one catches it until month six?"',
+        cue:'The likely error: students make the PM Accountable for the A/E deliverable. The correct answer depends on the contract type. This is not a gotcha -- it is the actual ambiguity they will face. Name it as such.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'You\'ve been a PM for two weeks. Your RACI has a gap you haven\'t filled yet. Who needs to know that?',
+        body:'The closing question is not about process -- it is about professional judgment. The doctrine answer is "the PDT and your supervisor, documented." The human answer involves calculating how that disclosure lands and when. Let students sit with that tension. Do not resolve it for them. CF01 will.',
+        cue:'End here. Do not preview the case file. The transition to independent work is: "Open CF01. You will make three decisions. Make them before we come back together."'
+      }
+    ]
+  },
+  {
+    num:'02', title:'When the Scope and the Schedule Disagree',
+    cf:'02', phase:'Initiation',
+    readAhead:'Scope baseline, change control process, CR initiation thresholds',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'"Just add the extra room -- it won\'t change the budget." The sponsor sent this in an email at 4:47 PM. What is the PM required to do before responding?',
+        body:'Put the quote on the screen. Cold call: "What does the PM do in the next 24 hours? Not what should they do -- what are they required to do?" Listen for: change request initiation, baseline documentation, written acknowledgment. If a student says "talk to the sponsor first" -- ask: "What do you say, and what does the conversation produce in writing?"',
+        cue:'The trap: the student who says "evaluate whether it actually changes the budget." That is the right instinct and the wrong sequence. The CR is initiated first. The evaluation happens inside the CR process. If they get this backwards, CF02 will show them exactly why.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'The scope baseline is not a summary of what you plan to build. It is a legal reference document.',
+        body:'The concept: once a project is authorized and the PMP is approved, the scope baseline (SOW + WBS + WBS dictionary) cannot be changed without a formal change request. This is not bureaucracy -- it is the mechanism that protects the PM from scope creep claims and the government from unauthorized commitments. Walk the three-part baseline, the triggers for a CR, and the difference between a scope change and a scope clarification.',
+        cue:'Slide deck: Lesson 2, slides 3-7. Students often confuse "clarification" with "change." A clarification interprets existing language. A change adds, removes, or modifies scope. When in doubt, initiate the CR. The cost of an unnecessary CR is paperwork. The cost of a missed CR is a contract dispute.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'Write the first two sentences of the CR memo for the sponsor\'s email.',
+        body:'Individual: Draft the opening of the formal response. What does the first sentence say? Not the whole memo -- the first two sentences. Two minutes. Table: Read yours aloud. Does it acknowledge the request, cite the baseline, and initiate the formal process -- or does it promise an answer? Three minutes. Full room: Pull one example that works and one that doesn\'t. The difference is usually one word: "will evaluate" vs "is initiating a change request."',
+        cue:'What you are looking for: the response that creates a written record of the request and the PM\'s action, without committing to an outcome. Students who write "I will look into it" have not initiated a CR. Students who write "this requires a formal change request per the PMP" have. That is the distinction.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'The sponsor is your strongest advocate. If you send that CR memo, the relationship gets harder for the next 30 days. Is that the right call?',
+        body:'This is the judgment question CF02 sits inside: doctrine says yes. Professionalism says yes. The human dynamics say the relationship cost is real. Do not adjudicate it. Ask a table: "What do you lose if you don\'t send it? What do you lose if you do?" Let both answers live. The case file will force the decision.',
+        cue:'Do not resolve the tension. The case file is designed to show what happens when PMs avoid the CR. That is the lesson. Let them discover it.'
+      }
+    ]
+  },
+  {
+    num:'03', title:'What the Scope Statement Actually Promises',
+    cf:'03', phase:'Planning',
+    readAhead:'Scope management plan, requirements traceability matrix, stakeholder acceptance criteria',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'Design is 60% complete. The sponsor now says the original scope statement "didn\'t capture what we really wanted." The PM\'s first obligation is to do what?',
+        body:'Cold call. Listen for three possible answers: (1) start a CR, (2) review the scope statement to assess accuracy, (3) go back to requirements. All three have merit. Push on sequence: "Which of these happens first? And what does that first step produce in writing?" The correct sequence: document the sponsor\'s statement, pull the requirements traceability matrix, compare sponsor\'s current expectation against accepted baseline.',
+        cue:'The read-ahead covers requirements traceability. Students who did the reading know that the RTM is the bridge between what was scoped and what was accepted. Students who didn\'t will propose process steps that skip the RTM entirely. That gap is visible in their answers.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'Requirements traceability is how you prove that what you built is what you promised.',
+        body:'The concept: every requirement in the SOW should trace to an acceptance criterion. The RTM is not a deliverables list -- it is a chain of custody for each requirement from authorization to acceptance. When a sponsor says "this isn\'t what I wanted," the RTM is the evidence of what was accepted as the definition of "what I wanted." Walk the structure: source requirement, derived requirement, design element, acceptance criterion, verification method.',
+        cue:'Slide deck: Lesson 3, slides 3-9. The key point: an RTM protects the PM and the sponsor. It is not adversarial documentation. If the RTM shows the requirement was misunderstood at intake, the PM\'s obligation is to fix the RTM and initiate a CR -- not to build the wrong thing faster.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'For the New Home project: write one RTM row for the building entrance requirement.',
+        body:'Individual: Draft one RTM row. Columns: source requirement, acceptance criterion, verification method. Two minutes. Table: Compare your acceptance criteria. Do they describe what the deliverable must do, or what the deliverable must look like? Three minutes. Full room: The distinction is functional vs aesthetic criteria. Aesthetic criteria create disputes. Functional criteria create defensible decisions. Pull an example of each from the room.',
+        cue:'The likely error: acceptance criteria that use words like "appropriate" or "consistent with" -- language that cannot be verified. Push students toward measurable, observable criteria. "The main entrance shall accommodate ADA clearance requirements per UFC 1-200-01" can be verified. "The entrance shall be welcoming" cannot.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'The sponsor approved the requirements. They were present in the meeting. The RTM has their signature. They still say it\'s wrong. Now what?',
+        body:'This is the professional judgment question that no doctrine answers cleanly. The PM\'s obligation is to the contract and the RTM. The sponsor\'s satisfaction is also the PM\'s obligation. When those conflict, the PM has to hold both and find the path that serves the mission. The case file explores what happens when PMs choose one at the expense of the other.',
+        cue:'Do not answer this. The case file will. Your job in this question is to make the tension real before they encounter it in CF03.'
+      }
+    ]
+  },
+  {
+    num:'04', title:'Building a Schedule That Tells the Truth',
+    cf:'04', phase:'Planning',
+    readAhead:'Schedule baseline, CPM fundamentals, resource-loaded schedules, PDT estimate integration',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'The A/E lead submits her estimate. It is 40% higher than the parametric baseline. What is the PM required to do before rejecting it?',
+        body:'Cold call. The right answer: request the basis of estimate (BOE), not challenge the number. The PM\'s job at this moment is to understand why the numbers diverge, not to defend the parametric. Listen for students who say "go back to the parametric" -- that is the wrong instinct. The parametric is a planning tool. The A/E lead\'s estimate reflects site-specific conditions. Both are inputs. Neither is automatically correct.',
+        cue:'The read-ahead covers basis of estimate requirements and resource-loading. Students who did the reading will distinguish between a parametric estimate (top-down, historical data) and a resource-loaded estimate (bottom-up, current conditions). Students who didn\'t will treat them as competing claims requiring a winner. Push on that instinct.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'A schedule is not a plan. It is a commitment with evidence.',
+        body:'The concept: a schedule baseline is not a list of activities with dates. It is a network diagram, a critical path, a resource-loaded plan, and a basis of estimate -- together. Any schedule that cannot explain why each duration is what it is cannot be defended when it slips. Walk the three types of estimates: order-of-magnitude (planning), budget (control), definitive (execution). Each has a purpose and an appropriate level of confidence. Using the wrong type at the wrong phase is a scope and cost risk.',
+        cue:'Slide deck: Lesson 4, slides 3-10. The key visual is the planning horizon -- the further out you go, the less certainty your schedule has. Students often present schedules with equal confidence across a 36-month project. That is not credibility. That is false precision.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'For the Built to Slip project: identify the two schedule activities most likely to be on the critical path that have no float.',
+        body:'Individual: Look at the project description. Without building a formal schedule, name the two activities you would put on the critical path and explain why. Two minutes. Table: Compare. Where did your critical paths diverge? Three minutes. Full room: Pull one table\'s answer. Ask: "What resource assumption is embedded in this critical path? If that assumption is wrong by 20%, what happens to your end date?"',
+        cue:'The learning: students often identify technically complex activities as critical path. Sometimes they are. But the critical path is determined by dependencies and durations, not complexity. A simple activity with no float is critical. A complex activity with six weeks of float is not. Push that distinction.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'The schedule says the project finishes in 24 months. You believe it will take 30. The commander wants to brief Congress with the 24-month date. What do you do?',
+        body:'This is the professional courage question. Doctrine requires accurate reporting. The human dynamics of the situation create pressure to report what the supervisor wants. This is not a hypothetical -- it is a scenario that every PM in this room will face or has faced. The case file does not answer it. It just makes the cost of each choice visible.',
+        cue:'If the room is quiet, ask: "Who here has been in a version of this situation?" Wait. Someone will speak. Build the debrief from that.'
+      }
+    ]
+  },
+  {
+    num:'05', title:'When the Money Doesn\'t Fit the Project',
+    cf:'05', phase:'Planning',
+    readAhead:'APF appropriations, MCA funding types, reprogramming thresholds, anti-deficiency requirements',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'The project is $200K over the current authorization. The PM wants to reprogram. What must be true before that action is authorized?',
+        body:'Cold call. Listen for: funding source identification, threshold check, approval authority, written justification. The read-ahead covers APF appropriations and reprogramming thresholds. Students who did the reading will know that the approval authority for a $200K reprogramming depends on the appropriation type and the fiscal year. Students who didn\'t will say "get approval from the commander" -- which is not wrong, but is incomplete.',
+        cue:'The trap question: "Is $200K above or below the reprogramming threshold?" The answer depends on the appropriation type. If students don\'t know the appropriation type, they don\'t have enough information to answer the question. That is a correct observation -- push them to name what information they would need first.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'The funding type determines what you can do with the money, not just how much you have.',
+        body:'The concept: government appropriations are not interchangeable. Operation and Maintenance funds, Military Construction funds, and Research funds have different purposes, different thresholds, and different reprogramming authorities. Using the wrong fund type for an expenditure is an Anti-Deficiency Act violation -- not a paperwork error. Walk the three fund types relevant to USACE projects, the purpose test, and the bona fide need rule.',
+        cue:'Slide deck: Lesson 5, slides 3-9. The key point: PM authority does not extend to funding type decisions. That is a resource manager and finance officer function. The PM\'s job is to flag the problem correctly so the right people can solve it. Students who think they can reprogram on their own are creating a career-ending risk.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'The funding gap is $200K in MILCON O&M. Write the first three lines of the memo to the resource manager.',
+        body:'Individual: Draft the opening of the memo. What does it say? Not the analysis -- the problem statement. Two minutes. Table: Compare. Does your memo state the appropriation type, the gap amount, the trigger event, and the requested action? Three minutes. Full room: Pull one that hits all four elements and one that misses a critical one. The missing element is usually the trigger event -- the specific contract action that caused the gap to become a decision point.',
+        cue:'What you are looking for: the memo that gives the resource manager everything they need to act, in the first three lines. Students who write summaries that require follow-up questions have not served their supervisor well. Executive communication is not about completeness -- it is about the right information in the right sequence.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'The project has a $200K gap and three possible fixes. Each fix comes with a different cost to a different stakeholder. Who bears the cost of your decision?',
+        body:'The closing question moves the lesson from doctrine to ethics. Every funding decision in a resource-constrained environment has a winner and a loser. The PM\'s job is to present options, not to pick the politically safe one. CF05 will show what happens when PMs optimize for stakeholder comfort instead of mission clarity.',
+        cue:'Close with: "Open CF05. The gap is real. The options are real. Make the call." Do not explain further.'
+      }
+    ]
+  },
+  {
+    num:'06', title:'The Feedback That Has to Be Given',
+    cf:'06', phase:'Planning',
+    readAhead:'Performance management doctrine, corrective action requirements, documentation standards',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'A PDT member has missed two deliverable deadlines and submitted one deliverable that required complete rework. The PM wants to escalate. What must exist in the record first?',
+        body:'Cold call. The read-ahead covers corrective action doctrine and documentation requirements. The right answer: documented counseling, a written performance standard, and evidence that the standard was communicated. Students who say "just escalate" have skipped the corrective action process. Students who say "document everything" are right, but push them: what specifically, in what format, with what signature?',
+        cue:'The trap: the student who says "it depends on the contract type." That is true for A/E deliverables. For federal employee PDT members it is a different process. If students confuse the two, slow down and name which situation CF06 is in. The case file involves a federal employee, not a contractor. That matters.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'Corrective action is not punishment. It is a documented process with a specific sequence.',
+        body:'The concept: federal employee performance management has four required steps before formal adverse action is possible -- informal counseling, formal counseling, written performance improvement plan, and decision. Skipping any step creates legal exposure for the supervisor and the organization. Walk the four steps, the documentation required at each, and the difference between performance (output) and conduct (behavior) issues.',
+        cue:'Slide deck: Lesson 6, slides 3-8. The hardest part: distinguishing between a performance issue (not meeting the standard) and a conduct issue (choosing not to meet it). The documentation is different. The process is different. The PM needs to be able to name which one they are dealing with before the first conversation.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'Write the opening statement for the first formal counseling conversation with Pat.',
+        body:'Individual: Draft the first thing you say when you sit down with Pat. Not the whole conversation -- the opening statement. Two minutes. Table: Read yours aloud. Does it state the issue, cite the standard, and open space for Pat\'s response -- or does it assume a conclusion? Three minutes. Full room: Pull one example that creates space for a conversation and one that forecloses it. The difference is usually the framing: "Here is what I observed" vs "Here is what you did wrong."',
+        cue:'What you are looking for: the opening statement that is specific about behavior, grounded in the standard, and genuinely curious about the explanation. "You missed the deadline" is a fact. "What happened with the September 15th deliverable?" creates a conversation. Both can be true. The sequence matters.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'You have the conversation. Pat tells you there is a reason for the missed deliverables that you didn\'t know. It is a legitimate reason. What changes?',
+        body:'This is the professional empathy question. The documentation requirement does not change. The standard does not change. What changes is the PM\'s understanding of the situation -- and potentially the corrective action plan. CF06 is designed to surface exactly this: the difference between a performance problem and a resource or support problem. Let students name that distinction before they encounter it in the case file.',
+        cue:'Do not resolve it. The case file will. Your job in this question is to make students curious about what Pat\'s reason might be, so they engage with the case file as a genuine problem rather than a performance management exercise.'
+      }
+    ]
+  },
+  {
+    num:'07', title:'Reading the Schedule When It Lies to You',
+    cf:'07', phase:'Execution',
+    readAhead:'Earned Value Management, SPI/CPI interpretation, CPR reporting requirements, variance analysis',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'The monthly CPR shows SPI of 0.72. The PM needs to brief the district commander tomorrow. What is the first document they pull?',
+        body:'Cold call. The read-ahead covers EVM and CPR reporting. The right answer: the variance analysis report that explains the SPI, not the CPR itself. The CPR is the signal. The variance analysis is the diagnosis. Students who say "pull the schedule" are not wrong, but push them: the schedule shows what. The variance analysis explains why. The commander needs both, in that sequence.',
+        cue:'SPI of 0.72 means the project is accomplishing $0.72 of work for every $1.00 of time elapsed. That is a significant negative schedule variance. Some students will not know what that means. This is the diagnostic moment for the class. If more than half the room doesn\'t know, slow down on the concept and compress the skill exercise.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'EVM is not a reporting requirement. It is a diagnostic tool.',
+        body:'The concept: EVM measures three things -- Planned Value (what we planned to do), Earned Value (what we actually did), and Actual Cost (what we paid to do it). SPI = EV/PV (schedule efficiency). CPI = EV/AC (cost efficiency). The power of EVM is that it separates schedule performance from cost performance. A project can be on budget and behind schedule simultaneously. Walk the three values, the two indices, and what a combined SPI<1 and CPI<1 means for project trajectory.',
+        cue:'Slide deck: Lesson 7, slides 3-10. The key visual: the EVM S-curve. Spend extra time on the difference between SPI<1 (behind schedule) and negative schedule variance -- they are related but not identical. Students often conflate the two.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'For the Phantom Slip project: given SPI 0.72 and CPI 0.88, write the two-sentence status statement for the commander\'s brief.',
+        body:'Individual: Write two sentences. First sentence: what is the current performance status. Second sentence: what is the projected outcome if the trend continues. Two minutes. Table: Compare. Does your first sentence use numbers, not adjectives? Does your second sentence state a projected end date and cost, not a vague trend? Three minutes. Full room: Pull one that quantifies and one that hedges. The difference: "The project is behind schedule" vs "At current SPI of 0.72, the project is tracking to complete in October instead of August."',
+        cue:'The learning: status statements that use adjectives ("somewhat behind," "making progress") give commanders nothing to act on. Status statements with numbers and projections create decision points. Teach students to report to the commander\'s decision authority, not to their own comfort level.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'The commander asks: "Can you recover?" You believe the answer is yes with additional resources. You are not certain. What do you say?',
+        body:'Professional courage again -- the same thread from L4, one phase later. The honest answer is: "I believe recovery is possible with X resources, and I cannot guarantee it." The tempting answer is: "Yes, we\'ll make it up." CF07 is designed to show what happens when PMs promise recovery they cannot deliver. Let students name the professional obligation before they encounter it.',
+        cue:'End here. "Open CF07. Col. Ashford is calling. What do you tell him?" That is the case file setup. Use it.'
+      }
+    ]
+  },
+  {
+    num:'08', title:'The Risk You Almost Missed',
+    cf:'08', phase:'Execution',
+    readAhead:'Risk management plan, risk register structure, response strategies, risk owner assignment',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'A team member says in a hallway conversation: "I\'m not sure the soil borings covered the whole footprint." What is the PM required to do with that comment?',
+        body:'Cold call. The read-ahead covers risk management and risk register requirements. The right answer: document the comment as a formal risk identification and initiate the risk assessment process. The wrong answer: "follow up with the geotechnical team." Following up is part of the response. Documentation is the first obligation. Students who go straight to resolution have skipped the identification and assessment steps.',
+        cue:'The trap: students who say "it depends on whether the concern is valid." The validity of the concern is a risk assessment question -- but the documentation obligation exists regardless of validity. If the concern is unfounded, the risk register says so after assessment. If it is never documented, the PM has no record of having been told.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'A risk is not a problem. It is an uncertainty with a consequence.',
+        body:'The concept: risk management has five steps -- identify, analyze, plan responses, implement, monitor. Most project failures happen because step one is treated as a one-time event at project initiation, not a continuous process. Walk the risk register structure: risk statement (IF/THEN), probability (1-5), impact (1-5), risk score (P x I), response strategy (avoid, transfer, mitigate, accept), risk owner, trigger date. The hallway comment is a risk identification event that belongs in the register regardless of probability.',
+        cue:'Slide deck: Lesson 8, slides 3-9. The key point: "accept" is a valid risk response strategy. It is not the same as ignoring the risk. An accepted risk has a documented owner, a monitoring plan, and a contingency response if the risk materializes. Students who think risk management is only about mitigation will be unable to handle risks they cannot mitigate.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'Write the risk register entry for Marcus\'s comment. Use IF/THEN format.',
+        body:'Individual: Draft the risk register row. Risk statement in IF/THEN format, probability (1-5), impact (1-5), initial response strategy, owner. Two minutes. Table: Compare your probability and impact scores. How did you get there? Three minutes. Full room: Pull two entries with the same risk statement but different scores. Ask: "What assumption is embedded in each score? Which assumption is more defensible?"',
+        cue:'What you are looking for: the IF/THEN statement that is specific enough to be actionable. "IF the soil borings did not cover the full footprint, THEN the foundation design may require revision, resulting in a scope change and schedule delay." That is a risk statement. "IF there is a soil problem, THEN we have issues" is not. Push specificity.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'The risk turns out to be real. The soil borings were inadequate. The project needs a 90-day delay and $180K in additional investigation. When did the PM\'s obligation to report begin?',
+        body:'The retrospective judgment question. The obligation began when Marcus made the comment in the hallway. Not when the inadequacy was confirmed. Not when the cost was known. The moment the uncertainty was identified, the PM\'s obligation to document and report was triggered. CF08 will surface exactly this question -- but let students answer it before the case file does.',
+        cue:'The lesson: risk management is an obligation, not a service. The PM who documents every risk, even the ones that never materialize, has a defensible record. The PM who only documents risks after they become problems has a liability record.'
+      }
+    ]
+  },
+  {
+    num:'09', title:'The Meeting That Never Accomplishes Anything',
+    cf:'09', phase:'Execution',
+    readAhead:'PDT meeting management, action item tracking, decision authority matrix, meeting facilitation doctrine',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'The PDT has been meeting weekly for three months. No action items have been closed. What does doctrine require the PM to do?',
+        body:'Cold call. The read-ahead covers PDT meeting management. The right answer: conduct a meeting structure review, establish or reaffirm decision authorities, and require written action item closure before the next meeting. Students who say "talk to the team" are not wrong, but push them: what specifically is the PM required to produce in writing? The meeting minutes with open action items are a project management record. Three months of open items is a management failure that belongs in the project file.',
+        cue:'Some students will push back: "Three months isn\'t that long for a complex project." That is a valid observation. Push back: "What is the longest acceptable period for an action item to remain open without documented status?" The answer depends on the action item, but no documented status for three months is itself a documentation failure.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'A meeting without action items is a briefing. A briefing without decisions is a report.',
+        body:'The concept: PDT meetings serve three purposes -- share information, make decisions, and assign actions. A meeting that only shares information could have been an email. A meeting that shares information and makes decisions needs a decision log. A meeting that shares information, makes decisions, and assigns actions needs an action item register with owners and due dates. Walk the three-tier structure: information items (no action required), decision items (require a decision authority), action items (require an owner, a due date, and closure criteria).',
+        cue:'Slide deck: Lesson 9, slides 3-8. The key point: the PM is the meeting facilitator, not the subject matter expert in the room. The PM\'s job is to ensure the right people are in the room, the right agenda is followed, and the right things are documented. Students who confuse "running the meeting" with "having all the answers" will dominate their PDT and suppress the expertise they need.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'For the Meeting That Got Away: the meeting has drifted 25 minutes off agenda. Write the two sentences the PM says to recover it.',
+        body:'Individual: Draft the recovery statement. Two sentences. First: acknowledge where the meeting has gone. Second: redirect to the agenda. Two minutes. Table: Read yours aloud. Does it acknowledge without dismissing? Does it redirect without shutting down? Three minutes. Full room: The hardest version: a senior stakeholder drove the drift. What do you say when the person who took the meeting off course outranks you?',
+        cue:'What you are looking for: recovery language that is firm without being combative. "I want to make sure we capture this -- can we table it as an action item and come back to [agenda item] so we don\'t lose our decision?" That is a recovery. "Let\'s get back on track" is not -- it names the problem without offering a path forward.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'The meeting produces good discussion but no decisions. Everyone leaves feeling like progress was made. Is that a good meeting?',
+        body:'The paradox question. A meeting that feels productive but produces no decisions or actions is not a productive meeting -- it is a morale event. Both have value, but only one of them serves the project. CF09 will show what happens when good feelings substitute for decisions. Let students sit with the distinction.',
+        cue:'Close with: "Open CF09. The meeting is already in progress when you get there. What is your first priority?"'
+      }
+    ]
+  },
+  {
+    num:'10', title:'When the Standard Is Ambiguous',
+    cf:'10', phase:'Execution',
+    readAhead:'Quality management plan, design standards, USACE technical criteria, acceptance criteria documentation',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'The contractor submits a design that meets the stated specs but uses a standard that was superseded 18 months ago. What is the PM\'s first question?',
+        body:'Cold call. The read-ahead covers quality management and design standards. The right answer: "What does the contract say about applicable standards and their version dates?" Not "is the design acceptable?" The acceptability question cannot be answered until the contractual standard is established. Students who go straight to technical evaluation are skipping the contract review. Push them: "What document defines the applicable standard?"',
+        cue:'The trap: students who say "reject it." Rejection is a possible outcome. It is not the first action. The first action is to establish the contractual baseline for what standard applies. If the contract is silent on version date, the superseded standard may be contractually valid. That is a legal and contracting question, not a PM technical judgment.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'Quality management is not inspection. It is the process of defining, communicating, and verifying the standard before work begins.',
+        body:'The concept: a quality management plan identifies three things -- the applicable standards, the acceptance criteria, and the verification method. If any of the three is missing or ambiguous before work begins, the PM has created the conditions for a dispute at acceptance. Walk the three elements, the difference between a conformance standard (the design meets UFC 3-600-01) and a performance standard (the system achieves 95% uptime), and the PM\'s obligation to resolve ambiguity at contract award, not at acceptance.',
+        cue:'Slide deck: Lesson 10, slides 3-9. The key point: ambiguity in standards benefits the contractor in a dispute. The PM who does not resolve standard ambiguity at the start of a contract is accepting that risk on behalf of the government.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'For the Wrong Shade of Gray: draft the Request for Information (RFI) response that establishes the applicable standard.',
+        body:'Individual: Draft the RFI response. What standard applies, on what basis, with what documentation. Two minutes. Table: Compare. Did you cite the contract, the applicable design standard, and the version date? Three minutes. Full room: The hardest version -- the contract is ambiguous about which standard applies. What do you do when you cannot give a definitive RFI response without a contract modification?',
+        cue:'What you are looking for: the RFI response that cites the contract language, identifies the applicable standard by name and date, and either resolves the ambiguity or names it as an open issue requiring a contract modification. Students who write "the superseded standard is not acceptable" without citing the contract basis have made a legal determination they are not authorized to make.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'The correct standard produces a design that costs $400K more than the current budget. The contractor\'s design using the superseded standard costs nothing extra. What is the PM\'s obligation?',
+        body:'The professional obligation question. The PM\'s obligation is to enforce the correct standard and document the resulting cost impact as a scope change. The temptation is to accept the cheaper non-conforming work. CF10 will show what happens when PMs make that trade. Let students name the obligation before they encounter the temptation.',
+        cue:'The lesson: cost pressure does not change the technical standard. It changes the conversation about the budget. Those are two separate conversations, and conflating them creates liability for the PM and risk for the government.'
+      }
+    ]
+  },
+  {
+    num:'11', title:'When Two Risks Pull in Opposite Directions',
+    cf:'11', phase:'Execution',
+    readAhead:'Risk response strategies, risk prioritization, risk owner authority, contingency reserve management',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'Two risks on the register are now both rated High. They require opposite responses -- one requires accelerating a task, one requires stopping it. Who decides?',
+        body:'Cold call. The read-ahead covers risk owner authority and decision authority. The right answer: the decision authority depends on the risk response options available and the resources required. If both responses are within the PM\'s authority, the PM decides. If either response requires resources or scope changes beyond the PM\'s authority, the decision escalates. Students who say "the PM decides" need to explain what authority limits might apply. Students who say "escalate" need to explain what specifically triggers escalation.',
+        cue:'The key concept being tested: risk management authority is not unlimited. The PM can direct risk responses within their existing authority. They cannot commit resources, change scope, or modify contracts unilaterally to respond to risks. The read-ahead should have drawn that line. If students don\'t know where the line is, slow down in the concept.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'Risk response options have different authority requirements. Knowing the difference protects you.',
+        body:'The concept: the four response strategies have different resource and authority implications. Avoidance (change the plan) requires scope or schedule authority. Transference (shift the risk to a third party) requires contract authority. Mitigation (reduce probability or impact) is usually within PM authority. Acceptance (monitor and contingency plan) is within PM authority if the contingency is within budget. Walk the authority chain for each strategy in a USACE context.',
+        cue:'Slide deck: Lesson 11, slides 3-9. The critical distinction: planned contingency reserve (in the budget for identified risks) vs management reserve (for unidentified risks, requiring higher authority to access). Students often don\'t know this distinction and will propose contingency responses that exceed their authority.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'For the Two Faces of Risk: write the decision memo that presents both risks and their response options to the appropriate authority.',
+        body:'Individual: Draft the first paragraph of the decision memo. State both risks, their current rating, the conflict in response options, and the decision needed. Two minutes. Table: Compare. Does your memo give the decision-maker everything they need to act, or does it require follow-up? Three minutes. Full room: The memo that gives too much information is as bad as the memo that gives too little. What is the minimum complete set of information a decision-maker needs to choose between two risk responses?',
+        cue:'The executive communication lesson from L5 applies here. The memo that serves the decision-maker is not the memo that covers every detail. It is the memo that states the problem, the options, the tradeoffs, and the requested decision -- in that sequence, in the first half page.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'You present both options. The decision-maker chooses the one you believe is wrong. What do you do?',
+        body:'Professional obligation and professional courage in the same question. The PM\'s obligation: document the decision, document their own recommendation, and implement the decision that was made. The PM\'s professional option: request a formal record of the decision rationale before implementing. CF11 will show what happens when PMs implement decisions they disagree with without documentation. The record matters.',
+        cue:'Close here. "Open CF11. Two risks, opposite directions. Which one do you act on first?"'
+      }
+    ]
+  },
+  {
+    num:'12', title:'The Favor That Would Break Something',
+    cf:'12', phase:'Execution',
+    readAhead:'Procurement integrity, government ethics rules, scope and resource boundaries, conflict of interest doctrine',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'A respected colleague asks you to redirect $50K from your project\'s contingency to cover a shortfall on theirs. It would genuinely help them. What is the first question you must answer?',
+        body:'Cold call. The read-ahead covers scope boundaries and procurement integrity. The right answer: "Is the $50K in my contingency reserve authorized for use on another project?" Not "is this a good person who deserves help?" Not "would I want them to do this for me?" The authorization question must be answered first, because if the answer is no, every other consideration is irrelevant. Push students who go straight to the relationship question.',
+        cue:'The read-ahead covers Anti-Deficiency Act violations and purpose test. If the contingency reserve is authorized only for the current project\'s identified risks, using it for another project\'s shortfall is a purpose violation -- regardless of intent or relationship. Students who don\'t know this are creating a career-ending risk for a collegial instinct.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'Government ethics rules are not bureaucratic obstacles. They are professional standards with legal force.',
+        body:'The concept: federal employees are bound by the Standards of Conduct, which prohibit using government resources for unauthorized purposes -- including using project funds for a purpose outside their authorized scope. This applies to contingency reserves, travel funds, and personnel time. Walk three scenarios: (1) redirecting contingency across projects (purpose violation), (2) using project travel funds for a conference unrelated to the project (purpose violation), (3) directing a contractor employee to perform tasks outside the contract statement of work (scope violation).',
+        cue:'Slide deck: Lesson 12, slides 3-8. The key point: the friend-to-friend nature of the request does not change the legal analysis. Good intentions do not constitute authorization. Students who have been in the workforce for a while sometimes believe informal arrangements are acceptable because they\'ve seen them. Name that dynamic directly.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'Write the response to your colleague. It says no. It preserves the relationship.',
+        body:'Individual: Draft the response. It declines the request. It explains why. It offers what you can offer instead. Two minutes. Table: Read yours aloud. Does it state the reason (authorization) or the relationship (I\'d love to help but)? Three minutes. Full room: The difference: a response grounded in authorization is more credible and less negotiable than a response grounded in reluctance. "I am not authorized to redirect contingency across project lines" closes the conversation. "I wish I could but..." opens a negotiation.',
+        cue:'What you are looking for: the response that holds the boundary without damaging the relationship. This is a professional communication skill, not just an ethics lesson. The student who says no clearly and offers a legitimate alternative (help the colleague identify the right escalation path, offer to co-draft the problem statement) has demonstrated PM maturity.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'Your colleague says: "No one will ever know." What does that statement tell you about the risk?',
+        body:'The professional character question. "No one will ever know" is not a risk assessment -- it is a statement about institutional trust. The correct answer: if it requires concealment, it is not authorized. CF12 will show what happens when that logic is applied to a decision that feels harmless. Let students name the principle before the case file tests it.',
+        cue:'Close with: "Open CF12. The favor is on the table. What do you do?" Let the case file do the rest.'
+      }
+    ]
+  },
+  {
+    num:'13', title:'How a Project Ends (and Why It Matters)',
+    cf:'13', phase:'Closeout',
+    readAhead:'Closeout checklist, lessons learned requirements, POP end procedures, records transfer and retention',
+    moves:[
+      {
+        label:'The Situation', time:'5 min', method:'SF',
+        heading:'Construction is complete. The contractor has demobilized. Your supervisor says "we\'re done." What is the PM required to do before formal project close?',
+        body:'Cold call. The read-ahead covers closeout requirements. The right answer: complete the closeout checklist -- contract closeout, final inspection and acceptance documentation, as-built records transfer, lessons learned documentation, warranty documentation, O&M manual transfer to the facility manager, financial reconciliation. Students who say "file the paperwork" are on the right track. Push them: what specifically, in what sequence, and what happens if any item is skipped?',
+        cue:'The trap: students who say "it depends on the project type." True in some particulars, but the core closeout checklist applies to all USACE construction projects. If students can\'t name five items on the checklist, the read-ahead was insufficient preparation. Use that gap in the debrief.'
+      },
+      {
+        label:'The Concept', time:'10 min', method:'CW or MP',
+        heading:'Project closeout is not the end of the PM\'s obligation. It is the beginning of the facility\'s operational record.',
+        body:'The concept: when a construction project closes, three things transfer to the facility owner -- the physical asset, the documentation record, and the warranty obligations. The PM\'s job at closeout is to ensure all three are complete, accurate, and in the hands of the right people. Walk the closeout checklist in four categories: contract closeout (final payment, release of claims, bond release), technical closeout (as-builts, O&M manuals, warranty documentation), financial closeout (final audit, fund reconciliation, unliquidated obligation resolution), and project record (lessons learned, final project evaluation).',
+        cue:'Slide deck: Lesson 13, slides 3-10. The key point: an incomplete closeout does not close. It creates open obligations that remain on the PM\'s record until they are resolved. Students who have been told "we\'re done" by a supervisor have sometimes interpreted that as authorization to stop. It is not. The PM\'s obligation runs to the checklist, not the supervisor\'s declaration.'
+      },
+      {
+        label:'The Skill', time:'10 min', method:'All three',
+        heading:'For the Closing Well project: identify the two closeout items most likely to be skipped under time pressure, and write the one-sentence consequence of skipping each.',
+        body:'Individual: Name two items from the closeout checklist most vulnerable to being skipped, and write one sentence each about the consequence. Two minutes. Table: Compare your lists. Where did you agree? Three minutes. Full room: The two most commonly skipped items are lessons learned and O&M manual transfer. The consequences are downstream: the next project team repeats the same mistakes; the facility manager is unable to maintain the asset correctly. Those consequences are real and documentable.',
+        cue:'The learning: shortcuts at closeout are not free. The cost is paid by the next team, the facility owner, or the organization\'s institutional memory. A PM who closes cleanly is building the organization\'s future capacity. A PM who closes fast is consuming it.'
+      },
+      {
+        label:'The Question', time:'5 min', method:'SF',
+        heading:'You are about to close your last project before retirement. What do you want the lessons learned record to say?',
+        body:'The final question is not about doctrine. It is about professional legacy. What did you learn that the next PM needs to know? What would have helped you at the beginning that you know now? The lessons learned document is the PM\'s last act of professional generosity. CF13 will show what happens when that document is written carelessly or not at all.',
+        cue:'Close the lesson here. This is Day 4 and the final lesson of the course. The question should land with weight. If the room is engaged, let it breathe. If you have time, ask one person to share. Then: "Open CF13. This is the last one. Close it well."'
+      }
+    ]
+  }
+];
+
+// ── Build Lessons view ──────────────────────────────────────────────────
+const viewLessons = document.getElementById('view-lessons');
+
+LESSON_DATA.forEach(lesson => {
+  const card = document.createElement('div');
+  card.className = 'lesson-card';
+  card.id = 'lesson-card-' + lesson.num;
+
+  const methodLabel = {
+    'SF':'Strengths Framing',
+    'CW or MP':'Concept Walk / Mini-Presentation',
+    'All three':'SF + CW + MP'
+  };
+
+  const moveColors = ['move-1','move-2','move-3','move-4'];
+
+  let movesHTML = '';
+  lesson.moves.forEach((m, i) => {
+    movesHTML += `
+      <div class="move ${moveColors[i]}">
+        <div class="move-label">
+          <span class="move-num">${i+1}</span>
+          <span class="move-label-text">${m.label}</span>
+          <span class="move-time">&nbsp;&middot;&nbsp;${m.time}</span>
+        </div>
+        <div class="move-heading">${m.heading}</div>
+        <div class="move-body"><p>${m.body.replace(/\n/g,'</p><p>')}</p></div>
+        <div class="move-cue">${m.cue}</div>
+      </div>
+    `;
+  });
+
+  card.innerHTML = `
+    <div class="lesson-card-header">
+      <span class="lesson-num">Lesson ${lesson.num}</span>
+      <span class="lesson-title">${lesson.title}</span>
+      <span class="lesson-cf-tag phase-tag ${phaseClass(lesson.phase)}">${lesson.phase} &middot; CF${lesson.cf}</span>
+    </div>
+    <div class="lesson-moves">${movesHTML}</div>
+    <div class="lesson-read-ahead">
+      <span class="ra-label">Read-ahead</span>
+      <span>${lesson.readAhead}</span>
+    </div>
+  `;
+
+  viewLessons.appendChild(card);
+});
+
 // ── View switching ──────────────────────────────────────────────────────
 let currentView = 'bycf';
 function setView(v) {
   currentView = v;
   document.getElementById('view-bycf').style.display = (v === 'bycf') ? '' : 'none';
   document.getElementById('view-bytheme').style.display = (v === 'bytheme') ? '' : 'none';
+  document.getElementById('view-lessons').style.display = (v === 'lessons') ? '' : 'none';
   document.getElementById('btn-bycf').classList.toggle('active', v === 'bycf');
   document.getElementById('btn-bytheme').classList.toggle('active', v === 'bytheme');
-  applyFilters();
+  document.getElementById('btn-lessons').classList.toggle('active', v === 'lessons');
+  if (v !== 'lessons') applyFilters();
 }
 
 // ── Filter logic ────────────────────────────────────────────────────────
