@@ -145,6 +145,7 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
   <div class="tab" onclick="showTab('kc')">Knowledge Check</div>
   <div class="tab" onclick="showTab('prepost')">Pre / Post Test</div>
   <div class="tab" onclick="showTab('groups')">Groups</div>
+  <div class="tab" onclick="showTab('passwords')">Passwords</div>
   <div class="tab" onclick="showTab('export')">Export &amp; Setup</div>
 </div>
 
@@ -190,23 +191,10 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
     <div id="groups-content"><div class="loading">Select a cohort to load data.</div></div>
   </div>
 
-  <div id="tab-export" style="display:none">
-    <div class="section-hdr">EXPORT DATA</div>
+  <div id="tab-passwords" style="display:none">
+    <div class="section-hdr">COHORT PASSWORDS</div>
     <div class="export-card">
-      <p>Download all response data for the selected cohort as CSV. Open in Excel for deeper analysis.</p>
-      <button class="btn-navy" onclick="exportCSV()">⬇ Download CSV</button>
-    </div>
-
-    <div class="section-hdr" style="margin-top:24px;">COHORT CODE FOR PARTICIPANTS</div>
-    <div class="export-card">
-      <p>Share this code with participants at the start of class. They enter it on the course home page before starting Case File 01. All their responses will be tagged to this cohort.</p>
-      <div class="code-display" id="code-display">--</div>
-      <p style="font-size:.75rem;color:var(--gray-dk)">Each participant gets an anonymous random ID -- no names are collected.</p>
-    </div>
-
-    <div class="section-hdr" style="margin-top:24px;">COHORT PASSWORDS (Pre / Post Test)</div>
-    <div class="export-card">
-      <p>Each cohort needs a password that you share with participants to unlock the pre-test and post-test. Add a new password below, then give it verbally or in your pre-class materials. Deactivating a password prevents new submissions but does not affect data already collected.</p>
+      <p>Each cohort needs separate passwords for the pre-test and post-test. Add them below, then share each one with participants at the right time. Deactivating a password prevents new submissions but does not affect data already collected.</p>
       <div id="pw-list" style="margin-bottom:16px;"><span style="font-size:.8rem;color:var(--gray-dk);">Loading&hellip;</span></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:4px;">
         <div>
@@ -231,6 +219,21 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
         <button class="btn-gold" onclick="addCohortPassword()">+ Add Password</button>
       </div>
       <div id="pw-err" style="font-size:.78rem;color:var(--red);margin-top:8px;min-height:16px;"></div>
+    </div>
+  </div>
+
+  <div id="tab-export" style="display:none">
+    <div class="section-hdr">EXPORT DATA</div>
+    <div class="export-card">
+      <p>Download all response data for the selected cohort as CSV. Open in Excel for deeper analysis.</p>
+      <button class="btn-navy" onclick="exportCSV()">⬇ Download CSV</button>
+    </div>
+
+    <div class="section-hdr" style="margin-top:24px;">COHORT CODE FOR PARTICIPANTS</div>
+    <div class="export-card">
+      <p>Share this code with participants at the start of class. They enter it on the course home page before starting Case File 01. All their responses will be tagged to this cohort.</p>
+      <div class="code-display" id="code-display">--</div>
+      <p style="font-size:.75rem;color:var(--gray-dk)">Each participant gets an anonymous random ID -- no names are collected.</p>
     </div>
 
     <div class="section-hdr" style="margin-top:24px;">DATABASE SETUP STATUS</div>
@@ -590,10 +593,10 @@ function renderEmpty() {
 // ── TABS ──────────────────────────────────────────────────────────────────────
 function showTab(name) {
   activeTab = name;
-  const names = ['decisions','kc','prepost','groups','export'];
+  const names = ['decisions','kc','prepost','groups','passwords','export'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
   names.forEach(n=>document.getElementById('tab-'+n).style.display=n===name?'':'none');
-  if (name === 'export') loadCohortPasswords();
+  if (name === 'passwords' || name === 'export') loadCohortPasswords();
   else if (currentCohort) renderAll();
 }
 
