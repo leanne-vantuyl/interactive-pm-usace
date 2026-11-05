@@ -702,7 +702,17 @@ function getLearnersWithThemes() {
     bySession[r.session_id] = { name: r.learner_name||r.session_id, themes };
   });
 
-  return Object.values(bySession);
+  // Deduplicate by normalized name -- same person entering the course multiple times
+  // should appear only once. Keep the entry with the most themes data.
+  const byName = {};
+  Object.values(bySession).forEach(learner => {
+    const key = learner.name.trim().toLowerCase();
+    if (!byName[key] || learner.themes.length > byName[key].themes.length) {
+      byName[key] = learner;
+    }
+  });
+
+  return Object.values(byName);
 }
 
 function domainSet(themes) {
