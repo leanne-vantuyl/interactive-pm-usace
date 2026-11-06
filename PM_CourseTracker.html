@@ -1006,48 +1006,48 @@ async function setPwActive(id, active) {
 
 // ── TEST RESULTS (pre_post_test table) ────────────────────────────────────────
 var TR_PRE_Q=[
-  {tag:'D',stem:'PDT Charter must include -- named individuals + decision authority',cf:'CF01'},
-  {tag:'J',stem:'Charter still shows predecessor\'s name, RACI missing before review',cf:'CF01'},
-  {tag:'D',stem:'PROC2030 and PROC2040 are interdependent',cf:'CF02'},
-  {tag:'D',stem:'Stakeholder Requirements Register captures all requirements including out-of-scope',cf:'CF03'},
-  {tag:'J',stem:'Sponsor asks for three additions during design walkthrough',cf:'CF03'},
-  {tag:'D',stem:'Unrealistic schedule baseline surfaces as variance during execution',cf:'CF04'},
-  {tag:'D',stem:'Resource estimate above funding ceiling requires reconciliation',cf:'CF05'},
-  {tag:'J',stem:'Estimate 12% above program ceiling -- how to present to leadership',cf:'CF05'},
-  {tag:'D',stem:'SBI "Behavior" = specific observable action',cf:'CF06'},
-  {tag:'J',stem:'PDT member quality declined; reveals carrying another team\'s work',cf:'CF06'},
-  {tag:'D',stem:'EVM Schedule Variance can indicate slip weeks before site inspection',cf:'CF07'},
-  {tag:'J',stem:'EVM SPI 0.81, CPI 1.06 -- verify data before escalating',cf:'CF07'},
-  {tag:'D',stem:'Risks must be actively tracked and owned throughout execution',cf:'CF08'},
-  {tag:'J',stem:'CCB deadline item not reached in meeting -- park unplanned discussion',cf:'CF09'},
-  {tag:'D',stem:'Nonconforming work -- document, assess, present to appropriate authority',cf:'CF10'},
-  {tag:'J',stem:'Customer accepts deviation from spec -- document per PROC3010',cf:'CF10'},
-  {tag:'D',stem:'Four opportunity response strategies: Exploit, Share, Enhance, Accept',cf:'CF11'},
-  {tag:'D',stem:'PM input on DPMAP appraisal is legitimate and valuable',cf:'CF12'},
-  {tag:'D',stem:'AAR purpose: capture lessons learned before PDT disperses',cf:'CF13'},
-  {tag:'J',stem:'AAR surfaces process gap -- present as named actionable lesson',cf:'CF13'}
+  {tag:'D',stem:'PDT Charter must include which of the following?',correct:'A. Named individuals for each PDT role with decision authority',cf:'CF01'},
+  {tag:'J',stem:'Charter shows predecessor\'s name; RACI not updated; sponsor review in two days.',correct:'C. Update the charter and RACI before the review',cf:'CF01'},
+  {tag:'D',stem:'PROC2030 and PROC2040 are described as interdependent. What does this mean for planning?',correct:'C. An unrealistic schedule produces an unreliable cost estimate',cf:'CF02'},
+  {tag:'D',stem:'The Stakeholder Requirements Register captures which of the following?',correct:'C. All requirements with source and disposition, including out-of-scope items',cf:'CF03'},
+  {tag:'J',stem:'During a design walkthrough, the sponsor asks for three additions. What should the PM do?',correct:'B. Log each request and assess impact before responding',cf:'CF03'},
+  {tag:'D',stem:'An unrealistic schedule baseline surfaces as what during execution?',correct:'D. Schedule variance during execution',cf:'CF04'},
+  {tag:'D',stem:'When a resource estimate exceeds the funding ceiling, doctrine requires the PM to do what?',correct:'C. Reconcile scope, schedule, or contingency',cf:'CF05'},
+  {tag:'J',stem:'Estimate comes in 12% above program ceiling. How should the PM present this to leadership?',correct:'C. Lead with what changed and present options with trade-offs',cf:'CF05'},
+  {tag:'D',stem:'In a Situation-Behavior-Impact conversation, the "Behavior" element refers to what?',correct:'C. A specific observable action',cf:'CF06'},
+  {tag:'J',stem:'PDT member quality declined; reveals they have been carrying another team\'s work.',correct:'C. Address the constraint through PROC1020 while holding the quality expectation',cf:'CF06'},
+  {tag:'D',stem:'EVM Schedule Variance can indicate a potential slip at what point?',correct:'B. Weeks before the problem is visible on site',cf:'CF07'},
+  {tag:'J',stem:'EVM data shows SPI 0.81 and CPI 1.06. What is the appropriate next step?',correct:'C. Verify schedule is updated and percent-complete reflects actual progress',cf:'CF07'},
+  {tag:'D',stem:'According to PDBP doctrine, project risks must be:',correct:'B. Actively tracked, owned, and monitored throughout execution',cf:'CF08'},
+  {tag:'J',stem:'CCB meeting has a deadline-sensitive item. An unplanned discussion has started.',correct:'B. Interrupt and defer the unplanned discussion; address the CCB item',cf:'CF09'},
+  {tag:'D',stem:'When nonconforming work is discovered, doctrine requires the PM to:',correct:'C. Document the deviation, assess options, and present to the appropriate authority',cf:'CF10'},
+  {tag:'J',stem:'The customer verbally accepts a deviation from specification. What must the PM do?',correct:'B. Document the deviation, the customer\'s decision, and the rationale per PROC3010',cf:'CF10'},
+  {tag:'D',stem:'The four opportunity response strategies in PDBP are:',correct:'B. Exploit, Share, Enhance, Accept',cf:'CF11'},
+  {tag:'D',stem:'PM input on a PDT member\'s DPMAP appraisal is:',correct:'B. Legitimate and valuable -- the PM directly observed the member\'s contributions',cf:'CF12'},
+  {tag:'D',stem:'The primary purpose of an After-Action Review is to:',correct:'C. Capture lessons learned before the PDT disperses',cf:'CF13'},
+  {tag:'J',stem:'The AAR surfaces a recurring process gap. How should the PM handle this?',correct:'B. Include it as a named, actionable lesson with a recommended process change',cf:'CF13'}
 ];
 var TR_POST_Q=[
-  {tag:'D',stem:'Charter is PM\'s responsibility to maintain throughout lifecycle',cf:'CF01'},
-  {tag:'J',stem:'Two PDT members replaced 4 months ago, never documented in Charter',cf:'CF01'},
-  {tag:'D',stem:'Front-loaded schedule distorts resource estimate upward',cf:'CF02'},
-  {tag:'D',stem:'Out-of-scope requirement retained in register with disposition and rationale',cf:'CF03'},
-  {tag:'J',stem:'Stakeholder emails "minor adjustment" never logged in register',cf:'CF03'},
-  {tag:'D',stem:'Approved schedule baseline = fixed reference against which progress is measured',cf:'CF04'},
-  {tag:'D',stem:'Funding gap requires transparent presentation and reconciliation',cf:'CF05'},
-  {tag:'J',stem:'Estimate 15% above ceiling -- lead with gap, options, trade-offs',cf:'CF05'},
-  {tag:'D',stem:'SBI "Impact" = effect on project, team, or relationship',cf:'CF06'},
-  {tag:'J',stem:'PDT member late for two months -- private SBI conversation',cf:'CF06'},
-  {tag:'D',stem:'EVM detects cost and schedule trends early before visible on site',cf:'CF07'},
-  {tag:'J',stem:'EVM SPI 0.78, CPI 0.95 -- behind schedule, slightly over budget',cf:'CF07'},
-  {tag:'D',stem:'Each risk must have an assigned owner accountable for monitoring',cf:'CF08'},
-  {tag:'J',stem:'Unplanned topic consumes 25 min; deadline item not reached',cf:'CF09'},
-  {tag:'D',stem:'Undocumented verbal change acceptance creates baseline integrity risk',cf:'CF10'},
-  {tag:'J',stem:'Nonconforming work -- contractor claims equivalence, customer accepts',cf:'CF10'},
-  {tag:'D',stem:'Four threat response strategies: Avoid, Transfer, Mitigate, Accept',cf:'CF11'},
-  {tag:'D',stem:'Most useful PM DPMAP input: specific observable project examples',cf:'CF12'},
-  {tag:'D',stem:'AAR conducted before PDT disperses while knowledge is accessible',cf:'CF13'},
-  {tag:'J',stem:'Systemic AAR gap -- describe root cause and specific process change',cf:'CF13'}
+  {tag:'D',stem:'According to PDBP doctrine, the PDT Charter is:',correct:'B. The PM\'s responsibility to keep current throughout the lifecycle',cf:'CF01'},
+  {tag:'J',stem:'Two PDT members replaced four months ago, never documented in charter.',correct:'B. Update the charter with current members and confirm authority',cf:'CF01'},
+  {tag:'D',stem:'A front-loaded schedule distorts what?',correct:'B. The resource estimate -- costs appear higher than the work warrants',cf:'CF02'},
+  {tag:'D',stem:'An out-of-scope requirement that has been formally dispositioned should be:',correct:'B. Retained in the register with its disposition and rationale',cf:'CF03'},
+  {tag:'J',stem:'A stakeholder emails a "minor adjustment" request never logged in the register.',correct:'B. Log the request, assess scope and cost impact, then respond',cf:'CF03'},
+  {tag:'D',stem:'The approved schedule baseline serves as:',correct:'B. The fixed reference against which actual progress is measured',cf:'CF04'},
+  {tag:'D',stem:'When a project estimate exceeds available funding, the PM must:',correct:'B. Present the gap transparently and work to reconcile it',cf:'CF05'},
+  {tag:'J',stem:'Estimate comes in 15% above the ceiling. How should the PM lead the conversation?',correct:'B. Lead with the gap drivers and two or three realistic options',cf:'CF05'},
+  {tag:'D',stem:'In a Situation-Behavior-Impact conversation, the "Impact" element refers to:',correct:'B. How the behavior affected the project, team, or relationship',cf:'CF06'},
+  {tag:'J',stem:'A PDT member has been late to deliverables for two months.',correct:'B. Have a private SBI conversation: behavior, impact on the schedule, expectation going forward',cf:'CF06'},
+  {tag:'D',stem:'EVM\'s primary value over site visits is that it:',correct:'B. Allows detection of cost and schedule trends early, before visible on site',cf:'CF07'},
+  {tag:'J',stem:'EVM data shows SPI 0.78 and CPI 0.95. What is the correct assessment?',correct:'B. Behind schedule and slightly over budget; identify the drivers and recovery options',cf:'CF07'},
+  {tag:'D',stem:'For each risk in the register, doctrine requires:',correct:'B. An assigned owner accountable for monitoring',cf:'CF08'},
+  {tag:'J',stem:'An unplanned topic consumes 25 minutes. The deadline-sensitive item has not been reached.',correct:'B. Park the unplanned topic, address the deadline item, then return',cf:'CF09'},
+  {tag:'D',stem:'When a customer verbally accepts a deviation and nothing is documented, what has the PM created?',correct:'B. A risk -- undocumented changes create liability and baseline integrity problems',cf:'CF10'},
+  {tag:'J',stem:'Contractor claims substituted material is equivalent; customer accepts verbally.',correct:'C. Document the nonconformance, the sponsor\'s decision, and technical basis per PROC3010',cf:'CF10'},
+  {tag:'D',stem:'The four threat response strategies in PDBP are:',correct:'A. Avoid, Transfer, Mitigate, Accept',cf:'CF11'},
+  {tag:'D',stem:'The most useful PM input to a DPMAP appraisal is:',correct:'B. Specific, observable examples tied to the rating period',cf:'CF12'},
+  {tag:'D',stem:'When should the AAR be conducted?',correct:'B. Before the PDT disperses, while institutional knowledge is accessible',cf:'CF13'},
+  {tag:'J',stem:'The AAR surfaces a process gap that appears to be systemic. How to document it?',correct:'B. Describe the situation, root cause, and a specific recommended process change',cf:'CF13'}
 ];
 
 var trData = [];          // rows from pre_post_test
@@ -1269,7 +1269,7 @@ function trMissChart(rows,qs){
       +'<div class="tr-tag '+(q.tag==='D'?'tr-tag-d':'tr-tag-j')+'">'+q.tag+'</div>'
       +'<div class="tr-q-bar-wrap"><div class="tr-q-bar" style="width:'+pct+'%;background:'+barColor+';"></div></div>'
       +'<div class="tr-q-pct">'+pct+'%</div>'
-      +'<div class="tip"><div class="tip-lbl">'+q.cf+' &middot; '+q.tag+'</div>'+trEsc(q.stem)+'<br><br>'+missed+' of '+total+' missed ('+pct+'%)</div>'
+      +'<div class="tip"><div class="tip-lbl">'+q.cf+' &middot; '+q.tag+'</div>'+trEsc(q.stem)+(q.correct?'<br><span style="color:var(--green);font-weight:700;">&#10003; '+trEsc(q.correct)+'</span>':'')+'<br><br>'+missed+' of '+total+' missed ('+pct+'%)</div>'
       +'</div>';
   });
   return html;
