@@ -129,6 +129,9 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
 .tr-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
 .tr-tab{padding:6px 14px;font-size:.78rem;border:1px solid #DDD;border-radius:3px;cursor:pointer;background:#fff;color:var(--dark);}
 .tr-tab.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
+.tr-subtab{padding:7px 16px;font-size:.78rem;color:var(--gray-dk);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;}
+.tr-subtab.active{color:var(--dark);border-bottom-color:var(--gold-lt);font-weight:700;}
+.tr-subtab:hover:not(.active){color:var(--dark);}
 .tr-legend{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
 .tr-leg{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--gray-dk);}
 .tr-dot{width:10px;height:10px;border-radius:2px;}
@@ -1051,7 +1054,8 @@ var TR_POST_Q=[
 ];
 
 var trData = [];          // rows from pre_post_test
-var trSubTab = 'overview'; // 'overview' | 'learners' | 'questions'
+var trTestTab  = 'pre';    // 'pre' | 'post'
+var trSubTab   = 'overview'; // 'overview' | 'learners' | 'questions'
 
 async function loadTestResults() {
   if (!currentCohort) return;
@@ -1095,11 +1099,17 @@ async function renderTestResults() {
     +'<div class="scard"><div class="val '+(gain===null?'':(gain>=0?'dp':'dn'))+'">'+fmtGain(gain)+'</div><div class="lbl">Avg Gain</div><div class="sub">Pre &rarr; Post overall</div></div>'
     +'</div>';
 
+  // Top-level Pre / Post tabs
+  html += '<div class="tr-tabs" style="margin-bottom:0;border-bottom:2px solid var(--gold-lt);">'
+    +'<div class="tr-tab '+(trTestTab==='pre'?'active':'')+'" onclick="trTestSwitch(\'pre\')" style="font-size:.9rem;padding:10px 22px;">Pre-Test</div>'
+    +'<div class="tr-tab '+(trTestTab==='post'?'active':'')+'" onclick="trTestSwitch(\'post\')" style="font-size:.9rem;padding:10px 22px;">Post-Test</div>'
+    +'</div>';
+
   // Sub-tab nav
-  html += '<div class="tr-tabs">'
-    +'<div class="tr-tab '+(trSubTab==='overview'?'active':'')+'" onclick="trSwitch(\'overview\')">Overview</div>'
-    +'<div class="tr-tab '+(trSubTab==='learners'?'active':'')+'" onclick="trSwitch(\'learners\')">By Learner</div>'
-    +'<div class="tr-tab '+(trSubTab==='questions'?'active':'')+'" onclick="trSwitch(\'questions\')">By Question</div>'
+  html += '<div class="tr-tabs" style="background:#F4F4F0;">'
+    +'<div class="tr-subtab '+(trSubTab==='overview'?'active':'')+'" onclick="trSwitch(\'overview\')">Overview</div>'
+    +'<div class="tr-subtab '+(trSubTab==='learners'?'active':'')+'" onclick="trSwitch(\'learners\')">By Learner</div>'
+    +'<div class="tr-subtab '+(trSubTab==='questions'?'active':'')+'" onclick="trSwitch(\'questions\')">By Question</div>'
     +'</div>';
   html += '<div id="tr-sub"></div>';
 
@@ -1107,9 +1117,18 @@ async function renderTestResults() {
   renderTrSub();
 }
 
+function trTestSwitch(name) {
+  trTestTab = name;
+  trSubTab = 'overview';
+  document.querySelectorAll('.tr-tab').forEach(function(t,i){
+    t.classList.toggle('active',['pre','post'][i]===name);
+  });
+  renderTrSub();
+}
+
 function trSwitch(name) {
   trSubTab = name;
-  document.querySelectorAll('.tr-tab').forEach(function(t,i){
+  document.querySelectorAll('.tr-subtab').forEach(function(t,i){
     t.classList.toggle('active',['overview','learners','questions'][i]===name);
   });
   renderTrSub();
@@ -1147,28 +1166,48 @@ function trDate(s){if(!s)return'--';var d=new Date(s);return d.toLocaleDateStrin
 function trEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 function trOverviewHtml() {
-  var pairs = trBuildPairs();
-  if (!pairs.length) return '<div class="empty"><div class="ico">📈</div><p>No matched pre/post pairs found yet for this cohort.</p></div>';
-  var html = '<div class="section-hdr" style="margin-top:0;">Matched Pre / Post Pairs ('+pairs.length+')</div>';
-  html += '<table class="tr-learner-tbl"><thead><tr>'
-    +'<th>Learner</th><th>Pre Overall</th><th>Post Overall</th><th>Gain</th>'
-    +'<th>Pre Doctrine</th><th>Post Doctrine</th><th>Pre Judgment</th><th>Post Judgment</th>'
-    +'</tr></thead><tbody>';
-  pairs.forEach(function(p){
-    var g=p.post.overall_score-p.pre.overall_score;
-    var cls=g>0?'tr-gain':g<0?'tr-loss':'tr-neut';
-    html+='<tr>'
-      +'<td>'+trEsc(p.pre.learner_name||'--')+'</td>'
-      +'<td>'+trSpill(p.pre.overall_score)+'</td>'
-      +'<td>'+trSpill(p.post.overall_score)+'</td>'
-      +'<td class="'+cls+'">'+(g>0?'+':'')+g+'%</td>'
-      +'<td>'+trDec(p.pre.doctrine_score)+'</td>'
-      +'<td>'+trDec(p.post.doctrine_score)+'</td>'
-      +'<td>'+trDec(p.pre.judgment_score)+'</td>'
-      +'<td>'+trDec(p.post.judgment_score)+'</td>'
-      +'</tr>';
-  });
-  return html+'</tbody></table>';
+  // On Pre tab: show individual pre submissions; on Post tab: matched pairs with gain
+  if (trTestTab === 'pre') {
+    var rows = trData.filter(r=>r.test_type==='pre');
+    if (!rows.length) return '<div class="empty"><div class="ico">📋</div><p>No pre-test submissions yet for this cohort.</p></div>';
+    var html = '<div class="section-hdr" style="margin-top:0;">Pre-Test Submissions ('+rows.length+')</div>';
+    html += '<table class="tr-learner-tbl"><thead><tr>'
+      +'<th>Learner</th><th>Overall</th><th>Doctrine</th><th>Judgment</th><th>Submitted</th>'
+      +'</tr></thead><tbody>';
+    rows.forEach(function(row){
+      html+='<tr>'
+        +'<td>'+trEsc(row.learner_name||'--')+'</td>'
+        +'<td>'+trSpill(row.overall_score)+'</td>'
+        +'<td>'+trDec(row.doctrine_score)+'</td>'
+        +'<td>'+trDec(row.judgment_score)+'</td>'
+        +'<td style="white-space:nowrap;font-size:.75rem;">'+trDate(row.submitted_at)+'</td>'
+        +'</tr>';
+    });
+    return html+'</tbody></table>';
+  } else {
+    var pairs = trBuildPairs();
+    if (!pairs.length) return '<div class="empty"><div class="ico">📈</div><p>No matched pre/post pairs found yet. Both a pre-test and post-test submission are needed for the same learner.</p></div>';
+    var html = '<div class="section-hdr" style="margin-top:0;">Matched Pre / Post Pairs ('+pairs.length+')</div>';
+    html += '<table class="tr-learner-tbl"><thead><tr>'
+      +'<th>Learner</th><th>Pre Overall</th><th>Post Overall</th><th>Gain</th>'
+      +'<th>Pre Doctrine</th><th>Post Doctrine</th><th>Pre Judgment</th><th>Post Judgment</th>'
+      +'</tr></thead><tbody>';
+    pairs.forEach(function(p){
+      var g=p.post.overall_score-p.pre.overall_score;
+      var cls=g>0?'tr-gain':g<0?'tr-loss':'tr-neut';
+      html+='<tr>'
+        +'<td>'+trEsc(p.pre.learner_name||'--')+'</td>'
+        +'<td>'+trSpill(p.pre.overall_score)+'</td>'
+        +'<td>'+trSpill(p.post.overall_score)+'</td>'
+        +'<td class="'+cls+'">'+(g>0?'+':'')+g+'%</td>'
+        +'<td>'+trDec(p.pre.doctrine_score)+'</td>'
+        +'<td>'+trDec(p.post.doctrine_score)+'</td>'
+        +'<td>'+trDec(p.pre.judgment_score)+'</td>'
+        +'<td>'+trDec(p.post.judgment_score)+'</td>'
+        +'</tr>';
+    });
+    return html+'</tbody></table>';
+  }
 }
 
 function trGetMissed(row, qs) {
@@ -1186,19 +1225,13 @@ function trGetMissed(row, qs) {
 }
 
 function trLearnersHtml() {
-  var pre=trData.filter(r=>r.test_type==='pre');
-  var post=trData.filter(r=>r.test_type==='post');
-  if(!pre.length&&!post.length) return '<div class="empty"><p>No test submissions yet for this cohort.</p></div>';
-  var html='';
-  if(pre.length){
-    html+='<div class="section-hdr" style="margin-top:0;">Pre-Test Submissions ('+pre.length+')</div>';
-    html+=trLearnerTable(pre,TR_PRE_Q);
-  }
-  if(post.length){
-    html+='<div class="section-hdr" style="margin-top:24px;">Post-Test Submissions ('+post.length+')</div>';
-    html+=trLearnerTable(post,TR_POST_Q);
-  }
-  return html;
+  var isPre = trTestTab==='pre';
+  var rows = trData.filter(r=>r.test_type===(isPre?'pre':'post'));
+  var qs   = isPre ? TR_PRE_Q : TR_POST_Q;
+  var label = isPre ? 'Pre-Test' : 'Post-Test';
+  if(!rows.length) return '<div class="empty"><p>No '+label+' submissions yet for this cohort.</p></div>';
+  var html='<div class="section-hdr" style="margin-top:0;">'+label+' Submissions ('+rows.length+')</div>';
+  return html+trLearnerTable(rows,qs);
 }
 
 function trLearnerTable(rows,qs){
@@ -1232,8 +1265,10 @@ function trLearnerTable(rows,qs){
 }
 
 function trQuestionsHtml(){
-  var pre=trData.filter(r=>r.test_type==='pre');
-  var post=trData.filter(r=>r.test_type==='post');
+  var isPre = trTestTab==='pre';
+  var rows  = trData.filter(r=>r.test_type===(isPre?'pre':'post'));
+  var qs    = isPre ? TR_PRE_Q : TR_POST_Q;
+  var label = isPre ? 'Pre-Test' : 'Post-Test';
   var html='<div class="tr-legend">'
     +'<div class="tr-leg"><div class="tr-dot" style="background:var(--red)"></div>Miss rate &gt;50%</div>'
     +'<div class="tr-leg"><div class="tr-dot" style="background:#C49A2A"></div>25-50%</div>'
@@ -1241,10 +1276,7 @@ function trQuestionsHtml(){
     +'<div class="tr-leg"><div class="tr-dot tr-tag-d" style="width:14px;border-radius:2px;"></div>Doctrine</div>'
     +'<div class="tr-leg"><div class="tr-dot tr-tag-j" style="width:14px;border-radius:2px;"></div>Judgment</div>'
     +'</div>';
-  html+='<div class="tr-charts">'
-    +'<div class="tr-chart-card"><div class="tr-chart-hdr">Pre-Test Miss Rate (n='+pre.length+')</div>'+trMissChart(pre,TR_PRE_Q)+'</div>'
-    +'<div class="tr-chart-card"><div class="tr-chart-hdr">Post-Test Miss Rate (n='+post.length+')</div>'+trMissChart(post,TR_POST_Q)+'</div>'
-    +'</div>';
+  html+='<div class="tr-chart-card" style="max-width:640px;"><div class="tr-chart-hdr">'+label+' Miss Rate by Question (n='+rows.length+')</div>'+trMissChart(rows,qs)+'</div>';
   return html;
 }
 
