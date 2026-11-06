@@ -60,13 +60,6 @@ body.light-mode .gate-input{background:#fff;border:1px solid #5A4010;color:#111;
 .answer-option .opt-letter{font-family:'DM Mono',monospace;font-weight:700;color:var(--gold);margin-right:8px;}
 body.light-mode .answer-option{background:#fff;border-color:rgba(90,64,16,0.3);color:#111;}
 body.light-mode .answer-option.selected{background:rgba(90,64,16,.08);border-color:#5A4010;}
-.se-scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
-.se-btn{font-family:'DM Mono',monospace;font-size:0.6875rem;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(26,31,20,.4);border:1px solid var(--border);color:var(--white-dim);cursor:pointer;transition:all .15s;flex-shrink:0;}
-.se-btn:hover{border-color:var(--gold-dim);color:var(--white);}
-.se-btn.selected{background:var(--gold);border-color:var(--gold);color:var(--army-dark);font-weight:700;}
-.se-labels{display:flex;justify-content:space-between;margin-top:6px;font-family:'DM Mono',monospace;font-size:0.4375rem;color:var(--white-dim);letter-spacing:.05em;}
-body.light-mode .se-btn{background:#fff;border-color:rgba(90,64,16,0.3);color:#111;}
-body.light-mode .se-btn.selected{background:#5A4010;border-color:#5A4010;color:#fff;}
 .q-nav{display:flex;gap:12px;margin-top:24px;}
 .q-btn{font-family:'DM Mono',monospace;font-size:0.6875rem;letter-spacing:.08em;padding:11px 22px;border:1px solid var(--border);background:transparent;color:var(--white-dim);cursor:pointer;transition:all .15s;}
 .q-btn:hover{border-color:var(--gold-dim);color:var(--white);}
@@ -116,7 +109,7 @@ body.light-mode .score-card{background:#E8E4D9;border-color:#5A4010;}
     <div class="gate-card">
       <div class="gate-eyebrow">PROSPECT 355 &middot; Post-Test</div>
       <div class="gate-title">Course Complete</div>
-      <div class="gate-sub">You have worked through all 13 case files. This brief assessment uses the same questions as your pre-test so we can measure what changed &mdash; plus a few new ones. Your instructor will provide the password.</div>
+      <div class="gate-sub">You have worked through all 13 case files. This assessment covers the same doctrine and judgment areas as your pre-test using new questions. Your score is shown when you finish. Your instructor will provide the password.</div>
       <label class="gate-label" for="gate-name">Your Name</label>
       <input class="gate-input" type="text" id="gate-name" placeholder="First Last" autocomplete="off">
       <label class="gate-label" for="gate-password">Cohort Password</label>
@@ -131,7 +124,7 @@ body.light-mode .score-card{background:#E8E4D9;border-color:#5A4010;}
     <div class="section-header">
       <div class="section-eyebrow">Post-Test &middot; PROSPECT 355</div>
       <div class="section-title">Post-Training Assessment</div>
-      <div class="section-sub">Answer each question based on what you know now. Take your time.</div>
+      <div class="section-sub">Answer each question. Your score will be shown when you submit.</div>
     </div>
     <div class="progress-wrap">
       <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -175,65 +168,109 @@ function toggleTheme(){
 function getProfile(){try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}}
 function genUUID(){return'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return(c=='x'?r:(r&0x3|0x8)).toString(16);});}
 
-// SHARED CORE (indices 0-14) + POST-ONLY (15-19)
+// 20 graded questions -- parallel form to PreTest
+// Same 13 PDBP doctrine constructs (CF01-CF13), different stems
+// 12 Doctrine (D), 8 Judgment (J) -- all with correct answers
 var ALL_QUESTIONS = [
-  // === SHARED CORE (0-14) -- parallel form to PreTest, same constructs different items ===
-  {tag:'D',text:'A PDT Charter must be updated when a PDT member\'s role changes mid-project. Who is responsible for initiating that update?',
-   opts:['The functional chief of the departing member','The DPM, once notified by the PM','PROMIS generates an alert and the update is automatic','The PM -- the Charter is a PM-owned document'],
-   correct:3},
-  {tag:'D',text:'Which of the following is NOT a valid trigger for a PMP update under PROC2020?',
-   opts:['A new PDT member joins and disagrees with the approach','A significant scope change is approved','The project moves into a new phase','The cost estimate changes beyond the approved threshold'],
-   correct:0},
-  {tag:'D',text:'The PMP baseline is established:',
-   opts:['When the PDT Charter is signed','After the sponsor approves the project concept','Before design activities begin, once scope, schedule, and cost are agreed','At contract award'],
-   correct:2},
-  {tag:'D',text:'Under PROC2020, once a Cost Growth Event is formally triggered, the PM\'s obligation is to:',
-   opts:['Immediately reduce scope to bring the estimate back within the program amount','Wait until the next scheduled project review to disclose the variance','Issue a contract modification to adjust the program amount','Notify the appropriate level of command and document the event per the reporting threshold'],
-   correct:3},
-  {tag:'D',text:'A project schedule activity has no predecessor and no successor. This is called:',
-   opts:['A milestone placeholder -- acceptable if documented','An orphan activity -- a logic error that breaks schedule integrity','A float buffer -- common on critical path activities','A summary task -- normal at WBS Level 2'],
+  // 0 -- CF01 / PROC2020: Charter ownership and update obligation [D]
+  {tag:'D',text:'Under PROC2020, the PDT Charter is the PM\'s responsibility to maintain. This means:',
+   opts:['The PM drafts it at project initiation and archives it after the first milestone','The PM is responsible for keeping it current throughout the project lifecycle, not just at startup','The DPM maintains the Charter and the PM maintains the PMP','The Charter is updated only when PROMIS prompts a review'],
    correct:1},
-  {tag:'J',text:'Three months into a project, your A-E firm\'s lead designer is replaced without notice. The Charter still lists the original name. You should:',
-   opts:['Note the change in your PM log and update the Charter at the next scheduled review','Ask the A-E firm to handle the Charter update -- it is their personnel change','Update the Charter to reflect the new lead and confirm their decision authority before the next milestone','No action needed -- the Charter lists the firm, not individuals'],
-   correct:2},
-  {tag:'J',text:'Your structural engineer tells you verbally that the steel delivery will be two weeks late. The schedule impact would push a key milestone. Your first move is:',
-   opts:['Send an email to the contractor directing them to accelerate','Update the schedule yourself to reflect the new delivery date and move on','Immediately escalate to your DPM -- any milestone slip is a reportable event','Ask the structural engineer to put it in writing, then assess the schedule impact before escalating'],
-   correct:3},
-  {tag:'J',text:'A PDT member submits schedule updates on time but the data is frequently wrong, causing downstream errors. You have corrected it twice without comment. Your next step is:',
-   opts:['Correct it again quietly -- drawing attention to it will damage the relationship','Have a direct conversation: name the specific errors, explain the downstream impact, and state what accurate looks like','Send a group reminder to all PDT members about schedule update accuracy','Remove that member from schedule update responsibilities without discussion'],
-   correct:1},
-  {tag:'J',text:'During a site visit, the contractor points out a buried utility that was not on the original drawings. It will require rerouting that adds cost. You should:',
-   opts:['Tell the contractor to absorb the cost -- it is their responsibility to verify site conditions','Instruct the contractor to proceed with the reroute and you will handle the paperwork later','Document the discovery, assess whether it qualifies as a differing site condition, and notify your chain of command','Ask the sponsor to cover the additional cost directly without going through the change process'],
-   correct:2},
-  {tag:'J',text:'Your sponsor calls to say they want to add a generator building to the project. Design is 60% complete. You should:',
-   opts:['Tell them it is too late -- scope changes are not permitted after the 35% design milestone','Log the request, assess the cost and schedule impact of adding scope at this stage, and present the options formally','Agree to explore it -- sponsors have the authority to modify scope at any point','Ask your DPM to tell the sponsor no so the relationship stays intact'],
-   correct:1},
-  {tag:'J',text:'You learn the day before a decision brief that the District Commander and the sponsor hold incompatible positions on a scope question. You should:',
-   opts:['Proceed with the brief -- surfacing the conflict in the room is the most transparent approach','Cancel the brief and reschedule -- the conflict must be resolved before the meeting','Let your DPM open the meeting and surface the conflict -- that is a leadership function','Contact both parties before the meeting, surface the gap, and confirm whether the brief should proceed or be reshaped'],
-   correct:3},
-  {tag:'J',text:'Your EVM report shows CPI of 0.88 for the third consecutive month. SPI is 1.02. What does this tell you, and what do you do?',
-   opts:['The project is on schedule but over budget -- investigate cost drivers and develop a recovery plan','The project is behind schedule but under budget -- accelerate activities to recover the schedule','Both indicators are within acceptable range -- no action needed until one drops below 0.80','The data is inconsistent -- CPI and SPI cannot move in opposite directions on the same project'],
-   correct:0},
-  {tag:'SE',text:'How confident are you in your ability to identify when a PDT Charter needs to be updated and initiate that update yourself?',
-   type:'scale',low:'Not at all confident',high:'Completely confident'},
-  {tag:'SE',text:'How confident are you in your ability to read an EVM report, identify what the numbers mean, and explain the project status to a senior leader?',
-   type:'scale',low:'Not at all confident',high:'Completely confident'},
-  {tag:'SE',text:'How confident are you in your ability to manage a scope change request from first identification through formal approval?',
-   type:'scale',low:'Not at all confident',high:'Completely confident'},
 
-  // === POST-ONLY (15-19) ===
-  {tag:'J',text:'Looking back at a case file scenario you found challenging, what did working through it reveal about how you approach ambiguous project situations?',
-   opts:['I tend to escalate too quickly before assessing the situation myself','I tend to under-escalate and try to solve problems alone','I look for the procedural answer first, then assess the relationships','I look for the relationship angle first, then check the procedure'],
-   correct:null}, // reflection -- no correct answer
-  {tag:'D',text:'Which PROC2020 requirement is most commonly overlooked in the early phases of project delivery, based on the case files you worked through?',
-   opts:['PDT Charter completion with named members and decision authority','Completion of the PMP before design activities begin','Formal sponsor agreement on scope changes','Submission of the schedule baseline to PROMIS before design activities begin'],
+  // 1 -- CF01 / PROC2020: Charter mid-project [J]
+  {tag:'J',text:'Six months into execution, you discover that two PDT members listed in the Charter left the project four months ago and their replacements have never been documented. What do you do?',
+   opts:['Leave it -- the Charter is a planning document and execution staffing changes do not require updates','Update the Charter with the current members, confirm their decision authority, and note the gap in your PM log','Ask the DPM to handle it -- personnel changes are an administrative function','Wait until the next scheduled PDT Charter review to make the correction'],
+   correct:1},
+
+  // 2 -- CF02 / PROC2030+PROC2040: Schedule drives cost [D]
+  {tag:'D',text:'A schedule that front-loads activity durations and builds in excessive float will most directly affect:',
+   opts:['The sponsor\'s approval timeline','The resource estimate -- costs will appear higher than they actually are','The PDT Charter update frequency','The PROMIS risk register'],
+   correct:1},
+
+  // 3 -- CF03 / PROC2010: Requirements Register scope [D]
+  {tag:'D',text:'A stakeholder requirement that is logged as "out of scope" in the Stakeholder Requirements Register should be:',
+   opts:['Deleted from the register once the scope decision is documented','Retained in the register with the disposition and the rationale recorded','Moved to a separate out-of-scope log maintained outside PROMIS','Elevated to the sponsor for a final decision before it can be closed'],
+   correct:1},
+
+  // 4 -- CF03 / PROC2010: Undocumented scope request [J]
+  {tag:'J',text:'A stakeholder sends you an email asking for a "minor adjustment" to the facility layout. The request has never appeared in the Stakeholder Requirements Register. The right first move is:',
+   opts:['Reply to the email agreeing to the adjustment -- it is minor','Log the request in the Stakeholder Requirements Register, assess scope and cost impact, then respond','Forward the email to the design team and ask them to incorporate it','Decline -- scope changes cannot be accepted by email'],
+   correct:1},
+
+  // 5 -- CF04 / PROC2030: Schedule baseline integrity [D]
+  {tag:'D',text:'Once a schedule baseline is approved under PROC2030, its primary value is:',
+   opts:['As a legal record for contract disputes','As the fixed reference against which actual progress is measured throughout execution','As an input to the PDT Charter update process','As a summary for the sponsor\'s quarterly review'],
+   correct:1},
+
+  // 6 -- CF05 / PROC2040 + PROC1040: Funding ceiling reconciliation [D]
+  {tag:'D',text:'When a resource estimate developed under PROC2040 reveals a gap between project cost and the program funding ceiling set under PROC1040, the PM\'s obligation is to:',
+   opts:['Adjust the estimate to fit within the ceiling before presenting it to leadership','Present the gap transparently and work with leadership to reconcile scope, contingency, or funding','Proceed with the project and address the funding gap after contract award','Notify the sponsor and ask them to cover the difference through a supplemental agreement'],
+   correct:1},
+
+  // 7 -- CF05 / Managing up [J]
+  {tag:'J',text:'Your updated resource estimate comes in 15% above the approved program ceiling. Leadership is expecting good news at next week\'s review. How do you handle the brief?',
+   opts:['Present the best-case number only and address the gap in a follow-up email','Lead with the gap, the drivers behind it, and two or three realistic options -- give leadership what they need to decide','Ask your DPM to present so the message comes from a more senior voice','Delay the brief until you can find a way to close the gap internally'],
+   correct:1},
+
+  // 8 -- CF06 / PROC1020 + SBI: Feedback delivery [D]
+  {tag:'D',text:'In the SBI feedback model, the "Impact" component should describe:',
+   opts:['What disciplinary action will follow if the behavior continues','How the behavior affected the project, the team, or the relationship','A general assessment of the person\'s overall performance','What the person should do differently going forward'],
+   correct:1},
+
+  // 9 -- CF06 / Performance conversation [J]
+  {tag:'J',text:'A PDT member\'s work has been consistently late for two months. You have not addressed it directly. The member is well-liked and you are concerned about team morale. Your best path forward is:',
+   opts:['Continue to absorb the delays -- raising it now will seem like you have been keeping score','Have a private, specific conversation using the SBI model: name the behavior, the impact, and what on-time looks like','Ask another PDT member to informally coach the person','Send a group message reminding the whole PDT of deadline expectations'],
+   correct:1},
+
+  // 10 -- CF07 / PROC3000: EVM early warning [D]
+  {tag:'D',text:'EVM is most valuable to a PM because it:',
+   opts:['Provides a legal record of contractor performance','Allows the PM to detect cost and schedule trends early -- before they become visible problems on site','Replaces the need for site visits during execution','Automatically generates PROMIS variance reports'],
+   correct:1},
+
+  // 11 -- CF07 / EVM interpretation [J]
+  {tag:'J',text:'Your EVM report shows SPI 0.78, CPI 0.95. Your chain of command asks for a status update. What do you tell them?',
+   opts:['The project is on track -- both indicators are still above 0.75','The project is behind schedule and slightly over budget; here are the drivers and my recovery options','The numbers reflect a data entry issue -- I need another cycle before I can confirm','The schedule variance is acceptable; only CPI matters for budget reporting'],
+   correct:1},
+
+  // 12 -- CF08 / REF8007G: Risk ownership [D]
+  {tag:'D',text:'Per REF8007G, each risk in the Risk Register must have:',
+   opts:['A probability score approved by the District Risk Management Office','An assigned owner who is accountable for monitoring it and executing the response strategy','A written contingency plan approved by the sponsor','A link to a PROC number before it can be tracked'],
+   correct:1},
+
+  // 13 -- CF09 / Meeting management [J]
+  {tag:'J',text:'You are facilitating a PDT meeting. A topic that was not on the agenda surfaces and quickly consumes 25 minutes. Three agenda items remain, one of which has a hard external deadline. What is your best move?',
+   opts:['Let the discussion continue -- productive conversation should not be shut down','Park the unplanned topic, address the deadline-driven item, then return to remaining items if time allows','End the meeting and reschedule -- the agenda has been compromised','Skip the remaining items and address them by email'],
+   correct:1},
+
+  // 14 -- CF10 / PROC3010: Change documentation [D]
+  {tag:'D',text:'Under PROC3010, a scope change that the customer verbally accepts but that is never formally documented is best described as:',
+   opts:['An informal agreement -- acceptable if both parties understand the change','A risk -- undocumented changes create liability and baseline integrity problems','A minor deviation that does not require formal processing','An administrative oversight that can be corrected at project closeout'],
+   correct:1},
+
+  // 15 -- CF10 / Change decision [J]
+  {tag:'J',text:'During a construction inspection you identify work that does not conform to the specification. The contractor says it is functionally equivalent. The sponsor says they can accept it. What is your obligation?',
+   opts:['Accept the sponsor\'s position -- the customer\'s preference is the final word','Require the contractor to correct it regardless of the sponsor\'s preference','Document the nonconformance, the sponsor\'s informed decision, and the technical basis in accordance with PROC3010','Escalate to the Contracting Officer and let them make the determination'],
+   correct:2},
+
+  // 16 -- CF11 / REF8007G: Threat response strategies [D]
+  {tag:'D',text:'Under REF8007G, the four threat response strategies are:',
+   opts:['Avoid, Transfer, Mitigate, Accept','Reject, Defer, Escalate, Document','Eliminate, Reduce, Share, Ignore','Monitor, Flag, Assign, Close'],
    correct:0},
-  {tag:'SE',text:'Compared to where you started, how has your confidence in managing a USACE project end-to-end changed?',
-   type:'scale',low:'Much less confident','high':'Much more confident'},
-  {tag:'SE',text:'How confident are you, right now, that you could identify and respond to an early warning sign of project delivery failure before it becomes a reportable issue?',
-   type:'scale',low:'Not at all confident',high:'Completely confident'},
-  {tag:'SE',text:'How confident are you, right now, in your ability to have a difficult performance conversation with a PDT member who is not delivering?',
-   type:'scale',low:'Not at all confident',high:'Completely confident'}
+
+  // 17 -- CF12 / REF8006G + DPMAP: PM performance input [D]
+  {tag:'D',text:'A PM\'s input on a PDT member\'s DPMAP appraisal is most useful when it:',
+   opts:['Focuses on personality and attitude rather than specific project contributions','Provides specific, observable examples of project contributions tied to the rating period','Rates the member on a numerical scale the PM defines independently of the official criteria','Is submitted only if the Resource Provider formally requests it'],
+   correct:1},
+
+  // 18 -- CF13 / PROC4000: AAR timing [D]
+  {tag:'D',text:'Under PROC4000, the After Action Review should be conducted:',
+   opts:['After PROMIS is closed and the team has dispersed, to allow time for reflection','Before the PDT disperses, while institutional knowledge is still accessible','Only if the project had cost or schedule overruns','At the sponsor\'s request following final acceptance'],
+   correct:1},
+
+  // 19 -- CF13 / Closing well [J]
+  {tag:'J',text:'Your AAR surfaces a process gap that contributed to rework during execution. No single person caused it -- it was a systemic issue in how your PDT shared information. When you document the lesson learned, the most useful approach is:',
+   opts:['Identify the team member who was closest to the gap so future PMs know who to watch','Describe the situation, the root cause, and a specific process change that would prevent recurrence','Note that the project ultimately succeeded and that the issue was minor in context','Record it as a general reminder to communicate better'],
+   correct:1}
 ];
 
 var QUESTION_INDICES = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
@@ -297,49 +334,33 @@ function renderQuestion(){
   document.getElementById('progress-pct').textContent=pct+'%';
   var html='<div class="q-num">Q '+(currentQ+1)+'</div>';
   html+='<div class="q-tag">'+tagLabel(q.tag)+'</div>';
-  if(q.type==='scale'){
-    html+='<div class="q-text">'+q.text+'</div>';
-    html+='<div class="se-scale">';
-    for(var i=1;i<=7;i++){
-      var sel=(answers[currentQ]===i)?' selected':'';
-      html+='<button class="se-btn'+sel+'" onclick="selectScale('+i+')">'+i+'</button>';
-    }
-    html+='</div>';
-    html+='<div class="se-labels"><span>'+q.low+'</span><span>'+q.high+'</span></div>';
-  } else {
-    html+='<div class="q-text">'+q.text+'</div>';
-    var letters=['A','B','C','D'];
-    q.opts.forEach(function(opt,idx){
-      var sel=(answers[currentQ]===idx)?' selected':'';
-      html+='<button class="answer-option'+sel+'" onclick="selectOpt('+idx+')">'
-        +'<span class="opt-letter">'+letters[idx]+'.</span>'+opt+'</button>';
-    });
-  }
+  html+='<div class="q-text">'+q.text+'</div>';
+  var letters=['A','B','C','D'];
+  q.opts.forEach(function(opt,idx){
+    var sel=(answers[currentQ]===idx)?' selected':'';
+    html+='<button class="answer-option'+sel+'" onclick="selectOpt('+idx+')">'
+      +'<span class="opt-letter">'+letters[idx]+'.</span>'+opt+'</button>';
+  });
   document.getElementById('question-area').innerHTML=html;
   document.getElementById('btn-back').disabled=(currentQ===0);
   var isLast=(currentQ===total-1);
   document.getElementById('btn-next').textContent=isLast?'Submit':'Next';
 }
 
-function tagLabel(t){if(t==='D')return'Doctrine';if(t==='J')return'Judgment';if(t==='SE')return'Self-Efficacy';return t;}
+function tagLabel(t){if(t==='D')return'Doctrine';if(t==='J')return'Judgment';return t;}
 function selectOpt(idx){answers[currentQ]=idx;renderQuestion();}
-function selectScale(val){answers[currentQ]=val;renderQuestion();}
 
 function goNext(){
-  var qi=QUESTION_INDICES[currentQ];
-  var q=ALL_QUESTIONS[qi];
   if(answers[currentQ]===undefined){
-    if(q.type!=='scale'&&q.correct!==null){
-      var area=document.getElementById('question-area');
-      var msg=document.createElement('div');
-      msg.style.cssText='font-family:DM Mono,monospace;font-size:.5625rem;color:var(--warn);letter-spacing:.05em;margin-top:12px;';
-      msg.textContent='Please select an answer before continuing.';
-      var existing=area.querySelector('.q-skip-msg');
-      if(existing)existing.remove();
-      msg.className='q-skip-msg';
-      area.appendChild(msg);
-      return;
-    }
+    var area=document.getElementById('question-area');
+    var existing=area.querySelector('.q-skip-msg');
+    if(existing)existing.remove();
+    var msg=document.createElement('div');
+    msg.style.cssText='font-family:DM Mono,monospace;font-size:.5625rem;color:var(--warn);letter-spacing:.05em;margin-top:12px;';
+    msg.textContent='Please select an answer before continuing.';
+    msg.className='q-skip-msg';
+    area.appendChild(msg);
+    return;
   }
   if(currentQ<QUESTION_INDICES.length-1){currentQ++;renderQuestion();}
   else{submitTest();}
@@ -355,27 +376,27 @@ function submitTest(){
   QUESTION_INDICES.forEach(function(qi,pos){
     var q=ALL_QUESTIONS[qi];
     var ans=answers[pos];
-    var entry={question_index:qi,tag:q.tag,type:q.type||'mc',answer:ans!==undefined?ans:null};
-    if(q.type!=='scale'&&q.correct!==null){entry.correct=(ans===q.correct)?1:0;}
+    var entry={question_index:qi,tag:q.tag,type:'mc',answer:ans!==undefined?ans:null,correct:(ans===q.correct)?1:0};
     responses.push(entry);
   });
 
-  var dItems=responses.filter(function(r){return r.tag==='D'&&r.type==='mc'&&r.correct!==undefined;});
-  var dCorrectPost=dItems.reduce(function(s,r){return s+(r.correct||0);},0);
-  var dScore=dItems.length?Math.round(dCorrectPost/dItems.length*100):null;
-  var jItems=responses.filter(function(r){return r.tag==='J'&&r.type==='mc'&&r.correct!==undefined;});
-  var jCorrectPost=jItems.reduce(function(s,r){return s+(r.correct||0);},0);
-  var jScore=jItems.length?Math.round(jCorrectPost/jItems.length*100):null;
-  var seItems=responses.filter(function(r){return r.tag==='SE'&&r.answer!==null;});
-  var seMean=seItems.length?Math.round(seItems.reduce(function(s,r){return s+(r.answer||0);},0)/seItems.length*10)/10:null;
-  var totalScoredPost=dItems.length+jItems.length;
-  var overallPctPost=totalScoredPost?Math.round((dCorrectPost+jCorrectPost)/totalScoredPost*100):null;
+  var dItems=responses.filter(function(r){return r.tag==='D';});
+  var dCorrect=dItems.reduce(function(s,r){return s+(r.correct||0);},0);
+  var dScore=dItems.length?dCorrect/dItems.length:null;
 
-  // Show score card on post-test
+  var jItems=responses.filter(function(r){return r.tag==='J';});
+  var jCorrect=jItems.reduce(function(s,r){return s+(r.correct||0);},0);
+  var jScore=jItems.length?jCorrect/jItems.length:null;
+
+  var totalScored=responses.length;
+  var totalCorrect=dCorrect+jCorrect;
+  var overallPct=totalScored?Math.round(totalCorrect/totalScored*100):null;
+
+  // Show score card
   var scoreHtml='';
-  if(dScore!==null)scoreHtml+='<div class="score-row"><span class="score-label">Doctrine</span><span class="score-val">'+dScore+'%</span></div>';
-  if(jScore!==null)scoreHtml+='<div class="score-row"><span class="score-label">Judgment</span><span class="score-val">'+jScore+'%</span></div>';
-  if(seMean!==null)scoreHtml+='<div class="score-row"><span class="score-label">Self-Efficacy (avg)</span><span class="score-val">'+seMean+' / 7</span></div>';
+  if(overallPct!==null)scoreHtml+='<div class="score-row"><span class="score-label">Overall</span><span class="score-val">'+overallPct+'% ('+totalCorrect+' of '+totalScored+')</span></div>';
+  if(dScore!==null)scoreHtml+='<div class="score-row"><span class="score-label">Doctrine</span><span class="score-val">'+Math.round(dScore*100)+'% ('+dCorrect+' of '+dItems.length+')</span></div>';
+  if(jScore!==null)scoreHtml+='<div class="score-row"><span class="score-label">Judgment</span><span class="score-val">'+Math.round(jScore*100)+'% ('+jCorrect+' of '+jItems.length+')</span></div>';
   if(scoreHtml){document.getElementById('score-display').innerHTML=scoreHtml;}
   else{document.getElementById('score-display').style.display='none';}
 
@@ -385,10 +406,10 @@ function submitTest(){
     session_id:sessionId,
     cohort_code:cohortCode,
     responses:responses,
-    doctrine_score:dScore!==null?dScore/100:null,
-    judgment_score:jScore!==null?jScore/100:null,
-    overall_score:overallPctPost,
-    se_mean:seMean,
+    doctrine_score:dScore,
+    judgment_score:jScore,
+    overall_score:overallPct,
+    se_mean:null,
     submitted_at:new Date().toISOString()
   };
 
