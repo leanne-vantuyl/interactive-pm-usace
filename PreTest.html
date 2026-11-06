@@ -166,7 +166,8 @@ body.light-mode .se-btn.selected{background:#5A4010;border-color:#5A4010;color:#
   <div id="complete-screen">
     <div class="complete-icon">&#10003;</div>
     <div class="complete-title">Pre-Test Complete</div>
-    <div class="complete-sub">Your responses have been recorded. You will take a brief post-test at the end of the course. No scores are shown here &mdash; this is a learning baseline, not a grade.</div>
+    <div class="complete-sub" id="score-display"></div>
+    <div class="complete-sub" style="margin-top:8px;font-size:.75rem;opacity:.7;">You will take a post-test at the end of the course. Your score will be compared then to show what you gained.</div>
     <a href="Module00_Orientation.html" class="complete-link">Continue to Orientation &rarr;</a>
   </div>
 </main>
@@ -192,72 +193,112 @@ function getProfile(){try{var r=localStorage.getItem('pm-learner-profile');retur
 function genUUID(){return'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return(c=='x'?r:(r&0x3|0x8)).toString(16);});}
 
 // ===== QUESTION BANK =====
-// Tags: D=Doctrine, J=Judgment, SE=Self-Efficacy
-// SHARED: scored knowledge questions 0-11 appear on both Pre and Post (index 0-11)
-// PRE-ONLY: SE scales and baseline surveys 12-19 (not scored, not compared to post)
+// Tags: D=Doctrine, J=Judgment
+// All 20 questions are scored. Pre and Post use parallel forms (same constructs, different questions).
+// Source: one D or J question per PDBP doctrine area taught in CF01-CF13.
 var ALL_QUESTIONS = [
-  // === SHARED CORE (0-11) — Doctrine + Judgment, all have a correct answer ===
-  // --- DOCTRINE ---
-  {tag:'D',text:'Under PROC2020, who must be named in the PDT Charter before the project advances past the feasibility phase?',
-   opts:['All PDT members by name, with decision authority documented','General role titles are sufficient at that stage','Only the PM and Deputy PM','Whoever PROMIS generates automatically'],
+  // 0 — CF01 / PROC2020: Charter named individuals + decision authority [D]
+  {tag:'D',text:'Under PROC2020, the PDT Charter must include which of the following?',
+   opts:['Named individuals for each PDT role, with their decision authority documented','General role titles only until the project reaches the design phase','Only the PM and sponsor signatures','Whatever PROMIS populates automatically at project setup'],
    correct:0},
-  {tag:'D',text:'In USACE project delivery, the PDT Charter is a living document. What triggers a mandatory update?',
-   opts:['At the start of each fiscal year','Only when the PM changes','After every sponsor meeting','When a PDT member\'s role, name, or decision authority changes'],
-   correct:3},
-  {tag:'D',text:'Which of the following best describes the purpose of a Project Management Plan (PMP)?',
-   opts:['A financial report submitted to the District Commander','The contract vehicle between USACE and the non-federal sponsor','The governing document that defines scope, schedule, cost, and how the team will work','A checklist used only during the construction phase'],
+
+  // 1 — CF01 / PROC2020: Charter as a living document [J]
+  {tag:'J',text:'You have just taken over a project mid-stream. The PDT Charter still shows your predecessor\'s name as PM and has no RACI for the sponsor review scheduled next week. What do you do first?',
+   opts:['Proceed with the review using the charter as a historical reference','Wait until after the review so you do not disrupt preparations','Update the charter and assign the RACI before the review','Ask your DPM whether updating the charter is really necessary at this stage'],
    correct:2},
-  {tag:'D',text:'A "Cost Growth Event" under PROC2020 is formally triggered when:',
-   opts:['The PM believes the project is over budget','The cost estimate increases beyond the approved program amount by a defined threshold','Any change order is issued','The sponsor requests an independent review'],
-   correct:1},
-  {tag:'D',text:'In a USACE project WBS, work that does not appear in the WBS is:',
-   opts:['Permitted if the PM documents the rationale','Added automatically by PROMIS during project setup','Assumed to be covered under general overhead','Unauthorized, unestimated, and unscheduled'],
-   correct:3},
-  // --- JUDGMENT ---
-  {tag:'J',text:'You are a new PM who has just inherited a project. The PDT Charter lists your predecessor\'s name and shows no RACI for the upcoming cost review. Your best first move is:',
-   opts:['Wait until after the cost review to make changes','Update the Charter and assign the RACI before the review','Ask your DPM if updating the Charter is really necessary','Proceed with the review using the existing Charter as a historical record'],
-   correct:1},
-  {tag:'J',text:'Your cost engineer has not responded to two emails about data needed for a sponsor review in 12 days. The best course of action is:',
-   opts:['Proceed with the last available figures and flag them as preliminary','Ask your DPM to intervene on your behalf','Call or walk over, give deadline context, and agree on a delivery date','File a formal complaint with their supervisor'],
+
+  // 2 — CF02 / PROC2030+PROC2040: Schedule and Resource Estimate interdependence [D]
+  {tag:'D',text:'PROC2030 (Schedule) and PROC2040 (Resource Estimate) are best understood as:',
+   opts:['Sequential steps where the schedule is fully finalized before cost estimating begins','Independent products that can be developed by separate teams without coordination','Interdependent -- an unrealistic schedule produces an unreliable cost estimate, and vice versa','Optional at the planning phase if the sponsor has already approved a budget'],
    correct:2},
-  {tag:'J',text:'At a PDT meeting, one team member is consistently quiet and seems disengaged. How should you address this?',
-   opts:['Ignore it -- some people work better independently','Raise it in front of the group to get everyone\'s buy-in','Follow up privately to understand what\'s going on','Document it as a team performance issue'],
+
+  // 3 — CF03 / PROC2010: Stakeholder Requirements Register purpose [D]
+  {tag:'D',text:'The Stakeholder Requirements Register under PROC2010 is designed to:',
+   opts:['Track only requirements that have been formally approved for inclusion in scope','Replace the Scope of Work once stakeholder input is complete','Capture all expressed requirements -- in scope, deferred, or out of scope -- with source and disposition','Document attendance at stakeholder meetings'],
    correct:2},
-  {tag:'J',text:'A contractor reports that a scope element will be 30% over budget due to unforeseen site conditions. As PM, your first step is:',
-   opts:['Wait for the contractor\'s formal claim before taking any action','Immediately notify the sponsor that scope will be cut','Reject the claim and direct them to stay within budget','Assess whether the conditions qualify as a changed condition, then notify your chain of command'],
-   correct:3},
-  {tag:'J',text:'Your sponsor is pushing to add scope to the project late in the design phase. You should:',
-   opts:['Document the scope change, assess schedule and cost impact, and present options to the sponsor','Accommodate the request to maintain the sponsor relationship','Agree verbally and handle the documentation later','Refuse the request outright since design is nearly complete'],
-   correct:0},
-  {tag:'J',text:'You\'re preparing for a decision meeting and realize two senior stakeholders hold conflicting positions on a key issue. You should:',
-   opts:['Present only the data and let them argue it out','Brief each stakeholder separately before the meeting to understand their positions','Avoid the topic in the meeting to prevent conflict','Let your DPM facilitate the meeting instead'],
+
+  // 4 — CF03 / PROC2010: Sponsor scope addition [J]
+  {tag:'J',text:'During a design walkthrough, your sponsor asks for three "small" additions. None has been logged. What is your most important next move?',
+   opts:['Accommodate the requests to protect the sponsor relationship','Log each request in the Stakeholder Requirements Register and assess scope, schedule, and cost impact before responding','Tell the sponsor that design is too far along to accept any changes','Verbally agree and handle the documentation after the meeting'],
    correct:1},
-  {tag:'J',text:'Your monthly EVM report shows an SPI of 0.78 and a CPI of 1.04. Before escalating, your first step is:',
-   opts:['Flag it immediately to leadership -- any SPI below 1.0 requires escalation','Wait one more reporting cycle to see if the variance self-corrects','Recalculate the SPI using only the last 30 days of data to smooth the variance','Verify that the schedule was recently updated and that percent-complete figures are current'],
+
+  // 5 — CF04 / PROC2030: Unrealistic schedule baseline [D]
+  {tag:'D',text:'Under PROC2030, once a schedule is baselined, an activity duration that was unrealistic from the start will most likely:',
+   opts:['Correct itself as the team works harder during execution','Trigger an automatic PROC2020 charter update','Become visible only as a site walk observation, too late to adjust','Surface as schedule variance during execution and undermine the baseline\'s credibility'],
    correct:3},
 
-  // === PRE-ONLY (12-19) — SE scales and baseline surveys, not scored ===
-  {tag:'SE',text:'How confident are you in your ability to write a clear, accurate scope change request for a late-stage design modification?',
-   type:'scale',low:'Not at all confident',high:'Completely confident'},
-  {tag:'SE',text:'How confident are you in your ability to advise a sponsor on when a scope addition requires a formal contract modification versus a minor adjustment?',
-   type:'scale',low:'Not at all confident',high:'Completely confident'},
-  {tag:'SE',text:'How confident are you in your ability to facilitate a productive PDT meeting when two team members are in conflict?',
-   type:'scale',low:'Not at all confident',high:'Completely confident'},
-  {tag:'D',text:'Before this training, how would you describe your familiarity with the PROC2020 Project Delivery Business Process?',
-   opts:['I have never heard of it','I know the name but could not describe its requirements','I am familiar with its key requirements','I apply it regularly in my work'],
-   correct:null}, // no correct answer -- baseline only
-  {tag:'J',text:'When you encounter a situation where doctrine conflicts with what your chain of command is asking you to do, what do you typically do?',
-   opts:['Follow the chain of command without question','Look up the relevant doctrine and present options','Consult peers informally before escalating','Document my concern and escalate formally if unresolved'],
-   correct:null},
-  {tag:'SE',text:'How confident are you, right now, in your ability to manage an entire USACE civil works project from initiation through closeout?',
-   type:'scale',low:'Not at all confident',high:'Completely confident'},
-  {tag:'SE',text:'How confident are you, right now, in your ability to recognize and respond to early warning signs of project delivery failure?',
-   type:'scale',low:'Not at all confident',high:'Completely confident'},
-  {tag:'SE',text:'How confident are you, right now, in your ability to have a difficult performance conversation with a PDT member who is not delivering?',
-   type:'scale',low:'Not at all confident',high:'Completely confident'}
+  // 6 — CF05 / PROC2040 + PROC1040: Resource Estimate above funding ceiling [D]
+  {tag:'D',text:'A PROC2040 Resource Estimate that exceeds the funding ceiling set under PROC1040 most directly means:',
+   opts:['The project must be cancelled','The estimate should be revised downward to match the ceiling','The scope, contingency, or both must be formally reconciled -- the ceiling cannot simply be exceeded','The sponsor must fund the difference immediately'],
+   correct:2},
+
+  // 7 — CF05 / Managing up with difficult news [J]
+  {tag:'J',text:'Your resource estimate comes in 12% above the approved program ceiling. When you bring this to leadership, the most effective approach is:',
+   opts:['Present the gap and wait for leadership to decide','Quietly reduce contingency to close the gap before the meeting','Lead with what changed and why, then present two or three realistic options with trade-offs','Recommend the cheapest option only, to simplify the decision'],
+   correct:2},
+
+  // 8 — CF06 / PROC1020 + SBI feedback [D]
+  {tag:'D',text:'In the SBI feedback model, the "Behavior" component should describe:',
+   opts:['A general assessment of the team member\'s attitude or work ethic','What you personally believe caused the performance issue','A specific, observable action -- what you saw or heard, not an interpretation','The impact the issue has had on the project'],
+   correct:2},
+
+  // 9 — CF06 / Workload escalation [J]
+  {tag:'J',text:'A PDT member\'s deliverable quality has declined over three review cycles. When you raise it in a one-on-one, they reveal they have been carrying another team\'s work for six weeks with no relief in sight. Your best next step is:',
+   opts:['Document the conversation and issue a formal warning','Accept the explanation and extend all upcoming deadlines','Address the workload constraint through PROC1020 escalation while holding the quality expectation','Reassign the work to another team member without further discussion'],
+   correct:2},
+
+  // 10 — CF07 / PROC3000: EVM and schedule variance [D]
+  {tag:'D',text:'Under PROC3000, Schedule Variance measured through EVM can indicate a real project slip:',
+   opts:['Only after a site walk confirms physical progress has stalled','Weeks before the problem is visible during a site inspection','Only when the CPI also drops below 1.0','Only if the PM has manually flagged it in PROMIS'],
+   correct:1},
+
+  // 11 — CF07 / EVM interpretation [J]
+  {tag:'J',text:'Your EVM report shows SPI 0.81, CPI 1.06. Before bringing this to your chain of command, your first action is:',
+   opts:['Escalate immediately -- any SPI below 1.0 requires same-day notification','Wait one more cycle to see whether it self-corrects','Verify the schedule was recently updated and that percent-complete values reflect actual progress','Recalculate using only the last 30 days of data to smooth the variance'],
+   correct:2},
+
+  // 12 — CF08 / REF8007G: Risk Register maintenance [D]
+  {tag:'D',text:'Per REF8007G, risks identified during project planning must be:',
+   opts:['Documented once in the Risk Register, then closed after the planning phase','Actively tracked, owned, and monitored throughout execution -- not just recorded once','Reported to the sponsor at each milestone regardless of probability','Elevated to the District Risk Management Office before they can be tracked'],
+   correct:1},
+
+  // 13 — CF09 / PDT meeting structure and prioritization [J]
+  {tag:'J',text:'Twenty minutes into a PDT meeting, an unplanned discussion has consumed most of the agenda time. One item -- a CCB deadline due tomorrow -- has not been reached. What do you do?',
+   opts:['Let the current discussion finish and handle the CCB item by email afterward','Interrupt and defer the unplanned discussion to a parking lot, then address the CCB item','Cancel the meeting and reschedule for later in the day','Skip the CCB item since it was not on the printed agenda'],
+   correct:1},
+
+  // 14 — CF10 / PROC3010: Change Management [D]
+  {tag:'D',text:'Under PROC3010, when delivered work does not match the approved submittal, the PM\'s first obligation is to:',
+   opts:['Direct the contractor to fix it immediately at their own cost','Notify the sponsor that the project is behind schedule','Document the deviation, assess options, and present the decision to the appropriate authority','Wait for the contractor to submit a formal claim before taking action'],
+   correct:2},
+
+  // 15 — CF10 / Change decision [J]
+  {tag:'J',text:'An inspection reveals that installed work does not match the approved specification. Correcting it will add two weeks to the schedule. The customer says they can live with the deviation. What is your best path?',
+   opts:['Accept the customer\'s preference verbally and move on','Document the deviation, the customer\'s informed decision, and the rationale in accordance with PROC3010','Require the contractor to correct it regardless of the customer\'s preference','Escalate to the District Commander before making any decision'],
+   correct:1},
+
+  // 16 — CF11 / REF8007G: Opportunity response strategies [D]
+  {tag:'D',text:'Under REF8007G, the four opportunity response strategies are:',
+   opts:['Avoid, Transfer, Mitigate, Accept','Exploit, Share, Enhance, Accept','Reject, Defer, Escalate, Document','Monitor, Flag, Assign, Close'],
+   correct:1},
+
+  // 17 — CF12 / REF8006G + DPMAP: PM performance input [D]
+  {tag:'D',text:'When a Resource Provider asks a PM for input on a PDT member\'s DPMAP appraisal, that input is best described as:',
+   opts:['Outside the PM\'s role -- appraisals belong to the chain of command only','Legitimate and valuable, since the PM directly observed the member\'s project contributions','Optional and informal, with no bearing on the official rating','Required to be submitted in writing through the official DPMAP system by the PM'],
+   correct:1},
+
+  // 18 — CF13 / PROC4000: After Action Review purpose [D]
+  {tag:'D',text:'Under PROC4000, the primary purpose of the After Action Review (AAR) at project closeout is to:',
+   opts:['Assign accountability for any cost or schedule overruns','Satisfy a reporting requirement before PROMIS can be closed','Capture lessons learned in a structured way before the PDT disperses','Formally document the sponsor\'s satisfaction with the project outcome'],
+   correct:2},
+
+  // 19 — CF13 / Closing well [J]
+  {tag:'J',text:'Your project is closing. The AAR surfaces a real process gap -- a workload conflict that was flagged informally but never escalated, which created quality problems in the middle of execution. When you brief leadership on closeout outcomes, how do you handle this?',
+   opts:['Leave it out of the briefing since the project ultimately succeeded','Include it as a named, actionable lesson with a recommended process change -- not as blame','Attribute it to the team member who failed to escalate','Present it only if leadership asks directly'],
+   correct:1}
 ];
 
-// Pre-test uses all 20 (indices 0-19)
+// All 20 questions are used (pre-test = post-test parallel form uses different questions on same constructs)
 var QUESTION_INDICES = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
 var answers = {};
 var currentQ = 0;
@@ -387,18 +428,15 @@ function goNext(){
   var qi=QUESTION_INDICES[currentQ];
   var q=ALL_QUESTIONS[qi];
   if(answers[currentQ]===undefined){
-    // Allow skipping scale questions but not doctrine/judgment
-    if(q.type!=='scale'&&q.correct!==null){
-      var area=document.getElementById('question-area');
-      var msg=document.createElement('div');
-      msg.style.cssText='font-family:DM Mono,monospace;font-size:.5625rem;color:var(--warn);letter-spacing:.05em;margin-top:12px;';
-      msg.textContent='Please select an answer before continuing.';
-      var existing=area.querySelector('.q-skip-msg');
-      if(existing)existing.remove();
-      msg.className='q-skip-msg';
-      area.appendChild(msg);
-      return;
-    }
+    var area=document.getElementById('question-area');
+    var msg=document.createElement('div');
+    msg.style.cssText='font-family:DM Mono,monospace;font-size:.5625rem;color:var(--warn);letter-spacing:.05em;margin-top:12px;';
+    msg.textContent='Please select an answer before continuing.';
+    var existing=area.querySelector('.q-skip-msg');
+    if(existing)existing.remove();
+    msg.className='q-skip-msg';
+    area.appendChild(msg);
+    return;
   }
   if(currentQ<QUESTION_INDICES.length-1){
     currentQ++;
@@ -434,17 +472,30 @@ function submitTest(){
     responses.push(entry);
   });
 
-  // Doctrine score (MC, correct answer defined)
-  var dItems=responses.filter(function(r){return r.tag==='D'&&r.type==='mc'&&r.correct!==undefined;});
-  var dScore=dItems.length?dItems.reduce(function(s,r){return s+(r.correct||0);},0)/dItems.length:null;
+  // Doctrine score
+  var dItems=responses.filter(function(r){return r.tag==='D'&&r.correct!==undefined;});
+  var dCorrect=dItems.reduce(function(s,r){return s+(r.correct||0);},0);
+  var dScore=dItems.length?dCorrect/dItems.length:null;
 
   // Judgment score
-  var jItems=responses.filter(function(r){return r.tag==='J'&&r.type==='mc'&&r.correct!==undefined;});
-  var jScore=jItems.length?jItems.reduce(function(s,r){return s+(r.correct||0);},0)/jItems.length:null;
+  var jItems=responses.filter(function(r){return r.tag==='J'&&r.correct!==undefined;});
+  var jCorrect=jItems.reduce(function(s,r){return s+(r.correct||0);},0);
+  var jScore=jItems.length?jCorrect/jItems.length:null;
 
-  // Self-efficacy mean
-  var seItems=responses.filter(function(r){return r.tag==='SE'&&r.answer!==null;});
-  var seMean=seItems.length?seItems.reduce(function(s,r){return s+(r.answer||0);},0)/seItems.length:null;
+  // Overall score
+  var totalCorrect=dCorrect+jCorrect;
+  var totalItems=dItems.length+jItems.length;
+  var overallPct=totalItems?Math.round(100*totalCorrect/totalItems):null;
+
+  // Show score on complete screen
+  var scoreEl=document.getElementById('score-display');
+  if(scoreEl&&overallPct!==null){
+    var dPct=dItems.length?Math.round(100*dCorrect/dItems.length):null;
+    var jPct=jItems.length?Math.round(100*jCorrect/jItems.length):null;
+    scoreEl.innerHTML='You answered <strong>'+totalCorrect+' of '+totalItems+'</strong> questions correctly ('+overallPct+'%).'
+      +(dPct!==null?' &nbsp;&middot;&nbsp; Doctrine: '+dPct+'%':'')
+      +(jPct!==null?' &nbsp;&middot;&nbsp; Judgment: '+jPct+'%':'');
+  }
 
   var payload={
     test_type:testType,
@@ -454,7 +505,7 @@ function submitTest(){
     responses:responses,
     doctrine_score:dScore,
     judgment_score:jScore,
-    se_mean:seMean,
+    overall_score:overallPct,
     submitted_at:new Date().toISOString()
   };
 
