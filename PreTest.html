@@ -192,6 +192,30 @@ function toggleTheme(){
 function getProfile(){try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}}
 function genUUID(){return'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return(c=='x'?r:(r&0x3|0x8)).toString(16);});}
 
+// ===== PROGRESS SAVE / RESTORE =====
+var SAVE_KEY='pm-pretest-progress';
+function saveProgress(){
+  try{sessionStorage.setItem(SAVE_KEY,JSON.stringify({
+    answers:answers,currentQ:currentQ,
+    learnerName:learnerName,cohortCode:cohortCode,sessionId:sessionId
+  }));}catch(e){}
+}
+function clearProgress(){try{sessionStorage.removeItem(SAVE_KEY);}catch(e){}}
+function restoreProgress(){
+  try{
+    var raw=sessionStorage.getItem(SAVE_KEY);
+    if(!raw)return false;
+    var s=JSON.parse(raw);
+    if(!s||!s.learnerName)return false;
+    answers=s.answers||{};
+    currentQ=s.currentQ||0;
+    learnerName=s.learnerName;
+    cohortCode=s.cohortCode||'';
+    sessionId=s.sessionId||genUUID();
+    return true;
+  }catch(e){return false;}
+}
+
 // ===== QUESTION BANK =====
 // Tags: D=Doctrine, J=Judgment
 // All 20 questions are scored. Pre and Post use parallel forms (same constructs, different questions).
@@ -307,6 +331,24 @@ var cohortCode = '';
 var sessionId = '';
 var testType = 'pre';
 
+// Restore progress if available (gate was already passed in this browser session)
+(function(){
+  try{
+    var raw=sessionStorage.getItem(SAVE_KEY);
+    if(!raw)return;
+    var s=JSON.parse(raw);
+    if(!s||!s.learnerName)return;
+    answers=s.answers||{};
+    currentQ=s.currentQ||0;
+    learnerName=s.learnerName;
+    cohortCode=s.cohortCode||'';
+    sessionId=s.sessionId||genUUID();
+    document.getElementById('gate-screen').style.display='none';
+    document.getElementById('test-screen').style.display='block';
+    renderQuestion();
+  }catch(e){}
+})();
+
 // ===== GATE =====
 function unlockTest(){
   var nameEl=document.getElementById('gate-name');
@@ -416,11 +458,13 @@ function tagLabel(t){
 
 function selectOpt(idx){
   answers[currentQ]=idx;
+  saveProgress();
   renderQuestion();
 }
 
 function selectScale(val){
   answers[currentQ]=val;
+  saveProgress();
   renderQuestion();
 }
 
@@ -440,6 +484,7 @@ function goNext(){
   }
   if(currentQ<QUESTION_INDICES.length-1){
     currentQ++;
+    saveProgress();
     renderQuestion();
   } else {
     submitTest();
@@ -447,11 +492,12 @@ function goNext(){
 }
 
 function goBack(){
-  if(currentQ>0){currentQ--;renderQuestion();}
+  if(currentQ>0){currentQ--;saveProgress();renderQuestion();}
 }
 
 // ===== SUBMIT =====
 function submitTest(){
+  clearProgress();
   document.getElementById('test-screen').style.display='none';
   document.getElementById('complete-screen').style.display='block';
 

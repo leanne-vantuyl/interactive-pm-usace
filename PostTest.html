@@ -168,6 +168,16 @@ function toggleTheme(){
 function getProfile(){try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}}
 function genUUID(){return'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return(c=='x'?r:(r&0x3|0x8)).toString(16);});}
 
+// ===== PROGRESS SAVE / RESTORE =====
+var SAVE_KEY='pm-posttest-progress';
+function saveProgress(){
+  try{sessionStorage.setItem(SAVE_KEY,JSON.stringify({
+    answers:answers,currentQ:currentQ,
+    learnerName:learnerName,cohortCode:cohortCode,sessionId:sessionId
+  }));}catch(e){}
+}
+function clearProgress(){try{sessionStorage.removeItem(SAVE_KEY);}catch(e){}}
+
 // 20 graded questions -- parallel form to PreTest
 // Same 13 PDBP doctrine constructs (CF01-CF13), different stems
 // 12 Doctrine (D), 8 Judgment (J) -- all with correct answers
@@ -281,6 +291,24 @@ var cohortCode = '';
 var sessionId = '';
 var testType = 'post';
 
+// Restore progress if available
+(function(){
+  try{
+    var raw=sessionStorage.getItem(SAVE_KEY);
+    if(!raw)return;
+    var s=JSON.parse(raw);
+    if(!s||!s.learnerName)return;
+    answers=s.answers||{};
+    currentQ=s.currentQ||0;
+    learnerName=s.learnerName;
+    cohortCode=s.cohortCode||'';
+    sessionId=s.sessionId||genUUID();
+    document.getElementById('gate-screen').style.display='none';
+    document.getElementById('test-screen').style.display='block';
+    renderQuestion();
+  }catch(e){}
+})();
+
 function hashSimple(s){var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h)+s.charCodeAt(i);}return(h>>>0).toString(16);}
 
 function unlockTest(){
@@ -348,7 +376,7 @@ function renderQuestion(){
 }
 
 function tagLabel(t){if(t==='D')return'Doctrine';if(t==='J')return'Judgment';return t;}
-function selectOpt(idx){answers[currentQ]=idx;renderQuestion();}
+function selectOpt(idx){answers[currentQ]=idx;saveProgress();renderQuestion();}
 
 function goNext(){
   if(answers[currentQ]===undefined){
@@ -362,13 +390,14 @@ function goNext(){
     area.appendChild(msg);
     return;
   }
-  if(currentQ<QUESTION_INDICES.length-1){currentQ++;renderQuestion();}
+  if(currentQ<QUESTION_INDICES.length-1){currentQ++;saveProgress();renderQuestion();}
   else{submitTest();}
 }
 
-function goBack(){if(currentQ>0){currentQ--;renderQuestion();}}
+function goBack(){if(currentQ>0){currentQ--;saveProgress();renderQuestion();}}
 
 function submitTest(){
+  clearProgress();
   document.getElementById('test-screen').style.display='none';
   document.getElementById('complete-screen').style.display='block';
 
