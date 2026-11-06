@@ -124,6 +124,42 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
 .div-label{font-weight:600;color:#555;}
 .groups-no-data{text-align:center;padding:30px;color:var(--gray-dk);font-size:.85rem;}
 .groups-no-data p{margin-top:8px;line-height:1.6;}
+/* TEST RESULTS TAB */
+.tr-stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px;}
+.tr-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.tr-tab{padding:6px 14px;font-size:.78rem;border:1px solid #DDD;border-radius:3px;cursor:pointer;background:#fff;color:var(--dark);}
+.tr-tab.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
+.tr-legend{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
+.tr-leg{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--gray-dk);}
+.tr-dot{width:10px;height:10px;border-radius:2px;}
+.tr-q-row{position:relative;display:flex;align-items:center;gap:7px;margin-bottom:5px;cursor:default;}
+.tr-q-num{font-size:.7rem;color:var(--gray-dk);width:22px;flex-shrink:0;font-weight:700;}
+.tr-q-bar-wrap{flex:1;background:#EEE;height:13px;border-radius:2px;overflow:visible;position:relative;}
+.tr-q-bar{height:100%;border-radius:2px;transition:width .5s;}
+.tr-q-pct{font-size:.7rem;color:var(--gray-dk);width:32px;text-align:right;flex-shrink:0;}
+.tr-tag{font-size:.6rem;font-weight:700;padding:1px 5px;border-radius:2px;color:#fff;flex-shrink:0;width:14px;text-align:center;}
+.tr-tag-d{background:var(--navy);}.tr-tag-j{background:var(--green);}
+.tr-q-row .tip{display:none;position:absolute;left:30px;top:calc(100% + 4px);background:var(--dark);color:var(--white);font-size:.72rem;padding:7px 10px;border-radius:3px;white-space:normal;max-width:320px;line-height:1.5;z-index:50;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.35);min-width:200px;}
+.tr-q-row:hover .tip{display:block;}
+.tr-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.tr-chart-card{background:var(--card);border:1px solid #E0E0D8;border-radius:4px;padding:16px;}
+.tr-chart-hdr{font-size:.8rem;font-weight:700;color:var(--dark);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;}
+.tr-learner-tbl{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--card);border:1px solid #E0E0D8;border-radius:4px;overflow:hidden;margin-bottom:24px;}
+.tr-learner-tbl th{background:var(--dark);color:var(--white);padding:8px 12px;text-align:left;font-size:.75rem;letter-spacing:.04em;white-space:nowrap;}
+.tr-learner-tbl td{padding:8px 12px;border-bottom:1px solid #EEE;vertical-align:top;}
+.tr-learner-tbl tr:nth-child(even) td{background:#F8F8F5;}
+.tr-learner-tbl tr:hover td{background:#EFF5FF;}
+.tr-spill{display:inline-block;padding:2px 7px;border-radius:10px;font-size:.72rem;font-weight:700;color:#fff;}
+.tr-sp-g{background:var(--green);}.tr-sp-a{background:#C49A2A;}.tr-sp-r{background:var(--red);}
+.tr-miss{background:#FFF8F0;border-left:3px solid #C49A2A;padding:7px 10px;margin-bottom:6px;border-radius:0 3px 3px 0;position:relative;cursor:default;}
+.tr-miss .mq-meta{font-size:.7rem;color:var(--gray-dk);}
+.tr-miss .mq-stem{font-size:.8rem;color:var(--dark);margin-top:2px;}
+.tr-miss .mq-ok{font-size:.72rem;color:var(--green);font-weight:700;margin-top:3px;}
+.tr-miss .tip{display:none;position:absolute;left:0;top:calc(100% + 4px);background:var(--dark);color:var(--white);font-size:.72rem;padding:7px 10px;border-radius:3px;white-space:normal;max-width:360px;line-height:1.5;z-index:50;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.35);}
+.tr-miss:hover .tip{display:block;}
+.tr-gain{color:var(--green);font-weight:700;}.tr-loss{color:var(--red);font-weight:700;}.tr-neut{color:var(--gray-dk);}
+.tip-lbl{font-size:.62rem;color:var(--gold-lt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+@media(max-width:700px){.tr-charts{grid-template-columns:1fr;}.tr-stat-row{grid-template-columns:repeat(2,1fr);}}
 </style>
 </head>
 <body>
@@ -146,6 +182,7 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
   <div class="tab" onclick="showTab('prepost')">Pre / Post Test</div>
   <div class="tab" onclick="showTab('groups')">Groups</div>
   <div class="tab" onclick="showTab('passwords')">Passwords</div>
+  <div class="tab" onclick="showTab('testresults')">Test Results</div>
   <div class="tab" onclick="showTab('export')">Export &amp; Setup</div>
 </div>
 
@@ -220,6 +257,11 @@ body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-h
       </div>
       <div id="pw-err" style="font-size:.78rem;color:var(--red);margin-top:8px;min-height:16px;"></div>
     </div>
+  </div>
+
+  <div id="tab-testresults" style="display:none">
+    <div class="section-hdr">TEST RESULTS -- PARALLEL-FORM PRE / POST (20 QUESTIONS)</div>
+    <div id="tr-content"><div class="loading">Select a cohort to load data.</div></div>
   </div>
 
   <div id="tab-export" style="display:none">
@@ -459,7 +501,8 @@ async function loadCohort() {
     document.getElementById('status-line').textContent =
       `${currentCohort} · ${allResponses.length} CF responses · ${allTestScores.length} test scores`;
     document.getElementById('status-line').classList.add('live');
-    renderAll();
+    if (activeTab === 'testresults') renderTestResults();
+    else renderAll();
   } catch(e) {
     showErr('Could not load cohort data: ' + e.message);
   }
@@ -662,10 +705,11 @@ function renderEmpty() {
 // ── TABS ──────────────────────────────────────────────────────────────────────
 function showTab(name) {
   activeTab = name;
-  const names = ['decisions','kc','prepost','groups','passwords','export'];
+  const names = ['decisions','kc','prepost','groups','passwords','testresults','export'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
   names.forEach(n=>document.getElementById('tab-'+n).style.display=n===name?'':'none');
   if (name === 'passwords' || name === 'export') loadCohortPasswords();
+  else if (name === 'testresults') renderTestResults();
   else if (currentCohort) renderAll();
 }
 
@@ -958,6 +1002,277 @@ async function setPwActive(id, active) {
   } catch(e) {
     alert('Could not update: ' + e.message);
   }
+}
+
+// ── TEST RESULTS (pre_post_test table) ────────────────────────────────────────
+var TR_PRE_Q=[
+  {tag:'D',stem:'PDT Charter must include -- named individuals + decision authority',cf:'CF01'},
+  {tag:'J',stem:'Charter still shows predecessor\'s name, RACI missing before review',cf:'CF01'},
+  {tag:'D',stem:'PROC2030 and PROC2040 are interdependent',cf:'CF02'},
+  {tag:'D',stem:'Stakeholder Requirements Register captures all requirements including out-of-scope',cf:'CF03'},
+  {tag:'J',stem:'Sponsor asks for three additions during design walkthrough',cf:'CF03'},
+  {tag:'D',stem:'Unrealistic schedule baseline surfaces as variance during execution',cf:'CF04'},
+  {tag:'D',stem:'Resource estimate above funding ceiling requires reconciliation',cf:'CF05'},
+  {tag:'J',stem:'Estimate 12% above program ceiling -- how to present to leadership',cf:'CF05'},
+  {tag:'D',stem:'SBI "Behavior" = specific observable action',cf:'CF06'},
+  {tag:'J',stem:'PDT member quality declined; reveals carrying another team\'s work',cf:'CF06'},
+  {tag:'D',stem:'EVM Schedule Variance can indicate slip weeks before site inspection',cf:'CF07'},
+  {tag:'J',stem:'EVM SPI 0.81, CPI 1.06 -- verify data before escalating',cf:'CF07'},
+  {tag:'D',stem:'Risks must be actively tracked and owned throughout execution',cf:'CF08'},
+  {tag:'J',stem:'CCB deadline item not reached in meeting -- park unplanned discussion',cf:'CF09'},
+  {tag:'D',stem:'Nonconforming work -- document, assess, present to appropriate authority',cf:'CF10'},
+  {tag:'J',stem:'Customer accepts deviation from spec -- document per PROC3010',cf:'CF10'},
+  {tag:'D',stem:'Four opportunity response strategies: Exploit, Share, Enhance, Accept',cf:'CF11'},
+  {tag:'D',stem:'PM input on DPMAP appraisal is legitimate and valuable',cf:'CF12'},
+  {tag:'D',stem:'AAR purpose: capture lessons learned before PDT disperses',cf:'CF13'},
+  {tag:'J',stem:'AAR surfaces process gap -- present as named actionable lesson',cf:'CF13'}
+];
+var TR_POST_Q=[
+  {tag:'D',stem:'Charter is PM\'s responsibility to maintain throughout lifecycle',cf:'CF01'},
+  {tag:'J',stem:'Two PDT members replaced 4 months ago, never documented in Charter',cf:'CF01'},
+  {tag:'D',stem:'Front-loaded schedule distorts resource estimate upward',cf:'CF02'},
+  {tag:'D',stem:'Out-of-scope requirement retained in register with disposition and rationale',cf:'CF03'},
+  {tag:'J',stem:'Stakeholder emails "minor adjustment" never logged in register',cf:'CF03'},
+  {tag:'D',stem:'Approved schedule baseline = fixed reference against which progress is measured',cf:'CF04'},
+  {tag:'D',stem:'Funding gap requires transparent presentation and reconciliation',cf:'CF05'},
+  {tag:'J',stem:'Estimate 15% above ceiling -- lead with gap, options, trade-offs',cf:'CF05'},
+  {tag:'D',stem:'SBI "Impact" = effect on project, team, or relationship',cf:'CF06'},
+  {tag:'J',stem:'PDT member late for two months -- private SBI conversation',cf:'CF06'},
+  {tag:'D',stem:'EVM detects cost and schedule trends early before visible on site',cf:'CF07'},
+  {tag:'J',stem:'EVM SPI 0.78, CPI 0.95 -- behind schedule, slightly over budget',cf:'CF07'},
+  {tag:'D',stem:'Each risk must have an assigned owner accountable for monitoring',cf:'CF08'},
+  {tag:'J',stem:'Unplanned topic consumes 25 min; deadline item not reached',cf:'CF09'},
+  {tag:'D',stem:'Undocumented verbal change acceptance creates baseline integrity risk',cf:'CF10'},
+  {tag:'J',stem:'Nonconforming work -- contractor claims equivalence, customer accepts',cf:'CF10'},
+  {tag:'D',stem:'Four threat response strategies: Avoid, Transfer, Mitigate, Accept',cf:'CF11'},
+  {tag:'D',stem:'Most useful PM DPMAP input: specific observable project examples',cf:'CF12'},
+  {tag:'D',stem:'AAR conducted before PDT disperses while knowledge is accessible',cf:'CF13'},
+  {tag:'J',stem:'Systemic AAR gap -- describe root cause and specific process change',cf:'CF13'}
+];
+
+var trData = [];          // rows from pre_post_test
+var trSubTab = 'overview'; // 'overview' | 'learners' | 'questions'
+
+async function loadTestResults() {
+  if (!currentCohort) return;
+  try {
+    trData = await sbGet('pre_post_test',
+      `?cohort_code=eq.${encodeURIComponent(currentCohort)}&select=*&order=submitted_at.desc&limit=500`);
+  } catch(e) {
+    trData = [];
+  }
+}
+
+async function renderTestResults() {
+  const container = document.getElementById('tr-content');
+  if (!currentCohort) {
+    container.innerHTML = '<div class="loading">Select a cohort to load data.</div>';
+    return;
+  }
+  container.innerHTML = '<div class="loading">Loading test results&hellip;</div>';
+  await loadTestResults();
+
+  const pre  = trData.filter(r=>r.test_type==='pre');
+  const post = trData.filter(r=>r.test_type==='post');
+
+  function avg(arr, field) {
+    var v = arr.filter(r=>r[field]!=null);
+    return v.length ? v.reduce((s,r)=>s+r[field],0)/v.length : null;
+  }
+  function fmt(v,mul){return v===null?'--':Math.round(v*(mul||1))+'%';}
+  function fmtGain(v){if(v===null)return'--';var s=Math.round(v);return(s>0?'+':'')+s+'%';}
+
+  var preAvg=avg(pre,'overall_score'), postAvg=avg(post,'overall_score');
+  var gain=(preAvg!==null&&postAvg!==null)?postAvg-preAvg:null;
+  var preD=avg(pre,'doctrine_score'), postD=avg(post,'doctrine_score');
+  var preJ=avg(pre,'judgment_score'), postJ=avg(post,'judgment_score');
+
+  var html = '<div class="tr-stat-row">'
+    +'<div class="scard"><div class="val">'+pre.length+'</div><div class="lbl">Pre-Tests</div></div>'
+    +'<div class="scard"><div class="val">'+post.length+'</div><div class="lbl">Post-Tests</div></div>'
+    +'<div class="scard"><div class="val">'+(preAvg!==null?Math.round(preAvg)+'%':'--')+'</div><div class="lbl">Avg Pre Score</div><div class="sub">D: '+fmt(preD,100)+' &nbsp; J: '+fmt(preJ,100)+'</div></div>'
+    +'<div class="scard"><div class="val">'+(postAvg!==null?Math.round(postAvg)+'%':'--')+'</div><div class="lbl">Avg Post Score</div><div class="sub">D: '+fmt(postD,100)+' &nbsp; J: '+fmt(postJ,100)+'</div></div>'
+    +'<div class="scard"><div class="val '+(gain===null?'':(gain>=0?'dp':'dn'))+'">'+fmtGain(gain)+'</div><div class="lbl">Avg Gain</div><div class="sub">Pre &rarr; Post overall</div></div>'
+    +'</div>';
+
+  // Sub-tab nav
+  html += '<div class="tr-tabs">'
+    +'<div class="tr-tab '+(trSubTab==='overview'?'active':'')+'" onclick="trSwitch(\'overview\')">Overview</div>'
+    +'<div class="tr-tab '+(trSubTab==='learners'?'active':'')+'" onclick="trSwitch(\'learners\')">By Learner</div>'
+    +'<div class="tr-tab '+(trSubTab==='questions'?'active':'')+'" onclick="trSwitch(\'questions\')">By Question</div>'
+    +'</div>';
+  html += '<div id="tr-sub"></div>';
+
+  container.innerHTML = html;
+  renderTrSub();
+}
+
+function trSwitch(name) {
+  trSubTab = name;
+  document.querySelectorAll('.tr-tab').forEach(function(t,i){
+    t.classList.toggle('active',['overview','learners','questions'][i]===name);
+  });
+  renderTrSub();
+}
+
+function renderTrSub() {
+  var el = document.getElementById('tr-sub');
+  if (!el) return;
+  if (trSubTab==='overview')   el.innerHTML = trOverviewHtml();
+  else if (trSubTab==='learners')  el.innerHTML = trLearnersHtml();
+  else if (trSubTab==='questions') el.innerHTML = trQuestionsHtml();
+}
+
+function trBuildPairs() {
+  var preMap = {};
+  trData.filter(r=>r.test_type==='pre').forEach(function(r){
+    var k=(r.session_id||'')+'|'+(r.learner_name||'');
+    if(!preMap[k]) preMap[k]=r;
+  });
+  var pairs=[];
+  trData.filter(r=>r.test_type==='post').forEach(function(r){
+    var k=(r.session_id||'')+'|'+(r.learner_name||'');
+    if(preMap[k]) pairs.push({pre:preMap[k],post:r});
+  });
+  return pairs;
+}
+
+function trSpill(v) {
+  if(v===null||v===undefined) return'<span style="color:var(--gray-dk)">--</span>';
+  var cls=v>=80?'tr-sp-g':v>=60?'tr-sp-a':'tr-sp-r';
+  return'<span class="tr-spill '+cls+'">'+v+'%</span>';
+}
+function trDec(v){return(v===null||v===undefined)?'--':Math.round(v*100)+'%';}
+function trDate(s){if(!s)return'--';var d=new Date(s);return d.toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
+function trEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function trOverviewHtml() {
+  var pairs = trBuildPairs();
+  if (!pairs.length) return '<div class="empty"><div class="ico">📈</div><p>No matched pre/post pairs found yet for this cohort.</p></div>';
+  var html = '<div class="section-hdr" style="margin-top:0;">Matched Pre / Post Pairs ('+pairs.length+')</div>';
+  html += '<table class="tr-learner-tbl"><thead><tr>'
+    +'<th>Learner</th><th>Pre Overall</th><th>Post Overall</th><th>Gain</th>'
+    +'<th>Pre Doctrine</th><th>Post Doctrine</th><th>Pre Judgment</th><th>Post Judgment</th>'
+    +'</tr></thead><tbody>';
+  pairs.forEach(function(p){
+    var g=p.post.overall_score-p.pre.overall_score;
+    var cls=g>0?'tr-gain':g<0?'tr-loss':'tr-neut';
+    html+='<tr>'
+      +'<td>'+trEsc(p.pre.learner_name||'--')+'</td>'
+      +'<td>'+trSpill(p.pre.overall_score)+'</td>'
+      +'<td>'+trSpill(p.post.overall_score)+'</td>'
+      +'<td class="'+cls+'">'+(g>0?'+':'')+g+'%</td>'
+      +'<td>'+trDec(p.pre.doctrine_score)+'</td>'
+      +'<td>'+trDec(p.post.doctrine_score)+'</td>'
+      +'<td>'+trDec(p.pre.judgment_score)+'</td>'
+      +'<td>'+trDec(p.post.judgment_score)+'</td>'
+      +'</tr>';
+  });
+  return html+'</tbody></table>';
+}
+
+function trGetMissed(row, qs) {
+  var missed=[];
+  if(!row.responses) return missed;
+  var resp=row.responses;
+  if(typeof resp==='string')try{resp=JSON.parse(resp);}catch(e){return missed;}
+  resp.forEach(function(r,i){
+    if(r.correct!==0) return;
+    var q=qs[i];
+    if(!q) return;
+    missed.push({idx:i,tag:q.tag,cf:q.cf,stem:q.stem});
+  });
+  return missed;
+}
+
+function trLearnersHtml() {
+  var pre=trData.filter(r=>r.test_type==='pre');
+  var post=trData.filter(r=>r.test_type==='post');
+  if(!pre.length&&!post.length) return '<div class="empty"><p>No test submissions yet for this cohort.</p></div>';
+  var html='';
+  if(pre.length){
+    html+='<div class="section-hdr" style="margin-top:0;">Pre-Test Submissions ('+pre.length+')</div>';
+    html+=trLearnerTable(pre,TR_PRE_Q);
+  }
+  if(post.length){
+    html+='<div class="section-hdr" style="margin-top:24px;">Post-Test Submissions ('+post.length+')</div>';
+    html+=trLearnerTable(post,TR_POST_Q);
+  }
+  return html;
+}
+
+function trLearnerTable(rows,qs){
+  var html='<table class="tr-learner-tbl"><thead><tr>'
+    +'<th>Learner</th><th>Overall</th><th>Doctrine</th><th>Judgment</th><th>Submitted</th><th>Missed Questions</th>'
+    +'</tr></thead><tbody>';
+  rows.forEach(function(row){
+    var missed=trGetMissed(row,qs);
+    var missHtml='';
+    if(missed.length){
+      missed.forEach(function(m){
+        missHtml+='<div class="tr-miss">'
+          +'<div class="mq-meta">Q'+(m.idx+1)+' &middot; '+m.tag+' &middot; '+m.cf+'</div>'
+          +'<div class="mq-stem">'+trEsc(m.stem)+'</div>'
+          +'<div class="tip"><div class="tip-lbl">'+m.cf+' &middot; '+m.tag+'</div>'+trEsc(m.stem)+'</div>'
+          +'</div>';
+      });
+    } else {
+      missHtml='<span style="font-size:.75rem;color:var(--green);font-weight:700;">All correct</span>';
+    }
+    html+='<tr>'
+      +'<td>'+trEsc(row.learner_name||'--')+'</td>'
+      +'<td>'+trSpill(row.overall_score)+'</td>'
+      +'<td>'+trDec(row.doctrine_score)+'</td>'
+      +'<td>'+trDec(row.judgment_score)+'</td>'
+      +'<td style="white-space:nowrap;font-size:.75rem;">'+trDate(row.submitted_at)+'</td>'
+      +'<td>'+missHtml+'</td>'
+      +'</tr>';
+  });
+  return html+'</tbody></table>';
+}
+
+function trQuestionsHtml(){
+  var pre=trData.filter(r=>r.test_type==='pre');
+  var post=trData.filter(r=>r.test_type==='post');
+  var html='<div class="tr-legend">'
+    +'<div class="tr-leg"><div class="tr-dot" style="background:var(--red)"></div>Miss rate &gt;50%</div>'
+    +'<div class="tr-leg"><div class="tr-dot" style="background:#C49A2A"></div>25-50%</div>'
+    +'<div class="tr-leg"><div class="tr-dot" style="background:var(--green)"></div>&lt;25%</div>'
+    +'<div class="tr-leg"><div class="tr-dot tr-tag-d" style="width:14px;border-radius:2px;"></div>Doctrine</div>'
+    +'<div class="tr-leg"><div class="tr-dot tr-tag-j" style="width:14px;border-radius:2px;"></div>Judgment</div>'
+    +'</div>';
+  html+='<div class="tr-charts">'
+    +'<div class="tr-chart-card"><div class="tr-chart-hdr">Pre-Test Miss Rate (n='+pre.length+')</div>'+trMissChart(pre,TR_PRE_Q)+'</div>'
+    +'<div class="tr-chart-card"><div class="tr-chart-hdr">Post-Test Miss Rate (n='+post.length+')</div>'+trMissChart(post,TR_POST_Q)+'</div>'
+    +'</div>';
+  return html;
+}
+
+function trMissChart(rows,qs){
+  if(!rows.length) return '<div class="empty" style="padding:20px;">No submissions yet.</div>';
+  var html='';
+  qs.forEach(function(q,i){
+    var total=0,missed=0;
+    rows.forEach(function(row){
+      if(!row.responses) return;
+      var resp=row.responses;
+      if(typeof resp==='string')try{resp=JSON.parse(resp);}catch(e){return;}
+      var r=resp[i];
+      if(!r) return;
+      total++;
+      if(r.correct===0) missed++;
+    });
+    var pct=total?Math.round(missed/total*100):0;
+    var barColor=pct>50?'var(--red)':pct>25?'#C49A2A':'var(--green)';
+    html+='<div class="tr-q-row">'
+      +'<div class="tr-q-num">Q'+(i+1)+'</div>'
+      +'<div class="tr-tag '+(q.tag==='D'?'tr-tag-d':'tr-tag-j')+'">'+q.tag+'</div>'
+      +'<div class="tr-q-bar-wrap"><div class="tr-q-bar" style="width:'+pct+'%;background:'+barColor+';"></div></div>'
+      +'<div class="tr-q-pct">'+pct+'%</div>'
+      +'<div class="tip"><div class="tip-lbl">'+q.cf+' &middot; '+q.tag+'</div>'+trEsc(q.stem)+'<br><br>'+missed+' of '+total+' missed ('+pct+'%)</div>'
+      +'</div>';
+  });
+  return html;
 }
 
 // ── BOOT ──────────────────────────────────────────────────────────────────────
