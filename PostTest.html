@@ -361,11 +361,15 @@ function submitTest(){
   });
 
   var dItems=responses.filter(function(r){return r.tag==='D'&&r.type==='mc'&&r.correct!==undefined;});
-  var dScore=dItems.length?Math.round(dItems.reduce(function(s,r){return s+(r.correct||0);},0)/dItems.length*100):null;
+  var dCorrectPost=dItems.reduce(function(s,r){return s+(r.correct||0);},0);
+  var dScore=dItems.length?Math.round(dCorrectPost/dItems.length*100):null;
   var jItems=responses.filter(function(r){return r.tag==='J'&&r.type==='mc'&&r.correct!==undefined;});
-  var jScore=jItems.length?Math.round(jItems.reduce(function(s,r){return s+(r.correct||0);},0)/jItems.length*100):null;
+  var jCorrectPost=jItems.reduce(function(s,r){return s+(r.correct||0);},0);
+  var jScore=jItems.length?Math.round(jCorrectPost/jItems.length*100):null;
   var seItems=responses.filter(function(r){return r.tag==='SE'&&r.answer!==null;});
   var seMean=seItems.length?Math.round(seItems.reduce(function(s,r){return s+(r.answer||0);},0)/seItems.length*10)/10:null;
+  var totalScoredPost=dItems.length+jItems.length;
+  var overallPctPost=totalScoredPost?Math.round((dCorrectPost+jCorrectPost)/totalScoredPost*100):null;
 
   // Show score card on post-test
   var scoreHtml='';
@@ -383,6 +387,7 @@ function submitTest(){
     responses:responses,
     doctrine_score:dScore!==null?dScore/100:null,
     judgment_score:jScore!==null?jScore/100:null,
+    overall_score:overallPctPost,
     se_mean:seMean,
     submitted_at:new Date().toISOString()
   };
