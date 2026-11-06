@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PM in USACE -- Test Results Dashboard</title>
+<style>
+:root{
+  --dark:#1A1A2E;--navy:#2C3E6B;--gold:#8B6914;--gold-lt:#C49A2A;
+  --white:#F5F2EB;--gray:#D0D4DC;--gray-dk:#6B7280;
+  --green:#1B6B3A;--red:#6B1B1B;--amber:#B8860B;
+  --bg:#F0F0EA;--card:#FFFFFF;--border:#E0E0D8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);font-family:Calibri,sans-serif;color:var(--dark);min-height:100vh;}
+/* HEADER */
+.header{background:var(--dark);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.header h1{font-size:1.15rem;color:var(--white);font-weight:700;}
+.header-sub{font-size:.72rem;color:var(--gray-dk);margin-top:2px;}
+.cohort-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.cohort-row label{font-size:.8rem;color:var(--gray);}
+.cohort-row select{background:#1E2440;border:1px solid #3A4060;color:var(--white);font-size:.82rem;padding:6px 10px;border-radius:3px;cursor:pointer;}
+.btn-gold{background:var(--gold);border:none;color:var(--dark);font-size:.8rem;font-weight:700;padding:7px 13px;cursor:pointer;border-radius:3px;}
+.btn-gold:hover{background:var(--gold-lt);}
+/* TABS */
+.tabs{background:var(--navy);display:flex;padding:0 28px;gap:2px;overflow-x:auto;}
+.tab{padding:10px 18px;font-size:.83rem;color:var(--gray);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;}
+.tab.active{color:var(--white);border-bottom-color:var(--gold-lt);font-weight:700;}
+.tab:hover:not(.active){color:var(--white);}
+/* MAIN */
+.main{padding:22px 28px;max-width:1200px;margin:0 auto;}
+.pane{display:none;}.pane.active{display:block;}
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px;}
+.scard{background:var(--card);border:1px solid var(--border);padding:14px;border-radius:4px;}
+.scard .val{font-size:1.9rem;font-weight:700;color:var(--navy);font-family:Cambria,serif;}
+.scard .val.up{color:var(--green);}.scard .val.dn{color:var(--red);}
+.scard .lbl{font-size:.7rem;color:var(--gray-dk);margin-top:2px;text-transform:uppercase;letter-spacing:.06em;}
+.scard .sub{font-size:.75rem;color:var(--gray-dk);margin-top:3px;}
+/* SECTION HEADER */
+.section-hdr{font-size:.95rem;font-weight:700;color:var(--dark);margin-bottom:12px;padding-bottom:7px;border-bottom:2px solid var(--gold);letter-spacing:.04em;}
+/* LEARNER TABLE */
+.learner-table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:24px;}
+.learner-table th{background:var(--dark);color:var(--white);padding:8px 12px;text-align:left;font-size:.75rem;letter-spacing:.04em;cursor:pointer;white-space:nowrap;}
+.learner-table th:hover{background:#252545;}
+.learner-table td{padding:8px 12px;border-bottom:1px solid #EEE;vertical-align:middle;}
+.learner-table tr:nth-child(even) td{background:#F8F8F5;}
+.learner-table tr:hover td{background:#EFF5FF;}
+.gain{color:var(--green);font-weight:700;}
+.loss{color:var(--red);font-weight:700;}
+.neutral{color:var(--gray-dk);}
+.score-pill{display:inline-block;padding:2px 7px;border-radius:10px;font-size:.72rem;font-weight:700;color:#fff;}
+.sp-green{background:var(--green);}
+.sp-amber{background:var(--amber);}
+.sp-red{background:var(--red);}
+/* QUESTION MISS CHART */
+.q-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:16px;}
+.q-card-hdr{font-size:.8rem;font-weight:700;color:var(--dark);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;}
+.q-row{position:relative;display:flex;align-items:center;gap:7px;margin-bottom:5px;cursor:default;}
+.q-num{font-size:.7rem;color:var(--gray-dk);width:22px;flex-shrink:0;font-weight:700;}
+.q-bar-wrap{flex:1;background:#EEE;height:13px;border-radius:2px;overflow:visible;position:relative;}
+.q-bar{height:100%;border-radius:2px;transition:width .5s;}
+.q-pct{font-size:.7rem;color:var(--gray-dk);width:32px;text-align:right;flex-shrink:0;}
+.q-tag-pill{font-size:.6rem;font-weight:700;padding:1px 5px;border-radius:2px;color:#fff;flex-shrink:0;width:14px;text-align:center;}
+.tag-d{background:var(--navy);}
+.tag-j{background:var(--green);}
+/* TOOLTIP */
+.q-row .tip{
+  display:none;position:absolute;left:30px;top:calc(100% + 4px);
+  background:var(--dark);color:var(--white);font-size:.72rem;
+  padding:7px 10px;border-radius:3px;white-space:normal;
+  max-width:320px;line-height:1.5;z-index:50;pointer-events:none;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);min-width:200px;
+}
+.q-row:hover .tip{display:block;}
+.tip-label{font-size:.62rem;color:var(--gold-lt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+/* LEGEND */
+.legend{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--gray-dk);}
+.leg-dot{width:10px;height:10px;border-radius:2px;}
+/* PRE VS POST COMPARISON TABLE */
+.comp-table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:24px;}
+.comp-table th{background:var(--dark);color:var(--white);padding:8px 12px;text-align:left;font-size:.75rem;letter-spacing:.04em;}
+.comp-table td{padding:8px 12px;border-bottom:1px solid #EEE;}
+.comp-table tr:nth-child(even) td{background:#F8F8F5;}
+.comp-table tr:hover td{background:#EFF5FF;}
+/* MISSED Q DETAIL */
+.missed-q{background:#FFF8F0;border-left:3px solid var(--amber);padding:9px 12px;margin-bottom:8px;border-radius:0 3px 3px 0;position:relative;cursor:default;}
+.missed-q .mq-stem{font-size:.82rem;color:var(--dark);margin-bottom:4px;}
+.missed-q .mq-meta{font-size:.7rem;color:var(--gray-dk);}
+.missed-q .mq-correct{font-size:.72rem;color:var(--green);font-weight:700;margin-top:4px;}
+.missed-q .tip{
+  display:none;position:absolute;left:0;top:calc(100% + 4px);
+  background:var(--dark);color:var(--white);font-size:.72rem;
+  padding:7px 10px;border-radius:3px;white-space:normal;
+  max-width:360px;line-height:1.5;z-index:50;pointer-events:none;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+.missed-q:hover .tip{display:block;}
+/* LOADING / EMPTY */
+.loading{text-align:center;padding:48px;color:var(--gray-dk);font-size:.9rem;}
+.empty{text-align:center;padding:32px;color:var(--gray-dk);font-size:.85rem;background:var(--card);border:1px solid var(--border);border-radius:4px;}
+/* GATE */
+.gate-wrap{max-width:400px;margin:60px auto;}
+.gate-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:32px;}
+.gate-card h2{font-size:1.1rem;color:var(--dark);margin-bottom:8px;}
+.gate-card p{font-size:.85rem;color:var(--gray-dk);margin-bottom:20px;line-height:1.6;}
+.gate-card input{width:100%;border:1px solid var(--border);padding:10px 12px;font-size:.9rem;border-radius:3px;margin-bottom:10px;outline:none;}
+.gate-card input:focus{border-color:var(--navy);}
+.gate-err{font-size:.75rem;color:var(--red);min-height:16px;margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<div id="gate-pane">
+  <div class="gate-wrap">
+    <div class="gate-card">
+      <h2>Test Results Dashboard</h2>
+      <p>Instructor access only. Enter the Supabase anon key to load cohort data.</p>
+      <input type="password" id="gate-key" placeholder="Supabase anon key" autocomplete="off"
+             onkeydown="if(event.key==='Enter')gateIn()">
+      <div class="gate-err" id="gate-err"></div>
+      <button class="btn-gold" onclick="gateIn()">Load Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<div id="app-pane" style="display:none;">
+<div class="header">
+  <div>
+    <h1>Test Results Dashboard</h1>
+    <div class="header-sub">PROSPECT 355 &middot; Pre-Test / Post-Test Analysis</div>
+  </div>
+  <div class="cohort-row">
+    <label>Cohort</label>
+    <select id="cohort-select" onchange="loadCohort()"><option value="">-- All --</option></select>
+    <button class="btn-gold" onclick="refresh()">&#8635; Refresh</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('overview')">Overview</div>
+  <div class="tab" onclick="switchTab('learners')">By Learner</div>
+  <div class="tab" onclick="switchTab('questions')">By Question</div>
+</div>
+
+<div class="main">
+
+  <!-- OVERVIEW TAB -->
+  <div class="pane active" id="pane-overview">
+    <div id="overview-content"><div class="loading">Loading&hellip;</div></div>
+  </div>
+
+  <!-- LEARNERS TAB -->
+  <div class="pane" id="pane-learners">
+    <div id="learners-content"><div class="loading">Loading&hellip;</div></div>
+  </div>
+
+  <!-- QUESTIONS TAB -->
+  <div class="pane" id="pane-questions">
+    <div id="questions-content"><div class="loading">Loading&hellip;</div></div>
+  </div>
+
+</div><!-- .main -->
+</div><!-- #app-pane -->
+
+<script>
+var SB_URL='https://uvzgrrypvjuxmzytdyvs.supabase.co';
+var SB_KEY='';
+
+// Pre-test question bank (20 questions, same order as PreTest.html)
+var PRE_QUESTIONS=[
+  {tag:'D',stem:'PDT Charter must include -- named individuals + decision authority',cf:'CF01'},
+  {tag:'J',stem:'Charter still shows predecessor\'s name, RACI missing before review',cf:'CF01'},
+  {tag:'D',stem:'PROC2030 and PROC2040 are interdependent',cf:'CF02'},
+  {tag:'D',stem:'Stakeholder Requirements Register captures all requirements including out-of-scope',cf:'CF03'},
+  {tag:'J',stem:'Sponsor asks for three additions during design walkthrough',cf:'CF03'},
+  {tag:'D',stem:'Unrealistic schedule baseline surfaces as variance during execution',cf:'CF04'},
+  {tag:'D',stem:'Resource estimate above funding ceiling requires reconciliation',cf:'CF05'},
+  {tag:'J',stem:'Estimate 12% above program ceiling -- how to present to leadership',cf:'CF05'},
+  {tag:'D',stem:'SBI "Behavior" = specific observable action',cf:'CF06'},
+  {tag:'J',stem:'PDT member quality declined; reveals carrying another team\'s work',cf:'CF06'},
+  {tag:'D',stem:'EVM Schedule Variance can indicate slip weeks before site inspection',cf:'CF07'},
+  {tag:'J',stem:'EVM SPI 0.81, CPI 1.06 -- verify data before escalating',cf:'CF07'},
+  {tag:'D',stem:'Risks must be actively tracked and owned throughout execution',cf:'CF08'},
+  {tag:'J',stem:'CCB deadline item not reached in meeting -- park unplanned discussion',cf:'CF09'},
+  {tag:'D',stem:'Nonconforming work -- document, assess, present to appropriate authority',cf:'CF10'},
+  {tag:'J',stem:'Customer accepts deviation from spec -- document per PROC3010',cf:'CF10'},
+  {tag:'D',stem:'Four opportunity response strategies: Exploit, Share, Enhance, Accept',cf:'CF11'},
+  {tag:'D',stem:'PM input on DPMAP appraisal is legitimate and valuable',cf:'CF12'},
+  {tag:'D',stem:'AAR purpose: capture lessons learned before PDT disperses',cf:'CF13'},
+  {tag:'J',stem:'AAR surfaces process gap -- present as named actionable lesson',cf:'CF13'}
+];
+
+// Post-test question bank (20 questions, same order as PostTest.html)
+var POST_QUESTIONS=[
+  {tag:'D',stem:'Charter is PM\'s responsibility to maintain throughout lifecycle',cf:'CF01'},
+  {tag:'J',stem:'Two PDT members replaced 4 months ago, never documented in Charter',cf:'CF01'},
+  {tag:'D',stem:'Front-loaded schedule distorts resource estimate upward',cf:'CF02'},
+  {tag:'D',stem:'Out-of-scope requirement retained in register with disposition and rationale',cf:'CF03'},
+  {tag:'J',stem:'Stakeholder emails "minor adjustment" never logged in register',cf:'CF03'},
+  {tag:'D',stem:'Approved schedule baseline = fixed reference against which progress is measured',cf:'CF04'},
+  {tag:'D',stem:'Funding gap requires transparent presentation and reconciliation',cf:'CF05'},
+  {tag:'J',stem:'Estimate 15% above ceiling -- lead with gap, options, trade-offs',cf:'CF05'},
+  {tag:'D',stem:'SBI "Impact" = effect on project, team, or relationship',cf:'CF06'},
+  {tag:'J',stem:'PDT member late for two months -- private SBI conversation',cf:'CF06'},
+  {tag:'D',stem:'EVM detects cost and schedule trends early before visible on site',cf:'CF07'},
+  {tag:'J',stem:'EVM SPI 0.78, CPI 0.95 -- behind schedule, slightly over budget',cf:'CF07'},
+  {tag:'D',stem:'Each risk must have an assigned owner accountable for monitoring',cf:'CF08'},
+  {tag:'J',stem:'Unplanned topic consumes 25 min; deadline item not reached',cf:'CF09'},
+  {tag:'D',stem:'Undocumented verbal change acceptance creates baseline integrity risk',cf:'CF10'},
+  {tag:'J',stem:'Nonconforming work -- contractor claims equivalence, customer accepts',cf:'CF10'},
+  {tag:'D',stem:'Four threat response strategies: Avoid, Transfer, Mitigate, Accept',cf:'CF11'},
+  {tag:'D',stem:'Most useful PM DPMAP input: specific observable project examples',cf:'CF12'},
+  {tag:'D',stem:'AAR conducted before PDT disperses while knowledge is accessible',cf:'CF13'},
+  {tag:'J',stem:'Systemic AAR gap -- describe root cause and specific process change',cf:'CF13'}
+];
+
+var allRows=[];
+var currentCohort='';
+
+function gateIn(){
+  var k=document.getElementById('gate-key').value.trim();
+  if(!k){document.getElementById('gate-err').textContent='Enter the key.';return;}
+  SB_KEY=k;
+  document.getElementById('gate-err').textContent='Verifying...';
+  fetch(SB_URL+'/rest/v1/pre_post_test?select=id&limit=1',{
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+  }).then(function(r){
+    if(!r.ok)throw new Error('bad key');
+    document.getElementById('gate-pane').style.display='none';
+    document.getElementById('app-pane').style.display='block';
+    refresh();
+  }).catch(function(){
+    document.getElementById('gate-err').textContent='Key rejected or connection failed. Check and retry.';
+  });
+}
+
+function refresh(){
+  fetch(SB_URL+'/rest/v1/pre_post_test?select=*&order=submitted_at.desc&limit=2000',{
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+  }).then(function(r){return r.json();}).then(function(rows){
+    allRows=rows||[];
+    populateCohorts();
+    renderAll();
+  }).catch(function(){
+    document.getElementById('overview-content').innerHTML='<div class="empty">Could not load data. Check connection.</div>';
+  });
+}
+
+function populateCohorts(){
+  var cohorts={};
+  allRows.forEach(function(r){if(r.cohort_code)cohorts[r.cohort_code]=1;});
+  var sel=document.getElementById('cohort-select');
+  var prev=sel.value;
+  sel.innerHTML='<option value="">-- All Cohorts --</option>';
+  Object.keys(cohorts).sort().forEach(function(c){
+    var opt=document.createElement('option');
+    opt.value=c;opt.textContent=c;
+    if(c===prev)opt.selected=true;
+    sel.appendChild(opt);
+  });
+}
+
+function loadCohort(){
+  currentCohort=document.getElementById('cohort-select').value;
+  renderAll();
+}
+
+function getRows(){
+  if(!currentCohort)return allRows;
+  return allRows.filter(function(r){return r.cohort_code===currentCohort;});
+}
+
+function renderAll(){
+  var rows=getRows();
+  renderOverview(rows);
+  renderLearners(rows);
+  renderQuestions(rows);
+}
+
+// ===== OVERVIEW =====
+function renderOverview(rows){
+  var pre=rows.filter(function(r){return r.test_type==='pre';});
+  var post=rows.filter(function(r){return r.test_type==='post';});
+
+  // Avg scores
+  function avgScore(arr,field){
+    var valid=arr.filter(function(r){return r[field]!==null&&r[field]!==undefined;});
+    if(!valid.length)return null;
+    return valid.reduce(function(s,r){return s+r[field];},0)/valid.length;
+  }
+
+  var preAvg=avgScore(pre,'overall_score');
+  var postAvg=avgScore(post,'overall_score');
+  var gain=(preAvg!==null&&postAvg!==null)?postAvg-preAvg:null;
+  var preD=avgScore(pre,'doctrine_score');
+  var postD=avgScore(post,'doctrine_score');
+  var preJ=avgScore(pre,'judgment_score');
+  var postJ=avgScore(post,'judgment_score');
+
+  function fmt(v,mul){if(v===null||v===undefined)return'--';return Math.round(v*(mul||1))+'%';}
+  function fmtGain(v){if(v===null)return'--';var s=Math.round(v);return(s>0?'+':'')+s+'%';}
+
+  var html='<div class="stat-row">';
+  html+='<div class="scard"><div class="val">'+pre.length+'</div><div class="lbl">Pre-Tests</div></div>';
+  html+='<div class="scard"><div class="val">'+post.length+'</div><div class="lbl">Post-Tests</div></div>';
+  html+='<div class="scard"><div class="val">'+(preAvg!==null?Math.round(preAvg)+'%':'--')+'</div><div class="lbl">Avg Pre Score</div><div class="sub">D: '+fmt(preD,100)+' &nbsp; J: '+fmt(preJ,100)+'</div></div>';
+  html+='<div class="scard"><div class="val">'+(postAvg!==null?Math.round(postAvg)+'%':'--')+'</div><div class="lbl">Avg Post Score</div><div class="sub">D: '+fmt(postD,100)+' &nbsp; J: '+fmt(postJ,100)+'</div></div>';
+  html+='<div class="scard"><div class="val '+(gain===null?'':(gain>=0?'up':'dn'))+'">'+fmtGain(gain)+'</div><div class="lbl">Avg Gain</div><div class="sub">Pre &rarr; Post overall</div></div>';
+  html+='</div>';
+
+  // Matched pairs
+  var pairs=buildPairs(rows);
+  if(pairs.length){
+    html+='<div class="section-hdr">Matched Pre / Post Pairs ('+pairs.length+')</div>';
+    html+='<table class="comp-table"><thead><tr>';
+    html+='<th>Learner</th><th>Cohort</th><th>Pre Overall</th><th>Post Overall</th><th>Gain</th><th>Pre Doctrine</th><th>Post Doctrine</th><th>Pre Judgment</th><th>Post Judgment</th>';
+    html+='</tr></thead><tbody>';
+    pairs.forEach(function(p){
+      var g=p.post.overall_score-p.pre.overall_score;
+      var cls=g>0?'gain':g<0?'loss':'neutral';
+      html+='<tr>';
+      html+='<td>'+esc(p.pre.learner_name||'')+'</td>';
+      html+='<td>'+esc(p.pre.cohort_code||'')+'</td>';
+      html+='<td>'+scorePill(p.pre.overall_score)+'</td>';
+      html+='<td>'+scorePill(p.post.overall_score)+'</td>';
+      html+='<td class="'+cls+'">'+(g>0?'+':'')+g+'%</td>';
+      html+='<td>'+fmtDec(p.pre.doctrine_score)+'</td>';
+      html+='<td>'+fmtDec(p.post.doctrine_score)+'</td>';
+      html+='<td>'+fmtDec(p.pre.judgment_score)+'</td>';
+      html+='<td>'+fmtDec(p.post.judgment_score)+'</td>';
+      html+='</tr>';
+    });
+    html+='</tbody></table>';
+  }
+
+  document.getElementById('overview-content').innerHTML=html||'<div class="empty">No data for this cohort yet.</div>';
+}
+
+// ===== LEARNERS =====
+function renderLearners(rows){
+  if(!rows.length){document.getElementById('learners-content').innerHTML='<div class="empty">No submissions yet.</div>';return;}
+
+  var pre=rows.filter(function(r){return r.test_type==='pre';});
+  var post=rows.filter(function(r){return r.test_type==='post';});
+
+  var html='<div class="section-hdr">Pre-Test Submissions ('+pre.length+')</div>';
+  html+=learnerTable(pre,'pre');
+  if(post.length){
+    html+='<div class="section-hdr" style="margin-top:24px;">Post-Test Submissions ('+post.length+')</div>';
+    html+=learnerTable(post,'post');
+  }
+  document.getElementById('learners-content').innerHTML=html;
+}
+
+function learnerTable(rows,type){
+  if(!rows.length)return'<div class="empty">No '+type+'-test submissions yet.</div>';
+  var qs=type==='pre'?PRE_QUESTIONS:POST_QUESTIONS;
+  var html='<table class="learner-table"><thead><tr>';
+  html+='<th>Learner</th><th>Cohort</th><th>Overall</th><th>Doctrine</th><th>Judgment</th><th>Submitted</th><th>Missed Questions</th>';
+  html+='</tr></thead><tbody>';
+  rows.forEach(function(row){
+    var missed=getMissed(row,qs);
+    html+='<tr>';
+    html+='<td>'+esc(row.learner_name||'--')+'</td>';
+    html+='<td>'+esc(row.cohort_code||'--')+'</td>';
+    html+='<td>'+scorePill(row.overall_score)+'</td>';
+    html+='<td>'+fmtDec(row.doctrine_score)+'</td>';
+    html+='<td>'+fmtDec(row.judgment_score)+'</td>';
+    html+='<td style="white-space:nowrap;font-size:.75rem;">'+fmtDate(row.submitted_at)+'</td>';
+    html+='<td>';
+    if(missed.length){
+      missed.forEach(function(m){
+        html+='<div class="missed-q">';
+        html+='<div class="mq-meta">Q'+(m.idx+1)+' &middot; '+m.tag+' &middot; '+m.cf+'</div>';
+        html+='<div class="mq-stem">'+esc(m.stem)+'</div>';
+        html+='<div class="mq-correct">Correct: '+esc(m.correctText)+'</div>';
+        html+='<div class="tip"><div class="tip-label">What was taught</div>'+esc(m.stem)+'<br><br><strong>Correct answer:</strong> '+esc(m.correctText)+'<br><strong>Student chose:</strong> '+esc(m.chosenText)+'</div>';
+        html+='</div>';
+      });
+    } else {
+      html+='<span style="font-size:.75rem;color:var(--green);font-weight:700;">All correct</span>';
+    }
+    html+='</td>';
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  return html;
+}
+
+// ===== QUESTIONS TAB =====
+function renderQuestions(rows){
+  var pre=rows.filter(function(r){return r.test_type==='pre';});
+  var post=rows.filter(function(r){return r.test_type==='post';});
+
+  var html='<div class="legend">';
+  html+='<div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div>High miss rate (&gt;50%)</div>';
+  html+='<div class="leg-item"><div class="leg-dot" style="background:var(--amber)"></div>Moderate (25-50%)</div>';
+  html+='<div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div>Low (&lt;25%)</div>';
+  html+='<div class="leg-item"><div class="leg-dot tag-d"></div>Doctrine</div>';
+  html+='<div class="leg-item"><div class="leg-dot tag-j"></div>Judgment</div>';
+  html+='</div>';
+
+  html+='<div class="q-grid">';
+  html+='<div class="q-card"><div class="q-card-hdr">Pre-Test Miss Rate by Question (n='+pre.length+')</div>';
+  html+=missChart(pre,PRE_QUESTIONS);
+  html+='</div>';
+  html+='<div class="q-card"><div class="q-card-hdr">Post-Test Miss Rate by Question (n='+post.length+')</div>';
+  html+=missChart(post,POST_QUESTIONS);
+  html+='</div>';
+  html+='</div>';
+
+  document.getElementById('questions-content').innerHTML=html;
+}
+
+function missChart(rows,qs){
+  if(!rows.length)return'<div class="empty">No submissions yet.</div>';
+  var html='';
+  qs.forEach(function(q,i){
+    var total=0,missed=0;
+    rows.forEach(function(row){
+      if(!row.responses)return;
+      var resp=row.responses;
+      if(typeof resp==='string')try{resp=JSON.parse(resp);}catch(e){return;}
+      var r=resp[i];
+      if(!r)return;
+      total++;
+      if(r.correct===0)missed++;
+    });
+    var pct=total?Math.round(missed/total*100):0;
+    var barColor=pct>50?'var(--red)':pct>25?'var(--amber)':'var(--green)';
+    html+='<div class="q-row">';
+    html+='<div class="q-num">Q'+(i+1)+'</div>';
+    html+='<div class="q-tag-pill '+(q.tag==='D'?'tag-d':'tag-j')+'">'+q.tag+'</div>';
+    html+='<div class="q-bar-wrap"><div class="q-bar" style="width:'+pct+'%;background:'+barColor+';"></div></div>';
+    html+='<div class="q-pct">'+pct+'%</div>';
+    html+='<div class="tip"><div class="tip-label">'+q.cf+' &middot; '+q.tag+'</div>'+esc(q.stem)+'<br><br>'+missed+' of '+total+' missed ('+pct+'%)</div>';
+    html+='</div>';
+  });
+  return html;
+}
+
+// ===== HELPERS =====
+function buildPairs(rows){
+  var preMap={},pairs=[];
+  rows.filter(function(r){return r.test_type==='pre';}).forEach(function(r){
+    var k=(r.session_id||'')+'|'+(r.learner_name||'');
+    if(!preMap[k])preMap[k]=r;
+  });
+  rows.filter(function(r){return r.test_type==='post';}).forEach(function(r){
+    var k=(r.session_id||'')+'|'+(r.learner_name||'');
+    if(preMap[k])pairs.push({pre:preMap[k],post:r});
+  });
+  return pairs;
+}
+
+function getMissed(row,qs){
+  var missed=[];
+  if(!row.responses)return missed;
+  var resp=row.responses;
+  if(typeof resp==='string')try{resp=JSON.parse(resp);}catch(e){return missed;}
+  resp.forEach(function(r,i){
+    if(r.correct!==0)return;
+    var q=qs[i];
+    if(!q)return;
+    // Look up full question from the appropriate bank
+    var fullQ=(row.test_type==='pre'?getPREQ(i):getPOSTQ(i));
+    var chosen=r.answer!==null&&fullQ?fullQ.opts[r.answer]:'(no answer)';
+    var correct=fullQ?fullQ.opts[fullQ.correct]:'';
+    missed.push({idx:i,tag:q.tag,cf:q.cf,stem:q.stem,correctText:correct,chosenText:chosen});
+  });
+  return missed;
+}
+
+// Full question text for tooltip detail
+var PRE_FULL=[
+  {opts:['Named individuals for each PDT role, with their decision authority documented','General role titles only until the project reaches the design phase','Only the PM and sponsor signatures','Whatever PROMIS populates automatically at project setup'],correct:0},
+  {opts:['Proceed with the review using the charter as a historical reference','Wait until after the review so you do not disrupt preparations','Update the charter and assign the RACI before the review','Ask your DPM whether updating the charter is really necessary at this stage'],correct:2},
+  {opts:['Sequential steps where the schedule is fully finalized before cost estimating begins','Independent products that can be developed by separate teams without coordination','Interdependent -- an unrealistic schedule produces an unreliable cost estimate, and vice versa','Optional at the planning phase if the sponsor has already approved a budget'],correct:2},
+  {opts:['Track only requirements that have been formally approved for inclusion in scope','Replace the Scope of Work once stakeholder input is complete','Capture all expressed requirements -- in scope, deferred, or out of scope -- with source and disposition','Document attendance at stakeholder meetings'],correct:2},
+  {opts:['Accommodate the requests to protect the sponsor relationship','Log each request in the Stakeholder Requirements Register and assess scope, schedule, and cost impact before responding','Tell the sponsor that design is too far along to accept any changes','Verbally agree and handle the documentation after the meeting'],correct:1},
+  {opts:['Correct itself as the team works harder during execution','Trigger an automatic PROC2020 charter update','Become visible only as a site walk observation, too late to adjust','Surface as schedule variance during execution and undermine the baseline\'s credibility'],correct:3},
+  {opts:['The project must be cancelled','The estimate should be revised downward to match the ceiling','The scope, contingency, or both must be formally reconciled -- the ceiling cannot simply be exceeded','The sponsor must fund the difference immediately'],correct:2},
+  {opts:['Present the gap and wait for leadership to decide','Quietly reduce contingency to close the gap before the meeting','Lead with what changed and why, then present two or three realistic options with trade-offs','Recommend the cheapest option only, to simplify the decision'],correct:2},
+  {opts:['A general assessment of the team member\'s attitude or work ethic','What you personally believe caused the performance issue','A specific, observable action -- what you saw or heard, not an interpretation','The impact the issue has had on the project'],correct:2},
+  {opts:['Document the conversation and issue a formal warning','Accept the explanation and extend all upcoming deadlines','Address the workload constraint through PROC1020 escalation while holding the quality expectation','Reassign the work to another team member without further discussion'],correct:2},
+  {opts:['Only after a site walk confirms physical progress has stalled','Weeks before the problem is visible during a site inspection','Only when the CPI also drops below 1.0','Only if the PM has manually flagged it in PROMIS'],correct:1},
+  {opts:['Escalate immediately -- any SPI below 1.0 requires same-day notification','Wait one more cycle to see whether it self-corrects','Verify the schedule was recently updated and that percent-complete values reflect actual progress','Recalculate using only the last 30 days of data to smooth the variance'],correct:2},
+  {opts:['Documented once in the Risk Register, then closed after the planning phase','Actively tracked, owned, and monitored throughout execution -- not just recorded once','Reported to the sponsor at each milestone regardless of probability','Elevated to the District Risk Management Office before they can be tracked'],correct:1},
+  {opts:['Let the current discussion finish and handle the CCB item by email afterward','Interrupt and defer the unplanned discussion to a parking lot, then address the CCB item','Cancel the meeting and reschedule for later in the day','Skip the CCB item since it was not on the printed agenda'],correct:1},
+  {opts:['Direct the contractor to fix it immediately at their own cost','Notify the sponsor that the project is behind schedule','Document the deviation, assess options, and present the decision to the appropriate authority','Wait for the contractor to submit a formal claim before taking action'],correct:2},
+  {opts:['Accept the customer\'s preference verbally and move on','Document the deviation, the customer\'s informed decision, and the rationale in accordance with PROC3010','Require the contractor to correct it regardless of the customer\'s preference','Escalate to the District Commander before making any decision'],correct:1},
+  {opts:['Avoid, Transfer, Mitigate, Accept','Exploit, Share, Enhance, Accept','Reject, Defer, Escalate, Document','Monitor, Flag, Assign, Close'],correct:1},
+  {opts:['Outside the PM\'s role -- appraisals belong to the chain of command only','Legitimate and valuable, since the PM directly observed the member\'s project contributions','Optional and informal, with no bearing on the official rating','Required to be submitted in writing through the official DPMAP system by the PM'],correct:1},
+  {opts:['Assign accountability for any cost or schedule overruns','Satisfy a reporting requirement before PROMIS can be closed','Capture lessons learned in a structured way before the PDT disperses','Formally document the sponsor\'s satisfaction with the project outcome'],correct:2},
+  {opts:['Leave it out of the briefing since the project ultimately succeeded','Include it as a named, actionable lesson with a recommended process change -- not as blame','Attribute it to the team member who failed to escalate','Present it only if leadership asks directly'],correct:1}
+];
+
+var POST_FULL=[
+  {opts:['The PM drafts it at project initiation and archives it after the first milestone','The PM is responsible for keeping it current throughout the project lifecycle, not just at startup','The DPM maintains the Charter and the PM maintains the PMP','The Charter is updated only when PROMIS prompts a review'],correct:1},
+  {opts:['Leave it -- the Charter is a planning document and execution staffing changes do not require updates','Update the Charter with the current members, confirm their decision authority, and note the gap in your PM log','Ask the DPM to handle it -- personnel changes are an administrative function','Wait until the next scheduled PDT Charter review to make the correction'],correct:1},
+  {opts:['The sponsor\'s approval timeline','The resource estimate -- costs will appear higher than they actually are','The PDT Charter update frequency','The PROMIS risk register'],correct:1},
+  {opts:['Deleted from the register once the scope decision is documented','Retained in the register with the disposition and the rationale recorded','Moved to a separate out-of-scope log maintained outside PROMIS','Elevated to the sponsor for a final decision before it can be closed'],correct:1},
+  {opts:['Reply to the email agreeing to the adjustment -- it is minor','Log the request in the Stakeholder Requirements Register, assess scope and cost impact, then respond','Forward the email to the design team and ask them to incorporate it','Decline -- scope changes cannot be accepted by email'],correct:1},
+  {opts:['As a legal record for contract disputes','As the fixed reference against which actual progress is measured throughout execution','As an input to the PDT Charter update process','As a summary for the sponsor\'s quarterly review'],correct:1},
+  {opts:['Adjust the estimate to fit within the ceiling before presenting it to leadership','Present the gap transparently and work with leadership to reconcile scope, contingency, or funding','Proceed with the project and address the funding gap after contract award','Notify the sponsor and ask them to cover the difference through a supplemental agreement'],correct:1},
+  {opts:['Present the best-case number only and address the gap in a follow-up email','Lead with the gap, the drivers behind it, and two or three realistic options -- give leadership what they need to decide','Ask your DPM to present so the message comes from a more senior voice','Delay the brief until you can find a way to close the gap internally'],correct:1},
+  {opts:['What disciplinary action will follow if the behavior continues','How the behavior affected the project, the team, or the relationship','A general assessment of the person\'s overall performance','What the person should do differently going forward'],correct:1},
+  {opts:['Continue to absorb the delays -- raising it now will seem like you have been keeping score','Have a private, specific conversation using the SBI model: name the behavior, the impact, and what on-time looks like','Ask another PDT member to informally coach the person','Send a group message reminding the whole PDT of deadline expectations'],correct:1},
+  {opts:['Provides a legal record of contractor performance','Allows the PM to detect cost and schedule trends early -- before they become visible problems on site','Replaces the need for site visits during execution','Automatically generates PROMIS variance reports'],correct:1},
+  {opts:['The project is on track -- both indicators are still above 0.75','The project is behind schedule and slightly over budget; here are the drivers and my recovery options','The numbers reflect a data entry issue -- I need another cycle before I can confirm','The schedule variance is acceptable; only CPI matters for budget reporting'],correct:1},
+  {opts:['A probability score approved by the District Risk Management Office','An assigned owner who is accountable for monitoring it and executing the response strategy','A written contingency plan approved by the sponsor','A link to a PROC number before it can be tracked'],correct:1},
+  {opts:['Let the discussion continue -- productive conversation should not be shut down','Park the unplanned topic, address the deadline-driven item, then return to remaining items if time allows','End the meeting and reschedule -- the agenda has been compromised','Skip the remaining items and address them by email'],correct:1},
+  {opts:['An informal agreement -- acceptable if both parties understand the change','A risk -- undocumented changes create liability and baseline integrity problems','A minor deviation that does not require formal processing','An administrative oversight that can be corrected at project closeout'],correct:1},
+  {opts:['Accept the sponsor\'s position -- the customer\'s preference is the final word','Require the contractor to correct it regardless of the sponsor\'s preference','Document the nonconformance, the sponsor\'s informed decision, and the technical basis in accordance with PROC3010','Escalate to the Contracting Officer and let them make the determination'],correct:2},
+  {opts:['Avoid, Transfer, Mitigate, Accept','Exploit, Share, Enhance, Accept','Eliminate, Reduce, Share, Ignore','Monitor, Flag, Assign, Close'],correct:0},
+  {opts:['Focuses on personality and attitude rather than specific project contributions','Provides specific, observable examples of project contributions tied to the rating period','Rates the member on a numerical scale the PM defines independently of the official criteria','Is submitted only if the Resource Provider formally requests it'],correct:1},
+  {opts:['After PROMIS is closed and the team has dispersed, to allow time for reflection','Before the PDT disperses, while institutional knowledge is still accessible','Only if the project had cost or schedule overruns','At the sponsor\'s request following final acceptance'],correct:1},
+  {opts:['Identify the team member who was closest to the gap so future PMs know who to watch','Describe the situation, the root cause, and a specific process change that would prevent recurrence','Note that the project ultimately succeeded and that the issue was minor in context','Record it as a general reminder to communicate better'],correct:1}
+];
+
+function getPREQ(i){return PRE_FULL[i]||null;}
+function getPOSTQ(i){return POST_FULL[i]||null;}
+
+function scorePill(v){
+  if(v===null||v===undefined)return'<span style="color:var(--gray-dk)">--</span>';
+  var cls=v>=80?'sp-green':v>=60?'sp-amber':'sp-red';
+  return'<span class="score-pill '+cls+'">'+v+'%</span>';
+}
+function fmtDec(v){if(v===null||v===undefined)return'--';return Math.round(v*100)+'%';}
+function fmtDate(s){if(!s)return'--';var d=new Date(s);return d.toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.pane').forEach(function(p){p.classList.remove('active');});
+  event.target.classList.add('active');
+  document.getElementById('pane-'+name).classList.add('active');
+}
+</script>
+</body>
+</html>
