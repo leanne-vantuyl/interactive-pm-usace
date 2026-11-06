@@ -1142,16 +1142,50 @@ function renderTrSub() {
   else if (trSubTab==='questions') el.innerHTML = trQuestionsHtml();
 }
 
+// Pick the best post-test row for a learner.
+// If a retake (attempt=2) exists and scores >= 70, use whichever is higher.
+function trBestPost(postRows) {
+  if (!postRows.length) return null;
+  if (postRows.length === 1) return {row: postRows[0], retook: false};
+  // Multiple attempts: pick highest score; if retake >= 70 it qualifies
+  var best = postRows[0];
+  var retook = postRows.length > 1;
+  postRows.forEach(function(r) {
+    var s = r.overall_score || 0;
+    if (s > (best.overall_score || 0)) best = r;
+  });
+  // Only credit the retake score if it is >= 70
+  var attempt1 = postRows.find(function(r){ return (r.attempt||1)===1; });
+  var attempt2 = postRows.find(function(r){ return (r.attempt||0)===2; });
+  if (attempt1 && attempt2) {
+    var s2 = attempt2.overall_score || 0;
+    if (s2 >= 70 && s2 > (attempt1.overall_score || 0)) {
+      return {row: attempt2, retook: true, attempt1Score: attempt1.overall_score};
+    }
+    return {row: attempt1, retook: true, attempt1Score: attempt1.overall_score};
+  }
+  return {row: best, retook: retook};
+}
+
 function trBuildPairs() {
   var preMap = {};
   trData.filter(r=>r.test_type==='pre').forEach(function(r){
-    var k=(r.session_id||'')+'|'+(r.learner_name||'');
+    var k=(r.learner_name||'').trim().toLowerCase();
     if(!preMap[k]) preMap[k]=r;
   });
-  var pairs=[];
+  // Group post rows by learner name
+  var postMap = {};
   trData.filter(r=>r.test_type==='post').forEach(function(r){
-    var k=(r.session_id||'')+'|'+(r.learner_name||'');
-    if(preMap[k]) pairs.push({pre:preMap[k],post:r});
+    var k=(r.learner_name||'').trim().toLowerCase();
+    if(!postMap[k]) postMap[k]=[];
+    postMap[k].push(r);
+  });
+  var pairs=[];
+  Object.keys(postMap).forEach(function(k){
+    if(preMap[k]) {
+      var bp = trBestPost(postMap[k]);
+      pairs.push({pre:preMap[k], post:bp.row, retook:bp.retook, attempt1Score:bp.attempt1Score});
+    }
   });
   return pairs;
 }
@@ -1195,10 +1229,12 @@ function trOverviewHtml() {
     pairs.forEach(function(p){
       var g=p.post.overall_score-p.pre.overall_score;
       var cls=g>0?'tr-gain':g<0?'tr-loss':'tr-neut';
+      var retakeBadge=p.retook?'<span style="font-size:.6rem;background:var(--gold);color:var(--dark);font-weight:700;padding:1px 5px;border-radius:2px;margin-left:5px;vertical-align:middle;">RETAKE</span>':'';
+      var attempt1Note=p.retook&&p.attempt1Score!==undefined?'<div style="font-size:.68rem;color:var(--gray-dk);margin-top:2px;">Attempt 1: '+p.attempt1Score+'%</div>':'';
       html+='<tr>'
         +'<td>'+trEsc(p.pre.learner_name||'--')+'</td>'
         +'<td>'+trSpill(p.pre.overall_score)+'</td>'
-        +'<td>'+trSpill(p.post.overall_score)+'</td>'
+        +'<td>'+trSpill(p.post.overall_score)+retakeBadge+attempt1Note+'</td>'
         +'<td class="'+cls+'">'+(g>0?'+':'')+g+'%</td>'
         +'<td>'+trDec(p.pre.doctrine_score)+'</td>'
         +'<td>'+trDec(p.post.doctrine_score)+'</td>'

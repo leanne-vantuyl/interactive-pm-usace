@@ -144,9 +144,13 @@ body.light-mode .score-card{background:#E8E4D9;border-color:#5A4010;}
   <div id="complete-screen">
     <div class="complete-icon">&#10003;</div>
     <div class="complete-title">Post-Test Complete</div>
-    <div class="complete-sub">Your responses have been recorded. Your instructor will share aggregate results with the cohort.</div>
+    <div class="complete-sub" id="complete-sub-msg">Your responses have been recorded. Your instructor will share aggregate results with the cohort.</div>
     <div class="score-card" id="score-display"></div>
-    <a href="index.html" class="complete-link">Return to Course Home &rarr;</a>
+    <div id="retake-block" style="display:none;margin-bottom:28px;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.6875rem;letter-spacing:.06em;color:var(--warn);margin-bottom:16px;">Score below 70% &mdash; you are eligible for one retake using a fresh question set. Your highest score at or above 70% will be used in the course record.</div>
+      <a href="RetakeTest.html" class="complete-link" style="margin-right:14px;">Begin Retake &rarr;</a>
+    </div>
+    <a href="index.html" class="complete-link" id="home-link">Return to Course Home &rarr;</a>
   </div>
 </main>
 
@@ -429,6 +433,13 @@ function submitTest(){
   if(scoreHtml){document.getElementById('score-display').innerHTML=scoreHtml;}
   else{document.getElementById('score-display').style.display='none';}
 
+  // Show retake option if below 70%
+  if(overallPct!==null && overallPct<70){
+    document.getElementById('retake-block').style.display='block';
+    document.getElementById('complete-sub-msg').textContent='Your responses have been recorded.';
+    document.getElementById('home-link').style.display='none';
+  }
+
   var payload={
     test_type:testType,
     learner_name:learnerName,
@@ -438,6 +449,7 @@ function submitTest(){
     doctrine_score:dScore,
     judgment_score:jScore,
     overall_score:overallPct,
+    attempt:1,
     se_mean:null,
     submitted_at:new Date().toISOString()
   };

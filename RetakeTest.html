@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post-Test Retake | Interactive PM in USACE</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;--army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;--white:#F5F2EB;--white-dim:#C8C4B8;--accent:#7BA05B;--danger:#C0392B;--warn:#D4A017;--border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;}
+body{background:var(--army-dark);color:var(--white);font-family:'Inter',sans-serif;font-weight:400;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(61,82,41,0.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(37,45,28,0.4) 0%,transparent 60%);pointer-events:none;z-index:0;}
+body.light-mode::before{display:none !important;}
+body.light-mode{background:#FFFFFF !important;color:#111111;--army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-dim:#222222;--gold:#5A4010;--gold-light:#3A2A08;--gold-dim:#5A4010;--border:rgba(90,64,16,0.4);--border-strong:rgba(90,64,16,0.7);--accent:#1A4A10;--warn:#8B3A00;--danger:#7A1A1A;}
+header{border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;background:rgba(26,31,20,0.97);backdrop-filter:blur(12px);z-index:200;}
+body.light-mode header{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+.header-inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.logo-block{display:flex;align-items:center;gap:12px;}
+.logo-seal{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.625rem;color:var(--gold);flex-shrink:0;}
+body.light-mode .logo-seal{border-color:#5A4010;color:#5A4010;}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:0.875rem;color:var(--white);}
+.logo-sub{font-size:0.5625rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+.theme-toggle{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:6px 11px;cursor:pointer;}
+body.light-mode .theme-toggle{background:#E8E4D9;border:2px solid #5A4010;color:#111111;font-weight:700;}
+.case-quicknav{background:rgba(26,31,20,0.97);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:190;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+.case-quicknav-inner{display:flex;align-items:center;gap:4px;padding:7px 24px;max-width:1100px;margin:0 auto;}
+.cqn-link{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.05em;color:var(--white-dim);border:1px solid var(--border);padding:5px 9px;text-decoration:none;flex-shrink:0;transition:all .15s;}
+.cqn-link:hover{border-color:var(--gold-dim);color:var(--white);}
+.cqn-link.current{background:var(--gold);color:var(--army-dark);border-color:var(--gold);font-weight:700;}
+.cqn-sep{color:var(--border-strong);padding:0 2px;}
+body.light-mode .case-quicknav{background:#FFFFFF;border-bottom:2px solid #5A4010;}
+main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:40px 24px 80px;}
+#gate-screen{max-width:480px;margin:0 auto;}
+.gate-card{background:var(--army-mid);border:1px solid var(--border-strong);padding:36px 32px;margin-top:40px;}
+.gate-eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;}
+.gate-title{font-family:'DM Serif Display',serif;font-size:1.75rem;color:var(--white);margin-bottom:12px;}
+.gate-sub{font-size:0.875rem;color:var(--white-dim);line-height:1.6;margin-bottom:28px;}
+.gate-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:8px;display:block;}
+.gate-input{width:100%;background:rgba(26,31,20,.5);border:1px solid var(--border);color:var(--white);font-family:'Inter',sans-serif;font-size:0.875rem;padding:12px 15px;outline:none;margin-bottom:10px;}
+.gate-input:focus{border-color:var(--gold-dim);}
+.gate-btn{width:100%;background:var(--gold);color:var(--army-dark);font-family:'DM Mono',monospace;font-size:0.6875rem;letter-spacing:.1em;font-weight:700;padding:14px;border:none;cursor:pointer;text-transform:uppercase;margin-top:10px;}
+.gate-btn:hover{background:var(--gold-light);}
+.gate-err{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--danger);letter-spacing:.05em;margin-top:8px;min-height:16px;}
+body.light-mode .gate-card{background:#E8E4D9;border-color:#5A4010;}
+body.light-mode .gate-input{background:#fff;border:1px solid #5A4010;color:#111;}
+.progress-wrap{margin-bottom:28px;}
+.progress-track{height:3px;background:var(--border);border-radius:2px;margin-bottom:8px;}
+.progress-fill{height:3px;background:var(--gold);border-radius:2px;transition:width .4s ease;}
+.progress-labels{display:flex;justify-content:space-between;align-items:center;}
+.progress-text{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.08em;text-transform:uppercase;}
+.progress-pct{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold);font-weight:700;}
+.q-num{font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.1em;margin-bottom:8px;}
+.q-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.08em;padding:2px 7px;border:1px solid var(--border-strong);color:var(--gold);text-transform:uppercase;margin-bottom:12px;}
+.q-text{font-size:1rem;line-height:1.65;color:var(--white);margin-bottom:20px;font-weight:400;}
+.q-text strong{color:var(--gold-light);}
+.answer-option{display:block;width:100%;text-align:left;background:rgba(26,31,20,.4);border:1px solid var(--border);color:var(--white-dim);font-family:'Inter',sans-serif;font-size:0.8125rem;line-height:1.6;padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.answer-option:hover{border-color:var(--gold-dim);color:var(--white);}
+.answer-option.selected{border-color:var(--gold);background:rgba(200,168,75,.08);color:var(--white);}
+.answer-option .opt-letter{font-family:'DM Mono',monospace;font-weight:700;color:var(--gold);margin-right:8px;}
+body.light-mode .answer-option{background:#fff;border-color:rgba(90,64,16,0.3);color:#111;}
+body.light-mode .answer-option.selected{background:rgba(90,64,16,.08);border-color:#5A4010;}
+.q-nav{display:flex;gap:12px;margin-top:24px;}
+.q-btn{font-family:'DM Mono',monospace;font-size:0.6875rem;letter-spacing:.08em;padding:11px 22px;border:1px solid var(--border);background:transparent;color:var(--white-dim);cursor:pointer;transition:all .15s;}
+.q-btn:hover{border-color:var(--gold-dim);color:var(--white);}
+.q-btn.primary{background:var(--gold);border-color:var(--gold);color:var(--army-dark);font-weight:700;}
+.q-btn.primary:hover{background:var(--gold-light);}
+.q-btn:disabled{opacity:.35;cursor:not-allowed;}
+.section-header{margin-bottom:32px;}
+.section-eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.section-title{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,4vw,2.25rem);color:var(--white);line-height:1.2;margin-bottom:10px;}
+.section-sub{font-size:0.875rem;color:var(--white-dim);line-height:1.6;}
+#complete-screen{display:none;text-align:center;padding:60px 0;}
+.complete-icon{font-size:3rem;margin-bottom:24px;}
+.complete-title{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold);margin-bottom:12px;}
+.complete-sub{font-size:0.9375rem;color:var(--white-dim);line-height:1.6;max-width:480px;margin:0 auto 32px;}
+.complete-link{display:inline-block;font-family:'DM Mono',monospace;font-size:0.6875rem;letter-spacing:.1em;padding:13px 28px;background:var(--gold);color:var(--army-dark);text-decoration:none;font-weight:700;text-transform:uppercase;}
+.complete-link:hover{background:var(--gold-light);}
+.score-card{background:var(--army-mid);border:1px solid var(--border-strong);padding:28px 32px;max-width:520px;margin:0 auto 32px;text-align:left;}
+.score-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.score-row:last-child{border-bottom:none;}
+.score-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;}
+.score-val{font-family:'DM Mono',monospace;font-size:1rem;color:var(--gold);font-weight:700;}
+body.light-mode .score-card{background:#E8E4D9;border-color:#5A4010;}
+</style>
+</head>
+<body class="light-mode">
+
+<header>
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-seal">PM</div>
+      <div>
+        <div class="logo-primary">Interactive PM in USACE</div>
+        <div class="logo-sub">Post-Test Retake &middot; PROSPECT 355</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">&#9790; Dark</button>
+    </div>
+  </div>
+</header>
+
+<nav class="case-quicknav"><div class="case-quicknav-inner"><a href="index.html" class="cqn-link">Home</a><span class="cqn-sep">&middot;</span><a href="PreTest.html" class="cqn-link">Pre-Test</a><a href="Module00_Orientation.html" class="cqn-link">M0</a><a href="CaseFile01_NewPM_UnclearRoles.html" class="cqn-link">CF01</a><a href="CaseFile02_ScheduleVsScope.html" class="cqn-link">CF02</a><a href="CaseFile03_TheNewHome.html" class="cqn-link">CF03</a><a href="CaseFile04_BuiltToSlip.html" class="cqn-link">CF04</a><a href="CaseFile05_TheNumberDoesntFit.html" class="cqn-link">CF05</a><a href="CaseFile06_FeedbackConversation.html" class="cqn-link">CF06</a><a href="CaseFile07_PhantomSlip.html" class="cqn-link">CF07</a><a href="CaseFile08_RiskNobodyTracked.html" class="cqn-link">CF08</a><a href="CaseFile09_MeetingGotAway.html" class="cqn-link">CF09</a><a href="CaseFile10_WrongShadeOfGray.html" class="cqn-link">CF10</a><a href="CaseFile11_TwoFacesOfRisk.html" class="cqn-link">CF11</a><a href="CaseFile12_TheFavor.html" class="cqn-link">CF12</a><a href="CaseFile13_ClosingWell.html" class="cqn-link">CF13</a><a href="PostTest.html" class="cqn-link">Post-Test</a><a href="RetakeTest.html" class="cqn-link current">Retake</a></div></nav>
+
+<main>
+  <!-- GATE SCREEN -->
+  <div id="gate-screen">
+    <div class="gate-card">
+      <div class="gate-eyebrow">PROSPECT 355 &middot; Post-Test Retake</div>
+      <div class="gate-title">Second Attempt</div>
+      <div class="gate-sub">This is a fresh set of questions covering the same 13 doctrine constructs. Your highest score at or above 70% will be used in the course record. Enter your name exactly as you did on the first post-test, then enter the cohort password your instructor provides.</div>
+      <label class="gate-label" for="gate-name">Your Name</label>
+      <input class="gate-input" type="text" id="gate-name" placeholder="First Last" autocomplete="off">
+      <label class="gate-label" for="gate-password">Cohort Password</label>
+      <input class="gate-input" type="password" id="gate-password" placeholder="Enter password from your instructor" autocomplete="off" onkeydown="if(event.key==='Enter')unlockTest()">
+      <div class="gate-err" id="gate-err"></div>
+      <button class="gate-btn" onclick="unlockTest()">Begin Retake</button>
+    </div>
+  </div>
+
+  <!-- TEST SCREEN -->
+  <div id="test-screen" style="display:none;">
+    <div class="section-header">
+      <div class="section-eyebrow">Post-Test Retake &middot; PROSPECT 355</div>
+      <div class="section-title">Post-Training Assessment (Form C)</div>
+      <div class="section-sub">Answer each question. Your score will be shown when you submit.</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-labels">
+        <span class="progress-text" id="progress-label">Question 1 of 20</span>
+        <span class="progress-pct" id="progress-pct">0%</span>
+      </div>
+    </div>
+    <div id="question-area"></div>
+    <div class="q-nav">
+      <button class="q-btn" id="btn-back" onclick="goBack()" disabled>Back</button>
+      <button class="q-btn primary" id="btn-next" onclick="goNext()">Next</button>
+    </div>
+  </div>
+
+  <!-- COMPLETE SCREEN -->
+  <div id="complete-screen">
+    <div class="complete-icon">&#10003;</div>
+    <div class="complete-title">Retake Complete</div>
+    <div class="complete-sub">Your responses have been recorded. Your instructor will share results with the cohort. The higher of your two post-test scores (if at or above 70%) will be used in the course record.</div>
+    <div class="score-card" id="score-display"></div>
+    <a href="index.html" class="complete-link">Return to Course Home &rarr;</a>
+  </div>
+</main>
+
+<script>
+var SB_URL='https://uvzgrrypvjuxmzytdyvs.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2emdycnlwdmp1eG16eXRkeXZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODkyNTMsImV4cCI6MjEwNTA2NTI1M30.ZJfHa3Vs0tYQP7bTrYAbtCtiQlDp5JdA2UhpGZ3c2FQ';
+
+function toggleTheme(){
+  var b=document.body;
+  b.classList.toggle('light-mode');
+  var btn=document.getElementById('theme-toggle');
+  btn.textContent=b.classList.contains('light-mode')?'☀ Light':'☾ Dark';
+  try{localStorage.setItem('theme',b.classList.contains('light-mode')?'light':'dark');}catch(e){}
+}
+(function(){
+  try{var t=localStorage.getItem('theme');if(t==='light'){document.body.classList.add('light-mode');var btn=document.getElementById('theme-toggle');if(btn)btn.textContent='☀ Light';}}catch(e){}
+})();
+
+function getProfile(){try{var r=localStorage.getItem('pm-learner-profile');return r?JSON.parse(r):null;}catch(e){return null;}}
+function genUUID(){return'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return(c=='x'?r:(r&0x3|0x8)).toString(16);});}
+
+// ===== PROGRESS SAVE / RESTORE =====
+var SAVE_KEY='pm-retaketest-progress';
+function saveProgress(){
+  try{sessionStorage.setItem(SAVE_KEY,JSON.stringify({
+    answers:answers,currentQ:currentQ,
+    learnerName:learnerName,cohortCode:cohortCode,sessionId:sessionId
+  }));}catch(e){}
+}
+function clearProgress(){try{sessionStorage.removeItem(SAVE_KEY);}catch(e){}}
+
+// 20 graded questions -- Form C (Retake), parallel to PreTest and PostTest
+// Same 13 PDBP doctrine constructs (CF01-CF13), fresh stems
+// 12 Doctrine (D), 8 Judgment (J)
+var ALL_QUESTIONS = [
+  // 0 -- CF01 / PROC2020: Charter as governance record [D]
+  {tag:'D',text:'Which of the following best describes the role of the PDT Charter under PROC2020?',
+   opts:['A one-time kickoff document that establishes initial roles and is superseded by the PMP','A living governance record that documents current PDT membership, roles, and decision authority throughout the project lifecycle','A contract document signed by the sponsor and filed in PROMIS after the PDT is formed','An internal PM planning tool that does not require sponsor review or formal approval'],
+   correct:1},
+
+  // 1 -- CF01 / Charter accuracy mid-execution [J]
+  {tag:'J',text:'You are six weeks from contract award. During a PDT coordination call, a team member mentions that the RACI matrix still lists a person who transferred out of the district eight months ago. How do you handle this?',
+   opts:['Note it in your PM log and plan to correct it after contract award, since you are in a critical window','Update the Charter and RACI before contract award -- an outdated RACI creates decision-authority ambiguity at a high-stakes moment','Ask the DPM to handle it -- personnel documents are outside the PM\'s lane','Send an email to the team noting the discrepancy; a formal update can wait until the next milestone'],
+   correct:1},
+
+  // 2 -- CF02 / PROC2030+PROC2040: Schedule-cost integration [D]
+  {tag:'D',text:'PDBP treats PROC2030 (schedule) and PROC2040 (cost estimating) as interdependent processes. The practical consequence is that:',
+   opts:['The schedule must be approved before the cost estimate can begin','An unrealistic schedule will produce an unreliable cost estimate because resource loading depends on activity durations','Cost estimating is performed first to establish the ceiling before the schedule is built','The DPM owns schedule development and the PM owns the cost estimate independently'],
+   correct:1},
+
+  // 3 -- CF03 / PROC2010: Requirements integrity [D]
+  {tag:'D',text:'The Stakeholder Requirements Register under PROC2010 is designed to ensure that:',
+   opts:['Only approved, in-scope requirements are carried into design','Every requirement -- approved, deferred, or rejected -- is documented with its disposition and rationale','Stakeholder inputs are filtered by the PM before being presented to the design team','Requirements are locked after the 35% design milestone to prevent scope creep'],
+   correct:1},
+
+  // 4 -- CF03 / Scope management in practice [J]
+  {tag:'J',text:'At a 65% design review, the sponsor\'s representative raises a new feature that was never logged in the Stakeholder Requirements Register and would add approximately $180,000 to the estimate. The representative says leadership already supports it. What is your first move?',
+   opts:['Add the feature to the design -- if leadership supports it, the Register can be updated retroactively','Log the request in the Register, assess the full scope, cost, and schedule impact, then present options to the appropriate decision authority','Decline the request on the grounds that design is too far along','Ask the design team to evaluate feasibility before logging anything formally'],
+   correct:1},
+
+  // 5 -- CF04 / PROC2030: Schedule baseline use [D]
+  {tag:'D',text:'Once a project schedule baseline is established under PROC2030, it should:',
+   opts:['Be revised monthly to reflect the team\'s best current estimate of completion','Remain fixed as the reference point for measuring performance, with changes processed through formal change control','Be replaced by the most recent schedule update for all reporting purposes','Be maintained by the DPM and provided to the PM for reference only'],
+   correct:1},
+
+  // 6 -- CF05 / PROC2040 + PROC1040: Funding shortfall presentation [D]
+  {tag:'D',text:'When a resource estimate developed through PROC2040 reveals that project costs will exceed the program funding ceiling established under PROC1040, doctrine requires the PM to:',
+   opts:['Adjust line items in the estimate until the total fits within the ceiling','Present the gap transparently with supporting analysis and work with leadership to identify reconciliation options','Notify the contracting officer and defer cost reconciliation to the acquisition phase','Absorb the difference through schedule compression before briefing leadership'],
+   correct:1},
+
+  // 7 -- CF05 / Cost escalation conversation [J]
+  {tag:'J',text:'Three weeks before a major program review, your revised estimate comes in $2.1M over the approved program amount. Your chain of command has not been briefed. What is the right approach?',
+   opts:['Wait until after the review to avoid disrupting the meeting preparation','Brief your chain of command now with the gap, the drivers, and two or three actionable options -- they need time to decide before the review','Send a brief email flagging the issue and let leadership decide whether to address it before the review','Ask the estimator to revise the assumptions to bring the number closer to the ceiling'],
+   correct:1},
+
+  // 8 -- CF06 / PROC1020 + SBI: Feedback model [D]
+  {tag:'D',text:'In the Situation-Behavior-Impact (SBI) feedback model, the "Situation" element serves to:',
+   opts:['Assign blame by naming who was present when the problem occurred','Establish the specific context -- when and where the behavior was observed -- so the feedback is grounded and factual','Summarize the overall performance trend across the rating period','Introduce the disciplinary consequence if the behavior continues'],
+   correct:1},
+
+  // 9 -- CF06 / Difficult feedback delivery [J]
+  {tag:'J',text:'A PDT member has strong technical skills but consistently dominates meetings, cutting off other members and derailing agendas. The behavior is affecting team dynamics. You have not addressed it because the person is a high performer. What do you do?',
+   opts:['Continue to manage around it -- alienating a high performer creates more risk than the behavior itself','Have a private SBI conversation: describe a specific incident, the impact on team functioning and trust, and the expectation going forward','Raise it at the next PDT meeting so the team can address it collectively','Document the behavior in PROMIS and address it at the DPMAP review'],
+   correct:1},
+
+  // 10 -- CF07 / PROC3000: EVM interpretation [D]
+  {tag:'D',text:'A Schedule Performance Index (SPI) below 1.0 on an EVM report indicates:',
+   opts:['The project is over budget relative to the work performed','The project is completing less work than planned for the time elapsed -- a potential schedule slip','The contingency reserve has been partially consumed','The contractor\'s invoices are ahead of the payment schedule'],
+   correct:1},
+
+  // 11 -- CF07 / EVM corrective action [J]
+  {tag:'J',text:'Your EVM report shows SPI 0.83, CPI 1.02 at the midpoint of execution. The contractor says the schedule will recover in the next reporting period. What is your obligation?',
+   opts:['Accept the contractor\'s projection and report it to leadership as the expected recovery path','Verify that the schedule is updated, percent-complete figures reflect actual progress, and the recovery plan is realistic and documented','Escalate to the Contracting Officer immediately -- an SPI below 0.9 requires formal notification','Wait for the next EVM cycle before taking action -- one reporting period is not a trend'],
+   correct:1},
+
+  // 12 -- CF08 / REF8007G: Risk register requirements [D]
+  {tag:'D',text:'Under REF8007G, an identified risk that has not yet been assigned an owner should be treated as:',
+   opts:['An accepted risk, since no action has been taken','Incomplete -- every risk must have a named owner accountable for monitoring and response','A residual risk that will be addressed after higher-priority risks are resolved','A watch-list item that does not require a formal response strategy'],
+   correct:1},
+
+  // 13 -- CF09 / Meeting discipline [J]
+  {tag:'J',text:'You are running a CCB meeting. A voting member raises a concern about a separate project that is not on the agenda. The discussion is relevant to the organization but would take at least 20 minutes. Two agenda items have hard deadlines. What do you do?',
+   opts:['Allow the discussion -- if it is organizationally relevant, the agenda can wait','Acknowledge the concern, place it in a parking lot for follow-up, and return to the agenda items with hard deadlines','End the meeting and reschedule to allow time for both topics','Defer both agenda items and address the new concern since it was raised by a voting member'],
+   correct:1},
+
+  // 14 -- CF10 / PROC3010: Nonconformance documentation [D]
+  {tag:'D',text:'When the PM discovers work that does not conform to the contract specifications, the first documented obligation under PROC3010 is to:',
+   opts:['Issue a stop-work order and notify the Contracting Officer','Document the nonconformance, assess the options, and present them to the appropriate authority for a decision','Accept the work if the customer verbally agrees it meets functional requirements','Notify the inspector and ask the contractor to self-correct before anything is documented'],
+   correct:1},
+
+  // 15 -- CF10 / Undocumented customer acceptance [J]
+  {tag:'J',text:'During a final inspection, the customer agrees verbally to accept a finish substitution that does not meet the specification. The contractor wants to move on. The customer says they will send a confirming email later. What is your obligation right now?',
+   opts:['Proceed -- the customer\'s verbal acceptance is sufficient for a finish-level item','Wait for the email before allowing any further work','Document the nonconformance immediately, record the customer\'s verbal decision and the technical basis, and follow up to ensure the written confirmation is received per PROC3010','Ask the Contracting Officer to issue a formal modification before you document anything'],
+   correct:2},
+
+  // 16 -- CF11 / REF8007G: Opportunity response strategies [D]
+  {tag:'D',text:'Under REF8007G, the PDBP opportunity response strategy of "Enhance" means:',
+   opts:['Sharing the opportunity with a third party who can capture it more effectively','Increasing the probability or impact of the opportunity through deliberate action','Deciding to fully capture the opportunity by ensuring it occurs','Acknowledging the opportunity exists but taking no proactive steps'],
+   correct:1},
+
+  // 17 -- CF12 / REF8006G: PM appraisal input [D]
+  {tag:'D',text:'When a PDT member\'s Resource Provider asks the PM for input on the member\'s DPMAP appraisal, the PM\'s input is:',
+   opts:['Advisory only and carries no weight in the formal appraisal process','Legitimate and expected -- the PM observed the member\'s direct project contributions and that input is valuable to the rating official','Limited to overall performance ratings; specific examples are not appropriate','Appropriate only if the PM is also the member\'s supervisor of record'],
+   correct:1},
+
+  // 18 -- CF13 / PROC4000: AAR purpose [D]
+  {tag:'D',text:'The primary purpose of the After-Action Review under PROC4000 is to:',
+   opts:['Assign accountability for project variances before the team disperses','Capture lessons learned -- what worked, what did not, and what should change -- while the institutional knowledge is still accessible','Document final project performance metrics for the program record','Provide the sponsor with a summary of PM performance during the project'],
+   correct:1},
+
+  // 19 -- CF13 / Closing well [J]
+  {tag:'J',text:'Your AAR surfaces two lessons: one is specific and actionable (a particular handoff between PDT members that failed), the other is vague ("communication could have been better"). How should you document them?',
+   opts:['Document both as written -- the AAR is a record of what the team identified, not an editorial process','Document the specific lesson with the situation, root cause, and a recommended process change. Reframe the vague lesson into a specific, actionable finding or leave it out -- a vague lesson cannot be acted on','Combine both into a single narrative summary at the end of the AAR','Route both lessons to the DPM for validation before documenting them'],
+   correct:1}
+];
+
+var QUESTION_INDICES = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+var answers = {};
+var currentQ = 0;
+var learnerName = '';
+var cohortCode = '';
+var sessionId = '';
+var testType = 'post';
+var attempt = 2;
+
+// Restore progress if available
+(function(){
+  try{
+    var raw=sessionStorage.getItem(SAVE_KEY);
+    if(!raw)return;
+    var s=JSON.parse(raw);
+    if(s.learnerName&&s.cohortCode){
+      answers=s.answers||{};
+      currentQ=s.currentQ||0;
+      learnerName=s.learnerName;
+      cohortCode=s.cohortCode;
+      sessionId=s.sessionId||genUUID();
+      document.getElementById('gate-screen').style.display='none';
+      document.getElementById('test-screen').style.display='block';
+      renderQuestion();
+    }
+  }catch(e){}
+})();
+
+// Pre-fill from profile
+(function(){
+  var p=getProfile();
+  if(p&&p.name){var el=document.getElementById('gate-name');if(el)el.value=p.name;}
+})();
+
+async function unlockTest(){
+  var nameEl=document.getElementById('gate-name');
+  var pwEl=document.getElementById('gate-password');
+  var errEl=document.getElementById('gate-err');
+  var name=nameEl.value.trim();
+  var pw=pwEl.value.trim();
+  errEl.textContent='';
+  if(!name){errEl.textContent='Please enter your name.';return;}
+  if(!pw){errEl.textContent='Please enter the cohort password.';return;}
+  var btn=document.querySelector('.gate-btn');
+  btn.textContent='Verifying...';btn.disabled=true;
+  try{
+    var res=await fetch(SB_URL+'/rest/v1/cohort_passwords?active=eq.true&select=cohort_code,password_hash',{
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    var rows=await res.json();
+    var match=rows.find(function(r){return r.password_hash===pw;});
+    if(!match){errEl.textContent='Password not recognized. Check with your instructor.';btn.textContent='Begin Retake';btn.disabled=false;return;}
+    learnerName=name;
+    cohortCode=match.cohort_code;
+    sessionId=genUUID();
+    document.getElementById('gate-screen').style.display='none';
+    document.getElementById('test-screen').style.display='block';
+    saveProgress();
+    renderQuestion();
+  }catch(e){
+    errEl.textContent='Could not verify password. Check your connection.';
+    btn.textContent='Begin Retake';btn.disabled=false;
+  }
+}
+
+function renderQuestion(){
+  var qi=QUESTION_INDICES[currentQ];
+  var q=ALL_QUESTIONS[qi];
+  var total=QUESTION_INDICES.length;
+  var pct=Math.round((currentQ/total)*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-label').textContent='Question '+(currentQ+1)+' of '+total;
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('btn-back').disabled=(currentQ===0);
+  document.getElementById('btn-next').textContent=(currentQ===total-1)?'Submit':'Next';
+
+  var letters=['A','B','C','D'];
+  var html='<div class="q-num">QUESTION '+(currentQ+1)+' OF '+total+'</div>';
+  html+='<div class="q-tag">'+(q.tag==='D'?'Doctrine':'Judgment')+'</div>';
+  html+='<div class="q-text">'+q.text+'</div>';
+  q.opts.forEach(function(opt,i){
+    var sel=(answers[currentQ]===i)?'selected':'';
+    html+='<button class="answer-option '+sel+'" onclick="selectAnswer('+i+')"><span class="opt-letter">'+letters[i]+'.</span>'+opt+'</button>';
+  });
+  document.getElementById('question-area').innerHTML=html;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function selectAnswer(idx){
+  answers[currentQ]=idx;
+  saveProgress();
+  document.querySelectorAll('.answer-option').forEach(function(el,i){
+    el.classList.toggle('selected',i===idx);
+  });
+}
+
+function goNext(){
+  var area=document.getElementById('question-area');
+  if(answers[currentQ]===undefined){
+    var msg=area.querySelector('.unanswered-warn');
+    if(!msg){msg=document.createElement('div');msg.className='unanswered-warn';msg.style.cssText='font-family:DM Mono,monospace;font-size:.6rem;color:var(--warn);letter-spacing:.05em;margin-top:8px;';msg.textContent='Please select an answer before continuing.';area.appendChild(msg);}
+    return;
+  }
+  if(currentQ<QUESTION_INDICES.length-1){currentQ++;saveProgress();renderQuestion();}
+  else{submitTest();}
+}
+
+function goBack(){if(currentQ>0){currentQ--;saveProgress();renderQuestion();}}
+
+function submitTest(){
+  clearProgress();
+  document.getElementById('test-screen').style.display='none';
+  document.getElementById('complete-screen').style.display='block';
+
+  var responses=[];
+  QUESTION_INDICES.forEach(function(qi,pos){
+    var q=ALL_QUESTIONS[qi];
+    var ans=answers[pos];
+    var entry={question_index:qi,tag:q.tag,type:'mc',answer:ans!==undefined?ans:null,correct:(ans===q.correct)?1:0};
+    responses.push(entry);
+  });
+
+  var dItems=responses.filter(function(r){return r.tag==='D';});
+  var dCorrect=dItems.reduce(function(s,r){return s+(r.correct||0);},0);
+  var dScore=dItems.length?dCorrect/dItems.length:null;
+
+  var jItems=responses.filter(function(r){return r.tag==='J';});
+  var jCorrect=jItems.reduce(function(s,r){return s+(r.correct||0);},0);
+  var jScore=jItems.length?jCorrect/jItems.length:null;
+
+  var totalScored=responses.length;
+  var totalCorrect=dCorrect+jCorrect;
+  var overallPct=totalScored?Math.round(totalCorrect/totalScored*100):null;
+
+  // Show score card
+  var scoreHtml='';
+  if(overallPct!==null)scoreHtml+='<div class="score-row"><span class="score-label">Overall</span><span class="score-val">'+overallPct+'% ('+totalCorrect+' of '+totalScored+')</span></div>';
+  if(dScore!==null)scoreHtml+='<div class="score-row"><span class="score-label">Doctrine</span><span class="score-val">'+Math.round(dScore*100)+'% ('+dCorrect+' of '+dItems.length+')</span></div>';
+  if(jScore!==null)scoreHtml+='<div class="score-row"><span class="score-label">Judgment</span><span class="score-val">'+Math.round(jScore*100)+'% ('+jCorrect+' of '+jItems.length+')</span></div>';
+  if(scoreHtml){document.getElementById('score-display').innerHTML=scoreHtml;}
+  else{document.getElementById('score-display').style.display='none';}
+
+  var payload={
+    test_type:testType,
+    learner_name:learnerName,
+    session_id:sessionId,
+    cohort_code:cohortCode,
+    responses:responses,
+    doctrine_score:dScore,
+    judgment_score:jScore,
+    overall_score:overallPct,
+    attempt:attempt,
+    se_mean:null,
+    submitted_at:new Date().toISOString()
+  };
+
+  fetch(SB_URL+'/rest/v1/pre_post_test',{
+    method:'POST',
+    headers:{
+      'apikey':SB_KEY,
+      'Authorization':'Bearer '+SB_KEY,
+      'Content-Type':'application/json',
+      'Prefer':'return=minimal'
+    },
+    body:JSON.stringify(payload)
+  }).catch(function(){});
+}
+</script>
+</body>
+</html>
