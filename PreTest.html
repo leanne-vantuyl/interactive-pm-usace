@@ -193,8 +193,8 @@ function genUUID(){return'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
 
 // ===== QUESTION BANK =====
 // Tags: D=Doctrine, J=Judgment, SE=Self-Efficacy
-// SHARED: questions 0-14 appear on both Pre and Post (index 0-14)
-// PRE-ONLY: questions 15-19
+// SHARED: questions 0-13 appear on both Pre and Post (index 0-13)
+// PRE-ONLY: questions 14-19
 var ALL_QUESTIONS = [
   // === SHARED CORE (0-14) ===
   // --- DOCTRINE ---
@@ -236,14 +236,14 @@ var ALL_QUESTIONS = [
    opts:['Flag it immediately to leadership -- any SPI below 1.0 requires escalation','Wait one more reporting cycle to see if the variance self-corrects','Recalculate the SPI using only the last 30 days of data to smooth the variance','Verify that the schedule was recently updated and that percent-complete figures are current'],
    correct:3},
   // --- SELF-EFFICACY ---
-  {tag:'SE',text:'How confident are you in your ability to facilitate a productive PDT meeting when two team members are in conflict?',
-   type:'scale',low:'Not at all confident',high:'Completely confident'},
   {tag:'SE',text:'How confident are you in your ability to write a clear, accurate scope change request for a late-stage design modification?',
    type:'scale',low:'Not at all confident',high:'Completely confident'},
   {tag:'SE',text:'How confident are you in your ability to advise a sponsor on when a scope addition requires a formal contract modification versus a minor adjustment?',
    type:'scale',low:'Not at all confident',high:'Completely confident'},
 
-  // === PRE-ONLY (15-19) ===
+  // === PRE-ONLY (14-19) ===
+  {tag:'SE',text:'How confident are you in your ability to facilitate a productive PDT meeting when two team members are in conflict?',
+   type:'scale',low:'Not at all confident',high:'Completely confident'},
   {tag:'D',text:'Before this training, how would you describe your familiarity with the PROC2020 Project Delivery Business Process?',
    opts:['I have never heard of it','I know the name but could not describe its requirements','I am familiar with its key requirements','I apply it regularly in my work'],
    correct:null}, // no correct answer -- baseline only
