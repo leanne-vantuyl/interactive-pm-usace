@@ -193,10 +193,10 @@ function genUUID(){return'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
 
 // ===== QUESTION BANK =====
 // Tags: D=Doctrine, J=Judgment, SE=Self-Efficacy
-// SHARED: questions 0-13 appear on both Pre and Post (index 0-13)
-// PRE-ONLY: questions 14-19
+// SHARED: scored knowledge questions 0-11 appear on both Pre and Post (index 0-11)
+// PRE-ONLY: SE scales and baseline surveys 12-19 (not scored, not compared to post)
 var ALL_QUESTIONS = [
-  // === SHARED CORE (0-14) ===
+  // === SHARED CORE (0-11) — Doctrine + Judgment, all have a correct answer ===
   // --- DOCTRINE ---
   {tag:'D',text:'Under PROC2020, who must be named in the PDT Charter before the project advances past the feasibility phase?',
    opts:['All PDT members by name, with decision authority documented','General role titles are sufficient at that stage','Only the PM and Deputy PM','Whoever PROMIS generates automatically'],
@@ -235,13 +235,12 @@ var ALL_QUESTIONS = [
   {tag:'J',text:'Your monthly EVM report shows an SPI of 0.78 and a CPI of 1.04. Before escalating, your first step is:',
    opts:['Flag it immediately to leadership -- any SPI below 1.0 requires escalation','Wait one more reporting cycle to see if the variance self-corrects','Recalculate the SPI using only the last 30 days of data to smooth the variance','Verify that the schedule was recently updated and that percent-complete figures are current'],
    correct:3},
-  // --- SELF-EFFICACY ---
+
+  // === PRE-ONLY (12-19) — SE scales and baseline surveys, not scored ===
   {tag:'SE',text:'How confident are you in your ability to write a clear, accurate scope change request for a late-stage design modification?',
    type:'scale',low:'Not at all confident',high:'Completely confident'},
   {tag:'SE',text:'How confident are you in your ability to advise a sponsor on when a scope addition requires a formal contract modification versus a minor adjustment?',
    type:'scale',low:'Not at all confident',high:'Completely confident'},
-
-  // === PRE-ONLY (14-19) ===
   {tag:'SE',text:'How confident are you in your ability to facilitate a productive PDT meeting when two team members are in conflict?',
    type:'scale',low:'Not at all confident',high:'Completely confident'},
   {tag:'D',text:'Before this training, how would you describe your familiarity with the PROC2020 Project Delivery Business Process?',
