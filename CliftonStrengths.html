@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CliftonStrengths Resources | Interactive PM in USACE</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;
+  --army-dark:#1A1F14;--army-mid:#252D1C;--army-green:#3D5229;
+  --white:#F5F2EB;--white-dim:#C8C4B8;--accent:#7BA05B;
+  --danger:#C0392B;--warn:#D4A017;
+  --border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);
+  --sf-blue:#005A8E;--sf-blue-light:#E8F4FB;
+}
+@media(prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-dim:#333333;
+    --gold:#5A4010;--gold-light:#3A2A08;--gold-dim:#5A4010;
+    --border:rgba(90,64,16,0.3);--border-strong:rgba(90,64,16,0.6);
+    --accent:#1A5A10;
+  }
+}
+:root[data-theme="dark"]{
+  --army-dark:#1A1F14;--army-mid:#252D1C;--white:#F5F2EB;--white-dim:#C8C4B8;
+  --gold:#C8A84B;--gold-light:#E2C97E;--gold-dim:#8B7235;
+  --border:rgba(200,168,75,0.2);--border-strong:rgba(200,168,75,0.5);
+  --accent:#7BA05B;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+html.font-l{font-size:18px;}
+html.font-s{font-size:14px;}
+body{background:var(--army-dark);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh;}
+body.light-mode{
+  --army-dark:#FFFFFF;--army-mid:#E8E4D9;--white:#111111;--white-dim:#222222;
+  --gold:#5A4010;--gold-light:#3A2A08;--gold-dim:#5A4010;
+  --border:rgba(90,64,16,0.4);--border-strong:rgba(90,64,16,0.7);
+  --accent:#1A4A10;--warn:#8B3A00;--danger:#7A1A1A;
+}
+
+.wrap{max-width:760px;margin:0 auto;padding:28px 22px 60px;}
+.topbar{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:28px;gap:10px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:12px;}
+.logo-seal{width:38px;height:38px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:0.6875rem;color:var(--gold);flex-shrink:0;}
+.logo-primary{font-family:'DM Serif Display',serif;font-size:0.9375rem;color:var(--white);}
+.logo-sub{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;margin-top:2px;}
+.topbar-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.btn-sm{background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:'DM Mono',monospace;font-size:0.5625rem;padding:7px 12px;cursor:pointer;letter-spacing:.08em;white-space:nowrap;}
+.btn-sm:hover{border-color:var(--border-strong);color:var(--white);}
+.back-link{font-family:'DM Mono',monospace;font-size:0.5625rem;color:var(--gold-dim);text-decoration:none;letter-spacing:.08em;display:inline-flex;align-items:center;gap:5px;margin-bottom:18px;}
+.back-link:hover{color:var(--gold);}
+
+.eyebrow{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.title-main{font-family:'DM Serif Display',serif;font-size:clamp(1.75rem,5vw,2.5rem);line-height:1.18;color:var(--white);margin-bottom:12px;}
+.title-main em{color:var(--gold-light);font-style:italic;}
+.lede{font-size:0.875rem;color:var(--white-dim);line-height:1.75;margin-bottom:30px;max-width:600px;}
+.lede strong{color:var(--white);}
+
+/* Section labels */
+.section-label{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin:32px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+
+/* Resource cards */
+.resource-card{border:1px solid var(--border);padding:0;margin-bottom:12px;overflow:hidden;transition:border-color .15s;}
+.resource-card:hover{border-color:var(--border-strong);}
+.resource-header{display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;user-select:none;}
+.resource-icon{width:36px;height:36px;border:1px solid var(--border-strong);border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold);flex-shrink:0;text-transform:uppercase;letter-spacing:.04em;}
+.resource-body{flex:1;min-width:0;}
+.resource-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--white);margin-bottom:2px;}
+.resource-meta{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;}
+.resource-toggle{font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--gold-dim);flex-shrink:0;transition:transform .2s;}
+.resource-card.open .resource-toggle{transform:rotate(90deg);}
+.resource-actions{display:flex;gap:8px;padding:0 18px 14px 18px;flex-wrap:wrap;}
+.btn-view{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;background:transparent;cursor:pointer;white-space:nowrap;}
+.btn-view:hover{background:var(--gold);color:var(--army-dark);}
+.btn-download{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;border:1px solid var(--border-strong);color:var(--white-dim);text-decoration:none;background:transparent;cursor:pointer;white-space:nowrap;}
+.btn-download:hover{border-color:var(--border-strong);color:var(--white);}
+
+/* PDF viewer pane */
+.pdf-pane{display:none;border-top:1px solid var(--border);background:var(--army-mid);}
+.resource-card.open .pdf-pane{display:block;}
+.pdf-pane iframe{width:100%;height:520px;border:none;display:block;}
+.pdf-pane .pane-note{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.08em;color:var(--gold-dim);padding:8px 18px;text-align:center;}
+
+/* Audio card */
+.audio-card{border:1px solid var(--border);padding:18px;margin-bottom:12px;}
+.audio-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.audio-icon{width:36px;height:36px;border:1px solid var(--border-strong);border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold);flex-shrink:0;text-transform:uppercase;letter-spacing:.04em;}
+.audio-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--white);margin-bottom:2px;}
+.audio-meta{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;}
+audio{width:100%;outline:none;margin-bottom:10px;display:block;}
+audio::-webkit-media-controls-panel{background:var(--army-mid);}
+
+/* PPTX card */
+.pptx-card{border:1px solid var(--border);padding:18px;margin-bottom:12px;}
+.pptx-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.pptx-icon{width:36px;height:36px;border:1px solid rgba(200,168,75,.5);border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold);flex-shrink:0;text-transform:uppercase;letter-spacing:.04em;}
+.pptx-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--white);margin-bottom:2px;}
+.pptx-meta{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;}
+.pptx-note{font-size:0.75rem;color:var(--white-dim);line-height:1.6;margin-bottom:14px;}
+.pptx-actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+/* Context box */
+.context-box{border-left:3px solid var(--gold-dim);padding:14px 18px;margin-bottom:28px;background:rgba(200,168,75,.04);}
+.context-box p{font-size:0.8125rem;line-height:1.75;color:var(--white-dim);}
+.context-box strong{color:var(--white);}
+.context-box p+p{margin-top:8px;}
+
+.footer-note{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-size:0.6875rem;color:var(--white-dim);line-height:1.7;}
+
+@media(max-width:480px){
+  .pdf-pane iframe{height:360px;}
+  .resource-actions,.pptx-actions{flex-direction:column;}
+  .btn-view,.btn-download{text-align:center;}
+}
+</style>
+</head>
+<body class="light-mode" id="body">
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo-seal">USACE</div>
+      <div>
+        <div class="logo-primary">Interactive PM in USACE</div>
+        <div class="logo-sub">PROSPECT 355 &middot; CliftonStrengths Resources</div>
+      </div>
+    </div>
+    <div class="topbar-controls">
+      <button class="btn-sm" onclick="toggleFontSize()" id="font-btn">Text: M</button>
+      <button class="btn-sm" onclick="toggleTheme()" id="theme-btn">Dark Mode</button>
+    </div>
+  </div>
+
+  <a class="back-link" href="index.html">&larr; Back to Course Home</a>
+
+  <p class="eyebrow">Instructor Resource Library</p>
+  <h1 class="title-main">CliftonStrengths<br><em>Field Reference Set</em></h1>
+
+  <div class="context-box">
+    <p><strong>CliftonStrengths runs as a third instructor voice throughout PROSPECT 355.</strong> SF introduces the framework on Day 1 and revisits it at each day&rsquo;s opening Kahoot, connecting the 34 themes to what participants are living inside the Maria Chen case files. These materials support that integration.</p>
+    <p>All resources are from Gallup. PDFs open in-browser and can be downloaded. The team presentation (.pptx) is download-only.</p>
+  </div>
+
+  <div class="section-label">Worksheets &amp; Job Aids</div>
+
+  <!-- Theme Dynamics -->
+  <div class="resource-card" id="card-theme-dynamics">
+    <div class="resource-header" onclick="toggleCard('card-theme-dynamics')">
+      <div class="resource-icon">PDF</div>
+      <div class="resource-body">
+        <div class="resource-title">Theme Dynamics Worksheet</div>
+        <div class="resource-meta">Gallup &middot; 2 pages &middot; Blank + Completed Example</div>
+      </div>
+      <div class="resource-toggle">&rsaquo;</div>
+    </div>
+    <div class="resource-actions">
+      <a class="btn-view" href="#" onclick="openCard('card-theme-dynamics');return false;">View in Browser</a>
+      <a class="btn-download" href="gallup/theme_dynamics.pdf" download="Gallup_Theme_Dynamics_Worksheet.pdf">Download PDF</a>
+    </div>
+    <div class="pdf-pane">
+      <iframe src="gallup/theme_dynamics.pdf" title="Theme Dynamics Worksheet" loading="lazy"></iframe>
+      <div class="pane-note">If the PDF does not display, use the Download button above.</div>
+    </div>
+  </div>
+
+  <!-- Name It Claim It Aim It -->
+  <div class="resource-card" id="card-ncia">
+    <div class="resource-header" onclick="toggleCard('card-ncia')">
+      <div class="resource-icon">PDF</div>
+      <div class="resource-body">
+        <div class="resource-title">Name It, Claim It, Aim It Worksheet</div>
+        <div class="resource-meta">Gallup &middot; Reflection Exercise</div>
+      </div>
+      <div class="resource-toggle">&rsaquo;</div>
+    </div>
+    <div class="resource-actions">
+      <a class="btn-view" href="#" onclick="openCard('card-ncia');return false;">View in Browser</a>
+      <a class="btn-download" href="gallup/Name_It_Claim_It_Aim_It.pdf" download="Gallup_Name_It_Claim_It_Aim_It.pdf">Download PDF</a>
+    </div>
+    <div class="pdf-pane">
+      <iframe src="gallup/Name_It_Claim_It_Aim_It.pdf" title="Name It Claim It Aim It" loading="lazy"></iframe>
+      <div class="pane-note">If the PDF does not display, use the Download button above.</div>
+    </div>
+  </div>
+
+  <!-- Quick Reference Card -->
+  <div class="resource-card" id="card-qrc">
+    <div class="resource-header" onclick="toggleCard('card-qrc')">
+      <div class="resource-icon">PDF</div>
+      <div class="resource-body">
+        <div class="resource-title">CliftonStrengths Quick Reference Card</div>
+        <div class="resource-meta">Gallup &middot; All 34 Themes at a Glance</div>
+      </div>
+      <div class="resource-toggle">&rsaquo;</div>
+    </div>
+    <div class="resource-actions">
+      <a class="btn-view" href="#" onclick="openCard('card-qrc');return false;">View in Browser</a>
+      <a class="btn-download" href="gallup/Quick_Reference_Card.pdf" download="Gallup_CliftonStrengths_Quick_Reference.pdf">Download PDF</a>
+    </div>
+    <div class="pdf-pane">
+      <iframe src="gallup/Quick_Reference_Card.pdf" title="CliftonStrengths Quick Reference Card" loading="lazy"></iframe>
+      <div class="pane-note">If the PDF does not display, use the Download button above.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Visual References</div>
+
+  <!-- Themes Map -->
+  <div class="resource-card" id="card-themes-map">
+    <div class="resource-header" onclick="toggleCard('card-themes-map')">
+      <div class="resource-icon">PDF</div>
+      <div class="resource-body">
+        <div class="resource-title">Themes Map</div>
+        <div class="resource-meta">Gallup &middot; Domain Overview &middot; Wall Reference</div>
+      </div>
+      <div class="resource-toggle">&rsaquo;</div>
+    </div>
+    <div class="resource-actions">
+      <a class="btn-view" href="#" onclick="openCard('card-themes-map');return false;">View in Browser</a>
+      <a class="btn-download" href="gallup/Themes_Map.pdf" download="Gallup_Themes_Map.pdf">Download PDF</a>
+    </div>
+    <div class="pdf-pane">
+      <iframe src="gallup/Themes_Map.pdf" title="Themes Map" loading="lazy"></iframe>
+      <div class="pane-note">If the PDF does not display, use the Download button above.</div>
+    </div>
+  </div>
+
+  <!-- Strengths Wheel -->
+  <div class="resource-card" id="card-wheel">
+    <div class="resource-header" onclick="toggleCard('card-wheel')">
+      <div class="resource-icon">PDF</div>
+      <div class="resource-body">
+        <div class="resource-title">The Strengths Wheel</div>
+        <div class="resource-meta">Gallup &middot; Circular Domain Visual</div>
+      </div>
+      <div class="resource-toggle">&rsaquo;</div>
+    </div>
+    <div class="resource-actions">
+      <a class="btn-view" href="#" onclick="openCard('card-wheel');return false;">View in Browser</a>
+      <a class="btn-download" href="gallup/Strengths_Wheel.pdf" download="Gallup_Strengths_Wheel.pdf">Download PDF</a>
+    </div>
+    <div class="pdf-pane">
+      <iframe src="gallup/Strengths_Wheel.pdf" title="The Strengths Wheel" loading="lazy"></iframe>
+      <div class="pane-note">If the PDF does not display, use the Download button above.</div>
+    </div>
+  </div>
+
+  <!-- Talents in Action Cards -->
+  <div class="resource-card" id="card-tiac">
+    <div class="resource-header" onclick="toggleCard('card-tiac')">
+      <div class="resource-icon">PDF</div>
+      <div class="resource-body">
+        <div class="resource-title">Talents in Action Cards</div>
+        <div class="resource-meta">Gallup &middot; Print &amp; Cut &middot; Activity Support</div>
+      </div>
+      <div class="resource-toggle">&rsaquo;</div>
+    </div>
+    <div class="resource-actions">
+      <a class="btn-view" href="#" onclick="openCard('card-tiac');return false;">View in Browser</a>
+      <a class="btn-download" href="gallup/Talents_in_Action_Cards.pdf" download="Gallup_Talents_in_Action_Cards.pdf">Download PDF</a>
+    </div>
+    <div class="pdf-pane">
+      <iframe src="gallup/Talents_in_Action_Cards.pdf" title="Talents in Action Cards" loading="lazy"></iframe>
+      <div class="pane-note">If the PDF does not display, use the Download button above.</div>
+    </div>
+  </div>
+
+  <!-- Unleash Your Talents -->
+  <div class="resource-card" id="card-unleash">
+    <div class="resource-header" onclick="toggleCard('card-unleash')">
+      <div class="resource-icon">PDF</div>
+      <div class="resource-body">
+        <div class="resource-title">Unleash Your Talents</div>
+        <div class="resource-meta">Gallup &middot; Poster / Discussion Guide</div>
+      </div>
+      <div class="resource-toggle">&rsaquo;</div>
+    </div>
+    <div class="resource-actions">
+      <a class="btn-view" href="#" onclick="openCard('card-unleash');return false;">View in Browser</a>
+      <a class="btn-download" href="gallup/Unleash_Your_Talents.pdf" download="Gallup_Unleash_Your_Talents.pdf">Download PDF</a>
+    </div>
+    <div class="pdf-pane">
+      <iframe src="gallup/Unleash_Your_Talents.pdf" title="Unleash Your Talents" loading="lazy"></iframe>
+      <div class="pane-note">If the PDF does not display, use the Download button above.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Audio</div>
+
+  <div class="audio-card">
+    <div class="audio-header">
+      <div class="audio-icon">M4A</div>
+      <div>
+        <div class="audio-title">Turn Your Quirks Into Strengths</div>
+        <div class="audio-meta">Audio &middot; Supplemental Listening</div>
+      </div>
+    </div>
+    <audio controls preload="metadata">
+      <source src="gallup/Turn_Your_Quirks_Into_Strengths.m4a" type="audio/mp4">
+      Your browser does not support the audio element. <a href="gallup/Turn_Your_Quirks_Into_Strengths.m4a">Download the audio file</a>.
+    </audio>
+    <a class="btn-download" href="gallup/Turn_Your_Quirks_Into_Strengths.m4a" download="Turn_Your_Quirks_Into_Strengths.m4a">Download Audio</a>
+  </div>
+
+  <div class="section-label">Team Presentation</div>
+
+  <div class="pptx-card">
+    <div class="pptx-header">
+      <div class="pptx-icon">PPTX</div>
+      <div>
+        <div class="pptx-title">CliftonStrengths Team Presentation</div>
+        <div class="pptx-meta">Gallup &middot; 33 Slides &middot; PowerPoint</div>
+      </div>
+    </div>
+    <p class="pptx-note">The full Gallup CliftonStrengths team facilitation deck. Download to open in PowerPoint or Google Slides. This file is too large to preview in-browser.</p>
+    <div class="pptx-actions">
+      <a class="btn-view" href="gallup/CliftonStrengths_Team_Presentation.pptx" download="Gallup_CliftonStrengths_Team_Presentation.pptx">Download PPTX</a>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    All materials are Gallup proprietary resources, provided here for PROSPECT 355 instructor use. &copy; Gallup, Inc. All rights reserved.
+  </div>
+
+</div>
+
+<script>
+// Theme
+(function(){
+  var stored;
+  try{stored=localStorage.getItem('pmTheme');}catch(e){}
+  var body=document.getElementById('body');
+  var btn=document.getElementById('theme-btn');
+  if(stored==='dark'){body.classList.remove('light-mode');if(btn)btn.textContent='Light Mode';}
+  else{body.classList.add('light-mode');if(btn)btn.textContent='Dark Mode';}
+})();
+function toggleTheme(){
+  var body=document.getElementById('body');
+  var btn=document.getElementById('theme-btn');
+  var isDark=!body.classList.contains('light-mode');
+  if(isDark){body.classList.add('light-mode');btn.textContent='Dark Mode';try{localStorage.setItem('pmTheme','light');}catch(e){}}
+  else{body.classList.remove('light-mode');btn.textContent='Light Mode';try{localStorage.setItem('pmTheme','dark');}catch(e){}}
+}
+
+// Font size
+(function(){
+  var stored;
+  try{stored=localStorage.getItem('pmFont');}catch(e){}
+  var html=document.documentElement;
+  var btn=document.getElementById('font-btn');
+  if(stored==='l'){html.classList.add('font-l');if(btn)btn.textContent='Text: L';}
+  else if(stored==='s'){html.classList.add('font-s');if(btn)btn.textContent='Text: S';}
+  else{if(btn)btn.textContent='Text: M';}
+})();
+function toggleFontSize(){
+  var html=document.documentElement;
+  var btn=document.getElementById('font-btn');
+  var stored;try{stored=localStorage.getItem('pmFont');}catch(e){}
+  if(!stored||stored==='m'){html.classList.remove('font-s');html.classList.add('font-l');btn.textContent='Text: L';try{localStorage.setItem('pmFont','l');}catch(e){}}
+  else if(stored==='l'){html.classList.remove('font-l');html.classList.add('font-s');btn.textContent='Text: S';try{localStorage.setItem('pmFont','s');}catch(e){}}
+  else{html.classList.remove('font-s');btn.textContent='Text: M';try{localStorage.setItem('pmFont','m');}catch(e){}}
+}
+
+// Card toggle: open PDF pane
+function toggleCard(id){
+  var card=document.getElementById(id);
+  if(!card)return;
+  card.classList.toggle('open');
+}
+function openCard(id){
+  var card=document.getElementById(id);
+  if(!card)return;
+  card.classList.add('open');
+  card.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+</script>
+</body>
+</html>
