@@ -107,8 +107,8 @@ footer{margin-top:auto;padding:16px 28px;border-top:1px solid var(--border);disp
       <button class="path-btn" id="btn-selfpaced" onclick="setPath('selfpaced')">Self-Paced Learner</button>
     </div>
 
-    <div id="note-prospect" class="path-note">Your instructor will provide a cohort code. Enter it below so your responses are linked to your class section and your instructor can build learning groups before Day 1.</div>
-    <div id="note-selfpaced" class="path-note" style="display:none;">No cohort code needed. Complete the course at your own pace as a refresher or independent study.</div>
+    <div id="note-prospect" class="path-note">Your instructor will provide a cohort code. Enter it below so your responses are linked to your class section and your instructor can build learning groups before Day 1. <strong>Your Gallup CliftonStrengths results are required</strong> -- you must have completed the assessment before registering. If you have not yet taken the assessment, contact your instructor.</div>
+    <div id="note-selfpaced" class="path-note" style="display:none;">No cohort code needed. Complete the course at your own pace as a refresher or independent study. CliftonStrengths results are optional on this pathway -- select N/A if you do not have them.</div>
 
     <div class="field-group" id="cohort-field">
       <label class="field-label">Cohort Code <span class="required-mark">*</span></label>
@@ -121,8 +121,8 @@ footer{margin-top:auto;padding:16px 28px;border-top:1px solid var(--border);disp
     </div>
 
     <div class="field-group">
-      <label class="field-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>
-      <p class="theme-hint" style="margin-bottom:10px;">Enter them in ranked order as they appear on your Gallup results report -- your #1 theme first. Select N/A if you do not have your results.</p>
+      <label class="field-label" id="strengths-label">Your Top 5 CliftonStrengths <span class="required-mark">*</span></label>
+      <p class="theme-hint" id="strengths-hint" style="margin-bottom:10px;">Enter them in ranked order as they appear on your Gallup results report -- your #1 theme first. All five are required to complete registration.</p>
       <div class="theme-grid" id="theme-grid"></div>
       <p class="theme-hint">Your top theme is used to personalize reflections throughout the course. All five are used to build balanced learning groups.</p>
     </div>
@@ -155,20 +155,25 @@ var THEME_DOMAIN={
   'Deliberative':'Executing','Discipline':'Executing','Focus':'Executing','Responsibility':'Executing','Restorative':'Executing'
 };
 
-var THEME_OPTIONS_HTML='<option value="">-- Select --</option><option value="N/A">N/A / Not sure</option>'
-  +'<optgroup label="Strategic Thinking"><option>Analytical</option><option>Context</option><option>Futuristic</option><option>Ideation</option><option>Input</option><option>Intellection</option><option>Learner</option><option>Strategic</option></optgroup>'
+var THEME_OPTS_BASE='<optgroup label="Strategic Thinking"><option>Analytical</option><option>Context</option><option>Futuristic</option><option>Ideation</option><option>Input</option><option>Intellection</option><option>Learner</option><option>Strategic</option></optgroup>'
   +'<optgroup label="Relationship Building"><option>Adaptability</option><option>Connectedness</option><option>Developer</option><option>Empathy</option><option>Harmony</option><option>Includer</option><option>Individualization</option><option>Positivity</option><option>Relator</option></optgroup>'
   +'<optgroup label="Influencing"><option>Activator</option><option>Command</option><option>Communication</option><option>Competition</option><option>Maximizer</option><option>Self-Assurance</option><option>Significance</option><option>Woo</option></optgroup>'
   +'<optgroup label="Executing"><option>Achiever</option><option>Arranger</option><option>Belief</option><option>Consistency</option><option>Deliberative</option><option>Discipline</option><option>Focus</option><option>Responsibility</option><option>Restorative</option></optgroup>';
 
+// PROSPECT path: no N/A option -- results are required
+var THEME_OPTIONS_PROSPECT='<option value="">-- Select Theme --</option>'+THEME_OPTS_BASE;
+// Self-paced path: N/A allowed
+var THEME_OPTIONS_SELFPACED='<option value="">-- Select --</option><option value="N/A">N/A / Not sure</option>'+THEME_OPTS_BASE;
+
 var ordinals=['1st','2nd','3rd','4th','5th'];
 var currentPath='prospect';
 
-function buildThemeGrid(){
+function buildThemeGrid(path){
+  var opts=path==='selfpaced'?THEME_OPTIONS_SELFPACED:THEME_OPTIONS_PROSPECT;
   var html='';
   for(var i=1;i<=5;i++){
-    html+='<div class="theme-item"><label>'+ordinals[i-1]+' Theme'+(i===1?' <span class="required-mark">*</span>':'')+'</label>'
-      +'<select class="theme-select" id="theme-'+i+'">'+THEME_OPTIONS_HTML+'</select></div>';
+    html+='<div class="theme-item"><label>'+ordinals[i-1]+' Theme <span class="required-mark">*</span></label>'
+      +'<select class="theme-select" id="theme-'+i+'">'+opts+'</select></div>';
   }
   document.getElementById('theme-grid').innerHTML=html;
 }
@@ -180,6 +185,17 @@ function setPath(path){
   document.getElementById('note-prospect').style.display=path==='prospect'?'':'none';
   document.getElementById('note-selfpaced').style.display=path==='selfpaced'?'':'none';
   document.getElementById('cohort-field').style.display=path==='prospect'?'':'none';
+  // Update hint text
+  var hint=document.getElementById('strengths-hint');
+  var lbl=document.getElementById('strengths-label');
+  if(path==='prospect'){
+    hint.textContent='Enter them in ranked order as they appear on your Gallup results report -- your #1 theme first. All five are required to complete registration.';
+    lbl.innerHTML='Your Top 5 CliftonStrengths <span class="required-mark">*</span>';
+  } else {
+    hint.textContent='Enter them in ranked order as they appear on your Gallup results report. Select N/A if you do not have your results.';
+    lbl.innerHTML='Your Top 5 CliftonStrengths';
+  }
+  buildThemeGrid(path);
 }
 
 function getProfile(){
@@ -208,13 +224,26 @@ function submitReg(){
 
   if(!name){showStatus('Please enter your name.','error');return;}
   if(currentPath==='prospect'&&!cohortCode){showStatus('Please enter your cohort code.','error');return;}
-  if(!t1){showStatus('Please select at least your #1 CliftonStrengths theme, or N/A.','error');return;}
 
   var themes=[];
   for(var i=1;i<=5;i++){
     var v=document.getElementById('theme-'+i).value;
-    if(v&&v!=='')themes.push(v);
+    themes.push(v||'');
   }
+
+  if(currentPath==='prospect'){
+    // All 5 required -- N/A is not an option on this path
+    var missing=themes.filter(function(t){return !t;});
+    if(missing.length>0){
+      showStatus('Please select all five CliftonStrengths themes. Your Gallup results are required to complete PROSPECT 355 registration.','error');
+      return;
+    }
+  } else {
+    // Self-paced: at least theme 1 required (may be N/A)
+    if(!themes[0]){showStatus('Please select at least your #1 CliftonStrengths theme, or N/A.','error');return;}
+  }
+
+  themes=themes.filter(function(t){return t;});
   if(themes.length===0)themes=['N/A'];
 
   var p=saveProfile({name:name,themes:themes,cohortCode:cohortCode,registeredAs:currentPath});
@@ -259,7 +288,7 @@ function toggleTheme(){
   else{btn.innerHTML='&#9788; Light';try{localStorage.setItem('pm-course-theme','dark');}catch(e){}}
 }
 
-buildThemeGrid();
+buildThemeGrid('prospect');
 
 // Pre-fill if already registered
 (function(){
@@ -268,9 +297,9 @@ buildThemeGrid();
     document.getElementById('name-input').value=p.name;
     if(p.cohortCode&&p.cohortCode!=='SELF-PACED'){
       document.getElementById('cohort-input').value=p.cohortCode;
-      setPath('prospect');
+      setPath('prospect'); // also rebuilds grid
     } else if(p.cohortCode==='SELF-PACED'){
-      setPath('selfpaced');
+      setPath('selfpaced'); // also rebuilds grid
     }
     if(p.themes&&p.themes.length){
       p.themes.forEach(function(t,i){
