@@ -1,0 +1,1432 @@
+<title>SF Facilitator Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* ============================================================
+   PROSPECT 355 -- Strengths Facilitator Case File Closing Guide
+   Palette: deep purple + heritage gold + soft neutrals
+   ============================================================ */
+:root {
+  --purple:    #5B2D8E;
+  --purple-mid:#7B52AE;
+  --purple-lt: #9E7ACE;
+  --gold:      #C8A84B;
+  --gold-lt:   #E8D080;
+  --cream:     #F7F4FB;
+  --warm-bg:   #FDFAFF;
+  --fg:        #1A1428;
+  --fg-mid:    #3E3058;
+  --fg-dim:    #7066A0;
+  --rule:      #D4CCE8;
+  --tag-bg:    #F0EAFB;
+  --tag-fg:    #5B2D8E;
+  --debrief-bg:#EAF4F4;
+  --debrief-border:#4A9E9E;
+  --bridge-bg: #FFF8E1;
+  --bridge-border:#C8A84B;
+  --warn-bg:   #FFF3E0;
+  --warn-border:#D06020;
+  --divider:   #E0D8F0;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --purple:    #9E7ACE;
+    --purple-mid:#B89ADE;
+    --purple-lt: #CBBCEE;
+    --gold:      #D4B460;
+    --gold-lt:   #E8CC80;
+    --cream:     #1A1428;
+    --warm-bg:   #150E22;
+    --fg:        #EDE8FF;
+    --fg-mid:    #C0B8E0;
+    --fg-dim:    #8880B8;
+    --rule:      #362850;
+    --tag-bg:    #201635;
+    --tag-fg:    #C0A0F0;
+    --debrief-bg:#0E2828;
+    --debrief-border:#4A9E9E;
+    --bridge-bg: #2A2208;
+    --bridge-border:#C8A84B;
+    --warn-bg:   #221508;
+    --warn-border:#D06020;
+    --divider:   #2A2040;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --purple:    #9E7ACE;
+  --purple-mid:#B89ADE;
+  --purple-lt: #CBBCEE;
+  --gold:      #D4B460;
+  --gold-lt:   #E8CC80;
+  --cream:     #1A1428;
+  --warm-bg:   #150E22;
+  --fg:        #EDE8FF;
+  --fg-mid:    #C0B8E0;
+  --fg-dim:    #8880B8;
+  --rule:      #362850;
+  --tag-bg:    #201635;
+  --tag-fg:    #C0A0F0;
+  --debrief-bg:#0E2828;
+  --debrief-border:#4A9E9E;
+  --bridge-bg: #2A2208;
+  --bridge-border:#C8A84B;
+  --warn-bg:   #221508;
+  --warn-border:#D06020;
+  --divider:   #2A2040;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--fg);
+  background: var(--warm-bg);
+  padding-left: max(0px, env(safe-area-inset-left, 0px));
+  padding-right: max(0px, env(safe-area-inset-right, 0px));
+}
+
+.page-header {
+  background: var(--purple);
+  color: #fff;
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 100;
+  border-bottom: 3px solid var(--gold);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--purple);
+  z-index: 101;
+}
+.page-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-block: 10px;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+  flex-wrap: wrap;
+}
+.header-badge {
+  background: var(--gold);
+  color: #1A1428;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.header-title {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #fff;
+  flex: 1;
+  min-width: 0;
+  text-wrap: balance;
+}
+.header-meta { font-size: 12px; color: rgba(255,255,255,.6); white-space: nowrap; }
+
+.shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: calc(100vh - 60px);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+@media (max-width: 720px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+}
+
+.sidebar {
+  background: var(--cream);
+  border-right: 1px solid var(--divider);
+  padding: 24px 0 40px;
+  position: sticky;
+  top: calc(env(safe-area-inset-top, 0px) + 46px);
+  height: calc(100vh - 46px - env(safe-area-inset-top, 0px));
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  padding: 16px 20px 6px;
+}
+.nav-link {
+  display: block;
+  padding: 6px 20px 6px 24px;
+  font-size: 12px;
+  color: var(--fg-mid);
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.nav-link:hover {
+  color: var(--purple);
+  background: rgba(91,45,142,.06);
+  border-left-color: var(--gold);
+}
+.nav-link.active {
+  color: var(--purple);
+  font-weight: 600;
+  border-left-color: var(--gold);
+  background: rgba(91,45,142,.08);
+}
+.nav-link .cf-num {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  background: var(--purple);
+  color: #fff;
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-right: 6px;
+  vertical-align: 1px;
+}
+.nav-link .fusion-badge {
+  background: var(--gold);
+  color: #1A1428;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-left: 4px;
+  vertical-align: 1px;
+}
+
+.main {
+  padding: 40px 48px 80px;
+  min-width: 0;
+}
+@media (max-width: 860px) { .main { padding: 24px 20px 60px; } }
+
+.section {
+  margin-bottom: 48px;
+  scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 56px);
+}
+
+/* CF Card */
+.cf-card {
+  background: var(--warm-bg);
+  border: 1px solid var(--divider);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+.cf-header {
+  background: var(--purple);
+  color: #fff;
+  padding: 14px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.cf-num-badge {
+  background: var(--gold);
+  color: #1A1428;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  padding: 3px 9px;
+  border-radius: 3px;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+.cf-title-block {}
+.cf-title {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+  text-wrap: balance;
+}
+.cf-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.cf-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: rgba(255,255,255,.15);
+  color: rgba(255,255,255,.9);
+}
+.cf-tag.fusion {
+  background: var(--gold);
+  color: #1A1428;
+}
+
+/* Scenario strip */
+.scenario-strip {
+  background: var(--tag-bg);
+  border-bottom: 1px solid var(--divider);
+  padding: 10px 20px;
+  font-size: 13px;
+  color: var(--fg-mid);
+  font-style: italic;
+}
+.scenario-strip strong { font-style: normal; color: var(--fg); }
+
+/* Body: debrief + bridge */
+.cf-body {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 700px) { .cf-body { grid-template-columns: 1fr; } }
+
+.debrief-block {
+  background: var(--debrief-bg);
+  border: 1px solid var(--debrief-border);
+  border-radius: 6px;
+  padding: 14px 16px;
+}
+.debrief-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--debrief-border);
+  margin-bottom: 10px;
+}
+.theme-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(74,158,158,.2);
+  font-size: 13px;
+}
+.theme-row:last-child { border-bottom: none; }
+.theme-name {
+  font-weight: 700;
+  color: var(--debrief-border);
+  min-width: 110px;
+  flex-shrink: 0;
+}
+.theme-insight { color: var(--fg-mid); line-height: 1.5; }
+
+.prompt-block {
+  margin-top: 12px;
+  font-size: 13px;
+}
+.prompt-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 6px;
+}
+.prompt-text {
+  background: rgba(255,255,255,.5);
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  padding: 10px 12px;
+  font-style: italic;
+  color: var(--fg-mid);
+  font-size: 13px;
+  position: relative;
+  padding-left: 32px;
+}
+.prompt-text::before {
+  content: "\201C";
+  position: absolute;
+  left: 10px;
+  top: 6px;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 22px;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.bridge-block {
+  background: var(--bridge-bg);
+  border: 1px solid var(--bridge-border);
+  border-radius: 6px;
+  padding: 14px 16px;
+}
+.bridge-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--bridge-border);
+  margin-bottom: 10px;
+}
+.bridge-content {
+  font-size: 13px;
+  color: var(--fg-mid);
+  line-height: 1.6;
+}
+.bridge-content strong { color: var(--fg); }
+
+.timing-row {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--divider);
+  overflow-x: auto;
+}
+.timing-cell {
+  flex: 1;
+  min-width: 70px;
+  padding: 8px 12px;
+  border-right: 1px solid var(--divider);
+  text-align: center;
+}
+.timing-cell:last-child { border-right: none; }
+.timing-min {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--purple);
+  font-variant-numeric: tabular-nums;
+  display: block;
+  line-height: 1.1;
+}
+.timing-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-top: 2px;
+}
+
+/* Section heading */
+h2.section-heading {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--purple);
+  margin: 0 0 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--gold);
+  text-wrap: balance;
+}
+
+.block-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 8px;
+}
+.block-content {
+  font-size: 14px;
+  color: var(--fg-mid);
+  line-height: 1.65;
+}
+.block-content ul { margin: 0; padding-left: 18px; }
+.block-content li { margin-bottom: 5px; }
+.block-content strong { color: var(--fg); font-weight: 600; }
+
+.callout {
+  border-left: 4px solid var(--gold);
+  background: var(--bridge-bg);
+  padding: 10px 14px;
+  border-radius: 0 5px 5px 0;
+  margin: 12px 0;
+  font-size: 13px;
+  color: var(--fg-mid);
+}
+.callout.warn { border-left-color: var(--warn-border); background: var(--warn-bg); }
+.callout-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 3px;
+}
+.callout.warn .callout-label { color: var(--warn-border); }
+
+/* Intro band */
+.intro-band {
+  background: linear-gradient(135deg, #2A0E50 0%, #5B2D8E 60%, #7B52AE 100%);
+  color: #fff;
+  padding: 40px 48px;
+}
+@media (max-width: 860px) { .intro-band { padding: 28px 20px; } }
+.intro-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-lt); margin-bottom: 10px; }
+.intro-name { font-family: 'Source Serif 4', Georgia, serif; font-size: 28px; font-weight: 700; color: #fff; margin: 0 0 8px; text-wrap: balance; }
+.intro-role { font-size: 14px; color: rgba(255,255,255,.75); margin-bottom: 24px; }
+.intro-stats { display: flex; flex-wrap: wrap; gap: 32px; border-top: 1px solid rgba(255,255,255,.2); padding-top: 20px; }
+.intro-stat-num { font-size: 28px; font-weight: 700; color: var(--gold-lt); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.intro-stat-label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.55); margin-top: 2px; }
+
+/* Fusion solo banner */
+.fusion-banner {
+  background: linear-gradient(90deg, var(--purple) 0%, var(--purple-mid) 100%);
+  color: #fff;
+  border-radius: 6px;
+  padding: 12px 18px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.fusion-banner-badge {
+  background: var(--gold);
+  color: #1A1428;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.ref-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ref-table th { background: var(--purple); color: #fff; padding: 8px 12px; text-align: left; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; font-weight: 600; }
+.ref-table td { padding: 8px 12px; border-bottom: 1px solid var(--divider); color: var(--fg-mid); vertical-align: top; }
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table tr:nth-child(even) td { background: var(--cream); }
+.table-scroll { overflow-x: auto; }
+</style>
+
+<!-- Intro -->
+<div class="intro-band">
+  <div style="max-width:1100px; margin:0 auto; padding-left:max(20px,env(safe-area-inset-left,0px)); padding-right:max(20px,env(safe-area-inset-right,0px));">
+    <div class="intro-eyebrow">PROSPECT 355 &middot; Course 2027-ULC-355</div>
+    <h1 class="intro-name">Strengths Facilitator Case File Closing Guide</h1>
+    <div class="intro-role">CliftonStrengths Lead &mdash; All Kahoot Openings &middot; Fusion Lessons &middot; Case File Debrief &amp; Bridge Forward &middot; Day Synthesis</div>
+    <div class="intro-stats">
+      <div class="intro-stat">
+        <div class="intro-stat-num">13</div>
+        <div class="intro-stat-label">Case Files</div>
+      </div>
+      <div class="intro-stat">
+        <div class="intro-stat-num">3</div>
+        <div class="intro-stat-label">Fusion Lessons</div>
+      </div>
+      <div class="intro-stat">
+        <div class="intro-stat-num">4</div>
+        <div class="intro-stat-label">Day Closings</div>
+      </div>
+      <div class="intro-stat">
+        <div class="intro-stat-num">10+5</div>
+        <div class="intro-stat-label">Debrief+Bridge (min)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky header -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <span class="header-badge">SF</span>
+    <span class="header-title">Strengths Facilitator Guide &mdash; PROSPECT 355</span>
+    <span class="header-meta">CliftonStrengths &middot; All 13 Case Files</span>
+  </div>
+</div>
+
+<div class="shell">
+
+  <nav class="sidebar" aria-label="Section navigation">
+    <div class="nav-section-label">Overview</div>
+    <a class="nav-link" href="#role">Your Role</a>
+    <a class="nav-link" href="#tips">Facilitator Tips</a>
+
+    <div class="nav-section-label">Day 1</div>
+    <a class="nav-link" href="#cf01"><span class="cf-num">CF01</span> Charter</a>
+    <a class="nav-link" href="#cf02"><span class="cf-num">CF02</span> Scope</a>
+
+    <div class="nav-section-label">Day 2</div>
+    <a class="nav-link" href="#cf03"><span class="cf-num">CF03</span> WBS</a>
+    <a class="nav-link" href="#cf04"><span class="cf-num">CF04</span> Schedule</a>
+    <a class="nav-link" href="#cf05"><span class="cf-num">CF05</span> Cost</a>
+    <a class="nav-link" href="#cf06"><span class="cf-num">CF06</span> Fusion<span class="fusion-badge">F</span></a>
+
+    <div class="nav-section-label">Day 3</div>
+    <a class="nav-link" href="#cf07"><span class="cf-num">CF07</span> EVM</a>
+    <a class="nav-link" href="#cf08"><span class="cf-num">CF08</span> Risk</a>
+    <a class="nav-link" href="#cf09"><span class="cf-num">CF09</span> Fusion<span class="fusion-badge">F</span></a>
+    <a class="nav-link" href="#cf10"><span class="cf-num">CF10</span> Change</a>
+
+    <div class="nav-section-label">Day 4</div>
+    <a class="nav-link" href="#cf11"><span class="cf-num">CF11</span> Opportunity</a>
+    <a class="nav-link" href="#cf12"><span class="cf-num">CF12</span> Fusion<span class="fusion-badge">F</span></a>
+    <a class="nav-link" href="#cf13"><span class="cf-num">CF13</span> Closing</a>
+
+    <div class="nav-section-label">References</div>
+    <a class="nav-link" href="#refs">Domain Reference</a>
+  </nav>
+
+  <main class="main">
+
+    <!-- ROLE -->
+    <section class="section" id="role">
+      <h2 class="section-heading">Your Role in PROSPECT 355</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+          <div class="block-label">What You Do</div>
+          <div class="block-content">
+            <ul>
+              <li><strong>Open every day</strong> with a Kahoot that connects CliftonStrengths to the day's PM content</li>
+              <li><strong>Close every case file</strong> with a 10-minute Strengths Debrief + 5-minute Bridge Forward</li>
+              <li><strong>Lead Fusion Lessons</strong> (L6, L9, L12) solo -- no CW or MP involvement</li>
+              <li><strong>Close each day</strong> with a Day Synthesis that integrates strengths into the day's PM learning</li>
+              <li><strong>Facilitate Action Planning</strong> (Day 4) through the strengths lens</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="block-label">Your Pedagogical Intent</div>
+          <div class="block-content">
+            <p>Every Strengths Debrief has two jobs: (1) help participants see how their strengths showed up in the case file application, and (2) help them see how the team's collective strengths create a more complete PM capability than any individual brings alone.</p>
+            <p>The Bridge Forward is not a summary -- it's a forward link. You're not closing the lesson, you're opening the next one through a strengths mindset.</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:16px;">
+        <span class="callout-label">Fusion Lessons (L6 / CF06, L9 / CF09, L12 / CF12)</span>
+        These are SF solo segments. CW and MP do not hand off to you -- you pick up the room directly after a break. No bridging from the previous instructor is needed; you set your own context.
+      </div>
+    </section>
+
+    <!-- TIPS -->
+    <section class="section" id="tips">
+      <h2 class="section-heading">Facilitator Tips</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div>
+          <div class="block-label">Reading the Room</div>
+          <div class="block-content" style="font-size:13px;">
+            <ul>
+              <li>If energy is low after a CW/MP lesson, start with a show-of-hands question before the debrief</li>
+              <li>Name the dominant strength themes you're seeing in the room (Strategic, Achiever, Relator are common in USACE PMs) -- this validates participants before they speak</li>
+              <li>Listen for "I did this because..." -- that's usually a strengths reveal; reflect it back</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="block-label">When the Room Is Resistant</div>
+          <div class="block-content" style="font-size:13px;">
+            <ul>
+              <li>Some engineers distrust strengths frameworks; normalize it: "You don't have to believe the label -- just notice what it's pointing at"</li>
+              <li>Use PM language: "Your Analytical theme is what makes you a better risk manager -- that's not soft, that's operational"</li>
+              <li>Pair resistant participants with enthusiasts; the conversation usually shifts them</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="block-label">Timing Discipline</div>
+          <div class="block-content" style="font-size:13px;">
+            <ul>
+              <li>Debrief = 10 minutes hard stop; Bridge Forward = 5 minutes</li>
+              <li>If the debrief is running long, it means participants are engaged -- that's good, but keep the Bridge Forward; it's what they'll remember</li>
+              <li>Fusion Lessons have more time flexibility; use it to go deeper, not wider</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="block-label">Action Planning Connection</div>
+          <div class="block-content" style="font-size:13px;">
+            <ul>
+              <li>Plant seeds throughout the week: "Notice which strengths you're using most in this case file -- you'll use that on Day 4"</li>
+              <li>By Day 4, participants should be able to name 1-2 strengths they're leaning on most as PMs</li>
+              <li>Action plans that name specific strengths (not just goals) are more likely to be followed through</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="callout warn" style="margin-top:4px;">
+        <span class="callout-label">Avoid</span>
+        Don't position strengths as explaining why someone struggled with a task. Strengths are additive frames, not deficit explanations. "Your Responsibility theme means you hold yourself to a high standard" -- not "you over-committed because of Responsibility."
+      </div>
+    </section>
+
+    <!-- CF01 -->
+    <section class="section" id="cf01">
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF01</span>
+          <div class="cf-title-block">
+            <div class="cf-title">PDT Formation &amp; Project Charter</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag">Day 1 &middot; After L1</span>
+              <span class="cf-tag">CW Lesson</span>
+            </div>
+          </div>
+        </div>
+        <div class="scenario-strip"><strong>Scenario (CF01 &mdash; New PM, Unclear Roles):</strong> Maria Chen inherits a project mid-stream. The PDT Charter lists her predecessor. No RACI exists for the upcoming cost review. She must establish authority without a formal handoff.</div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Debrief</div></div>
+          <div class="timing-cell"><span class="timing-min">5</span><div class="timing-label">Bridge Fwd</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Strengths Debrief (10 min)</div>
+            <div class="theme-row">
+              <span class="theme-name">Relator</span>
+              <span class="theme-insight">Naturally draws the right people into the PDT; builds trust that makes charter negotiations productive</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Command</span>
+              <span class="theme-insight">Establishes PM authority early; comfortable holding scope boundaries under pressure</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Responsibility</span>
+              <span class="theme-insight">Takes charter commitments seriously; this is an asset but can lead to over-commitment in scope</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Team Theme</span>
+              <span class="theme-insight">The best PDTs combine Relator-type trust-builders with Command-type authority anchors -- neither works as well alone</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Individual Prompt</div>
+              <div class="prompt-text">Which of your strengths most influenced how you built out the PDT? Would a different strength have led to a different team?</div>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Team Prompt</div>
+              <div class="prompt-text">As a table, which strengths did you bring to the charter negotiation? What strength is your table missing that would make the PDT stronger?</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Bridge Forward (5 min)</div>
+            <div class="bridge-content">
+              <p>Charter establishes the team and the authority. Tomorrow, you'll decompose the work. <strong>Analytical and Strategic themes</strong> will show up differently in a WBS than they did in a charter -- the same strength, different application.</p>
+              <p>Tonight's read-ahead: notice which parts of scope management feel natural to you -- that's usually a strengths signal worth tracking.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CF02 -->
+    <section class="section" id="cf02">
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF02</span>
+          <div class="cf-title-block">
+            <div class="cf-title">Scope Management</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag">Day 1 &middot; After L2</span>
+              <span class="cf-tag">MP Lesson</span>
+            </div>
+          </div>
+        </div>
+        <div class="scenario-strip"><strong>Scenario (CF02 &mdash; The Schedule vs. The Scope):</strong> Maria's project has a fixed completion date the sponsor treats as absolute. During planning, she identifies that meeting the date requires cutting two deliverables. The sponsor has not been told.</div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Debrief</div></div>
+          <div class="timing-cell"><span class="timing-min">5</span><div class="timing-label">Bridge Fwd</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Strengths Debrief (10 min)</div>
+            <div class="theme-row">
+              <span class="theme-name">Discipline</span>
+              <span class="theme-insight">Enforces scope boundaries without emotional charge; holds the line on what's authorized</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Strategic</span>
+              <span class="theme-insight">Sees scope change implications early; anticipates downstream cost and schedule impacts before they materialize</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Empathy</span>
+              <span class="theme-insight">Understands the garrison commander's need; can decline the addition in a way that preserves the relationship</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Team Theme</span>
+              <span class="theme-insight">Scope discipline requires both the analytical rigor to know the boundary AND the relational skill to hold it -- rarely the same person</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Individual Prompt</div>
+              <div class="prompt-text">When the garrison commander pushed, how did your strengths influence your response? What would you do differently?</div>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Team Prompt</div>
+              <div class="prompt-text">How did your table balance holding scope boundaries with maintaining the customer relationship? Which strengths made that balance possible?</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Bridge Forward (5 min)</div>
+            <div class="bridge-content">
+              <p>Day 1 is complete. You've chartered two projects and scoped them against real customer pressure. Tomorrow starts with decomposition -- WBS and Schedule.</p>
+              <p><strong>Arranger and Analytical themes</strong> tend to thrive in WBS work. Notice whether the structure of a WBS feels natural or constraining to you -- that tension is worth exploring.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CF03 -->
+    <section class="section" id="cf03">
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF03</span>
+          <div class="cf-title-block">
+            <div class="cf-title">Work Breakdown Structure</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag">Day 2 &middot; After L3</span>
+              <span class="cf-tag">CW Lesson</span>
+            </div>
+          </div>
+        </div>
+        <div class="scenario-strip"><strong>Scenario (CF03 &mdash; The New Home):</strong> Maria is managing the relocation of a district operations center. The WBS was built from a template. During planning review, a team member notices that the IT infrastructure migration appears nowhere in the WBS or schedule.</div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Debrief</div></div>
+          <div class="timing-cell"><span class="timing-min">5</span><div class="timing-label">Bridge Fwd</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Strengths Debrief (10 min)</div>
+            <div class="theme-row">
+              <span class="theme-name">Analytical</span>
+              <span class="theme-insight">Naturally decomposes to the right level; uncomfortable with ambiguity in WBS structure -- this is a feature, not a bug</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Arranger</span>
+              <span class="theme-insight">Sees how work packages relate and sequence; often builds the most logically elegant WBS structure</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Ideation</span>
+              <span class="theme-insight">Surfaces the work packages others miss; can over-decompose if not anchored to the 100% rule</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Team Theme</span>
+              <span class="theme-insight">The gallery walk showed different decomposition patterns -- that's strengths diversity in action, not inconsistency</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Individual Prompt</div>
+              <div class="prompt-text">When you looked at another table's WBS, what did they catch that you missed? What does that tell you about your strengths profile?</div>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Team Prompt</div>
+              <div class="prompt-text">What strength would your table add to build a more complete WBS? Who at the table might have that strength?</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Bridge Forward (5 min)</div>
+            <div class="bridge-content">
+              <p>WBS is structure. Schedule is sequence. Next lesson, you'll add time and dependency. <strong>Focus and Discipline themes</strong> anchor a schedule in reality; <strong>Futuristic</strong> themes help you anticipate what's not in the plan yet.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CF04 -->
+    <section class="section" id="cf04">
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF04</span>
+          <div class="cf-title-block">
+            <div class="cf-title">Schedule Management</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag">Day 2 &middot; After L4</span>
+              <span class="cf-tag">MP Lesson</span>
+            </div>
+          </div>
+        </div>
+        <div class="scenario-strip"><strong>Scenario (CF04 &mdash; Built to Slip):</strong> Priya built the project schedule from a district template. The HVAC rough-in is listed as 5 days. Based on this building's layout, it needs 16. The schedule has already been baselined.</div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Debrief</div></div>
+          <div class="timing-cell"><span class="timing-min">5</span><div class="timing-label">Bridge Fwd</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Strengths Debrief (10 min)</div>
+            <div class="theme-row">
+              <span class="theme-name">Focus</span>
+              <span class="theme-insight">Zeroes in on critical path activities; doesn't get distracted by non-critical float -- keeps the schedule decisions clean</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Futuristic</span>
+              <span class="theme-insight">Sees the delay impact before it shows up in the data; often the first to flag a downstream risk</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Adaptability</span>
+              <span class="theme-insight">Comfortable re-sequencing; finds creative path around the delay; can under-plan if not paired with structured thinkers</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Team Theme</span>
+              <span class="theme-insight">Schedule management requires both the discipline to build a realistic plan AND the flexibility to revise it without panic</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Individual Prompt</div>
+              <div class="prompt-text">When the delay scenario hit, was your first instinct to analyze the impact or find the workaround? What does that tell you?</div>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Team Prompt</div>
+              <div class="prompt-text">How did your table divide the schedule response work? Did you self-select into roles that match your strengths?</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Bridge Forward (5 min)</div>
+            <div class="bridge-content">
+              <p>Next: cost estimating. You've planned the work -- now you'll price it. <strong>Analytical and Deliberative themes</strong> shine in cost work; so does <strong>Context</strong> (what did similar projects actually cost?).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CF05 -->
+    <section class="section" id="cf05">
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF05</span>
+          <div class="cf-title-block">
+            <div class="cf-title">Cost Estimating</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag">Day 2 &middot; After L5</span>
+              <span class="cf-tag">CW Lesson</span>
+            </div>
+          </div>
+        </div>
+        <div class="scenario-strip"><strong>Scenario (CF05 &mdash; The Number Doesn't Fit):</strong> Maria's cost estimate has come in $1.9M over the programmed ceiling. Her DPM's response is "make it work." Maria has three legitimate options and has not yet told the sponsor that any of them involve tradeoffs.</div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Debrief</div></div>
+          <div class="timing-cell"><span class="timing-min">5</span><div class="timing-label">Bridge Fwd</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Strengths Debrief (10 min)</div>
+            <div class="theme-row">
+              <span class="theme-name">Deliberative</span>
+              <span class="theme-insight">Won't give the sponsor a false "firm" number; insists on communicating the range -- this is professional courage, not obstruction</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Context</span>
+              <span class="theme-insight">Anchors the estimate in historical project data; most reliable cost estimators in the room often have this theme</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Communication</span>
+              <span class="theme-insight">Translates the uncertainty range into language the sponsor can act on; bridges the technical and the political</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Team Theme</span>
+              <span class="theme-insight">Great cost teams have the analytical rigor to build the number AND the communication skill to present it honestly -- both are needed</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Individual Prompt</div>
+              <div class="prompt-text">When the sponsor pushed for a firm number, what did your strengths tell you to do? Did you hold the range or narrow it?</div>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Team Prompt</div>
+              <div class="prompt-text">Which strengths at your table made your estimate more accurate? Which made it easier to communicate?</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Bridge Forward (5 min) &mdash; Day 2 Close</div>
+            <div class="bridge-content">
+              <p>Day 2 ends with the planning baseline complete. This is the moment to surface what your team is good at -- and what your team will need help with in execution. That's exactly what we'll explore in the Fusion lesson.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CF06 FUSION -->
+    <section class="section" id="cf06">
+      <div class="fusion-banner">
+        <span class="fusion-banner-badge">Fusion Solo</span>
+        <span>CF06 / L6 is a SF-only segment. No CW or MP handoff. You set the context directly.</span>
+      </div>
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF06</span>
+          <div class="cf-title-block">
+            <div class="cf-title">Fusion Lesson &mdash; Day 2 Close</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag cf-tag fusion">Fusion Solo (SF)</span>
+              <span class="cf-tag">Day 2 &middot; End of Day</span>
+            </div>
+          </div>
+        </div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">45</span><div class="timing-label">Full Fusion</div></div>
+          <div class="timing-cell"><span class="timing-min">20</span><div class="timing-label">Team Strengths</div></div>
+          <div class="timing-cell"><span class="timing-min">15</span><div class="timing-label">Day Synthesis</div></div>
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Bridge to Day 3</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Fusion Theme: Planning Under Uncertainty</div>
+            <div class="theme-row">
+              <span class="theme-name">Focus</span>
+              <span class="theme-insight">Anchors the team in the plan; resists scope and schedule drift -- the team's guardrail</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Strategic</span>
+              <span class="theme-insight">Sees the tradeoffs in cost/schedule/scope decisions; connects the planning baseline to execution risk</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Connectedness</span>
+              <span class="theme-insight">Sees the whole project as a system; understands how WBS, schedule, and cost are linked -- not siloed deliverables</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Day 2 Synthesis Prompt</div>
+              <div class="prompt-text">In today's work -- WBS, schedule, and cost -- where did you feel most engaged? What does that tell you about your strengths as a PM?</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Bridge to Day 3</div>
+            <div class="bridge-content">
+              <p>Tomorrow moves into execution monitoring: EVM, risk management, and change control. These are the lessons where project management stops being planning and starts being judgment.</p>
+              <p><strong>Read-ahead tonight:</strong> As you read about EVM, notice whether the numbers-first or the narrative-first approach feels more natural. That's a strengths signal.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CF07 -->
+    <section class="section" id="cf07">
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF07</span>
+          <div class="cf-title-block">
+            <div class="cf-title">Earned Value Management</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag">Day 3 &middot; After L7</span>
+              <span class="cf-tag">MP Lesson</span>
+            </div>
+          </div>
+        </div>
+        <div class="scenario-strip"><strong>Scenario (CF06 &mdash; The Feedback Nobody Wants to Give):</strong> Marcus, Maria's structural lead, has missed two consecutive deliverable deadlines. When Maria finally initiates the conversation, she learns Marcus has been slow-rolling work in protest of a design decision made without his input.</div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Debrief</div></div>
+          <div class="timing-cell"><span class="timing-min">5</span><div class="timing-label">Bridge Fwd</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Strengths Debrief (10 min)</div>
+            <div class="theme-row">
+              <span class="theme-name">Analytical</span>
+              <span class="theme-insight">Most comfortable with EVM data; asks the right questions about variance before accepting the number</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Communication</span>
+              <span class="theme-insight">Translates CPI/SPI into a brief the commander can use; this is where many technically-strong PMs struggle</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Significance</span>
+              <span class="theme-insight">Wants the brief to matter -- invests in making the EVM story compelling, not just accurate</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Team Theme</span>
+              <span class="theme-insight">EVM is only useful if someone communicates it effectively; the analyst and the communicator need each other</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Individual Prompt</div>
+              <div class="prompt-text">When you briefed the EVM data, did your strengths help you with the numbers or the story? Which felt harder?</div>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Team Prompt</div>
+              <div class="prompt-text">In your table's EVM brief, who carried the analysis and who carried the communication? Was that the right division?</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Bridge Forward (5 min)</div>
+            <div class="bridge-content">
+              <p>EVM tells you where you are. Next: risk management -- what might still happen. <strong>Deliberative and Strategic themes</strong> show up most powerfully in risk identification. Watch for them.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CF08 -->
+    <section class="section" id="cf08">
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF08</span>
+          <div class="cf-title-block">
+            <div class="cf-title">Risk Management</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag">Day 3 &middot; After L8</span>
+              <span class="cf-tag">CW Lesson</span>
+            </div>
+          </div>
+        </div>
+        <div class="scenario-strip"><strong>Scenario (CF07 &mdash; The Phantom Slip):</strong> Month 6 EVM data shows CPI = 0.87 and SPI = 0.91. Maria's schedule shows green across all milestones. The EVM and the schedule are telling different stories.</div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Debrief</div></div>
+          <div class="timing-cell"><span class="timing-min">5</span><div class="timing-label">Bridge Fwd</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Strengths Debrief (10 min)</div>
+            <div class="theme-row">
+              <span class="theme-name">Deliberative</span>
+              <span class="theme-insight">The room's best risk identifier; sees what can go wrong before others even ask the question</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Strategic</span>
+              <span class="theme-insight">Quickly routes to the highest-impact responses; doesn't get lost in low-probability risks</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Positivity</span>
+              <span class="theme-insight">Keeps the risk exercise constructive; counterbalances Deliberative's tendency toward worst-case thinking</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Team Theme</span>
+              <span class="theme-insight">The best risk teams see both the threats (Deliberative) and the paths forward (Positivity/Strategic) -- rarely the same person</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Individual Prompt</div>
+              <div class="prompt-text">Which risks did you identify that your table missed? Which risks did your table see that you missed? What does that tell you?</div>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Team Prompt</div>
+              <div class="prompt-text">Did your table have enough "Deliberative energy" to surface the full risk picture? Did you have enough "Positivity energy" to keep moving after identifying them?</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Bridge Forward (5 min)</div>
+            <div class="bridge-content">
+              <p>Risk is not just a threat register. Tomorrow you'll flip the frame -- risk as opportunity. <strong>Strategic and Futuristic themes</strong> are the natural home of opportunity identification. If you have those themes, Day 4 morning is your moment.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CF09 FUSION -->
+    <section class="section" id="cf09">
+      <div class="fusion-banner">
+        <span class="fusion-banner-badge">Fusion Solo</span>
+        <span>CF09 / L9 is a SF-only segment. No CW or MP handoff. You set the context directly.</span>
+      </div>
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF09</span>
+          <div class="cf-title-block">
+            <div class="cf-title">Fusion Lesson &mdash; Day 3 Close</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag cf-tag fusion">Fusion Solo (SF)</span>
+              <span class="cf-tag">Day 3 &middot; End of Day</span>
+            </div>
+          </div>
+        </div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">45</span><div class="timing-label">Full Fusion</div></div>
+          <div class="timing-cell"><span class="timing-min">20</span><div class="timing-label">PM Strengths</div></div>
+          <div class="timing-cell"><span class="timing-min">15</span><div class="timing-label">Day Synthesis</div></div>
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Bridge to Day 4</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Fusion Theme: Judgment Under Pressure</div>
+            <div class="theme-row">
+              <span class="theme-name">Deliberative</span>
+              <span class="theme-insight">Pauses before deciding under pressure; the team's check on impulsive change management responses</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Command</span>
+              <span class="theme-insight">Makes the call when the team is hesitating; comfortable with the discomfort of a decision</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Empathy</span>
+              <span class="theme-insight">Reads the contractor's situation during change negotiations; often the key to a fair resolution</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Day 3 Synthesis Prompt</div>
+              <div class="prompt-text">Today you managed execution data: EVM, risks, and changes. Where did you feel most competent? Where did you feel least comfortable? What do those two answers tell you about your PM strengths profile?</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Bridge to Day 4</div>
+            <div class="bridge-content">
+              <p>Tomorrow is the capstone day. You'll flip risk to opportunity, close the projects, and build your personal action plan. This is where the week's learning becomes a commitment.</p>
+              <p><strong>Tonight:</strong> Review your CliftonStrengths report. Circle the 3 themes you've seen show up most this week. Bring those to tomorrow morning.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CF10 -->
+    <section class="section" id="cf10">
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF10</span>
+          <div class="cf-title-block">
+            <div class="cf-title">Change Management</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag">Day 3 &middot; After L10</span>
+              <span class="cf-tag">MP Lesson</span>
+            </div>
+          </div>
+        </div>
+        <div class="scenario-strip"><strong>Scenario (CF08 &mdash; The Risk Nobody Tracked):</strong> A contractor identifies a differing site condition during construction. It is not in the risk register. Maria must navigate a contract modification under time pressure while determining whether the gap is a process failure or a judgment call.</div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Debrief</div></div>
+          <div class="timing-cell"><span class="timing-min">5</span><div class="timing-label">Bridge Fwd</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Strengths Debrief (10 min)</div>
+            <div class="theme-row">
+              <span class="theme-name">Responsibility</span>
+              <span class="theme-insight">Won't let an undocumented direction stand; insists on the written mod -- this is a professional asset in change management</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Relator</span>
+              <span class="theme-insight">Navigates the contractor relationship through the change; keeps the negotiation from becoming adversarial</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Analytical</span>
+              <span class="theme-insight">Validates the contractor's claim with data before agreeing; makes fair but defensible decisions</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Team Theme</span>
+              <span class="theme-insight">Change negotiations need both the relational skill to keep the contractor engaged AND the analytical rigor to protect the government</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Individual Prompt</div>
+              <div class="prompt-text">In the change negotiation, did your strengths pull you toward speed (get the work moving) or rigor (get the documentation right)?</div>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Team Prompt</div>
+              <div class="prompt-text">Which strengths helped your table hold firm on the process while keeping the contractor relationship intact?</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Bridge Forward (5 min)</div>
+            <div class="bridge-content">
+              <p>Change management is reactive discipline. Tomorrow morning's L11 flips that frame: how do you proactively turn uncertainty into project opportunity? <strong>Strategic and Futuristic themes</strong> are the engine of that flip.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CF11 -->
+    <section class="section" id="cf11">
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF11</span>
+          <div class="cf-title-block">
+            <div class="cf-title">Risk as Opportunity</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag">Day 4 &middot; After L11</span>
+              <span class="cf-tag">CW Lesson</span>
+            </div>
+          </div>
+        </div>
+        <div class="scenario-strip"><strong>Scenario (CF09 &mdash; The Meeting That Got Away):</strong> Maria's PDT meeting has been running over by 20 minutes every week for a month. Two team members have stopped attending. The technical leads are starting to route decisions around the meeting entirely.</div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Debrief</div></div>
+          <div class="timing-cell"><span class="timing-min">5</span><div class="timing-label">Bridge Fwd</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Strengths Debrief (10 min)</div>
+            <div class="theme-row">
+              <span class="theme-name">Strategic</span>
+              <span class="theme-insight">The natural opportunity spotter; sees the upside path before others even ask "is there an opportunity here?"</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Futuristic</span>
+              <span class="theme-insight">Energized by what the opportunity could become; helps the team commit to exploiting rather than just accepting</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Positivity</span>
+              <span class="theme-insight">Gives the team permission to believe the reframe is real; without this energy, the exercise stays theoretical</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Team Theme</span>
+              <span class="theme-insight">Opportunity management requires the courage to act on the reframe -- that's a team strength, not an individual one</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Individual Prompt</div>
+              <div class="prompt-text">Which of your strengths made the opportunity reframe feel natural? Which made it feel uncomfortable?</div>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Team Prompt</div>
+              <div class="prompt-text">As a table, was your instinct to protect against risk or to explore the opportunity? How does your collective strengths profile explain that instinct?</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Bridge Forward (5 min)</div>
+            <div class="bridge-content">
+              <p>The Fusion lesson follows. It's the final Fusion before Action Planning. Come ready to name the 3 strengths that showed up most across the week -- you'll need them for your action plan.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CF12 FUSION -->
+    <section class="section" id="cf12">
+      <div class="fusion-banner">
+        <span class="fusion-banner-badge">Fusion Solo</span>
+        <span>CF12 / L12 is a SF-only segment. No CW or MP handoff. This is the Day 4 Fusion and direct lead-in to Action Planning.</span>
+      </div>
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF12</span>
+          <div class="cf-title-block">
+            <div class="cf-title">Fusion Lesson &mdash; Day 4 &amp; Action Planning Bridge</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag cf-tag fusion">Fusion Solo (SF)</span>
+              <span class="cf-tag">Day 4 &middot; Before Action Planning</span>
+            </div>
+          </div>
+        </div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">30</span><div class="timing-label">Fusion</div></div>
+          <div class="timing-cell"><span class="timing-min">15</span><div class="timing-label">Strengths ID</div></div>
+          <div class="timing-cell"><span class="timing-min">15</span><div class="timing-label">Action Plan Prep</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Fusion Theme: Strengths-Based Action Planning</div>
+            <div class="theme-row">
+              <span class="theme-name">All Themes</span>
+              <span class="theme-insight">Every strength shows up differently in a PM's day-to-day work. The goal is not to develop weaknesses -- it's to point strengths at the right work.</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Day 4 Synthesis Prompt</div>
+              <div class="prompt-text">Name the 3 strengths you've seen show up most powerfully in your PM work this week. For each one, name one specific thing you will do differently when you get back to your project because of it.</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Bridge to Action Planning</div>
+            <div class="bridge-content">
+              <p>Action plans that name specific strengths (not just goals) are more durable. "I will communicate project status more effectively" is fragile. "I will use my <strong>Communication</strong> theme to build a 60-second EVM brief for my stakeholders" is actionable.</p>
+              <p>Give participants 20 minutes to build a 3-action plan anchored in their top strengths from this week.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CF13 -->
+    <section class="section" id="cf13">
+      <div class="cf-card">
+        <div class="cf-header">
+          <span class="cf-num-badge">CF13</span>
+          <div class="cf-title-block">
+            <div class="cf-title">Project Closing</div>
+            <div class="cf-meta-row">
+              <span class="cf-tag">Day 4 &middot; After L13</span>
+              <span class="cf-tag">MP Lesson &middot; Course Capstone</span>
+            </div>
+          </div>
+        </div>
+        <div class="scenario-strip"><strong>Scenario:</strong> Teams complete formal closeout for both Building 4521 and Building 4521; run a lessons-learned session; reflect on the full 4-day arc.</div>
+        <div class="timing-row">
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Debrief</div></div>
+          <div class="timing-cell"><span class="timing-min">10</span><div class="timing-label">Course Close</div></div>
+        </div>
+        <div class="cf-body">
+          <div class="debrief-block">
+            <div class="debrief-label">Final Strengths Debrief (10 min)</div>
+            <div class="theme-row">
+              <span class="theme-name">Responsibility</span>
+              <span class="theme-insight">Closes the project cleanly; takes the lessons-learned seriously as a professional obligation to the next PM</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Significance</span>
+              <span class="theme-insight">Wants the work to matter beyond this project; most likely to champion a living lessons-learned culture</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Connectedness</span>
+              <span class="theme-insight">Sees how this project contributes to the larger USACE mission; closes with meaning, not just checklist</span>
+            </div>
+            <div class="theme-row">
+              <span class="theme-name">Team Theme</span>
+              <span class="theme-insight">The final lesson is a team capstone: what did we learn as a team -- not just as individuals?</span>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Individual Prompt</div>
+              <div class="prompt-text">Looking back across 4 days and 13 case files -- which moment most clearly showed you your strengths as a PM? What will you do with that?</div>
+            </div>
+            <div class="prompt-block">
+              <div class="prompt-label">Course Close Prompt</div>
+              <div class="prompt-text">What's the one thing you're taking back to your project -- and which strength will you use to make it stick?</div>
+            </div>
+          </div>
+          <div class="bridge-block">
+            <div class="bridge-label">Course Close</div>
+            <div class="bridge-content">
+              <p>Four days. Two case files. Thirteen lessons. One PM. The work was always about practice -- not just PMBOK frameworks, but the judgment, the relationships, and the self-awareness that make a great project manager.</p>
+              <p>You know your strengths. Now go build something worth closing.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOMAIN REF -->
+    <section class="section" id="refs">
+      <h2 class="section-heading">CliftonStrengths Domain Reference</h2>
+      <div class="table-scroll">
+        <table class="ref-table">
+          <thead><tr><th>Domain</th><th>Themes</th><th>PM Application</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Executing</strong></td>
+              <td>Achiever, Arranger, Belief, Consistency, Deliberative, Discipline, Focus, Responsibility, Restorative</td>
+              <td>Gets the work done; builds and maintains the schedule baseline; enforces scope discipline; closes out cleanly</td>
+            </tr>
+            <tr>
+              <td><strong>Influencing</strong></td>
+              <td>Activator, Command, Communication, Competition, Maximizer, Self-Assurance, Significance, Woo</td>
+              <td>Drives stakeholder engagement; communicates project status compellingly; holds scope under customer pressure; motivates the PDT</td>
+            </tr>
+            <tr>
+              <td><strong>Relationship Building</strong></td>
+              <td>Adaptability, Connectedness, Developer, Empathy, Harmony, Includer, Individualization, Positivity, Relator</td>
+              <td>Builds PDT trust; navigates contractor relationships; keeps the team functioning under change pressure; reads the room in negotiations</td>
+            </tr>
+            <tr>
+              <td><strong>Strategic Thinking</strong></td>
+              <td>Analytical, Context, Futuristic, Ideation, Input, Intellection, Learner, Strategic</td>
+              <td>Identifies risk and opportunity; builds accurate estimates; forecasts EVM trends; connects today's decisions to tomorrow's outcomes</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function() {
+  var sections = document.querySelectorAll('.section[id]');
+  var navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+  function onScroll() {
+    var scrollY = window.scrollY + 120;
+    var current = '';
+    sections.forEach(function(s) {
+      if (s.offsetTop <= scrollY) current = s.id;
+    });
+    navLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
