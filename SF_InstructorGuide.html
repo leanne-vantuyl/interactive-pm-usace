@@ -482,6 +482,47 @@ h2.section-heading {
 }
 .callout.warn .callout-label { color: var(--warn-border); }
 
+/* ---- Checklist ---- */
+.checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--divider);
+  font-size: 14px;
+  color: var(--fg-mid);
+}
+.checklist li:last-child { border-bottom: none; }
+.checklist li::before {
+  content: "";
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--gold);
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ---- Admin day-group label ---- */
+.admin-day {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--navy);
+  background: var(--tag-bg);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin: 14px 0 4px;
+  display: inline-block;
+}
+
 /* Intro band */
 .intro-band {
   background: linear-gradient(135deg, #2A0E50 0%, #5B2D8E 60%, #7B52AE 100%);
@@ -572,6 +613,7 @@ h2.section-heading {
     <a class="nav-link" href="#role">Your Role</a>
     <a class="nav-link" href="#tips">Facilitator Tips</a>
     <a class="nav-link" href="#soi">Full SOI v4</a>
+    <a class="nav-link" href="#admin">Admin &amp; Recordkeeping</a>
 
     <div class="nav-section-label">Day 1</div>
     <a class="nav-link" href="#cf01"><span class="cf-num">CF01</span> Charter</a>
@@ -678,6 +720,75 @@ h2.section-heading {
       <div class="callout warn" style="margin-top:4px;">
         <span class="callout-label">Avoid</span>
         Don't position strengths as explaining why someone struggled with a task. Strengths are additive frames, not deficit explanations. "Your Responsibility theme means you hold yourself to a high standard" -- not "you over-committed because of Responsibility."
+      </div>
+    </section>
+
+    <!-- ADMIN & RECORDKEEPING -->
+    <section class="section" id="admin">
+      <h2 class="section-heading">Admin &amp; Recordkeeping</h2>
+      <p class="block-content">These tasks belong to the <strong>lead instructor</strong> (determined by seniority). All three instructor guides carry this section so the designated lead can work from their own guide. Complete each item at the indicated time.</p>
+
+      <div class="callout warn" style="margin-bottom:1.5rem;">
+        <span class="callout-label">Before You Start</span>
+        Confirm iRoster access, test password distribution, and cohort enrollment <strong>before Day 1 begins</strong>. These cannot be resolved mid-class.
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;color:var(--navy);margin:0 0 8px;">Room Setup &amp; AV</h3>
+      <div class="admin-day">Before Day 1 — Arrive 30 min early</div>
+      <ul class="checklist">
+        <li>Confirm projector / display is working and slides advance correctly from your position</li>
+        <li>Verify course link (GitHub Pages) is accessible on the classroom network</li>
+        <li>Post course URL and cohort login at the front of the room (whiteboard or slide)</li>
+        <li>Confirm all 13 case file packets are at every seat (or confirm digital access)</li>
+        <li>Test audio if any recorded content is used</li>
+        <li>Identify classroom point of contact for facility issues</li>
+      </ul>
+
+      <h3 style="font-size:15px;font-weight:700;color:var(--navy);margin:1.2rem 0 8px;">iRoster &amp; Attendance</h3>
+      <div class="admin-day">Day 1 — 0745 (before class opens)</div>
+      <ul class="checklist">
+        <li>Open iRoster and confirm all enrolled participants are listed</li>
+        <li>Check in each participant as they arrive — do not wait until after class starts</li>
+        <li>Flag any walk-ins or roster discrepancies to the PROSPECT registrar immediately</li>
+      </ul>
+      <div class="admin-day">Days 2, 3, 4 — 0745 each morning</div>
+      <ul class="checklist">
+        <li>Mark attendance in iRoster before the 0800 Kahoot begins</li>
+        <li>Record any participant who departs early or misses a session block</li>
+        <li>Minimum attendance threshold for completion: confirm with PROSPECT registrar if uncertain</li>
+      </ul>
+
+      <h3 style="font-size:15px;font-weight:700;color:var(--navy);margin:1.2rem 0 8px;">Pre-Test</h3>
+      <div class="admin-day">Day 1 — Before Foundation Block (0800 or as scheduled)</div>
+      <ul class="checklist">
+        <li>Distribute or display the pre-test password / access link</li>
+        <li>Confirm every participant can reach their cohort in the testing system</li>
+        <li>Allow participants to complete the pre-test before class content begins</li>
+        <li>Record pre-test completion in iRoster once all submissions are in</li>
+        <li>Do not review pre-test answers with the class — it is a baseline measure only</li>
+      </ul>
+
+      <h3 style="font-size:15px;font-weight:700;color:var(--navy);margin:1.2rem 0 8px;">Post-Test</h3>
+      <div class="admin-day">Day 4 — After final lesson block, before closeout</div>
+      <ul class="checklist">
+        <li>Distribute or display the post-test password / access link</li>
+        <li>Allow participants to complete the post-test before the course closeout remarks</li>
+        <li>Record post-test completion in iRoster once all submissions are in</li>
+        <li>Post-test grades are recorded individually — confirm the system captured each participant</li>
+      </ul>
+
+      <h3 style="font-size:15px;font-weight:700;color:var(--navy);margin:1.2rem 0 8px;">Materials &amp; Course Access</h3>
+      <div class="admin-day">Day 1 — Before class and as needed</div>
+      <ul class="checklist">
+        <li>Share the course URL with all participants: <strong>https://leanne-vantuyl.github.io/interactive-pm-usace/</strong></li>
+        <li>Confirm participants can access the Pre-Work read-aheads and case files from their devices</li>
+        <li>Distribute any printed reference materials (EM 5-1-11 excerpts, PROC cards) if used</li>
+        <li>Confirm SF has the Kahoot deck loaded and ready for each morning block (Days 2, 3, 4)</li>
+      </ul>
+
+      <div class="callout" style="margin-top:1.5rem;">
+        <span class="callout-label">Course Closeout — Day 4</span>
+        Before participants leave: confirm post-test is complete in iRoster, verify all four days of attendance are recorded, and note any roster exceptions for the PROSPECT registrar. Certificate processing follows PROSPECT standard timelines.
       </div>
     </section>
 
