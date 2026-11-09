@@ -270,6 +270,21 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
 .strengths-lens-box{background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.35);border-radius:6px;padding:12px 14px;margin:12px 0 8px;}
 .strengths-lens-label{font-size:.6875rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
 .strengths-lens-text{font-size:.875rem;line-height:1.55;color:var(--white);}
+
+/* BRIDGE FORWARD */
+.bf-card{background:rgba(37,45,28,.5);border:1px solid var(--border-strong);border-left:3px solid var(--gold);padding:22px 24px;margin-bottom:20px;border-radius:2px;}
+body.light-mode .bf-card{background:#FAF8F3;border:1px solid #5A4010;border-left:3px solid #5A4010;}
+.bf-lesson{font-family:'DM Mono',monospace;font-size:0.5625rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+body.light-mode .bf-lesson{color:#5A4010;}
+.bf-body{font-size:0.9375rem;color:var(--white-dim);line-height:1.65;}
+body.light-mode .bf-body{color:#222222;}
+.bf-question-wrap{background:rgba(200,168,75,.07);border:1px solid var(--border);padding:18px 22px;margin-top:4px;}
+body.light-mode .bf-question-wrap{background:#FFFDF5;border:1px solid #C8A84B;}
+.bf-q-label{font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.14em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:8px;}
+body.light-mode .bf-q-label{color:#8B7235;}
+.bf-question{font-size:0.9375rem;color:var(--white);font-style:italic;line-height:1.6;}
+body.light-mode .bf-question{color:#111111;}
+
 </style>
 </head>
 <body class="light-mode">
@@ -349,8 +364,8 @@ function toggleFontSize(){
 })();
 (function(){try{if(localStorage.getItem('pm-course-theme')==='dark'){document.body.classList.remove('light-mode');var b=document.getElementById('theme-toggle');if(b)b.innerHTML='&#9788; Light';}}catch(e){}})();
 
-var SECTIONS=['welcome','training','discussion','casestudy','kc','complete'];
-var SECTION_LABELS={welcome:'Welcome',training:'Training',discussion:'Discussion',casestudy:'Case Study',kc:'Knowledge Check',complete:'Complete'};
+var SECTIONS=['welcome','training','discussion','casestudy','kc','bridge','complete'];
+var SECTION_LABELS={welcome:'Welcome',training:'Training',discussion:'Discussion',casestudy:'Case Study',kc:'Knowledge Check',bridge:'Bridge Forward',complete:'Complete'};
 
 function updateProgress(){
   var idx=SECTIONS.indexOf(CS.section);
@@ -386,6 +401,7 @@ function render(){
   else if(CS.section==='discussion') m.innerHTML=renderDiscussion();
   else if(CS.section==='casestudy') m.innerHTML=renderCaseStudy();
   else if(CS.section==='kc') m.innerHTML=renderKC();
+  else if(CS.section==='bridge') m.innerHTML=renderBridgeForward();
   else if(CS.section==='complete') m.innerHTML=renderComplete();
   updateProgress();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -915,12 +931,32 @@ function submitKC(){
   if(passed){
     CS.sectionsComplete.kc=true;saveState();
     postCFResponse(kcAnswerBools,correct);
-    btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'complete\')">Finish Case File &rarr;</button>';
+    btnRow.innerHTML='<button class="btn-primary" onclick="goSection(\'bridge\')">Bridge Forward &rarr;</button>';
   } else {
     btnRow.innerHTML='<button class="btn-primary" onclick="retakeKC()">Retake Knowledge Check</button>';
   }
 }
 function retakeKC(){kcAnswers={};goSection('kc');}
+
+
+function renderBridgeForward(){
+  return '<div class="screen active">'
+  +'<div class="eyebrow">Bridge Forward</div>'
+  +'<h1 class="screen-title">What comes next</h1>'
+  +'<div class="bf-card">'
+  +'<div class='bf-lesson'>Lesson 11 — Risk as Opportunity</div>'
+  +'<p class="bf-body">You just navigated a change dispute where the gray area was the problem. Most PMs treat risk as the thing they are trying to avoid. In the next lesson you will learn to read float, uncertainty, and ambiguity as potential — and how the same register that tracks threats can surface opportunities worth pursuing.</p>'
+  +'</div>'
+  +'<div class="bf-question-wrap">'
+  +'<div class="bf-q-label">Your question to carry</div>'
+  +'<p class="bf-question">Before the next lesson: on your current project, name one constraint — a date, a funding ceiling, a scope limit — that, if it shifted, would actually create an advantage for your team.</p>'
+  +'</div>'
+  +'<div class="btn-row" style="margin-top:28px;">'
+  +'<button class="btn-secondary" onclick="goSection(\'complete\')">Skip to Completion &rarr;</button>'
+  +'<a href="CaseFile11_TwoFacesOfRisk.html" class="btn-primary" style="text-decoration:none;">Continue to Case File 11 &rarr;</a>'
+  +'</div>'
+  +'</div>';
+}
 
 function renderComplete(){
   return '<div class="screen active">'
