@@ -159,6 +159,24 @@ body::before {
   height: calc(100vh - 46px - env(safe-area-inset-top, 0px));
   overflow-y: auto;
 }
+/* ---- Back button ---- */
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 12px 16px;
+  padding: 7px 12px;
+  background: var(--purple);
+  color: #fff;
+  border-radius: 6px;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  text-decoration: none;
+  transition: opacity .15s;
+}
+.back-btn:hover { opacity: .82; }
+
 .nav-section-label {
   font-size: 10px;
   font-weight: 700;
@@ -549,6 +567,7 @@ h2.section-heading {
 <div class="shell">
 
   <nav class="sidebar" aria-label="Section navigation">
+    <a href="IG.html" class="back-btn" aria-label="Back to Instructor Tab">&larr; Instructor Tab</a>
     <div class="nav-section-label">Overview</div>
     <a class="nav-link" href="#role">Your Role</a>
     <a class="nav-link" href="#tips">Facilitator Tips</a>
