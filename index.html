@@ -145,6 +145,15 @@ body.light-mode .font-toggle{color:#5A4010;border-color:#5A4010;}
   <div class="progress-wrap">
     <div class="progress-bar-outer"><div class="progress-bar-inner" id="overall-bar"></div></div>
     <div class="progress-summary" id="overall-text">Loading progress&hellip;</div>
+    <div id="reset-all-row" style="margin-top:8px;min-height:22px;">
+      <button id="reset-all-btn" onclick="showResetConfirm()" style="background:none;border:1px solid rgba(200,168,75,.35);color:var(--gold-dim);font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:3px;cursor:pointer;">&#8635; Reset All Progress</button>
+      <span id="reset-all-confirm" style="display:none;font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--gold-dim);letter-spacing:.06em;">
+        Clear all 13 case files?&nbsp;
+        <button onclick="resetAllProgress()" style="background:rgba(180,60,60,.15);border:1px solid rgba(180,60,60,.5);color:#E07070;font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.06em;padding:2px 8px;border-radius:3px;cursor:pointer;">Yes, clear all</button>
+        &nbsp;
+        <button onclick="cancelResetAll()" style="background:none;border:1px solid rgba(200,168,75,.25);color:var(--gold-dim);font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:.06em;padding:2px 8px;border-radius:3px;cursor:pointer;">Cancel</button>
+      </span>
+    </div>
   </div>
 
   <div class="phase-label">Initiation &amp; Planning</div>
@@ -353,6 +362,23 @@ function toggleFontSize(){
     document.getElementById('cert-section').classList.add('show');
   }
 })();
+
+function showResetConfirm(){
+  document.getElementById('reset-all-btn').style.display='none';
+  document.getElementById('reset-all-confirm').style.display='inline';
+}
+function cancelResetAll(){
+  document.getElementById('reset-all-confirm').style.display='none';
+  document.getElementById('reset-all-btn').style.display='inline-block';
+}
+function resetAllProgress(){
+  var keys=['casefile01_v1','casefile02_v1','casefile03_v1','casefile04_v1',
+            'casefile05_v1','casefile06_v1','casefile07_v1','casefile08_v1',
+            'casefile09_v1','casefile10_v1','casefile11_v1','casefile12_v1',
+            'casefile13_v1','pm-learner-profile'];
+  keys.forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
+  location.reload();
+}
 </script>
 </body>
 </html>
